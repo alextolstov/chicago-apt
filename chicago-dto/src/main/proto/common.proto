@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package com.chicago.dto;
+
+option java_package = "com.chicago.dto";
+
+message TransactionKey
+{
+    string transaction_id = 1;
+    string data_type = 2;
+}

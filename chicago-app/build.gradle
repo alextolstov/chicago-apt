@@ -1,0 +1,20 @@
+group 'com.chicago.app'
+version '1.0-SNAPSHOT'
+
+apply plugin: "maven"
+apply plugin: "java"
+apply plugin: "idea"
+apply plugin: "com.google.protobuf"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "com.google.protobuf:protobuf-java:${protobufVer}"
+    implementation "commons-cli:commons-cli:${commonsCliVer}"
+    implementation project(":chicago-common")
+    implementation project(":chicago-dto")
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

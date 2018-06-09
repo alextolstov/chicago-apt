@@ -1,0 +1,23 @@
+syntax = "proto3";
+package com.chicago.dto;
+
+option java_package = "com.chicago.dto";
+
+import "config.proto";
+
+message ServiceConfig
+{
+    string output_dir = 1;
+    ApplicationConfig application_config = 2;
+    ComponentsConfig components_config = 3;
+    KafkaConfig kafka_config = 4;
+    ZooKeeperConfig zookeeper_config = 5;
+    ShutdownConfig shutdown_config = 7;
+}
+
+message RestServiceConfig
+{
+    string log_dir = 1;
+    KafkaConfig kafka_config = 2;
+    ZooKeeperConfig zookeeper_config = 3;
+}

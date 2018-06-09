@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package com.chicago.dto;
+
+option java_package = "com.chicago.dto";
+
+message User
+{
+    string phone = 1;
+    string email = 2;
+    string firstName = 3;
+    string middleName = 4;
+    string lastName = 5;
+    enum Role
+    {
+        GLOBAL_ADMIN = 0;
+        LOCAL_ADMIN = 1;
+        USER = 2;
+    }
+    Role role = 6;
+}

@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package com.chicago.dto;
+
+option java_package = "com.chicago.dto";
+
+message Customer
+{
+    string phone = 1;
+    string firstName = 2;
+    string middleName = 3;
+    string lastName = 4;
+}

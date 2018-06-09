@@ -1,0 +1,33 @@
+group "com.chicago.dto"
+version "1.0-SNAPSHOT"
+
+apply plugin: "maven"
+apply plugin: "java"
+apply plugin: "idea"
+apply plugin: "com.google.protobuf"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "com.google.protobuf:protobuf-java:${protobufVer}"
+    implementation "org.apache.shiro:shiro-core:${shiroVer}"
+
+    testImplementation "junit:junit:${junitVer}"
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${protobufVer}"
+    }
+    generateProtoTasks {
+        all()*.builtins {
+            js {
+                option 'import_style=commonjs'
+                option 'binary'
+//                option "output_dir=/node/"
+            }
+        }
+    }
+}
