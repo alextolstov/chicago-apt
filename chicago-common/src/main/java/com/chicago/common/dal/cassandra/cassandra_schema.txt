@@ -1,8 +1,8 @@
 CREATE KEYSPACE ChicagoErp  WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };
 CREATE TABLE IF NOT EXISTS ChicagoErp.Users (
     email varchar PRIMARY KEY,
-    password varchar,
-    salt varchar,
+    passwordHash varchar,
+    passwordSalt varchar,
     id timeuuid,
     first_name varchar,
     middle_name varchar,

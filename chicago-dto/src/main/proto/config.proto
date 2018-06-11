@@ -29,6 +29,11 @@ message ShutdownConfig
     bool register_grpc_service = 3;
 }
 
+message CassandraConfig
+{
+    string node = 1;
+}
+
 message Component
 {
     enum ComponentType

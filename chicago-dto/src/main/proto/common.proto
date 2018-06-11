@@ -9,3 +9,9 @@ message TransactionKey
     string transaction_id = 1;
     string data_type = 2;
 }
+
+message TransactionError
+{
+    int32 error_code = 1;
+    string error_message = 2;
+}

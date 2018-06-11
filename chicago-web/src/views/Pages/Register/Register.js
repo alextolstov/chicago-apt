@@ -14,15 +14,15 @@ import {
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
 
+var messages = require('models/user_pb');
+//goog.require('proto.com.chicago.dto.User');
+
 class Register extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       fullname: "",
-      firstname: "",
-      middlename: "",
-      lastname: "",
       email: "",
       password: "",
       repeate_password: ""
@@ -39,20 +39,44 @@ class Register extends Component {
   handleSubmit = async event => {
     event.stopPropagation();
     event.preventDefault();
+    let parts = this.state.fullname.split(" ");
+    let newUser = new messages.User();
+    newUser.setFirstname(parts[0]);
+    if (parts.length == 2) {
+      newUser.setLastname(parts[1]);
+    }else  if(parts.length == 3) {
+      newUser.setMiddlename(parts[1]);
+      newUser.setLastname(parts[2]);
+    }
+    newUser.setEmail(this.state.email);
+    let bin = newUser.serializeBinary();
 
     fetch('http://localhost:8080/api/users/create', {
       method: "POST",
-      mode: 'no-cors',
+      body: bin,
+      mode: 'cors',
       headers: {
         'Access-Control-Allow-Origin' : '*',
-        'Access-Control-Allow-Headers' : 'Content-Type'
+        'Access-Control-Allow-Credentials' : 'true',
+        'Content-Type' : 'application/octet-stream'
       }
     })
-      .then(response => response.text())
-      .then((result) => {
-        alert(result);
+      .then(response => {
+        if (!response.ok) {
+          throw response;
+        }
+        return response.json();
       })
-    this.props.history.push("/login");
+      .then(json => {
+        console.log(json);
+        // Redirect current page to login
+        this.props.history.push("/login");
+      })
+      .catch(err => {
+        err.json().then(errorMessage => {
+          console.log(errorMessage);
+        })
+      })
   }
 
   render() {

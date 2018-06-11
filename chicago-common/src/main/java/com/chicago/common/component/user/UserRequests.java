@@ -6,11 +6,14 @@ import com.chicago.common.core.ComponentManager;
 import com.chicago.common.core.ConfigAccessor;
 import com.chicago.common.core.EventBase;
 import com.chicago.common.core.EventHandler;
+import com.chicago.dto.Common;
 import com.chicago.dto.Usermessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+
+import static com.google.protobuf.UnknownFieldSet.Field.newBuilder;
 
 public class UserRequests extends AbstractComponent
 {
@@ -38,10 +41,24 @@ public class UserRequests extends AbstractComponent
         @Override
         public void handleEvent(Usermessages.CreateUserRequest event, String transactionId)
         {
-            Usermessages.CreateUserResponse createUserResponse = Usermessages.CreateUserResponse
-                    .newBuilder()
-                    .setMessageId(event.getMessageId())
-                    .build();
+            Usermessages.CreateUserResponse createUserResponse;
+            try
+            {
+                createUserResponse = Usermessages.CreateUserResponse
+                        .newBuilder()
+                        .build();
+            }catch(Exception ex)
+            {
+                Common.TransactionError transactionError = Common.TransactionError
+                        .newBuilder()
+                        .setErrorCode(500)
+                        .setErrorMessage(ex.getMessage())
+                        .build();
+                createUserResponse = Usermessages.CreateUserResponse
+                        .newBuilder()
+                        .setTransactionError(transactionError)
+                        .build();
+            }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), createUserResponse, transactionId));
         }
     }

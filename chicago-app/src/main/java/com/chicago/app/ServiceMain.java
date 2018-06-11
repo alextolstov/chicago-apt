@@ -7,6 +7,10 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.hk2.api.ServiceLocatorFactory;
+import org.glassfish.hk2.internal.ServiceLocatorFactoryImpl;
+import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 
 public class ServiceMain
 {
@@ -15,10 +19,10 @@ public class ServiceMain
         String confFile;
         String instance;
         Options options = new Options();
-            options.addRequiredOption("c", "conf", true, "Config file location");
-            options.addRequiredOption("i", "inst", true, "Service instance");
-            // parse the command line arguments
-            CommandLineParser parser = new DefaultParser();
+        options.addRequiredOption("c", "conf", true, "Config file location");
+        options.addRequiredOption("i", "inst", true, "Service instance");
+        // parse the command line arguments
+        CommandLineParser parser = new DefaultParser();
         try
         {
             CommandLine line = parser.parse(options, args);
@@ -35,6 +39,8 @@ public class ServiceMain
 
         try
         {
+            ServiceLocator serviceLocator = ServiceLocatorFactory.getInstance().create("servicelocator");
+            ServiceLocatorUtilities.bind(serviceLocator, new ApplicationBinder(confFile));
             ServiceEntry serviceEntry = new ServiceEntry(confFile, instance);
             serviceEntry.init(Service.ServiceConfig.newBuilder());
             serviceEntry.initComponents();

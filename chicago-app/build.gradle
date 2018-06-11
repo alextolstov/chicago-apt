@@ -13,6 +13,8 @@ repositories {
 dependencies {
     implementation "com.google.protobuf:protobuf-java:${protobufVer}"
     implementation "commons-cli:commons-cli:${commonsCliVer}"
+    implementation "org.glassfish.hk2:hk2-api:${hk2Ver}"
+    implementation "org.glassfish.hk2:hk2-locator:${hk2Ver}"
     implementation project(":chicago-common")
     implementation project(":chicago-dto")
 

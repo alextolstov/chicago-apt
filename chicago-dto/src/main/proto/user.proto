@@ -11,11 +11,14 @@ message User
     string firstName = 3;
     string middleName = 4;
     string lastName = 5;
-    enum Role
-    {
-        GLOBAL_ADMIN = 0;
-        LOCAL_ADMIN = 1;
-        USER = 2;
-    }
-    Role role = 6;
+    string password = 6;
+//    enum Role
+//    {
+//        GLOBAL_ADMIN = 0;
+//        LOCAL_ADMIN = 1;
+//        USER = 2;
+//    }
+
+    repeated string roles = 7;
+    repeated string extra_permissions = 8;
 }

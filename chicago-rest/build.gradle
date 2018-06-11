@@ -23,6 +23,7 @@ dependencies {
     implementation "org.glassfish.jersey.inject:jersey-hk2:${jerseyVer}"
 //    implementation "org.glassfish.jersey.bundles:jaxrs-ri:${jerseyVer}"
     implementation "com.google.protobuf:protobuf-java:${protobufVer}"
+    implementation "com.google.protobuf:protobuf-java-util:${protobufVer}"
     // Logging
     implementation "org.slf4j:slf4j-jdk14:${slf4jVer}"
     implementation "org.slf4j:jcl-over-slf4j:1.7.25"

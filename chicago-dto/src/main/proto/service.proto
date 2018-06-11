@@ -11,7 +11,8 @@ message ServiceConfig
     ApplicationConfig application_config = 2;
     ComponentsConfig components_config = 3;
     KafkaConfig kafka_config = 4;
-    ZooKeeperConfig zookeeper_config = 5;
+    CassandraConfig cassandra_config = 5;
+    ZooKeeperConfig zookeeper_config = 6;
     ShutdownConfig shutdown_config = 7;
 }
 

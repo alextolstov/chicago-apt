@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package com.chicago.dto;
 
+import "common.proto";
 import "user.proto";
 
 option java_package = "com.chicago.dto";
@@ -14,5 +15,5 @@ message CreateUserRequest
 
 message CreateUserResponse
 {
-    string message_id = 1;
+    TransactionError transaction_error = 1;
 }
