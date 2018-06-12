@@ -8,5 +8,43 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Users (
     middle_name varchar,
     last_name varchar,
     phone varchar,
+    level set<varchar>, -- HOLDING, COMPANY, BRANCH
     roles set<varchar>,
     extra_permissions set<varchar>);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.Holdings (
+    id timeuuid,
+    name varchar,
+    companies set<timeuuid>
+    description varchar);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.Companies(
+    id timeuuid,
+    name varchar,
+    brnches set<timeuuid>
+    description varchar);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.Branches(
+    id timeuuid,
+    name varchar,
+    description varchar);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.Permissions (
+    permission varchar PRIMARY KEY,
+    description varchar);
+INSERT INTO ChicagoErp.Permissions (permission, description) VALUES('create_user', 'Can create new users');
+INSERT INTO ChicagoErp.Permissions (permission, description) VALUES('delete_user', 'Can delete existing users');
+INSERT INTO ChicagoErp.Permissions (permission, description) VALUES('add_branch', 'Can add new branch into company');
+INSERT INTO ChicagoErp.Permissions (permission, description) VALUES('add_company', 'Can add new company into holding');
+INSERT INTO ChicagoErp.Permissions (permission, description) VALUES('add_holding', 'Can add new holding');
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.Roles (
+    role varchar PRIMARY KEY,
+    permissions set<varchar>,
+    description varchar);
+INSERT INTO ChicagoErp.Roles (role, description) VALUES('holding_admin',
+{'create_user', 'delete_user', 'add_branch', 'add_company', 'add_holding'}, 'Holding level admin');
+INSERT INTO ChicagoErp.Roles (role, description) VALUES('branch_admin',
+{'create_user', 'delete_user', 'add_branch', 'add_company', 'add_holding'}, 'Holding level admin');
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.Customers ();
