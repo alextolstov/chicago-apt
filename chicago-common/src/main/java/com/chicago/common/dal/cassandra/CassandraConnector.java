@@ -1,6 +1,5 @@
 package com.chicago.common.dal.cassandra;
 
-import com.chicago.common.bll.UserBll;
 import com.chicago.dto.Config;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
@@ -12,7 +11,6 @@ import javax.inject.Inject;
 public class CassandraConnector
 {
     private final Logger _LOG = LoggerFactory.getLogger(CassandraConnector.class);
-
     private Cluster _cluster;
     private Session _session;
 
@@ -27,10 +25,10 @@ public class CassandraConnector
         String[] stringArray = node.split(":");
         String server = stringArray[0];
 
-        Cluster.Builder b = Cluster.builder().addContactPoint(node);
+        Cluster.Builder b = Cluster.builder().addContactPoint(server);
         if (stringArray.length == 2)
         {
-            b.withPort(Integer.getInteger(stringArray[1]));
+            b.withPort(Integer.parseInt(stringArray[1]));
         }
         _cluster = b.build();
 

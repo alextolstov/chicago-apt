@@ -9,7 +9,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
-import org.glassfish.hk2.internal.ServiceLocatorFactoryImpl;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 
 public class ServiceMain

@@ -4,6 +4,8 @@ version '1.0-SNAPSHOT'
 apply plugin: "maven"
 apply plugin: "java"
 apply plugin: "idea"
+apply plugin: 'distribution'
+apply plugin: 'application'
 apply plugin: "com.google.protobuf"
 
 repositories {
@@ -19,4 +21,20 @@ dependencies {
     implementation project(":chicago-dto")
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+mainClassName = "com.chicago.app.ServiceMain"
+
+distributions {
+    main {
+        contents {
+            into('lib') {
+                from jar
+                from(project.configurations.runtime)
+            }
+            into('config') {
+                from('src/main/resources/config/userservice.cfg')
+            }
+        }
+    }
 }

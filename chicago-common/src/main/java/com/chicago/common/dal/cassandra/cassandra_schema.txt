@@ -1,33 +1,42 @@
 CREATE KEYSPACE ChicagoErp  WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };
 CREATE TABLE IF NOT EXISTS ChicagoErp.Users (
     email varchar PRIMARY KEY,
-    passwordHash varchar,
-    passwordSalt varchar,
-    id timeuuid,
+    id uuid,
+    password_hash varchar,
+    password_salt blob,
+    avatar blob,
     first_name varchar,
     middle_name varchar,
     last_name varchar,
     phone varchar,
-    level set<varchar>, -- HOLDING, COMPANY, BRANCH
+    holding_id uuid,
+    company_id uuid,
+    branch_id uuid,
     roles set<varchar>,
-    extra_permissions set<varchar>);
+    extra_permissions set<varchar>,
+    create_datetime timestamp);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Holdings (
-    id timeuuid,
+    id uuid PRIMARY KEY,
     name varchar,
-    companies set<timeuuid>
-    description varchar);
+    companies set<uuid>,
+    description varchar,
+    create_datetime timestamp);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Companies(
-    id timeuuid,
+    id uuid PRIMARY KEY,
+    holding_id uuid,
     name varchar,
-    brnches set<timeuuid>
-    description varchar);
+    brnches set<uuid>,
+    description varchar,
+    create_datetime timestamp);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Branches(
-    id timeuuid,
+    id uuid PRIMARY KEY,
+    company_id uuid,
     name varchar,
-    description varchar);
+    description varchar,
+    create_datetime timestamp);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Permissions (
     permission varchar PRIMARY KEY,
@@ -42,9 +51,11 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Roles (
     role varchar PRIMARY KEY,
     permissions set<varchar>,
     description varchar);
-INSERT INTO ChicagoErp.Roles (role, description) VALUES('holding_admin',
-{'create_user', 'delete_user', 'add_branch', 'add_company', 'add_holding'}, 'Holding level admin');
-INSERT INTO ChicagoErp.Roles (role, description) VALUES('branch_admin',
-{'create_user', 'delete_user', 'add_branch', 'add_company', 'add_holding'}, 'Holding level admin');
+INSERT INTO ChicagoErp.Roles (role, permissions, description) VALUES('holding_admin',
+{'create_user', 'delete_user', 'add_holding', 'add_company', 'add_branch'}, 'Holding level admin');
+INSERT INTO ChicagoErp.Roles (role, permissions, description) VALUES('company_admin',
+{'create_user', 'delete_user', 'add_holding', 'add_company', 'add_branch'}, 'Company level admin');
+INSERT INTO ChicagoErp.Roles (role, permissions, description) VALUES('branch_admin',
+{'create_user', 'delete_user'}, 'Branch level admin');
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Customers ();

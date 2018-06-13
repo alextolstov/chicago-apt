@@ -14,19 +14,18 @@ import {
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
 
-var messages = require('models/user_pb');
-//goog.require('proto.com.chicago.dto.User');
+var user_models = require('models/user_pb');
 
 class Register extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      fullname: "",
       email: "",
+      fullname: "",
       password: "",
       repeate_password: ""
-  };
+    };
   }
 
 
@@ -39,26 +38,29 @@ class Register extends Component {
   handleSubmit = async event => {
     event.stopPropagation();
     event.preventDefault();
+
+    let new_user = new user_models.User();
+    new_user.setEmail(this.state.email);
+    // Parse full name
     let parts = this.state.fullname.split(" ");
-    let newUser = new messages.User();
-    newUser.setFirstname(parts[0]);
+    new_user.setFirstname(parts[0]);
     if (parts.length == 2) {
-      newUser.setLastname(parts[1]);
-    }else  if(parts.length == 3) {
-      newUser.setMiddlename(parts[1]);
-      newUser.setLastname(parts[2]);
+      new_user.setLastname(parts[1]);
+    } else if (parts.length == 3) {
+      new_user.setMiddlename(parts[1]);
+      new_user.setLastname(parts[2]);
     }
-    newUser.setEmail(this.state.email);
-    let bin = newUser.serializeBinary();
+    new_user.setPassword(this.state.password);
+    let bin_user = new_user.serializeBinary();
 
     fetch('http://localhost:8080/api/users/create', {
       method: "POST",
-      body: bin,
+      body: bin_user,
       mode: 'cors',
       headers: {
-        'Access-Control-Allow-Origin' : '*',
-        'Access-Control-Allow-Credentials' : 'true',
-        'Content-Type' : 'application/octet-stream'
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': 'true',
+        'Content-Type': 'application/octet-stream'
       }
     })
       .then(response => {
@@ -92,24 +94,24 @@ class Register extends Component {
                   <form action="/user/create" method="post">
                     <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">
+                        <InputGroupText>@</InputGroupText>
+                      </InputGroupAddon>
+                      <Input autoFocus
+                             id="email"
+                             value={this.state.email}
+                             onChange={this.handleChange}
+                             type="text" placeholder="Email (as username)"/>
+                    </InputGroup>
+                    <InputGroup className="mb-3">
+                      <InputGroupAddon addonType="prepend">
                         <InputGroupText>
                           <i className="icon-user"></i>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <Input autoFocus
-                             id="fullname"
+                      <Input id="fullname"
                              value={this.state.fullname}
                              onChange={this.handleChange}
                              type="text" name="fullname" placeholder="First/Middle/Last Name"/>
-                    </InputGroup>
-                    <InputGroup className="mb-3">
-                      <InputGroupAddon addonType="prepend">
-                        <InputGroupText>@</InputGroupText>
-                      </InputGroupAddon>
-                      <Input id="email"
-                             value={this.state.email}
-                             onChange={this.handleChange}
-                             type="text" placeholder="Email"/>
                     </InputGroup>
                     <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">
@@ -134,7 +136,7 @@ class Register extends Component {
                              type="password" placeholder="Repeat password"/>
                     </InputGroup>
                     <Button onClick={this.handleSubmit}
-                      color="success" block type="submit">Create Account</Button>
+                            color="success" block type="submit">Create Account</Button>
                     <br/>
                     <Link to="/login">
                       <Button color="success" block>To Login Page</Button>

@@ -1,14 +1,18 @@
 package com.chicago.app;
 
+import com.chicago.common.bll.UserBll;
+import com.chicago.common.bll.UserBllImpl;
 import com.chicago.common.core.ConfigParser;
+import com.chicago.common.dal.UserDal;
 import com.chicago.common.dal.cassandra.CassandraConnector;
+import com.chicago.common.dal.cassandra.UserDalImpl;
 import com.chicago.dto.Config;
 import com.chicago.dto.Service;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 public class ApplicationBinder extends AbstractBinder
 {
-    String _configFile;
+    private String _configFile;
 
     public ApplicationBinder(String configFile)
     {
@@ -31,6 +35,11 @@ public class ApplicationBinder extends AbstractBinder
         {
             e.printStackTrace();
         }
-        addActiveDescriptor(CassandraConnector.class);
+//        addActiveDescriptor(CassandraConnector.class);
+//        addActiveDescriptor(UserDalImpl.class);
+        bind(new CassandraConnector(config.getCassandraConfig())).to(CassandraConnector.class);
+        bind(new UserDalImpl()).to(UserDal.class);
+        bind(new UserBllImpl()).to(UserBll.class);
+//        addActiveDescriptor(UserBllImpl.class);
     }
 }
