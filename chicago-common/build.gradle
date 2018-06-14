@@ -19,6 +19,7 @@ dependencies {
     implementation "com.google.protobuf:protobuf-java-util:${protobufVer}"
     implementation "org.apache.kafka:kafka-clients:${kafkaVer}"
     implementation "org.apache.kafka:kafka_2.12:${kafkaVer}"
+    implementation "org.apache.httpcomponents:httpcore:${httpcoreVer}"
     implementation "com.101tec:zkclient:${zkclientVer}"
     implementation "org.glassfish.hk2:hk2-api:${hk2Ver}"
     implementation "com.typesafe.akka:akka-actor_2.12:${akkaVer}"

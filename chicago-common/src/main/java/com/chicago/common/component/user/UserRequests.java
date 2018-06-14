@@ -7,8 +7,9 @@ import com.chicago.common.core.ComponentManager;
 import com.chicago.common.core.ConfigAccessor;
 import com.chicago.common.core.EventBase;
 import com.chicago.common.core.EventHandler;
-import com.chicago.dto.Common;
+import com.chicago.common.util.ErrorResponseUtil;
 import com.chicago.dto.Usermessages;
+import org.apache.http.HttpStatus;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.slf4j.Logger;
@@ -56,14 +57,9 @@ public class UserRequests extends AbstractComponent
                         .build();
             } catch (Exception ex)
             {
-                Common.TransactionError transactionError = Common.TransactionError
-                        .newBuilder()
-                        .setErrorCode(500)
-                        .setErrorMessage(ex.getMessage())
-                        .build();
                 createUserResponse = Usermessages.CreateUserResponse
                         .newBuilder()
-                        .setTransactionError(transactionError)
+                        .setTransactionError(ErrorResponseUtil.createErrorResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, ex.getMessage()))
                         .build();
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), createUserResponse, transactionId));

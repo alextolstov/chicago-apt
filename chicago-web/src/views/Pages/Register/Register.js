@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {
+  Alert,
   Button,
   Card,
   CardBody,
@@ -14,7 +15,8 @@ import {
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
 
-var user_models = require('models/user_pb');
+const user_proto = require('models/user_pb');
+const usermessages_proto = require('models/usermessages_pb.js');
 
 class Register extends Component {
   constructor(props) {
@@ -24,10 +26,11 @@ class Register extends Component {
       email: "",
       fullname: "",
       password: "",
-      repeate_password: ""
+      repeat_password: "",
+      error_text: "",
+      show_error: false
     };
   }
-
 
   handleChange = event => {
     this.setState({
@@ -35,27 +38,38 @@ class Register extends Component {
     });
   }
 
+  handleError(error) {
+    this.setState({show_error: true});
+    this.setState({error_text: error});
+  }
+
+  resetError() {
+    this.setState({show_error: false});
+    this.setState({error_text: ""});
+  }
+
   handleSubmit = async event => {
     event.stopPropagation();
     event.preventDefault();
+    this.resetError();
 
-    let new_user = new user_models.User();
-    new_user.setEmail(this.state.email);
+    let user = new user_proto.User();
+    user.setEmail(this.state.email);
     // Parse full name
     let parts = this.state.fullname.split(" ");
-    new_user.setFirstname(parts[0]);
-    if (parts.length == 2) {
-      new_user.setLastname(parts[1]);
-    } else if (parts.length == 3) {
-      new_user.setMiddlename(parts[1]);
-      new_user.setLastname(parts[2]);
+    user.setFirstname(parts[0]);
+    if (parts.length === 2) {
+      user.setLastname(parts[1]);
+    } else if (parts.length === 3) {
+      user.setMiddlename(parts[1]);
+      user.setLastname(parts[2]);
     }
-    new_user.setPassword(this.state.password);
-    let bin_user = new_user.serializeBinary();
+    user.setPassword(this.state.password);
+    let serialized_user = user.serializeBinary();
 
     fetch('http://localhost:8080/api/users/create', {
       method: "POST",
-      body: bin_user,
+      body: serialized_user,
       mode: 'cors',
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -67,16 +81,20 @@ class Register extends Component {
         if (!response.ok) {
           throw response;
         }
-        return response.json();
+        return response.arrayBuffer();
       })
-      .then(json => {
-        console.log(json);
-        // Redirect current page to login
-        this.props.history.push("/login");
+      .then(proto => {
+        let user_response = usermessages_proto.CreateUserResponse.deserializeBinary(proto);
+        if (user_response.getTransactionError() !== undefined) {
+          this.handleError(user_response.getTransactionError().getErrorMessage());
+        } else {
+          // Redirect current page to login
+          this.props.history.push("/login");
+        }
       })
-      .catch(err => {
-        err.json().then(errorMessage => {
-          console.log(errorMessage);
+      .catch(rest_error => {
+        rest_error.json().then(errorMessage => {
+          this.handleError(errorMessage);
         })
       })
   }
@@ -130,11 +148,12 @@ class Register extends Component {
                           <i className="icon-lock"></i>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <Input id="repeate_password"
-                             value={this.state.repeate_password}
+                      <Input id="repeat_password"
+                             value={this.state.repeat_password}
                              onChange={this.handleChange}
                              type="password" placeholder="Repeat password"/>
                     </InputGroup>
+                    {this.state.show_error ? <Alert color="danger" id="error_text">{this.state.error_text}</Alert> : ""}
                     <Button onClick={this.handleSubmit}
                             color="success" block type="submit">Create Account</Button>
                     <br/>
