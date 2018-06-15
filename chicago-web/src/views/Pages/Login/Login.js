@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {
+  Alert,
   Button,
   Card,
   CardBody,
@@ -14,13 +15,17 @@ import {
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
 
+const user_proto = require('models/user_pb');
+const usermessages_proto = require('models/usermessages_pb.js');
 
 class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: "",
-      password: ""
+      email: "",
+      password: "",
+      error_text: "",
+      show_error: false
     };
   }
 
@@ -30,9 +35,52 @@ class Login extends Component {
     });
   }
 
-  handleSubmit = event => {
-    event.preventDefault();
+  resetError() {
+    this.setState({show_error: false});
+    this.setState({error_text: ""});
   }
+
+  handleSubmit = event => {
+    event.stopPropagation();
+    event.preventDefault();
+    this.resetError();
+
+    let user = new user_proto.User();
+    user.setEmail(this.state.email);
+    user.setPassword(this.state.password);
+    let serialized_user = user.serializeBinary();
+    fetch('http://localhost:8080/api/login', {
+      method: "POST",
+      body: serialized_user,
+      mode: 'cors',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': 'true',
+        'Content-Type': 'application/octet-stream'
+      }
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw response;
+        }
+        return response.arrayBuffer();
+      })
+      .then(proto => {
+        let login_response = usermessages_proto.LoginUserResponse.deserializeBinary(proto);
+        if (login_response.getTransactionError() !== undefined) {
+          this.handleError(login_response.getTransactionError().getErrorMessage());
+        } else {
+          // Redirect current page to login
+          this.props.history.push("/dashbord");
+        }
+      })
+      .catch(rest_error => {
+        rest_error.json().then(errorMessage => {
+          this.handleError(errorMessage);
+        })
+      })
+  }
+
 
   render() {
     return (
@@ -53,10 +101,10 @@ class Login extends Component {
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input autoFocus
-                               value={this.state.username}
-                               id="username"
+                               value={this.state.email}
+                               id="email"
                                onChange={this.handleChange}
-                               type="text" name="username" placeholder="Email"/>
+                               type="text" name="email" placeholder="Email"/>
                       </InputGroup>
                       <InputGroup className="mb-4">
                         <InputGroupAddon addonType="prepend">
@@ -69,9 +117,12 @@ class Login extends Component {
                                onChange={this.handleChange}
                                type="password" name="password" placeholder="Password"/>
                       </InputGroup>
+                      {this.state.show_error ?
+                        <Alert color="danger" id="error_text">{this.state.error_text}</Alert> : ""}
                       <Row>
                         <Col xs="6">
-                          <Button color="primary" className="px-4" type="submit">Login</Button>
+                          <Button onClick={this.handleSubmit}
+                                  color="primary" className="px-4" type="submit">Login</Button>
                         </Col>
                         <Col xs="6" className="text-right">
                           <Button color="link" className="px-0">Forgot password?</Button>

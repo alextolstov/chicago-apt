@@ -17,3 +17,14 @@ message CreateUserResponse
 {
     TransactionError transaction_error = 1;
 }
+
+message LoginUserRequest
+{
+    string message_id = 1;
+    User user = 2;
+}
+
+message LoginUserResponse
+{
+    TransactionError transaction_error = 1;
+}

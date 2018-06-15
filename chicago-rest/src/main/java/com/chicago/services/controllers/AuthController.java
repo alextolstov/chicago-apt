@@ -5,6 +5,7 @@ import com.chicago.services.internal.MediaTypeExt;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -16,9 +17,8 @@ public class AuthController
 //    @Inject
 //    AsyncCommunicator asyncComm;
 
-    @GET
-//    @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-    @Produces(MediaType.APPLICATION_JSON)
+    @POST
+    @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response getUser()
     {
         //asyncComm.transaction();
