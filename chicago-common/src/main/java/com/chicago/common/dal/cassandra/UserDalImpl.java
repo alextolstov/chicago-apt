@@ -83,7 +83,7 @@ public class UserDalImpl implements UserDal
         Row row = result.one();
         if (row == null)
         {
-            throw new Exception("No user with name " + email + " found");
+            throw new UserNotFoundException("No user with name " + email + " found");
         }
         // Populate protobuf
         return UserOuterClass.User.newBuilder()
@@ -102,7 +102,7 @@ public class UserDalImpl implements UserDal
     }
 
     @Override
-    public boolean authUser(String email, String password) throws Exception
+    public void authUser(String email, String password) throws Exception
     {
         Statement query = QueryBuilder.select("password_hash", "password_salt")
                 .from(KEYSPACE, USERS_TABLE)
@@ -112,13 +112,16 @@ public class UserDalImpl implements UserDal
 
         if (row == null)
         {
-            throw new Exception("No user with name " + email + " found");
+            throw new UserNotFoundException("No user with name " + email + " found");
         }
         String passwordHash = row.getString("password_hash");
         byte[] passwordSalt = row.getBytes("password_salt").array();
         String encryptedPassword = PasswordUtil.getSecurePassword(password, passwordSalt);
 
-        return (encryptedPassword.equals(passwordHash));
+        if (encryptedPassword.equals(passwordHash))
+        {
+            throw new PasswordNotMatchException("Wrong password for user " + email);
+        }
     }
 
     public List<UserOuterClass.User> getUsers()

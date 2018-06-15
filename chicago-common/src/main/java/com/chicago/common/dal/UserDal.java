@@ -25,7 +25,7 @@ public interface UserDal
      */
     void registerUser(UserOuterClass.User newUser, String passwordHash, byte[] passwordSalt) throws Exception;
 
-    boolean authUser(String email, String password) throws Exception;
+    void authUser(String email, String password) throws Exception;
     UserOuterClass.User getUser(String email) throws Exception;
 
     List<UserOuterClass.User> getUsers() throws Exception;

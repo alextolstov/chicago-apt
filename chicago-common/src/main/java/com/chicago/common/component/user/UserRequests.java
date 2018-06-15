@@ -7,6 +7,8 @@ import com.chicago.common.core.ComponentManager;
 import com.chicago.common.core.ConfigAccessor;
 import com.chicago.common.core.EventBase;
 import com.chicago.common.core.EventHandler;
+import com.chicago.common.dal.cassandra.PasswordNotMatchException;
+import com.chicago.common.dal.cassandra.UserNotFoundException;
 import com.chicago.common.util.ErrorResponseUtil;
 import com.chicago.dto.Usermessages;
 import org.apache.http.HttpStatus;
@@ -31,6 +33,7 @@ public class UserRequests extends AbstractComponent
         _userBll = locator.getService(UserBll.class);
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
         _ed.registerHandler(Usermessages.CreateUserRequest.class.getCanonicalName(), new CreateUserEventHandler());
+        _ed.registerHandler(Usermessages.LoginUserRequest.class.getCanonicalName(), new LoginUserEventHandler());
     }
 
     public boolean init(ConfigAccessor ca)
@@ -57,12 +60,52 @@ public class UserRequests extends AbstractComponent
                         .build();
             } catch (Exception ex)
             {
+                _LOG.error(ex.getMessage());
                 createUserResponse = Usermessages.CreateUserResponse
                         .newBuilder()
                         .setTransactionError(ErrorResponseUtil.createErrorResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, ex.getMessage()))
                         .build();
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), createUserResponse, transactionId));
+        }
+    }
+
+    class LoginUserEventHandler implements EventHandler<Usermessages.LoginUserRequest>
+    {
+        @Override
+        public void handleEvent(Usermessages.LoginUserRequest event, String transactionId)
+        {
+            Usermessages.LoginUserResponse loginUserResponse;
+            try
+            {
+                _userBll.authUser(event.getUser().getEmail(), event.getUser().getPassword());
+                loginUserResponse = Usermessages.LoginUserResponse
+                        .newBuilder()
+                        .build();
+            } catch (UserNotFoundException ex)
+            {
+                _LOG.error(ex.getMessage());
+                loginUserResponse = Usermessages.LoginUserResponse
+                        .newBuilder()
+                        .setTransactionError(ErrorResponseUtil.createErrorResponse(HttpStatus.SC_NOT_FOUND, ex.getMessage()))
+                        .build();
+            } catch (PasswordNotMatchException ex)
+            {
+                _LOG.error(ex.getMessage());
+                loginUserResponse = Usermessages.LoginUserResponse
+                        .newBuilder()
+                        .setTransactionError(ErrorResponseUtil.createErrorResponse(HttpStatus.SC_UNAUTHORIZED, ex.getMessage()))
+                        .build();
+            } catch (Exception ex)
+            {
+                _LOG.error(ex.getMessage());
+                loginUserResponse = Usermessages.LoginUserResponse
+                        .newBuilder()
+                        .setTransactionError(ErrorResponseUtil.createErrorResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, ex.getMessage()))
+                        .build();
+            }
+
+            _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), loginUserResponse, transactionId));
         }
     }
 }

@@ -23,5 +23,9 @@ fabric.properties
 .gradle/**
 .idea/**
 **/build/**
-**/chicago-rest/src/main/webapp/**
+**/chicago-rest/src/main/webapp/assets/**
+**/chicago-rest/src/main/webapp/static/**
+#ignore files but nor WEB-INF
+**/chicago-rest/src/main/webapp/*
+!**/chicago-rest/src/main/webapp/*/
 classes/**

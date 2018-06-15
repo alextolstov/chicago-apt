@@ -8,8 +8,6 @@ import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-
 public class UserBllImpl implements UserBll
 {
     private final Logger _LOG = LoggerFactory.getLogger(UserBllImpl.class);
@@ -27,8 +25,9 @@ public class UserBllImpl implements UserBll
         _locator.getService(UserDal.class).registerFirstUser(newUser, passwordHash, passwordSalt);
     }
 
-    public void authenticate(String userName, String password)
+    public void authUser(String userName, String password) throws Exception
     {
         _LOG.info("Called for user: {}", userName);
+        _locator.getService(UserDal.class).authUser(userName, password);
     }
 }

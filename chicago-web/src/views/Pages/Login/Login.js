@@ -48,15 +48,16 @@ class Login extends Component {
     let user = new user_proto.User();
     user.setEmail(this.state.email);
     user.setPassword(this.state.password);
+    let form = "username=" + this.state.email +"&password=" + this.state.password;
     let serialized_user = user.serializeBinary();
-    fetch('http://localhost:8080/api/login', {
+    fetch('http://localhost:8080/login', {
       method: "POST",
-      body: serialized_user,
+      body: form,
       mode: 'cors',
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': 'true',
-        'Content-Type': 'application/octet-stream'
+        'Content-Type': 'application/x-www-form-urlencoded'
       }
     })
       .then(response => {

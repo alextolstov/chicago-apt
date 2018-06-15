@@ -25,10 +25,10 @@ public class UserController
     @Inject
     Service.RestServiceConfig _config;
 
-    @Inject
-    Config.ZooKeeperConfig zooConfig;
-    @Inject
-    Config.KafkaConfig kafkaConfig;
+//    @Inject
+//    Config.ZooKeeperConfig zooConfig;
+//    @Inject
+//    Config.KafkaConfig kafkaConfig;
     @Inject
     AsyncCommunicator asyncComm;
 

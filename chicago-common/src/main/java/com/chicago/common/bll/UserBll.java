@@ -6,5 +6,5 @@ public interface UserBll
 {
     void createFirstUser(UserOuterClass.User newUser) throws Exception;
 
-    void authenticate(String userName, String password);
+    void authUser(String userName, String password) throws Exception;
 }
