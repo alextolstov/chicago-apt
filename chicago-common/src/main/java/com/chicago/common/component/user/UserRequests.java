@@ -32,8 +32,8 @@ public class UserRequests extends AbstractComponent
         ServiceLocator locator = ServiceLocatorFactory.getInstance().find("servicelocator");
         _userBll = locator.getService(UserBll.class);
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
-        _ed.registerHandler(Usermessages.CreateUserRequest.class.getCanonicalName(), new CreateUserEventHandler());
-        _ed.registerHandler(Usermessages.LoginUserRequest.class.getCanonicalName(), new LoginUserEventHandler());
+        _ed.registerHandler(Usermessages.CreateUserRequest.class, new CreateUserEventHandler());
+        _ed.registerHandler(Usermessages.LoginUserRequest.class, new LoginUserEventHandler());
     }
 
     public boolean init(ConfigAccessor ca)

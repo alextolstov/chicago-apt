@@ -118,7 +118,7 @@ public class UserDalImpl implements UserDal
         byte[] passwordSalt = row.getBytes("password_salt").array();
         String encryptedPassword = PasswordUtil.getSecurePassword(password, passwordSalt);
 
-        if (encryptedPassword.equals(passwordHash))
+        if (!encryptedPassword.equals(passwordHash))
         {
             throw new PasswordNotMatchException("Wrong password for user " + email);
         }

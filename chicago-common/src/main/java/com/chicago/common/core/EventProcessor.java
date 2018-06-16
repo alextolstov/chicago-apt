@@ -38,9 +38,10 @@ public class EventProcessor
 
     }
 
-    public <T> void registerHandler(String typeId, EventHandler<T> handler)
+    public <T> void registerHandler(Class clazz, EventHandler<T> handler)
     {
-        HashSet<EventHandler> handlers = null;
+        HashSet<EventHandler> handlers;
+        String typeId = clazz.getCanonicalName();
 
         if (!_eventHandlers.containsKey(typeId))
         {

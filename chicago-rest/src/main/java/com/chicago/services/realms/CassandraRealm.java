@@ -3,6 +3,7 @@ package com.chicago.services.realms;
 import com.chicago.common.comm.AsyncCommunicator;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.dto.Usermessages;
+import com.chicago.services.Application;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -20,9 +21,6 @@ import java.util.concurrent.TimeoutException;
 public class CassandraRealm extends AuthorizingRealm
 {
     private PasswordService passwordService;
-
-    @Inject
-    AsyncCommunicator asyncComm;
 
     @Override
     public String getName()
@@ -54,6 +52,7 @@ public class CassandraRealm extends AuthorizingRealm
                     .newBuilder()
                     .setUser(user)
                     .build();
+            AsyncCommunicator asyncComm = Application.getServiceLocator().getInstance(AsyncCommunicator.class);
             byte[] response = asyncComm.transaction(loginUserRequest);
             Usermessages.LoginUserResponse loginUserResponse = Usermessages.LoginUserResponse.parseFrom(response);
             if (loginUserResponse.getTransactionError() != null)
@@ -65,7 +64,8 @@ public class CassandraRealm extends AuthorizingRealm
             throw new AuthenticationException(e.getMessage());
         }
 
-        AuthenticationInfo authenticationInfo = new AuthenticationInfo(){
+        return new AuthenticationInfo()
+        {
             @Override
             public PrincipalCollection getPrincipals()
             {
@@ -78,7 +78,6 @@ public class CassandraRealm extends AuthorizingRealm
                 return null;
             }
         };
-        return authenticationInfo;
     }
 
     @Override

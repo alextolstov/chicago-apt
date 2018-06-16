@@ -25,7 +25,7 @@ public class KafkaMessageConsumer extends AbstractComponent
     private static final Logger _LOG = LoggerFactory.getLogger(KafkaMessageConsumer.class);
     private AbstractEventDispatcher _ed;
     private List<String> _topicList;
-    KafkaConsumer<byte[], byte[]> _consumer;
+    private KafkaConsumer<byte[], byte[]> _consumer;
 
     public KafkaMessageConsumer(ComponentManager cm) throws ClassNotFoundException
     {
@@ -43,10 +43,7 @@ public class KafkaMessageConsumer extends AbstractComponent
         _consumer = KafkaUtil.createConsumer(zooConfig.getServers(), kafkaConfig.getServers(),
                 _topicList, kafkaConfig.getConsumerGroup());
 
-        Thread t = new Thread(() ->
-        {
-            run();
-        });
+        Thread t = new Thread(() -> run());
         t.start();
         return true;
     }
@@ -70,12 +67,7 @@ public class KafkaMessageConsumer extends AbstractComponent
                 {
                     Common.TransactionKey transactionKey = Common.TransactionKey.parseFrom(record.key());
                     _LOG.info("Received record with transaction Id: {}", transactionKey.getTransactionId());
-                    Message message = null;
-
-                    if (transactionKey.getDataType().equals(Usermessages.CreateUserRequest.class.getSimpleName()))
-                    {
-                        message = Usermessages.CreateUserRequest.parseFrom(record.value());
-                    }
+                    Message message = _ed.deserializeMessage(transactionKey.getDataType(), record.value());
                     if (message != null)
                     {
                         _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), message, transactionKey.getTransactionId()));
@@ -91,7 +83,7 @@ public class KafkaMessageConsumer extends AbstractComponent
                 {
                     _consumer.commitSync();
                 }
-            }catch(CommitFailedException ex)
+            } catch (CommitFailedException ex)
             {
                 _LOG.warn("Commit failed. Ignore");
             }

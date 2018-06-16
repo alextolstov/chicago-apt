@@ -34,7 +34,7 @@ public class KafkaAsyncCommunicator implements AsyncCommunicator
 
     private KafkaProducer<byte[], byte[]> _kafkaProducer;
     private KafkaConsumer<byte[], byte[]> _kafkaConsumer;
-    Config.KafkaConfig _kafkaConfig;
+    private Config.KafkaConfig _kafkaConfig;
 
     @Inject
     public KafkaAsyncCommunicator(Config.ZooKeeperConfig zooConfig, Config.KafkaConfig kafkaConfig)
@@ -45,10 +45,7 @@ public class KafkaAsyncCommunicator implements AsyncCommunicator
         _kafkaProducer = KafkaUtil.createProducer(zooConfig.getServers(), kafkaConfig.getServers(),
                 kafkaConfig.getProducerTopic());
 
-        Thread t = new Thread(() ->
-        {
-            run();
-        });
+        Thread t = new Thread(() -> run());
         t.start();
     }
 
@@ -87,7 +84,7 @@ public class KafkaAsyncCommunicator implements AsyncCommunicator
         ActorRef kafkaReqResActorRef = system.actorOf(KafkaResponseActor.props(), actorName);
         Common.TransactionKey transactionKey = Common.TransactionKey.newBuilder()
                 .setTransactionId(actorName)
-                .setDataType(value.getClass().getSimpleName())
+                .setDataType(value.getClass().getCanonicalName())
                 .build();
         // Create an inbox to communicate with Actor
         Inbox inbox = Inbox.create(system);

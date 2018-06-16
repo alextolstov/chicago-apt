@@ -25,7 +25,7 @@ public class KafkaMessageProducer extends AbstractComponent
     public KafkaMessageProducer(ComponentManager cm) throws ClassNotFoundException
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
-        _ed.registerHandler(Usermessages.CreateUserResponse.class.getCanonicalName(), new KafkaMessageProducer.MessageEventHandler());
+        _ed.registerHandler(Usermessages.CreateUserResponse.class, new KafkaMessageProducer.MessageEventHandler());
     }
 
     public boolean init(ConfigAccessor ca)
