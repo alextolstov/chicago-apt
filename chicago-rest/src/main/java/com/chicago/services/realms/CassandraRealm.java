@@ -55,7 +55,7 @@ public class CassandraRealm extends AuthorizingRealm
             AsyncCommunicator asyncComm = Application.getServiceLocator().getInstance(AsyncCommunicator.class);
             byte[] response = asyncComm.transaction(loginUserRequest);
             Usermessages.LoginUserResponse loginUserResponse = Usermessages.LoginUserResponse.parseFrom(response);
-            if (loginUserResponse.getTransactionError() != null)
+            if (loginUserResponse.hasTransactionError())
             {
                 throw new AuthenticationException(loginUserResponse.getTransactionError().getErrorMessage());
             }
@@ -64,20 +64,7 @@ public class CassandraRealm extends AuthorizingRealm
             throw new AuthenticationException(e.getMessage());
         }
 
-        return new AuthenticationInfo()
-        {
-            @Override
-            public PrincipalCollection getPrincipals()
-            {
-                return null;
-            }
-
-            @Override
-            public Object getCredentials()
-            {
-                return null;
-            }
-        };
+        return new SimpleAuthenticationInfo(username, password.toCharArray(), getName());
     }
 
     @Override

@@ -65,10 +65,7 @@ public class LazyLiveEventDispatcher extends AbstractEventDispatcher
     @Override
     public void run()
     {
-        Runnable task = () ->
-        {
-            _eventScheduler.run();
-        };
+        Runnable task = () -> _eventScheduler.run();
         _thr = new Thread(task);
         _thr.start();
 

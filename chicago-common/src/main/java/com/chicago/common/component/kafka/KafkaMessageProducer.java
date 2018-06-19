@@ -26,6 +26,7 @@ public class KafkaMessageProducer extends AbstractComponent
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
         _ed.registerHandler(Usermessages.CreateUserResponse.class, new KafkaMessageProducer.MessageEventHandler());
+        _ed.registerHandler(Usermessages.LoginUserResponse.class, new KafkaMessageProducer.MessageEventHandler());
     }
 
     public boolean init(ConfigAccessor ca)

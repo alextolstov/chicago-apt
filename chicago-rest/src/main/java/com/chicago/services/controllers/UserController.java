@@ -9,6 +9,9 @@ import com.chicago.dto.Usermessages;
 import com.chicago.services.internal.MediaTypeExt;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.subject.Subject;
 import org.glassfish.jersey.server.ManagedAsync;
 
 import javax.inject.Inject;
@@ -25,17 +28,16 @@ public class UserController
     @Inject
     Service.RestServiceConfig _config;
 
-//    @Inject
-//    Config.ZooKeeperConfig zooConfig;
-//    @Inject
-//    Config.KafkaConfig kafkaConfig;
     @Inject
-    AsyncCommunicator asyncComm;
+    AsyncCommunicator _asyncComm;
 
-    @GET
-    @Produces(MediaTypeExt.APPLICATION_JSON)
-    public Response auth() throws TimeoutException, InvalidProtocolBufferException
+    @POST
+    @Path("image")
+    @RequiresAuthentication
+    @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
+    public Response setImage(byte[] data) throws TimeoutException, InvalidProtocolBufferException
     {
+//        Subject currentUser=SecurityUtils.getSubject();
         return Response.ok(null).build();
     }
 
@@ -50,7 +52,7 @@ public class UserController
             Usermessages.CreateUserRequest createRequest = Usermessages.CreateUserRequest.newBuilder()
                     .setUser(usr)
                     .build();
-            byte[] response = asyncComm.transaction(createRequest);
+            byte[] response = _asyncComm.transaction(createRequest);
             return Response.ok(response).build();
         } catch (TimeoutException | InvalidProtocolBufferException e)
         {

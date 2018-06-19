@@ -53,7 +53,8 @@ class Login extends Component {
     fetch('http://localhost:8080/login', {
       method: "POST",
       body: form,
-      mode: 'cors',
+//      mode: 'cors',
+      credentials: 'include',
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': 'true',
@@ -64,17 +65,18 @@ class Login extends Component {
         if (!response.ok) {
           throw response;
         }
-        return response.arrayBuffer();
+        this.props.history.push("/dashbord");
+//        return response.arrayBuffer();
       })
-      .then(proto => {
-        let login_response = usermessages_proto.LoginUserResponse.deserializeBinary(proto);
-        if (login_response.getTransactionError() !== undefined) {
-          this.handleError(login_response.getTransactionError().getErrorMessage());
-        } else {
-          // Redirect current page to login
-          this.props.history.push("/dashbord");
-        }
-      })
+      // .then(proto => {
+      //   let login_response = usermessages_proto.LoginUserResponse.deserializeBinary(proto);
+      //   if (login_response.getTransactionError() !== undefined) {
+      //     this.handleError(login_response.getTransactionError().getErrorMessage());
+      //   } else {
+      //     // Redirect current page to login
+      //     this.props.history.push("/dashbord");
+      //   }
+      // })
       .catch(rest_error => {
         rest_error.json().then(errorMessage => {
           this.handleError(errorMessage);

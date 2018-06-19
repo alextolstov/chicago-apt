@@ -22,12 +22,10 @@
         </encoder>
     </appender>
 
-    <root level="WARN">
+    <root level="ALL">
         <appender-ref ref="STDOUT"/>
     </root>
 
-    <logger name="org.apache.shiro" level="INFO"/>
-    <logger name="com.stormpath" level="INFO"/>
-    <logger name="com.foo.example" level="TRACE"/>
+    <logger name="org.apache.shiro" level="ALL"/>
 
 </configuration>

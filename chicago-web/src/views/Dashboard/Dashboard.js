@@ -462,6 +462,31 @@ class Dashboard extends Component {
       dropdownOpen: false,
       radioSelected: 2,
     };
+
+    fetch('http://localhost:8080/api/login/testauth', {
+      method: "GET",
+      mode: 'no-cors',
+      credentials: 'include'
+    })
+      .then(response => {
+        if (!response.ok) {
+          // Redirect current page to login
+          this.props.history.push("/login");
+        }
+      });
+  }
+
+  isLogged() {
+    fetch('/login/testauth', {
+      method: "GET",
+      mode: 'no-cors'
+    })
+      .then(response => {
+        if (!response.ok) {
+          // Redirect current page to login
+          this.props.history.push("/login");
+        }
+      });
   }
 
   toggle() {
