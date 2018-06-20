@@ -15,12 +15,12 @@ dependencies {
     implementation "org.glassfish.jersey.bundles.repackaged:jersey-guava:${jerseyGuavaVer}"
 //    implementation "org.glassfish.jersey.core:jersey-client:${jerseyVer}"
 //    implementation "org.glassfish.jersey.core:jersey-common:${jerseyVer}"
-//    implementation "org.glassfish.jersey.core:jersey-server:${jerseyVer}"
+    implementation "org.glassfish.jersey.core:jersey-server:${jerseyVer}"
     implementation "org.glassfish.jersey.containers:jersey-container-servlet:${jerseyVer}"
     implementation "org.glassfish.jersey:jersey-bom:${jerseyVer}"
     implementation "javax.ws.rs:javax.ws.rs-api:2.0.1"
 
-    implementation "org.glassfish.jersey.inject:jersey-hk2:${jerseyVer}"
+//    implementation "org.glassfish.jersey.inject:jersey-hk2:${jerseyVer}"
 //    implementation "org.glassfish.jersey.bundles:jaxrs-ri:${jerseyVer}"
     implementation "com.google.protobuf:protobuf-java:${protobufVer}"
     implementation "com.google.protobuf:protobuf-java-util:${protobufVer}"
@@ -35,6 +35,7 @@ dependencies {
     implementation "org.apache.shiro:shiro-web:${shiroVer}"
 //    implementation "org.apache.shiro:shiro-servlet-plugin:${shiroVer}"
     implementation "org.apache.shiro:shiro-ehcache:${shiroVer}"
+    implementation "org.secnod.shiro:shiro-jersey:${shiroJerseyVer}"
 
     implementation project(":chicago-common")
     implementation project(":chicago-dto")

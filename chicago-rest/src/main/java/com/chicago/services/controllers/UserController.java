@@ -2,7 +2,6 @@ package com.chicago.services.controllers;
 
 import com.chicago.common.comm.AsyncCommunicator;
 import com.chicago.dto.Common;
-import com.chicago.dto.Config;
 import com.chicago.dto.Service;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.dto.Usermessages;
@@ -11,11 +10,10 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
-import org.glassfish.jersey.server.ManagedAsync;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -29,7 +27,7 @@ public class UserController
     Service.RestServiceConfig _config;
 
     @Inject
-    AsyncCommunicator _asyncComm;
+    private AsyncCommunicator _asyncComm;
 
     @POST
     @Path("image")
@@ -37,14 +35,15 @@ public class UserController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response setImage(byte[] data) throws TimeoutException, InvalidProtocolBufferException
     {
-//        Subject currentUser=SecurityUtils.getSubject();
+        Subject currentUser = SecurityUtils.getSubject();
+        currentUser.hasRole("");
         return Response.ok(null).build();
     }
 
     @POST
-    @Path("create")
+    @Path("createfirstuser")
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
-    public Response createUser(byte[] data)
+    public Response createFirstUser(byte[] data)
     {
         try
         {
@@ -70,5 +69,15 @@ public class UserController
             }
             return Response.serverError().entity(jsonError).type("application/json").build();
         }
+    }
+
+    @POST
+    @Path("create")
+    @RequiresAuthentication
+    @RequiresPermissions("account:create")
+    @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
+    public Response createUser(byte[] data)
+    {
+        return createFirstUser(data);
     }
 }

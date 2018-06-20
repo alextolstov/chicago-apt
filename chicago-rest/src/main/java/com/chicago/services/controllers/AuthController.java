@@ -1,6 +1,7 @@
 package com.chicago.services.controllers;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.session.Session;
 
 import javax.ws.rs.GET;

@@ -12,11 +12,14 @@ import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.SimplePrincipalCollection;
 
-import javax.inject.Inject;
+import java.util.LinkedHashMap;
 import java.util.concurrent.TimeoutException;
+//https://github.com/stormpath/stormpath-shiro/blob/master/core/src/main/java/com/stormpath/shiro/realm/ApplicationRealm.java
 
 public class CassandraRealm extends AuthorizingRealm
 {
@@ -40,6 +43,7 @@ public class CassandraRealm extends AuthorizingRealm
     {
         String username = (String) token.getPrincipal();
         String password = new String(((UsernamePasswordToken) token).getPassword());
+        PrincipalCollection principals;
 
         try
         {
@@ -52,24 +56,42 @@ public class CassandraRealm extends AuthorizingRealm
                     .newBuilder()
                     .setUser(user)
                     .build();
-            AsyncCommunicator asyncComm = Application.getServiceLocator().getInstance(AsyncCommunicator.class);
+            AsyncCommunicator asyncComm = Application.getServiceLocator().getService(AsyncCommunicator.class);
             byte[] response = asyncComm.transaction(loginUserRequest);
             Usermessages.LoginUserResponse loginUserResponse = Usermessages.LoginUserResponse.parseFrom(response);
             if (loginUserResponse.hasTransactionError())
             {
                 throw new AuthenticationException(loginUserResponse.getTransactionError().getErrorMessage());
             }
+
+            // Principale are AUX info that we will keep in session
+            principals = createPrincipals(user);
+
         } catch (TimeoutException | InvalidProtocolBufferException e)
         {
             throw new AuthenticationException(e.getMessage());
         }
 
-        return new SimpleAuthenticationInfo(username, password.toCharArray(), getName());
+        return new SimpleAuthenticationInfo(principals, password.toCharArray(), getName());
+    }
+
+
+    private PrincipalCollection createPrincipals(UserOuterClass.User user)
+    {
+        LinkedHashMap<String, String> props = new LinkedHashMap<>();
+        props.put("username", user.getEmail());
+        props.put("phone", user.getPhone());
+        props.put("firstname", user.getFirstName());
+        props.put("lastname", user.getLastName());
+        props.put("id", user.getId());
+        return new SimplePrincipalCollection(props, getName());
     }
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals)
     {
-        return null;
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        return info;
     }
+
 }
