@@ -8,6 +8,10 @@ import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class UserBllImpl implements UserBll
 {
     private final Logger _LOG = LoggerFactory.getLogger(UserBllImpl.class);
@@ -18,11 +22,36 @@ public class UserBllImpl implements UserBll
         _locator = ServiceLocatorFactory.getInstance().find("servicelocator");
     }
 
-    public void createFirstUser(UserOuterClass.User newUser) throws Exception
+    public void setUserPermissions(String userId, List<Integer> roles, List<Integer> extraPermissions) throws Exception
+    {
+        if (roles == null)
+        {
+            roles = new ArrayList<>();
+        }
+        if (extraPermissions == null)
+        {
+            extraPermissions = new ArrayList<>();
+        }
+        UserOuterClass.UserPermissions permissions = UserOuterClass.UserPermissions.newBuilder()
+                .setUserId(userId)
+                .addAllRoles(roles)
+                .addAllExtraPermissions(extraPermissions)
+                .build();
+        _locator.getService(UserDal.class).setUserPermissions(permissions);
+    }
+
+    public String createAdminUser(UserOuterClass.User newUser) throws Exception
+    {
+        String userId = createStandardUser(newUser);
+        setUserPermissions(userId, Arrays.asList(0), null);
+        return userId;
+    }
+
+    public String createStandardUser(UserOuterClass.User newUser) throws Exception
     {
         byte[] passwordSalt = PasswordUtil.getSalt();
         String passwordHash = PasswordUtil.getSecurePassword(newUser.getPassword(), passwordSalt);
-        _locator.getService(UserDal.class).registerFirstUser(newUser, passwordHash, passwordSalt);
+        return _locator.getService(UserDal.class).registerUser(newUser, passwordHash, passwordSalt);
     }
 
     public void authUser(String userName, String password) throws Exception

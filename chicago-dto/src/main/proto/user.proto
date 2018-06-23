@@ -4,9 +4,37 @@ package com.chicago.dto;
 
 option java_package = "com.chicago.dto";
 
+message Permission
+{
+    int32 permission_id = 1;
+    string permission = 2;
+    string description = 3;
+}
+
+message Role
+{
+    int32 role_id = 1;
+    string role = 2;
+    repeated Permission permissions = 3;
+    string description = 4;
+}
+
+message SystemPermission
+{
+    repeated Role roles = 1;
+    repeated Permission extra_permissions = 2;
+}
+
+message UserPermissions
+{
+    string user_id = 1;
+    repeated int32 roles = 2;
+    repeated int32 extra_permissions = 3;
+}
+
 message User
 {
-    string id = 1;
+    string user_id = 1;
     string email = 2;
     string phone = 3;
     string firstName = 4;
@@ -16,7 +44,6 @@ message User
     string holding_id = 8;
     string company_id = 9;
     string branch_id = 10;
-    repeated string roles = 11;
-    repeated string extra_permissions = 12;
-    int64 create_datetime = 13;
+    repeated string permissions = 11;
+    int64 create_datetime = 12;
 }

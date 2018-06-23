@@ -4,7 +4,9 @@ import com.chicago.dto.UserOuterClass;
 
 public interface UserBll
 {
-    void createFirstUser(UserOuterClass.User newUser) throws Exception;
+    String createAdminUser(UserOuterClass.User newUser) throws Exception;
+
+    String createStandardUser(UserOuterClass.User newUser) throws Exception;
 
     void authUser(String userName, String password) throws Exception;
 }

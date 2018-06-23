@@ -7,6 +7,21 @@ import "user.proto";
 
 option java_package = "com.chicago.dto";
 
+message SetUserPermissionsRequest
+{
+    UserPermissions permissions = 1;
+}
+
+message SetUserPermissionsResponse
+{
+    TransactionError transaction_error = 1;
+}
+
+message CreateAdminUserRequest
+{
+    User user = 1;
+}
+
 message CreateUserRequest
 {
     User user = 1;
@@ -14,7 +29,8 @@ message CreateUserRequest
 
 message CreateUserResponse
 {
-    TransactionError transaction_error = 1;
+    string user_id = 1;
+    TransactionError transaction_error = 2;
 }
 
 message LoginUserRequest

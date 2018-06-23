@@ -32,6 +32,7 @@ public class UserRequests extends AbstractComponent
         ServiceLocator locator = ServiceLocatorFactory.getInstance().find("servicelocator");
         _userBll = locator.getService(UserBll.class);
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
+        _ed.registerHandler(Usermessages.CreateAdminUserRequest.class, new CreateAdminUserEventHandler());
         _ed.registerHandler(Usermessages.CreateUserRequest.class, new CreateUserEventHandler());
         _ed.registerHandler(Usermessages.LoginUserRequest.class, new LoginUserEventHandler());
     }
@@ -46,6 +47,31 @@ public class UserRequests extends AbstractComponent
         ComponentManager.registerComponentFactory(new Exception().getStackTrace()[0].getClassName());
     }
 
+    class CreateAdminUserEventHandler implements EventHandler<Usermessages.CreateAdminUserRequest>
+    {
+        @Override
+        public void handleEvent(Usermessages.CreateAdminUserRequest event, String transactionId)
+        {
+            Usermessages.CreateUserResponse createUserResponse;
+            try
+            {
+                String userId = _userBll.createAdminUser(event.getUser());
+                createUserResponse = Usermessages.CreateUserResponse
+                        .newBuilder()
+                        .setUserId(userId)
+                        .build();
+            } catch (Exception ex)
+            {
+                _LOG.error(ex.getMessage());
+                createUserResponse = Usermessages.CreateUserResponse
+                        .newBuilder()
+                        .setTransactionError(ErrorResponseUtil.createErrorResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, ex.getMessage()))
+                        .build();
+            }
+            _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), createUserResponse, transactionId));
+        }
+    }
+
     class CreateUserEventHandler implements EventHandler<Usermessages.CreateUserRequest>
     {
         @Override
@@ -54,9 +80,10 @@ public class UserRequests extends AbstractComponent
             Usermessages.CreateUserResponse createUserResponse;
             try
             {
-                _userBll.createFirstUser(event.getUser());
+                String userId = _userBll.createStandardUser(event.getUser());
                 createUserResponse = Usermessages.CreateUserResponse
                         .newBuilder()
+                        .setUserId(userId)
                         .build();
             } catch (Exception ex)
             {

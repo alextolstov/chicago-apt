@@ -12,12 +12,18 @@ import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.authz.permission.DomainPermission;
+import org.apache.shiro.authz.permission.WildcardPermission;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 //https://github.com/stormpath/stormpath-shiro/blob/master/core/src/main/java/com/stormpath/shiro/realm/ApplicationRealm.java
 
@@ -28,7 +34,6 @@ public class CassandraRealm extends AuthorizingRealm
     @Override
     public String getName()
     {
-
         return "CassandraRealm";
     }
 
@@ -83,7 +88,10 @@ public class CassandraRealm extends AuthorizingRealm
         props.put("phone", user.getPhone());
         props.put("firstname", user.getFirstName());
         props.put("lastname", user.getLastName());
-        props.put("id", user.getId());
+        props.put("user_id", user.getUserId());
+        Collection<Object> principals = new ArrayList<>(2);
+        principals.add(props);
+        principals.add(user.getPermissionsList());
         return new SimplePrincipalCollection(props, getName());
     }
 
@@ -91,7 +99,8 @@ public class CassandraRealm extends AuthorizingRealm
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals)
     {
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        List<String> permissionsList = (List<String>)principals.asList().get(1);
+        info.addStringPermissions(permissionsList);
         return info;
     }
-
 }

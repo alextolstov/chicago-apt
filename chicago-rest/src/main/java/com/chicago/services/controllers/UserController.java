@@ -7,6 +7,7 @@ import com.chicago.dto.UserOuterClass;
 import com.chicago.dto.Usermessages;
 import com.chicago.services.internal.MediaTypeExt;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -41,17 +42,44 @@ public class UserController
     }
 
     @POST
-    @Path("createfirstuser")
+    @Path("createadminuser")
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
-    public Response createFirstUser(byte[] data)
+    public Response createAdminUser(byte[] data)
+    {
+        return createUser(data, true);
+    }
+
+    @POST
+    @Path("create")
+    @RequiresAuthentication
+    @RequiresPermissions("user:create")
+    @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
+    public Response createStandardUser(byte[] data)
+    {
+        return createUser(data, false);
+    }
+
+    private Response createUser(byte[] data, boolean isAdmin)
     {
         try
         {
             UserOuterClass.User usr = UserOuterClass.User.parseFrom(data);
-            Usermessages.CreateUserRequest createRequest = Usermessages.CreateUserRequest.newBuilder()
-                    .setUser(usr)
-                    .build();
-            byte[] response = _asyncComm.transaction(createRequest);
+            byte[] response;
+
+            if (isAdmin)
+            {
+                Usermessages.CreateAdminUserRequest createRequest = Usermessages.CreateAdminUserRequest.newBuilder()
+                        .setUser(usr)
+                        .build();
+                response = _asyncComm.transaction(createRequest);
+            }else
+            {
+                Usermessages.CreateUserRequest createRequest = Usermessages.CreateUserRequest.newBuilder()
+                        .setUser(usr)
+                        .build();
+                response = _asyncComm.transaction(createRequest);
+            }
+
             return Response.ok(response).build();
         } catch (TimeoutException | InvalidProtocolBufferException e)
         {
@@ -69,15 +97,5 @@ public class UserController
             }
             return Response.serverError().entity(jsonError).type("application/json").build();
         }
-    }
-
-    @POST
-    @Path("create")
-    @RequiresAuthentication
-    @RequiresPermissions("account:create")
-    @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
-    public Response createUser(byte[] data)
-    {
-        return createFirstUser(data);
     }
 }

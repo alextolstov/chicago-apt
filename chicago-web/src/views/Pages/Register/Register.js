@@ -67,7 +67,7 @@ class Register extends Component {
     user.setPassword(this.state.password);
     let serialized_user = user.serializeBinary();
 
-    fetch('http://localhost:8080/api/users/createfirstuser', {
+    fetch('http://localhost:8080/api/users/createadminuser', {
       method: "POST",
       body: serialized_user,
       mode: 'cors',

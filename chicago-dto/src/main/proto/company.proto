@@ -4,21 +4,6 @@ package com.chicago.dto;
 
 option java_package = "com.chicago.dto";
 
-message Company
-{
-    Branch company = 1;
-    repeated Company branches = 2;
-}
-
-message Branch
-{
-    string name = 1;
-    string description = 2;
-    string phone = 3;
-    string fax = 4;
-    Address address = 5;
-}
-
 message Address
 {
     string street = 1;
@@ -28,4 +13,26 @@ message Address
     string fld2 = 5;
     string country = 6;
     string zip = 7;
+}
+
+message Branch
+{
+    string branch_id = 1;
+    string name = 2;
+    string description = 3;
+    string phone = 4;
+    string fax = 5;
+    Address address = 6;
+}
+
+message Company
+{
+    string company_id = 1;
+    repeated Branch branches = 2;
+}
+
+message Holding
+{
+    string holding_id = 1;
+    repeated Company companies = 2;
 }

@@ -1,7 +1,8 @@
 CREATE KEYSPACE ChicagoErp  WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };
+
 CREATE TABLE IF NOT EXISTS ChicagoErp.Users (
     email varchar PRIMARY KEY,
-    id uuid,
+    user_id uuid,
     password_hash varchar,
     password_salt blob,
     avatar blob,
@@ -12,50 +13,110 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Users (
     holding_id uuid,
     company_id uuid,
     branch_id uuid,
-    roles set<varchar>,
-    extra_permissions set<varchar>,
+    permissions set<varchar>,
     create_datetime timestamp);
 
+CREATE INDEX update_user_permissions_idx ON ChicagoErp.Users (user_id)
+
 CREATE TABLE IF NOT EXISTS ChicagoErp.Holdings (
-    id uuid PRIMARY KEY,
+    holding_id uuid PRIMARY KEY,
     name varchar,
     companies set<uuid>,
     description varchar,
     create_datetime timestamp);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Companies(
-    id uuid PRIMARY KEY,
+    company_id uuid PRIMARY KEY,
     holding_id uuid,
     name varchar,
-    brnches set<uuid>,
+    branches set<uuid>,
     description varchar,
     create_datetime timestamp);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Branches(
-    id uuid PRIMARY KEY,
+    branch_id uuid PRIMARY KEY,
     company_id uuid,
     name varchar,
     description varchar,
     create_datetime timestamp);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Permissions (
-    permission varchar PRIMARY KEY,
+    permission_id int PRIMARY KEY,
+    permission varchar,
     description varchar);
-INSERT INTO ChicagoErp.Permissions (permission, description) VALUES('create_user', 'Can create new users');
-INSERT INTO ChicagoErp.Permissions (permission, description) VALUES('delete_user', 'Can delete existing users');
-INSERT INTO ChicagoErp.Permissions (permission, description) VALUES('add_branch', 'Can add new branch into company');
-INSERT INTO ChicagoErp.Permissions (permission, description) VALUES('add_company', 'Can add new company into holding');
-INSERT INTO ChicagoErp.Permissions (permission, description) VALUES('add_holding', 'Can add new holding');
+INSERT INTO ChicagoErp.Permissions (permission_id, permission, description) VALUES(0, '*:*:*', 'Can do anything');
+
+INSERT INTO ChicagoErp.Permissions (permission_id, permission, description) VALUES(1, 'user:create', 'Can create the new users');
+INSERT INTO ChicagoErp.Permissions (permission_id, permission, description) VALUES(2, 'user:edit', 'Can edit the users');
+INSERT INTO ChicagoErp.Permissions (permission_id, permission, description) VALUES(3, 'user:delete', 'Can delete the users');
+
+INSERT INTO ChicagoErp.Permissions (permission_id, permission, description) VALUES(4, 'customer:create', 'Can create the new customer');
+INSERT INTO ChicagoErp.Permissions (permission_id, permission, description) VALUES(5, 'customer:edit', 'Can edit the customer');
+INSERT INTO ChicagoErp.Permissions (permission_id, permission, description) VALUES(6, 'customer:delete', 'Can delete the customer');
+
+INSERT INTO ChicagoErp.Permissions (permission_id, permission, description) VALUES(7, 'company:create:branch', 'Can create new branch inside the company');
+INSERT INTO ChicagoErp.Permissions (permission_id, permission, description) VALUES(8, 'company:edit:branch', 'Can edit branch inside the company');
+INSERT INTO ChicagoErp.Permissions (permission_id, permission, description) VALUES(9, 'company:delete:branch', 'Can delete branch from the company');
+
+INSERT INTO ChicagoErp.Permissions (permission_id, permission, description) VALUES(10, 'holding:create', 'Can create the new holding');
+INSERT INTO ChicagoErp.Permissions (permission_id, permission, description) VALUES(11, 'holding:edit', 'Can edit the holding');
+INSERT INTO ChicagoErp.Permissions (permission_id, permission, description) VALUES(12, 'holding:delete', 'Can delete the holding');
+
+INSERT INTO ChicagoErp.Permissions (permission_id, permission, description) VALUES(13, 'holding:create:company', 'Can create the new company inside the holding');
+INSERT INTO ChicagoErp.Permissions (permission_id, permission, description) VALUES(14, 'holding:edit:company', 'Can edit the company inside the holding');
+INSERT INTO ChicagoErp.Permissions (permission_id, permission, description) VALUES(15, 'holding:delete:company', 'Can delete the company inside the holding');
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Roles (
-    role varchar PRIMARY KEY,
-    permissions set<varchar>,
+    role_id int PRIMARY KEY,
+    role varchar,
+    permission_ids set<int>,
     description varchar);
-INSERT INTO ChicagoErp.Roles (role, permissions, description) VALUES('holding_admin',
-{'create_user', 'delete_user', 'add_holding', 'add_company', 'add_branch'}, 'Holding level admin');
-INSERT INTO ChicagoErp.Roles (role, permissions, description) VALUES('company_admin',
-{'create_user', 'delete_user', 'add_holding', 'add_company', 'add_branch'}, 'Company level admin');
-INSERT INTO ChicagoErp.Roles (role, permissions, description) VALUES('branch_admin',
-{'create_user', 'delete_user'}, 'Branch level admin');
+INSERT INTO ChicagoErp.Roles (role_id, role, permission_ids, description) VALUES(0, 'admin',
+{
+0 -- *:*:*
+}, 'System level admin. God mode');
+INSERT INTO ChicagoErp.Roles (role_id, role, permission_ids, description) VALUES(1, 'holding:admin',
+{
+1, --user:create
+2, --user:edit
+3  --user:delete
+}, 'Holding level admin');
+INSERT INTO ChicagoErp.Roles (role_id, role, permission_ids, description) VALUES(2, 'company:admin',
+{
+1,  --user:create
+2,  --user:edit
+3,  --user:delete
+4,  --customer:create
+5,  --customer:edit
+6,  --customer:delete
+7,  --company:create:branch
+8,  --company:edit:branch
+9,  --company:delete:branch
+10, --holding:create
+11, --holding:edit
+12  --holding:delete
+}, 'Company level admin');
+INSERT INTO ChicagoErp.Roles (role_id, role, permission_ids, description) VALUES(3, 'branch:admin',
+{
+1,  --user:create
+2,  --user:edit
+3,  --user:delete
+4,  --customer:create
+5,  --customer:edit
+6   --customer:delete
+}, 'Branch level admin');
 
-CREATE TABLE IF NOT EXISTS ChicagoErp.Customers ();
+CREATE TABLE IF NOT EXISTS ChicagoErp.UserPermissions(
+    user_id uuid PRIMARY KEY,
+    role_ids set<int>,
+    extra_permission_ids set<int>
+);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.Customers (
+    customer_id uuid PRIMARY KEY,
+    avatar blob,
+    first_name varchar,
+    middle_name varchar,
+    last_name varchar,
+    phone varchar
+);

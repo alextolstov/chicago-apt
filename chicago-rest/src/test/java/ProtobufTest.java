@@ -43,10 +43,9 @@ public class ProtobufTest extends JerseyTest
 //        assertEquals("john.doe@google.com", company.getEmail());
     }
 
-    public static CompanyOuterClass.Company buildCompany()
+    private static CompanyOuterClass.Company buildCompany()
     {
         return CompanyOuterClass.Company.newBuilder()
-                .setBranches(0, (CompanyOuterClass.Company) null)
                 .build();
     }
 }
