@@ -35,6 +35,11 @@ class Login extends Component {
     });
   }
 
+  handleError(error) {
+    this.setState({show_error: true});
+    this.setState({error_text: error});
+  }
+
   resetError() {
     this.setState({show_error: false});
     this.setState({error_text: ""});
@@ -44,6 +49,16 @@ class Login extends Component {
     event.stopPropagation();
     event.preventDefault();
     this.resetError();
+
+    if (this.state.email === ""){
+      this.handleError("Email can't be empty");
+      return;
+    }
+
+    if (this.state.password === ""){
+      this.handleError("Password can't be empty");
+      return;
+    }
 
     let user = new user_proto.User();
     user.setEmail(this.state.email);

@@ -9,7 +9,7 @@ import java.util.HashSet;
 
 public class EventProcessor
 {
-    private final Logger _LOG = LoggerFactory.getLogger(UserBll.class);
+    private static final Logger _LOG = LoggerFactory.getLogger(UserBll.class);
     private HashMap<String, HashSet<EventHandler>> _eventHandlers = new HashMap<String, HashSet<EventHandler>>();
     private long _eventCount = 0;
 

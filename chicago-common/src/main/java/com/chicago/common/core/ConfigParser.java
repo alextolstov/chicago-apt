@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 public class ConfigParser
 {
-    private final Logger _LOG = LoggerFactory.getLogger(ConfigParser.class);
+    private static final Logger _LOG = LoggerFactory.getLogger(ConfigParser.class);
 
     private StringBuffer _fullText = new StringBuffer();
     private StringBuffer _originalText = new StringBuffer();

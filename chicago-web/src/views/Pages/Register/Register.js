@@ -53,6 +53,26 @@ class Register extends Component {
     event.preventDefault();
     this.resetError();
 
+    if (this.state.email === ""){
+      this.handleError("Email can't be empty");
+      return;
+    }
+
+    if (this.state.fullname === ""){
+      this.handleError("User name can't be empty");
+      return;
+    }
+
+    if (this.state.password === ""){
+      this.handleError("Password can't be empty");
+      return;
+    }
+
+    if (this.state.password !== this.state.repeat_password){
+      this.handleError("Password not match");
+      return;
+    }
+
     let user = new user_proto.User();
     user.setEmail(this.state.email);
     // Parse full name

@@ -10,7 +10,9 @@ import com.chicago.common.core.EventHandler;
 import com.chicago.common.dal.cassandra.PasswordNotMatchException;
 import com.chicago.common.dal.cassandra.UserNotFoundException;
 import com.chicago.common.util.ErrorResponseUtil;
+import com.chicago.common.util.ResponseFactoryUtil;
 import com.chicago.dto.Usermessages;
+import com.google.protobuf.Message;
 import org.apache.http.HttpStatus;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
@@ -21,7 +23,7 @@ import java.time.LocalDateTime;
 
 public class UserRequests extends AbstractComponent
 {
-    private static final Logger _LOG = LoggerFactory.getLogger(AbstractComponent.class);
+    private static final Logger _LOG = LoggerFactory.getLogger(UserRequests.class);
     private UserBll _userBll;
 
 
@@ -52,7 +54,7 @@ public class UserRequests extends AbstractComponent
         @Override
         public void handleEvent(Usermessages.CreateAdminUserRequest event, String transactionId)
         {
-            Usermessages.CreateUserResponse createUserResponse;
+            Message createUserResponse;
             try
             {
                 String userId = _userBll.createAdminUser(event.getUser());
@@ -62,11 +64,8 @@ public class UserRequests extends AbstractComponent
                         .build();
             } catch (Exception ex)
             {
-                _LOG.error(ex.getMessage());
-                createUserResponse = Usermessages.CreateUserResponse
-                        .newBuilder()
-                        .setTransactionError(ErrorResponseUtil.createErrorResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, ex.getMessage()))
-                        .build();
+                createUserResponse = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                        Usermessages.CreateUserResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), createUserResponse, transactionId));
         }
@@ -77,7 +76,7 @@ public class UserRequests extends AbstractComponent
         @Override
         public void handleEvent(Usermessages.CreateUserRequest event, String transactionId)
         {
-            Usermessages.CreateUserResponse createUserResponse;
+            Message createUserResponse;
             try
             {
                 String userId = _userBll.createStandardUser(event.getUser());
@@ -87,11 +86,8 @@ public class UserRequests extends AbstractComponent
                         .build();
             } catch (Exception ex)
             {
-                _LOG.error(ex.getMessage());
-                createUserResponse = Usermessages.CreateUserResponse
-                        .newBuilder()
-                        .setTransactionError(ErrorResponseUtil.createErrorResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, ex.getMessage()))
-                        .build();
+                createUserResponse = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                        Usermessages.CreateUserResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), createUserResponse, transactionId));
         }
@@ -102,7 +98,7 @@ public class UserRequests extends AbstractComponent
         @Override
         public void handleEvent(Usermessages.LoginUserRequest event, String transactionId)
         {
-            Usermessages.LoginUserResponse loginUserResponse;
+            Message loginUserResponse;
             try
             {
                 _userBll.authUser(event.getUser().getEmail(), event.getUser().getPassword());
@@ -111,25 +107,16 @@ public class UserRequests extends AbstractComponent
                         .build();
             } catch (UserNotFoundException ex)
             {
-                _LOG.error(ex.getMessage());
-                loginUserResponse = Usermessages.LoginUserResponse
-                        .newBuilder()
-                        .setTransactionError(ErrorResponseUtil.createErrorResponse(HttpStatus.SC_NOT_FOUND, ex.getMessage()))
-                        .build();
+                loginUserResponse = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_NOT_FOUND,
+                        Usermessages.LoginUserResponse.class);
             } catch (PasswordNotMatchException ex)
             {
-                _LOG.error(ex.getMessage());
-                loginUserResponse = Usermessages.LoginUserResponse
-                        .newBuilder()
-                        .setTransactionError(ErrorResponseUtil.createErrorResponse(HttpStatus.SC_UNAUTHORIZED, ex.getMessage()))
-                        .build();
+                loginUserResponse = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_UNAUTHORIZED,
+                        Usermessages.LoginUserResponse.class);
             } catch (Exception ex)
             {
-                _LOG.error(ex.getMessage());
-                loginUserResponse = Usermessages.LoginUserResponse
-                        .newBuilder()
-                        .setTransactionError(ErrorResponseUtil.createErrorResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, ex.getMessage()))
-                        .build();
+                loginUserResponse = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                        Usermessages.LoginUserResponse.class);
             }
 
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), loginUserResponse, transactionId));

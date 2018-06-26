@@ -14,7 +14,7 @@ import java.util.List;
 
 public class UserBllImpl implements UserBll
 {
-    private final Logger _LOG = LoggerFactory.getLogger(UserBllImpl.class);
+    private static final Logger _LOG = LoggerFactory.getLogger(UserBllImpl.class);
     private ServiceLocator _locator;
 
     public UserBllImpl()

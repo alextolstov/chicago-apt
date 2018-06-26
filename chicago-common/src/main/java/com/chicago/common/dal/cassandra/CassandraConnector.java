@@ -10,7 +10,7 @@ import javax.inject.Inject;
 
 public class CassandraConnector
 {
-    private final Logger _LOG = LoggerFactory.getLogger(CassandraConnector.class);
+    private static final Logger _LOG = LoggerFactory.getLogger(CassandraConnector.class);
     private Cluster _cluster;
     private Session _session;
 

@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class LazyLiveEventDispatcher extends AbstractEventDispatcher
 {
-    private final Logger _LOG = LoggerFactory.getLogger(LazyLiveEventDispatcher.class);
+    private static final Logger _LOG = LoggerFactory.getLogger(LazyLiveEventDispatcher.class);
 
     final Lock _lock = new ReentrantLock();
     final Condition _cv = _lock.newCondition();
@@ -38,6 +38,12 @@ public class LazyLiveEventDispatcher extends AbstractEventDispatcher
     @Override
     public void publishRealTimeEvent(EventBase event)
     {
+        if(event == null)
+        {
+            _LOG.warn("Null event is ignored");
+            return;
+        }
+
         _queueCount.incrementAndGet();
         while (!_isShutdown.get() && !_queue.add(event))
         {

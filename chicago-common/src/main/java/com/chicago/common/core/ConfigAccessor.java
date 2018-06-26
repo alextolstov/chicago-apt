@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ConfigAccessor
 {
-    private final Logger _LOG = LoggerFactory.getLogger(ConfigAccessor.class);
+    private static final Logger _LOG = LoggerFactory.getLogger(ConfigAccessor.class);
 
     public ConfigAccessor(Message config)
     {
