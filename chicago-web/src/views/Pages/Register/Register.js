@@ -74,7 +74,8 @@ class Register extends Component {
     }
 
     let user = new user_proto.User();
-    user.setEmail(this.state.email);
+    // Username must be lower case
+    user.setEmail(this.state.email.toLowerCase());
     // Parse full name
     let parts = this.state.fullname.split(" ");
     user.setFirstname(parts[0]);

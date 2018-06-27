@@ -6,6 +6,7 @@ import com.chicago.dto.Service;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.dto.Usermessages;
 import com.chicago.services.internal.MediaTypeExt;
+import com.chicago.services.util.ResponseErrorUtil;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
@@ -83,19 +84,8 @@ public class UserController
             return Response.ok(response).build();
         } catch (TimeoutException | InvalidProtocolBufferException e)
         {
-            Common.TransactionError transactionError = Common.TransactionError.newBuilder()
-                    .setErrorCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-                    .setErrorMessage(e.getMessage())
-                    .build();
-            String jsonError = null;
-            try
-            {
-                jsonError = JsonFormat.printer().print(transactionError);
-            } catch (InvalidProtocolBufferException e1)
-            {
-                e1.printStackTrace();
-            }
-            return Response.serverError().entity(jsonError).type("application/json").build();
+            return ResponseErrorUtil.createErrorResponse(e.getMessage(),
+                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
     }
 }

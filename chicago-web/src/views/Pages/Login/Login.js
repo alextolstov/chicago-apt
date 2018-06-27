@@ -15,9 +15,6 @@ import {
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
 
-const user_proto = require('models/user_pb');
-const usermessages_proto = require('models/usermessages_pb.js');
-
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -59,16 +56,13 @@ class Login extends Component {
       this.handleError("Password can't be empty");
       return;
     }
+    // Username must be lower case
+    let form = "username=" + this.state.email.toLowerCase() +"&password=" + this.state.password;
 
-    let user = new user_proto.User();
-    user.setEmail(this.state.email);
-    user.setPassword(this.state.password);
-    let form = "username=" + this.state.email +"&password=" + this.state.password;
-    let serialized_user = user.serializeBinary();
     fetch('http://localhost:8080/login', {
       method: "POST",
       body: form,
-//      mode: 'cors',
+      mode: 'cors',
       credentials: 'include',
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -149,7 +143,7 @@ class Login extends Component {
                     </form>
                   </CardBody>
                 </Card>
-                <Card className="text-white bg-primary py-5 d-md-down-none" style={{width: 44 + '%'}}>
+                <Card className="text-white bg-primary py-5 d-md-down">
                   <CardBody className="text-center">
                     <div>
                       <h2>Sign up</h2>
