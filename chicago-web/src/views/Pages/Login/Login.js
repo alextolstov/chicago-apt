@@ -14,6 +14,7 @@ import {
   Row
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
+import config from 'react-global-configuration';
 
 class Login extends Component {
   constructor(props) {
@@ -58,15 +59,15 @@ class Login extends Component {
     }
     // Username must be lower case
     let form = "username=" + this.state.email.toLowerCase() +"&password=" + this.state.password;
+    let url = config.get("debug").server_url;
 
-    fetch('http://localhost:8080/login', {
+    fetch(url + '/login', {
       method: "POST",
       body: form,
-      mode: 'cors',
       credentials: 'include',
+      mode: 'cors',
       headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Allow-Origin':'http://localhost:8080',
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     })

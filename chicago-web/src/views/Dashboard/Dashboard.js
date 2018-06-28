@@ -20,9 +20,11 @@ import {
   Row,
   Table,
 } from 'reactstrap';
-import Widget03 from '../../views/Widgets/Widget03'
+import Widget03 from '../../views/Widgets/Widget03';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
-import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities'
+import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
+import config from 'react-global-configuration';
+
 
 const brandPrimary = getStyle('--primary')
 const brandSuccess = getStyle('--success')
@@ -463,23 +465,15 @@ class Dashboard extends Component {
       radioSelected: 2,
     };
 
-    fetch('http://localhost:8080/api/login/testauth', {
-      method: "GET",
-      mode: 'no-cors',
-      credentials: 'include'
-    })
-      .then(response => {
-        if (!response.ok) {
-          // Redirect current page to login
-          this.props.history.push("/login");
-        }
-      });
+    this.isLogged();
   }
 
   isLogged() {
-    fetch('/login/testauth', {
+    let url = config.get("debug").server_url;
+    fetch(url + '/api/login/testauth', {
       method: "GET",
-      mode: 'no-cors'
+      mode: 'no-cors',
+      credentials: 'include'
     })
       .then(response => {
         if (!response.ok) {

@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Users (
     permissions set<varchar>,
     create_datetime timestamp);
 
-CREATE INDEX update_user_permissions_idx ON ChicagoErp.Users (user_id)
+CREATE INDEX update_user_permissions_idx ON ChicagoErp.Users (user_id);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Holdings (
     holding_id uuid PRIMARY KEY,

@@ -14,6 +14,7 @@ import {
   Row
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
+import config from 'react-global-configuration';
 
 const user_proto = require('models/user_pb');
 const usermessages_proto = require('models/usermessages_pb.js');
@@ -88,13 +89,11 @@ class Register extends Component {
     user.setPassword(this.state.password);
     let serialized_user = user.serializeBinary();
 
-    fetch('http://localhost:8080/api/users/createadminuser', {
+    let url = config.get("debug").server_url;
+    fetch(url + '/api/users/createadminuser', {
       method: "POST",
       body: serialized_user,
-      mode: 'cors',
       headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': 'true',
         'Content-Type': 'application/octet-stream'
       }
     })

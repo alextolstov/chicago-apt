@@ -3,8 +3,10 @@ import { Badge, DropdownItem, DropdownMenu, DropdownToggle, Nav, NavItem, NavLin
 import PropTypes from 'prop-types';
 
 import { AppAsideToggler, AppHeaderDropdown, AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
-import logo from '../../assets/img/brand/logo.svg'
-import sygnet from '../../assets/img/brand/sygnet.svg'
+import logo from '../../assets/img/brand/logo.svg';
+import sygnet from '../../assets/img/brand/sygnet.svg';
+import { withRouter } from 'react-router-dom';
+import config from 'react-global-configuration';
 
 const propTypes = {
   children: PropTypes.node,
@@ -15,6 +17,31 @@ const defaultProps = {};
 class DefaultHeader extends Component {
   constructor(props) {
     super(props);
+    this.handleLogout = this.handleLogout.bind(this);
+  }
+
+  handleLogout () {
+    let url = config.get("debug").server_url;
+    fetch( url + '/logout', {
+      method: "GET",
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Access-Control-Allow-Origin':'*',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw response;
+        }
+        this.props.history.push("/login");
+      })
+      .catch(rest_error => {
+        rest_error.json().then(errorMessage => {
+          this.handleError(errorMessage);
+        })
+      })
   }
 
   render() {
@@ -69,7 +96,7 @@ class DefaultHeader extends Component {
               <DropdownItem><i className="fa fa-file"></i> Projects<Badge color="primary">42</Badge></DropdownItem>
               <DropdownItem divider />
               <DropdownItem><i className="fa fa-shield"></i> Lock Account</DropdownItem>
-              <DropdownItem><i className="fa fa-lock" onClick={() => {alert(); this.props.history.push("/login");}}></i> Logout</DropdownItem>
+              <DropdownItem onClick={this.handleLogout}><i className="fa fa-lock" ></i> Logout</DropdownItem>
             </DropdownMenu>
           </AppHeaderDropdown>
         </Nav>
@@ -83,4 +110,4 @@ class DefaultHeader extends Component {
 DefaultHeader.propTypes = propTypes;
 DefaultHeader.defaultProps = defaultProps;
 
-export default DefaultHeader;
+export default withRouter(DefaultHeader)
