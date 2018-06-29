@@ -53,7 +53,7 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://loclhost:8080",
+  "proxy": "http://localhost:8080",
   "bugs": {
     "url": "https://github.com/coreui/coreui-free-react-admin-template/issues"
   }

@@ -64,7 +64,10 @@ class Login extends Component {
     fetch('/login', {
       method: "POST",
       body: form,
-      credentials: 'include'
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
     })
       .then(response => {
         if (!response.ok) {
