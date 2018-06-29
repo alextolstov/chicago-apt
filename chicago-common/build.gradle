@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     implementation "org.slf4j:slf4j-api:${slf4jVer}"
-    implementation "org.slf4j:slf4j-jdk14:${slf4jVer}"
+    implementation "ch.qos.logback:logback-classic:${logbackVer}"
     implementation "org.apache.shiro:shiro-all:${shiroVer}"
     implementation "com.google.protobuf:protobuf-java:${protobufVer}"
     implementation "com.google.protobuf:protobuf-java-util:${protobufVer}"

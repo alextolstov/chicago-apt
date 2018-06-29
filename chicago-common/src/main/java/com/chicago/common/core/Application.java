@@ -25,7 +25,7 @@ public class Application<E, T extends GeneratedMessageV3.Builder<T>>
         _instanceId = instanceId;
     }
 
-    public void init(GeneratedMessageV3.Builder<T> builder) throws Exception
+    public String init(GeneratedMessageV3.Builder<T> builder) throws Exception
     {
         ConfigParser cp = new ConfigParser();
         _config = cp.parse(_confName, builder);
@@ -37,15 +37,18 @@ public class Application<E, T extends GeneratedMessageV3.Builder<T>>
 
         method = Class.forName(className).getMethod("getOutputDir");
         _outputDir = (String) method.invoke(_config);
+        String ds = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 
         if (_outputDir.isEmpty())
         {
-            String ds = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
             _outputDir = String.format("%s/log/output/%s/%s", System.getenv("HOME"), ds, appName);
-            Path pathToFile = Paths.get(_outputDir);
-            Files.createDirectories(pathToFile);
-            System.setProperty("user.dir", _outputDir);
+        } else
+        {
+            _outputDir = String.format("%s/output/%s/%s", _outputDir, ds, appName);
         }
+        Path pathToFile = Paths.get(_outputDir);
+        Files.createDirectories(pathToFile);
+        System.setProperty("user.dir", _outputDir);
 
         cp.saveParsed(String.format("%s/parsed.cfg", _outputDir));
         cp.saveOriginal(String.format("%s/original.cfg", _outputDir));
@@ -53,6 +56,7 @@ public class Application<E, T extends GeneratedMessageV3.Builder<T>>
         Config.ComponentsConfig cf = (Config.ComponentsConfig) method.invoke(_config);
         _componentManager = new ComponentManager();
         _componentManager.init(cf);
+        return _outputDir;
     }
 
     public void initComponents()

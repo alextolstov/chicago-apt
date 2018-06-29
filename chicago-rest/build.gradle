@@ -13,27 +13,20 @@ repositories {
 
 dependencies {
     implementation "org.glassfish.jersey.bundles.repackaged:jersey-guava:${jerseyGuavaVer}"
-//    implementation "org.glassfish.jersey.core:jersey-client:${jerseyVer}"
-//    implementation "org.glassfish.jersey.core:jersey-common:${jerseyVer}"
     implementation "org.glassfish.jersey.core:jersey-server:${jerseyVer}"
     implementation "org.glassfish.jersey.containers:jersey-container-servlet:${jerseyVer}"
     implementation "org.glassfish.jersey:jersey-bom:${jerseyVer}"
     implementation "javax.ws.rs:javax.ws.rs-api:2.0.1"
 
-//    implementation "org.glassfish.jersey.inject:jersey-hk2:${jerseyVer}"
-//    implementation "org.glassfish.jersey.bundles:jaxrs-ri:${jerseyVer}"
     implementation "com.google.protobuf:protobuf-java:${protobufVer}"
     implementation "com.google.protobuf:protobuf-java-util:${protobufVer}"
     // Logging
-    implementation "org.slf4j:slf4j-jdk14:${slf4jVer}"
-    implementation "org.slf4j:jcl-over-slf4j:1.7.25"
-    implementation "log4j:log4j:1.2.17"
-    implementation "ch.qos.logback:logback-classic:1.1.7"
+    implementation "org.slf4j:slf4j-api:${slf4jVer}"
+    implementation "ch.qos.logback:logback-classic:${logbackVer}"
     implementation "commons-logging:commons-logging:1.2"
     // Shiro
     implementation "org.apache.shiro:shiro-core:${shiroVer}"
     implementation "org.apache.shiro:shiro-web:${shiroVer}"
-//    implementation "org.apache.shiro:shiro-servlet-plugin:${shiroVer}"
     implementation "org.apache.shiro:shiro-ehcache:${shiroVer}"
     implementation "org.secnod.shiro:shiro-jersey:${shiroJerseyVer}"
 
