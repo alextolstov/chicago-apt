@@ -1,6 +1,6 @@
 const config = {
   debug: {
-    server_url: 'http://localhost:8080'
+    server_url: ''
   },
   release: {
     server_url: ''

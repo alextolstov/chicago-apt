@@ -1,6 +1,5 @@
 package com.chicago.common.core;
 
-import com.chicago.common.bll.UserBll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +8,7 @@ import java.util.HashSet;
 
 public class EventProcessor
 {
-    private static final Logger _LOG = LoggerFactory.getLogger(UserBll.class);
+    private static final Logger _LOG = LoggerFactory.getLogger(EventProcessor.class);
     private HashMap<String, HashSet<EventHandler>> _eventHandlers = new HashMap<String, HashSet<EventHandler>>();
     private long _eventCount = 0;
 

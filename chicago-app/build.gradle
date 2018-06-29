@@ -18,6 +18,7 @@ dependencies {
     implementation "org.glassfish.hk2:hk2-api:${hk2Ver}"
     implementation "org.glassfish.hk2:hk2-locator:${hk2Ver}"
     implementation project(":chicago-common")
+    implementation project(":chicago-ext")
     implementation project(":chicago-dto")
 
     testCompile group: 'junit', name: 'junit', version: '4.12'

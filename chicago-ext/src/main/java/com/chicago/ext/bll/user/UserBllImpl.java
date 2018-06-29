@@ -1,6 +1,6 @@
-package com.chicago.common.bll;
+package com.chicago.ext.bll.user;
 
-import com.chicago.common.dal.UserDal;
+import com.chicago.ext.dal.UserDal;
 import com.chicago.common.util.PasswordUtil;
 import com.chicago.dto.UserOuterClass;
 import org.glassfish.hk2.api.ServiceLocator;

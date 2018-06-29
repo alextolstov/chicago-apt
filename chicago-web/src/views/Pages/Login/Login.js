@@ -61,22 +61,16 @@ class Login extends Component {
     let form = "username=" + this.state.email.toLowerCase() +"&password=" + this.state.password;
     let url = config.get("debug").server_url;
 
-    fetch(url + '/login', {
+    fetch('/login', {
       method: "POST",
       body: form,
-      credentials: 'include',
-      mode: 'cors',
-      headers: {
-        'Access-Control-Allow-Origin':'http://localhost:8080',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
+      credentials: 'include'
     })
       .then(response => {
         if (!response.ok) {
           throw response;
         }
         this.props.history.push("/dashbord");
-//        return response.arrayBuffer();
       })
       // .then(proto => {
       //   let login_response = usermessages_proto.LoginUserResponse.deserializeBinary(proto);

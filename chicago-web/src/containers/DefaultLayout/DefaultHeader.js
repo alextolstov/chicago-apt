@@ -21,15 +21,9 @@ class DefaultHeader extends Component {
   }
 
   handleLogout () {
-    let url = config.get("debug").server_url;
-    fetch( url + '/logout', {
+    fetch( '/logout', {
       method: "GET",
-      credentials: 'include',
-      mode: 'cors',
-      headers: {
-        'Access-Control-Allow-Origin':'*',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
+      credentials: 'include'
     })
       .then(response => {
         if (!response.ok) {

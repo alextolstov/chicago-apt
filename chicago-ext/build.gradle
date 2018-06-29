@@ -1,0 +1,24 @@
+group 'com.chicago.erp'
+version '1.0-SNAPSHOT'
+
+apply plugin: "maven"
+apply plugin: "java"
+apply plugin: "idea"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.slf4j:slf4j-api:${slf4jVer}"
+    implementation "org.slf4j:slf4j-jdk14:${slf4jVer}"
+    implementation "org.glassfish.hk2:hk2-api:${hk2Ver}"
+    implementation "com.google.protobuf:protobuf-java:${protobufVer}"
+    implementation "com.google.protobuf:protobuf-java-util:${protobufVer}"
+    implementation "org.apache.httpcomponents:httpcore:${httpcoreVer}"
+    implementation "com.datastax.cassandra:cassandra-driver-core:${cassandraDriverVer}"
+
+    implementation project(":chicago-common")
+    implementation project(":chicago-dto")
+    testImplementation "junit:junit:${junitVer}"
+}

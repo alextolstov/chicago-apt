@@ -1,4 +1,4 @@
-package com.chicago.common.dal.cassandra;
+package com.chicago.ext.dal.cassandra;
 
 public class UserPermissionsNotFoundException extends Exception
 {

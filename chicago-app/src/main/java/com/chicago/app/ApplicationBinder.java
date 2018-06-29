@@ -1,11 +1,11 @@
 package com.chicago.app;
 
-import com.chicago.common.bll.UserBll;
-import com.chicago.common.bll.UserBllImpl;
+import com.chicago.ext.bll.user.UserBll;
+import com.chicago.ext.bll.user.UserBllImpl;
 import com.chicago.common.core.ConfigParser;
-import com.chicago.common.dal.UserDal;
-import com.chicago.common.dal.cassandra.CassandraConnector;
-import com.chicago.common.dal.cassandra.UserDalImpl;
+import com.chicago.ext.dal.UserDal;
+import com.chicago.ext.dal.cassandra.CassandraConnector;
+import com.chicago.ext.dal.cassandra.UserDalImpl;
 import com.chicago.dto.Config;
 import com.chicago.dto.Service;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;

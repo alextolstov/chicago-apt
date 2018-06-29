@@ -1,8 +1,8 @@
 package com.chicago.app;
 
-import com.chicago.common.component.kafka.KafkaMessageConsumer;
-import com.chicago.common.component.kafka.KafkaMessageProducer;
-import com.chicago.common.component.user.UserRequests;
+import com.chicago.common.components.kafka.KafkaMessageConsumer;
+import com.chicago.common.components.kafka.KafkaMessageProducer;
+import com.chicago.ext.components.user.UserRequests;
 import com.chicago.common.core.AbstractEventDispatcher;
 import com.chicago.common.core.Application;
 import com.chicago.common.core.LazyLiveEventDispatcher;

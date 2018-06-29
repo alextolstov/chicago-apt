@@ -4,4 +4,5 @@ include 'chicago-common'
 include 'chicago-rest'
 include 'chicago-app'
 include 'chicago-web'
+include 'chicago-ext'
 

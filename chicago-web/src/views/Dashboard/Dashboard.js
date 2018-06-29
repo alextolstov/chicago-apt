@@ -469,10 +469,8 @@ class Dashboard extends Component {
   }
 
   isLogged() {
-    let url = config.get("debug").server_url;
-    fetch(url + '/api/login/testauth', {
+    fetch('/api/login/testauth', {
       method: "GET",
-      mode: 'no-cors',
       credentials: 'include'
     })
       .then(response => {
