@@ -14,7 +14,15 @@ import {
   Row
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
+import {FormattedMessage, intlShape, injectIntl, defineMessages} from 'react-intl';
 import config from 'react-global-configuration';
+
+const messages = defineMessages({
+  emailPlace: {
+    id: 'login.email.placeholder',
+    defaultMessage: 'Email',
+  }
+});
 
 class Login extends Component {
   constructor(props) {
@@ -48,17 +56,17 @@ class Login extends Component {
     event.preventDefault();
     this.resetError();
 
-    if (this.state.email === ""){
+    if (this.state.email === "") {
       this.handleError("Email can't be empty");
       return;
     }
 
-    if (this.state.password === ""){
+    if (this.state.password === "") {
       this.handleError("Password can't be empty");
       return;
     }
     // Username must be lower case
-    let form = "username=" + this.state.email.toLowerCase() +"&password=" + this.state.password;
+    let form = "username=" + this.state.email.toLowerCase() + "&password=" + this.state.password;
     let url = config.get("debug").server_url;
 
     fetch('/login', {
@@ -75,24 +83,28 @@ class Login extends Component {
         }
         this.props.history.push("/dashbord");
       })
-      // .then(proto => {
-      //   let login_response = usermessages_proto.LoginUserResponse.deserializeBinary(proto);
-      //   if (login_response.getTransactionError() !== undefined) {
-      //     this.handleError(login_response.getTransactionError().getErrorMessage());
-      //   } else {
-      //     // Redirect current page to login
-      //     this.props.history.push("/dashbord");
-      //   }
-      // })
       .catch(rest_error => {
+        if (rest_error.status == 401) {
+          // Redirect current page to login
+          this.handleError("User unauthorized");
+          return;
+        }
+        if (rest_error.status == 404) {
+          this.handleError("Error 404. Page not found.");
+          return;
+        }
+        if (rest_error.status == 500) {
+          // Redirect current page to login
+          this.handleError("Error 500. Server error.");
+          return;
+        }
         rest_error.json().then(errorMessage => {
           this.handleError(errorMessage);
         })
       })
   }
 
-
-  render() {
+   render() {
     return (
       <div className="app flex-row align-items-center">
         <Container>
@@ -101,8 +113,9 @@ class Login extends Component {
               <CardGroup>
                 <Card className="p-4">
                   <CardBody>
-                    <h1>Login</h1>
-                    <p className="text-muted">Sign In to your account</p>
+                    <h1><FormattedMessage id="login.short.title" defaultMessage="Login"/></h1>
+                    <p className="text-muted"><FormattedMessage id="login.long.title"
+                                                                defaultMessage="Sign In to your account"/></p>
                     <form action="/login" method="post">
                       <InputGroup className="mb-3">
                         <InputGroupAddon addonType="prepend">
@@ -110,11 +123,15 @@ class Login extends Component {
                             <i className="icon-user"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input autoFocus
-                               value={this.state.email}
-                               id="email"
-                               onChange={this.handleChange}
-                               type="text" name="email" placeholder="Email"/>
+                        <FormattedMessage {...messages.emailPlace}>
+                          {
+                            pholder => <Input autoFocus
+                                   value={this.state.email}
+                                   id="email"
+                                   onChange={this.handleChange}
+                                   type="text" name="email" placeholder={pholder}/>
+                          }
+                        </FormattedMessage>
                       </InputGroup>
                       <InputGroup className="mb-4">
                         <InputGroupAddon addonType="prepend">
@@ -145,8 +162,7 @@ class Login extends Component {
                   <CardBody className="text-center">
                     <div>
                       <h2>Sign up</h2>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua.</p>
+                      <p>Just click button below to create your company account!</p>
                       <Link to="/register">
                         <Button color="primary" className="mt-3" active>Register Now!</Button>
                       </Link>
