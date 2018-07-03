@@ -16,12 +16,12 @@ public class LazyLiveEventDispatcher extends AbstractEventDispatcher
 {
     private static final Logger _LOG = LoggerFactory.getLogger(LazyLiveEventDispatcher.class);
 
-    final Lock _lock = new ReentrantLock();
-    final Condition _cv = _lock.newCondition();
+    private final Lock _lock = new ReentrantLock();
+    private final Condition _cv = _lock.newCondition();
     private AtomicBoolean _isShutdown = new AtomicBoolean(false);
     private AtomicInteger _queueCount = new AtomicInteger(0);
     private AtomicLong _eventCount = new AtomicLong(0);
-    private ConcurrentLinkedQueue<EventBase> _queue = new ConcurrentLinkedQueue<EventBase>();
+    private ConcurrentLinkedQueue<EventBase> _queue = new ConcurrentLinkedQueue<>();
     private Thread _thr;
     private FutureEventScheduler _eventScheduler;
 
@@ -30,7 +30,7 @@ public class LazyLiveEventDispatcher extends AbstractEventDispatcher
         _eventScheduler = new FutureEventScheduler();
     }
 
-    public static void registerComponentFactories() throws InstantiationException, IllegalAccessException
+    public static void registerComponentFactories()
     {
         ComponentManager.registerComponentFactory(new Exception().getStackTrace()[0].getClassName());
     }
@@ -45,10 +45,7 @@ public class LazyLiveEventDispatcher extends AbstractEventDispatcher
         }
 
         _queueCount.incrementAndGet();
-        while (!_isShutdown.get() && !_queue.add(event))
-        {
-            ;
-        }
+        while (!_isShutdown.get() && !_queue.add(event));
 
         _lock.lock();
         try
@@ -71,18 +68,17 @@ public class LazyLiveEventDispatcher extends AbstractEventDispatcher
     @Override
     public void run()
     {
-        Runnable task = () -> _eventScheduler.run();
-        _thr = new Thread(task);
+        _thr = new Thread(() -> _eventScheduler.run());
         _thr.start();
 
         while (!_isShutdown.get())
         {
-            EventBase event = null;
+            EventBase event;
             while ((event = _queue.poll()) != null)
             {
                 if (_eventCount.incrementAndGet() % 100 == 0)
                 {
-                    System.out.println(_eventCount.get());
+                    _LOG.debug("Event count: {}", _eventCount.get());
                 }
                 _queueCount.decrementAndGet();
                 _eventProcessor.processEvent(event);

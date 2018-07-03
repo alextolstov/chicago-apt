@@ -68,6 +68,7 @@ public class UserRequests extends AbstractComponent
                         Usermessages.CreateUserResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), createUserResponse, transactionId));
+            _LOG.info("Published real-time response on request with transaction id: {}", transactionId);
         }
     }
 
@@ -90,6 +91,7 @@ public class UserRequests extends AbstractComponent
                         Usermessages.CreateUserResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), createUserResponse, transactionId));
+            _LOG.info("Published real-time response on request with transaction id: {}", transactionId);
         }
     }
 
@@ -120,6 +122,7 @@ public class UserRequests extends AbstractComponent
             }
 
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), loginUserResponse, transactionId));
+            _LOG.info("Published real-time response with transaction id: {} and message type: {}", transactionId, loginUserResponse.getClass());
         }
     }
 }

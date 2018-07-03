@@ -43,7 +43,7 @@ public class KafkaMessageConsumer extends AbstractComponent
         _consumer = KafkaUtil.createConsumer(zooConfig.getServers(), kafkaConfig.getServers(),
                 _topicList, kafkaConfig.getConsumerGroup());
 
-        Thread t = new Thread(() -> run());
+        Thread t = new Thread(this::run);
         t.start();
         return true;
     }
@@ -66,7 +66,7 @@ public class KafkaMessageConsumer extends AbstractComponent
                 try
                 {
                     Common.TransactionKey transactionKey = Common.TransactionKey.parseFrom(record.key());
-                    _LOG.info("Received record with transaction Id: {}", transactionKey.getTransactionId());
+                    _LOG.info("Received request from Kafka with transaction id: {}", transactionKey.getTransactionId());
                     Message message = _ed.deserializeMessage(transactionKey.getDataType(), record.value());
                     if (message != null)
                     {

@@ -5,12 +5,17 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class EventProcessor
 {
     private static final Logger _LOG = LoggerFactory.getLogger(EventProcessor.class);
-    private HashMap<String, HashSet<EventHandler>> _eventHandlers = new HashMap<String, HashSet<EventHandler>>();
+    private static final int _THREADS = 30;
+
+    private HashMap<String, HashSet<EventHandler>> _eventHandlers = new HashMap<>();
     private long _eventCount = 0;
+    private ExecutorService _executor = Executors.newFixedThreadPool(_THREADS);
 
     /**
      * Broadcast event to all subscribers
@@ -23,7 +28,9 @@ public class EventProcessor
         {
             for (EventHandler eh : handlers)
             {
-                eh.handleEvent(event.getMessage(), event.getTransactionId());
+                // Start and forget, internally it will push response into the queue
+                _executor.execute(() -> eh.handleEvent(event.getMessage(), event.getTransactionId()));
+                _LOG.info("Task with transaction id: {} was submitted and message type: {}", event.getTransactionId(), event.getMessage().getClass());
             }
         }
         else

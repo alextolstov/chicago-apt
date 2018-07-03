@@ -48,7 +48,6 @@ public class KafkaMessageProducer extends AbstractComponent
         @Override
         public void handleEvent(Message event, String transactionId)
         {
-            _LOG.debug("Publish to kafka: {}", event.toString());
             Common.TransactionKey transactionKey = Common.TransactionKey.newBuilder()
                     .setTransactionId(transactionId)
                     .setDataType(event.getClass().getSimpleName())
@@ -57,6 +56,7 @@ public class KafkaMessageProducer extends AbstractComponent
             byte[] byteValue = event.toByteArray();
             ProducerRecord<byte[], byte[]> data = new ProducerRecord<>(_producerTopic, byteKey, byteValue);
             _producer.send(data);
+            _LOG.info("Published response to kafka with transaction id: {} and type: {}", transactionId, event.getClass());
         }
     }
 }
