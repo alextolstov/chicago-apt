@@ -12,6 +12,9 @@ import locale_ru from 'react-intl/locale-data/ru';
 //import messages_en from "./translations/en.json";
 import messages_ru from "./translations/ru.json";
 
+// disable ServiceWorker
+// import registerServiceWorker from './registerServiceWorker';
+
 const messages = {
   'ru': messages_ru,
 //  'en': messages_en
@@ -26,4 +29,5 @@ addLocaleData([...locale_en, ...locale_ru]);
 config.set(configuration);
 
 ReactDOM.render(<IntlProvider locale={language} messages={messages[language]}><App /></IntlProvider>, document.getElementById('root'));
-registerServiceWorker();
+// disable ServiceWorker
+// registerServiceWorker();

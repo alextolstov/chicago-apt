@@ -1,5 +1,55 @@
 ## [CoreUI](https://coreui.io/) for [react](./REACT.md) changelog
 
+##### `v2.0.4`
+- feat(scss): dark theme layout `coreui-dark` _**pro**_
+- chore: update `@coreui/coreui-pro` to `2.0.3`,
+- feat(Forms): FormFeedback valid, toggleFade
+- refactor(Cards): toggleFade
+- chore: update `@coreui/react` to `2.0.1`,
+- chore: update `classnames` to `2.2.6`,
+- chore: update `core-js` to `2.5.7`,
+- chore: update `react` to `16.4.0`,
+- chore: update `react-dom` to `16.4.0`,
+- chore: update `react-codemirror2` to `5.0.4`,
+- chore: update `react-router-dom` to `4.3.1`,
+- chore: update `react-test-renderer` to `16.4.0`,
+- chore: update `react-toastify` to `4.1.0`,
+- chore: update `reactstrap` to `6.1.0`,
+- chore: update `babel-jest` to `23.0.1`,
+
+##### `v2.0.3`
+- refactor: disable `ServiceWorker` by default
+- fix(routes): mismatched `SimpleLineIcons` dynamic import
+- refactor: CoreUI Icons `v0.2.0`
+- chore: update `babel-jest` to `v22.4.4`
+- chore: update `@coreui/react` to `v2.0.0`,
+- chore: update `codemirror` to `v5.38.0`
+- chore: update `react-dates` to `v16.7.0`
+
+##### `v2.0.2`
+fix: node-sass-chokidar mistyped version
+fix: update BrandButtons component name in package.json
+
+##### `v2.0.1`
+- refactor: code splitting via dynamic import
+- refactor: switches view rearrange
+- fix: update component names in package.json
+- chore: update `node-sass-chokidar` to `v1.3.0`
+- chore(release): dependencies update
+
+##### `v2.0.0-rc.1`
+- feat: new CoreUI Icons set
+
+##### `v2.0.0-beta.2`
+- feat: CoreUI custom tooltips plugin for chart.js 
+
+##### `v2.0.0-beta.1`
+- refactor(Switches): move to AppSwitch component
+- fix: typo
+
+##### `v2.0.0-beta`
+- update to `@coreui/react: ^2.0.0-beta`
+
 ##### `v2.0.0-alpha.3`
 - refactor(Colors): view layout, minor temp tweaks
 - refactor(FullAside): - ListGroup (deprecate callout)

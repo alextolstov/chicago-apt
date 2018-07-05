@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Forms from './Forms';
+import Inbox from './Inbox';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<Forms />, div);
+  ReactDOM.render(<Inbox />, div);
   ReactDOM.unmountComponentAtNode(div);
 });

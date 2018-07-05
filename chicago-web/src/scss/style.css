@@ -1,10 +1,9 @@
 @charset "UTF-8";
 /*!
- * CoreUI - Open Source Dashboard UI Kit
- * @version v2.0.1
- * @link https://coreui.io
+ * CoreUI Pro - Dashboard UI Kit
+ * @version v2.0.5
+ * @link https://coreui.io/pro/
  * Copyright (c) 2018 creativeLabs Łukasz Holeczek
- * Licensed under MIT (https://coreui.io/license)
  */
 /*!
  * Bootstrap v4.1.1 (https://getbootstrap.com/)
@@ -2753,16 +2752,16 @@ input[type="button"].btn-block {
     border-top-left-radius: 0.25rem;
     border-top-right-radius: 0.25rem; }
     .nav-tabs .nav-link:hover, .nav-tabs .nav-link:focus {
-      border-color: #e4e7ea #e4e7ea #c8ced3; }
+      border-color: #c8ced3 #c8ced3 #c8ced3; }
     .nav-tabs .nav-link.disabled {
       color: #73818f;
       background-color: transparent;
       border-color: transparent; }
   .nav-tabs .nav-link.active,
   .nav-tabs .nav-item.show .nav-link {
-    color: #5c6873;
-    background-color: #e4e5e6;
-    border-color: #c8ced3 #c8ced3 #e4e5e6; }
+    color: #23282c;
+    background-color: #fff;
+    border-color: #c8ced3 #c8ced3 #fff; }
   .nav-tabs .dropdown-menu {
     margin-top: -1px;
     border-top-left-radius: 0;
@@ -7691,7 +7690,7 @@ canvas {
     width: 20px;
     margin-right: 10px;
     margin-left: -10px;
-    color: #c8ced3;
+    color: #73818f;
     text-align: center; }
   .dropdown-item .badge {
     position: absolute;
@@ -7943,20 +7942,12 @@ canvas {
   color: #73818f; }
   .nav-tabs .nav-link:hover {
     cursor: pointer; }
-  .nav-tabs .nav-link.active {
-    color: #2f353a;
-    background: #fff;
-    border-color: #c8ced3;
-    border-bottom-color: #fff; }
-    .nav-tabs .nav-link.active:focus {
-      background: #fff;
-      border-color: #c8ced3;
-      border-bottom-color: #fff; }
 
 .tab-content {
   margin-top: -1px;
   background: #fff;
-  border: 1px solid #c8ced3; }
+  border: 1px solid #c8ced3;
+  border-radius: 0 0 0.25rem 0.25rem; }
   .tab-content .tab-pane {
     padding: 1rem; }
 
@@ -9883,6 +9874,137 @@ body {
 
 .text-white .text-muted {
   color: rgba(255, 255, 255, 0.6) !important; }
+
+.email-app {
+  display: flex;
+  flex-direction: row;
+  background: #fff;
+  border: 1px solid #c8ced3; }
+  .email-app nav {
+    flex: 0 0 200px;
+    padding: 1rem;
+    border-right: 1px solid #c8ced3; }
+    .email-app nav .btn-block {
+      margin-bottom: 15px; }
+    .email-app nav .nav {
+      flex-direction: column; }
+    .email-app nav .nav-item {
+      position: relative; }
+    .email-app nav .nav-link {
+      color: #23282c;
+      border-bottom: 1px solid #c8ced3; }
+      .email-app nav .nav-link i {
+        width: 20px;
+        margin: 0 10px 0 0;
+        font-size: 14px;
+        text-align: center; }
+      .email-app nav .nav-link .badge {
+        float: right;
+        margin-top: 4px;
+        margin-left: 10px; }
+  .email-app main {
+    flex: 1;
+    min-width: 0;
+    padding: 1rem; }
+  .email-app .inbox .toolbar {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #c8ced3; }
+  .email-app .inbox .messages {
+    padding: 0;
+    list-style: none; }
+  .email-app .inbox .message {
+    position: relative;
+    padding: 1rem 1rem 1rem 2rem;
+    cursor: pointer;
+    border-bottom: 1px solid #c8ced3; }
+    .email-app .inbox .message:hover {
+      background: #f0f3f5; }
+    .email-app .inbox .message .actions {
+      position: absolute;
+      left: 0;
+      display: flex;
+      flex-direction: column; }
+      .email-app .inbox .message .actions .action {
+        width: 2rem;
+        margin-bottom: 0.5rem;
+        color: #c8ced3;
+        text-align: center; }
+    .email-app .inbox .message a {
+      color: #000; }
+      .email-app .inbox .message a:hover {
+        text-decoration: none; }
+    .email-app .inbox .message.unread .header,
+    .email-app .inbox .message.unread .title {
+      font-weight: 700; }
+    .email-app .inbox .message .header {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: 0.5rem; }
+      .email-app .inbox .message .header .date {
+        margin-left: auto; }
+    .email-app .inbox .message .title {
+      margin-bottom: 0.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap; }
+    .email-app .inbox .message .description {
+      font-size: 12px; }
+  .email-app .message .toolbar {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #c8ced3; }
+  .email-app .message .details .title {
+    padding: 1rem 0;
+    font-weight: 700; }
+  .email-app .message .details .header {
+    display: flex;
+    padding: 1rem 0;
+    margin: 1rem 0;
+    border-top: 1px solid #c8ced3;
+    border-bottom: 1px solid #c8ced3; }
+    .email-app .message .details .header .avatar {
+      width: 40px;
+      height: 40px;
+      margin-right: 1rem; }
+    .email-app .message .details .header .from {
+      align-self: center;
+      font-size: 12px;
+      color: #73818f; }
+      .email-app .message .details .header .from span {
+        display: block;
+        font-weight: 700; }
+    .email-app .message .details .header .date {
+      margin-left: auto; }
+  .email-app .message .details .attachments {
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+    border-top: 3px solid #f0f3f5;
+    border-bottom: 3px solid #f0f3f5; }
+    .email-app .message .details .attachments .attachment {
+      display: flex;
+      align-self: center;
+      margin: 0.5rem 0;
+      font-size: 12px; }
+      .email-app .message .details .attachments .attachment .badge {
+        margin: 0 0.5rem;
+        line-height: inherit; }
+      .email-app .message .details .attachments .attachment .menu {
+        margin-left: auto; }
+        .email-app .message .details .attachments .attachment .menu a {
+          padding: 0 0.5rem;
+          font-size: 14px;
+          color: #c8ced3; }
+
+@media (max-width: 767.98px) {
+  .email-app {
+    flex-direction: column; }
+    .email-app nav {
+      flex: 0 0 100%; } }
+
+@media (max-width: 575.98px) {
+  .email-app .message .header {
+    flex-flow: row wrap; }
+    .email-app .message .header .date {
+      flex: 0 0 100%; } }
 
 *[dir="rtl"] {
   direction: rtl;
