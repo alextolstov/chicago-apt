@@ -11,6 +11,7 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
+  FormFeedback,
   Row
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
@@ -112,6 +113,11 @@ class Register extends Component {
         }
       })
       .catch(rest_error => {
+        if (rest_error.status == 500) {
+          // Redirect current page to login
+          this.handleError("Error 500. Server error.");
+          return;
+        }
         rest_error.json().then(errorMessage => {
           this.handleError(errorMessage);
         })
@@ -171,8 +177,9 @@ class Register extends Component {
                              value={this.state.repeat_password}
                              onChange={this.handleChange}
                              type="password" placeholder="Repeat password"/>
+                      <Input hidden invalid />
+                      <FormFeedback>{this.state.error_text}</FormFeedback>
                     </InputGroup>
-                    {this.state.show_error ? <Alert color="danger" id="error_text">{this.state.error_text}</Alert> : ""}
                     <Button onClick={this.handleSubmit}
                             color="success" block type="submit">Create Account</Button>
                     <br/>

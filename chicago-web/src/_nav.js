@@ -10,6 +10,23 @@ export default {
       },
     },
     {
+      name: 'Users',
+      url: '/base',
+      icon: 'icon-people',
+      children: [
+        {
+          name: 'New User',
+          url: '/base/breadcrumbs',
+          icon: 'icon-user-follow',
+        },
+        {
+          name: 'All users',
+          url: '/base/breadcrumbs',
+          icon: 'icon-people',
+        }
+    ]
+    },
+    {
       title: true,
       name: 'Theme',
       wrapper: {            // optional wrapper object

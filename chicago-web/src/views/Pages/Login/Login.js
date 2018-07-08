@@ -11,6 +11,7 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
+  FormFeedback,
   Row
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
@@ -143,9 +144,9 @@ class Login extends Component {
                                id="password"
                                onChange={this.handleChange}
                                type="password" name="password" placeholder="Password"/>
+                        <Input hidden invalid />
+                        <FormFeedback>{this.state.error_text}</FormFeedback>
                       </InputGroup>
-                      {this.state.show_error ?
-                        <Alert color="danger" id="error_text">{this.state.error_text}</Alert> : ""}
                       <Row>
                         <Col xs="6">
                           <Button onClick={this.handleSubmit}
