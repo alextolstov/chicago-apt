@@ -240,6 +240,16 @@ const Widgets = Loadable({
   loading: Loading,
 });
 
+const EditUser = Loadable({
+  loader: () => import('./views/Users/EditUser'),
+  loading: Loading,
+});
+
+const ManageUsers = Loadable({
+  loader: () => import('./views/Users/ManageUsers'),
+  loading: Loading,
+});
+
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', name: 'Home', component: DefaultLayout, exact: true },
@@ -300,7 +310,9 @@ const routes = [
   { path: '/apps/email/message', name: 'Message', component: Message },
   { path: '/apps/invoicing', name: 'Invoice', component: Invoice, exact: true },
   { path: '/apps/invoicing/invoice', name: 'Invoice', component: Invoice },
-  { path: '/widgets', name: 'Widgets', component: Widgets }
+  { path: '/widgets', name: 'Widgets', component: Widgets },
+  { path: '/users/edituser', name: 'Edit Users', component: EditUser },
+  { path: '/users/manageusers', name: 'Manage Users', component: ManageUsers }
 ];
 
 export default routes;

@@ -19,6 +19,7 @@ import {
 import { BrandButtons, ButtonDropdowns, ButtonGroups, Buttons, LoadingButtons } from './Buttons';
 import Charts from './Charts';
 import Dashboard from './Dashboard';
+import { EditUser, ManageUsers } from './Users';
 import { CodeEditors, TextEditors } from './Editors';
 import { AdvancedForms, BasicForms } from './Forms';
 import ReactGoogleMaps from './GoogleMaps';
@@ -54,6 +55,8 @@ export {
   Tables,
   Charts,
   Dashboard,
+  EditUser,
+  ManageUsers,
   Widgets,
   Jumbotrons,
   Switches,

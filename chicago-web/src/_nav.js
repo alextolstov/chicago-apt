@@ -11,17 +11,17 @@ export default {
     },
     {
       name: 'Users',
-      url: '/base',
+      url: '/users',
       icon: 'icon-people',
       children: [
         {
           name: 'New User',
-          url: '/base/breadcrumbs',
+          url: '/users/edituser',
           icon: 'icon-user-follow',
         },
         {
           name: 'All users',
-          url: '/base/breadcrumbs',
+          url: '/users/manageusers',
           icon: 'icon-people',
         }
     ]
@@ -339,7 +339,7 @@ export default {
       ]
     },
     {
-      name: 'Widgets',
+      name: 'Users',
       url: '/widgets',
       icon: 'icon-calculator',
       badge: {
