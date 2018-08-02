@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {FormattedMessage} from 'react-intl';
+import {Card, CardHeader, Col, Row} from 'reactstrap';
 
 class EditUser extends Component {
   constructor(props) {
@@ -14,7 +15,17 @@ class EditUser extends Component {
   render() {
     return (
       <div className="animated fadeIn">
-        <h1>{this.state.caption}</h1>
+        <Row>
+          <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
+            <Card>
+              <CardHeader>
+                <button><i className="icon-note"></i></button>
+                <strong>{this.state.caption}</strong>
+                {' '}
+              </CardHeader>
+            </Card>
+          </Col>
+        </Row>
       </div>
     );
   }
