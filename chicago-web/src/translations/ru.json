@@ -2,5 +2,7 @@
   "login.short.title": "Войти",
   "login.long.title": "Войти на сайт",
   "login.email.placeholder": "Электронная почта",
-  "login.password.placeholder": "Пароль"
+  "login.password.placeholder": "Пароль",
+  "users.edit.newuser": "Создать нового пользователя",
+  "users.edit.user": "Редактирование пользователя"
 }

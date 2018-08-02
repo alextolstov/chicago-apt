@@ -311,7 +311,7 @@ const routes = [
   { path: '/apps/invoicing', name: 'Invoice', component: Invoice, exact: true },
   { path: '/apps/invoicing/invoice', name: 'Invoice', component: Invoice },
   { path: '/widgets', name: 'Widgets', component: Widgets },
-  { path: '/users/edituser', name: 'Edit Users', component: EditUser },
+  { path: '/users/edituser', name: 'Edit Users', component: EditUser, params: { newuser: true } },
   { path: '/users/manageusers', name: 'Manage Users', component: ManageUsers }
 ];
 
