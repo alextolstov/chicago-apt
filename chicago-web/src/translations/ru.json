@@ -6,5 +6,9 @@
   "users.edit.newuser": "Создать нового пользователя",
   "users.edit.user": "Редактирование пользователя",
   "users.edit.firstname": "Имя",
-  "users.edit.lastname": "Фамилия"
+  "users.edit.lastname": "Фамилия",
+  "users.edit.email.placeholder": "Электронная почта",
+  "users.edit.dob": "ДР",
+  "users.edit.nickname.placeholder": "Псевдоним",
+  "users.edit.passport": "Паспорт #"
 }

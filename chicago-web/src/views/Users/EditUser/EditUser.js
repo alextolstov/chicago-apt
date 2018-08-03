@@ -1,10 +1,17 @@
 import React, {Component} from 'react';
 import {defineMessages, FormattedMessage} from 'react-intl';
 import {
-  Row, Col, Card, CardHeader, CardBody, FormGroup, Label, FormText, Input,
-  InputGroup, InputGroupAddon, InputGroupText
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  FormGroup,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  Row
 } from 'reactstrap';
-import {TextMask, InputAdapter} from 'react-text-mask-hoc';
 
 const messages = defineMessages({
   firstNamePlace: {
@@ -18,6 +25,14 @@ const messages = defineMessages({
   lastNamePlace: {
     id: 'users.edit.lastname.placeholder',
     defaultMessage: 'Last Name'
+  },
+  emailPlace: {
+    id: 'users.edit.email.placeholder',
+    defaultMessage: 'Email'
+  },
+  nickNamePlace: {
+    id: 'users.edit.nickname.placeholder',
+    defaultMessage: 'Nickname'
   }
 });
 
@@ -49,50 +64,120 @@ class EditUser extends Component {
               </CardHeader>
               <CardBody>
                 <FormGroup row>
-                  <Col md="3">
-                    <Label htmlFor="firstname">
-                      <FormattedMessage id="users.edit.firstname" defaultMessage="First Name"/> :
-                    </Label>
-                  </Col>
-                  <Col xs="12" md="9">
-                    <FormattedMessage {...messages.firstNamePlace}>
-                      {
-                        pholder => <Input onChange={this.handleChange}
-                                          type="text" name="firstname" placeholder={pholder} required/>
-                      }
-                    </FormattedMessage>
-                  </Col>
-                </FormGroup>
-                <FormGroup row>
-                  <Col md="3">
-                  <Label htmlFor="midlename">
-                    <FormattedMessage id="users.edit.midletname" defaultMessage="Midle Name"/> :
-                  </Label>
-                  </Col>
-                  <Col xs="12" md="9">
-                  <FormattedMessage {...messages.midleNamePlace}>
-                    {
-                      pholder => <Input onChange={this.handleChange}
-                                        type="text" name="midlename" placeholder={pholder} required/>
-                    }
-                  </FormattedMessage>
+                  <Col md="12">
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i>
+                            <FormattedMessage id="users.edit.dob" defaultMessage="DOB"/>
+                          </i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input type="date" id="date-input" name="date-input" placeholder="date" />
+                    </InputGroup>
                   </Col>
                 </FormGroup>
                 <FormGroup row>
-                  <Col md="3">
-                  <Label htmlFor="lastname">
-                    <FormattedMessage id="users.edit.lastname" defaultMessage="Last Name"/> :
-                  </Label>
-                  </Col>
-                  <Col xs="12" md="9">
-                  <FormattedMessage {...messages.lastNamePlace}>
-                    {
-                      pholder => <Input onChange={this.handleChange}
-                                        type="text" name="lastname" placeholder={pholder} required/>
-                    }
-                  </FormattedMessage>
+                  <Col md="12">
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="fa fa-envelope-o"></i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <FormattedMessage {...messages.emailPlace}>
+                        {
+                          pholder => <Input onChange={this.handleChange}
+                                            type="text" name="email" placeholder={pholder} required/>
+                        }
+                      </FormattedMessage>
+                    </InputGroup>
                   </Col>
                 </FormGroup>
+                <FormGroup row>
+                  <Col md="12">
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="fa fa-user"></i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <FormattedMessage {...messages.firstNamePlace}>
+                        {
+                          pholder => <Input onChange={this.handleChange}
+                                            type="text" name="firstname" placeholder={pholder} required/>
+                        }
+                      </FormattedMessage>
+                    </InputGroup>
+                  </Col>
+                </FormGroup>
+                <FormGroup row>
+                  <Col md="12">
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="fa fa-user"></i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <FormattedMessage {...messages.midleNamePlace}>
+                        {
+                          pholder => <Input onChange={this.handleChange}
+                                            type="text" name="midlename" placeholder={pholder} required/>
+                        }
+                      </FormattedMessage>
+                    </InputGroup>
+                  </Col>
+                </FormGroup>
+                <FormGroup row>
+                  <Col md="12">
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="fa fa-user"></i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <FormattedMessage {...messages.lastNamePlace}>
+                        {
+                          pholder => <Input onChange={this.handleChange}
+                                            type="text" name="lastname" placeholder={pholder} required/>
+                        }
+                      </FormattedMessage>
+                    </InputGroup>
+                  </Col>
+                </FormGroup>
+                <FormGroup row>
+                  <Col md="12">
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="fa fa-user"></i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <FormattedMessage {...messages.nickNamePlace}>
+                        {
+                          pholder => <Input onChange={this.handleChange}
+                                            type="text" name="nickname" placeholder={pholder} required/>
+                        }
+                      </FormattedMessage>
+                    </InputGroup>
+                  </Col>
+                </FormGroup>
+
+                <FormGroup row>
+                  <Col md="12">
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i>
+                            <FormattedMessage id="users.edit.passport" defaultMessage="Passport #"/>
+                          </i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input type="text" name="passport"/>
+                    </InputGroup>
+                  </Col>
+                </FormGroup>
+
               </CardBody>
             </Card>
           </Col>
