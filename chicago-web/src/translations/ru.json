@@ -4,5 +4,7 @@
   "login.email.placeholder": "Электронная почта",
   "login.password.placeholder": "Пароль",
   "users.edit.newuser": "Создать нового пользователя",
-  "users.edit.user": "Редактирование пользователя"
+  "users.edit.user": "Редактирование пользователя",
+  "users.edit.firstname": "Имя",
+  "users.edit.lastname": "Фамилия"
 }

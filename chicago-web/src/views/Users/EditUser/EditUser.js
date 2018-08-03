@@ -1,6 +1,25 @@
 import React, {Component} from 'react';
-import {FormattedMessage} from 'react-intl';
-import {Card, CardHeader, Col, Row} from 'reactstrap';
+import {defineMessages, FormattedMessage} from 'react-intl';
+import {
+  Row, Col, Card, CardHeader, CardBody, FormGroup, Label, FormText, Input,
+  InputGroup, InputGroupAddon, InputGroupText
+} from 'reactstrap';
+import {TextMask, InputAdapter} from 'react-text-mask-hoc';
+
+const messages = defineMessages({
+  firstNamePlace: {
+    id: 'users.edit.firstname.placeholder',
+    defaultMessage: 'First Name'
+  },
+  midleNamePlace: {
+    id: 'users.edit.midlename.placeholder',
+    defaultMessage: 'Midle Name'
+  },
+  lastNamePlace: {
+    id: 'users.edit.lastname.placeholder',
+    defaultMessage: 'Last Name'
+  }
+});
 
 class EditUser extends Component {
   constructor(props) {
@@ -12,6 +31,12 @@ class EditUser extends Component {
     };
   }
 
+  handleChange = event => {
+    this.setState({
+      [event.target.id]: event.target.value
+    });
+  }
+
   render() {
     return (
       <div className="animated fadeIn">
@@ -21,8 +46,54 @@ class EditUser extends Component {
               <CardHeader>
                 <button><i className="icon-note"></i></button>
                 <strong>{this.state.caption}</strong>
-                {' '}
               </CardHeader>
+              <CardBody>
+                <FormGroup row>
+                  <Col md="3">
+                    <Label htmlFor="firstname">
+                      <FormattedMessage id="users.edit.firstname" defaultMessage="First Name"/> :
+                    </Label>
+                  </Col>
+                  <Col xs="12" md="9">
+                    <FormattedMessage {...messages.firstNamePlace}>
+                      {
+                        pholder => <Input onChange={this.handleChange}
+                                          type="text" name="firstname" placeholder={pholder} required/>
+                      }
+                    </FormattedMessage>
+                  </Col>
+                </FormGroup>
+                <FormGroup row>
+                  <Col md="3">
+                  <Label htmlFor="midlename">
+                    <FormattedMessage id="users.edit.midletname" defaultMessage="Midle Name"/> :
+                  </Label>
+                  </Col>
+                  <Col xs="12" md="9">
+                  <FormattedMessage {...messages.midleNamePlace}>
+                    {
+                      pholder => <Input onChange={this.handleChange}
+                                        type="text" name="midlename" placeholder={pholder} required/>
+                    }
+                  </FormattedMessage>
+                  </Col>
+                </FormGroup>
+                <FormGroup row>
+                  <Col md="3">
+                  <Label htmlFor="lastname">
+                    <FormattedMessage id="users.edit.lastname" defaultMessage="Last Name"/> :
+                  </Label>
+                  </Col>
+                  <Col xs="12" md="9">
+                  <FormattedMessage {...messages.lastNamePlace}>
+                    {
+                      pholder => <Input onChange={this.handleChange}
+                                        type="text" name="lastname" placeholder={pholder} required/>
+                    }
+                  </FormattedMessage>
+                  </Col>
+                </FormGroup>
+              </CardBody>
             </Card>
           </Col>
         </Row>
