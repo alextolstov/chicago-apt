@@ -88,7 +88,7 @@ class AdvancedForms extends React.Component {
                       <InputGroupText><i className="fa fa-phone"></i></InputGroupText>
                     </InputGroupAddon>
                     <TextMask
-                      mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+                      mask={['+',/[1-9]/, /\d/, /\d/, /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
                       Component={InputAdapter}
                       className="form-control"
                     />

@@ -1,7 +1,10 @@
+import React from 'react';
+import {defineMessages, FormattedMessage} from 'react-intl';
+
 export default {
   items: [
     {
-      name: 'Dashboard',
+      name: <FormattedMessage id="menu.header" defaultMessage="Dashboard"/>,
       url: '/dashboard',
       icon: 'icon-speedometer',
       badge: {
@@ -10,17 +13,17 @@ export default {
       },
     },
     {
-      name: 'Users',
+      name: <FormattedMessage id="menu.users.header" defaultMessage="Employees"/>,
       url: '/users',
       icon: 'icon-people',
       children: [
         {
-          name: 'New User',
+          name: <FormattedMessage id="menu.users.newemployee" defaultMessage="New employee"/>,
           url: '/users/edituser',
           icon: 'icon-user-follow',
         },
         {
-          name: 'All users',
+          name: <FormattedMessage id="menu.users.allemployees" defaultMessage="All employees"/>,
           url: '/users/manageusers',
           icon: 'icon-people',
         }

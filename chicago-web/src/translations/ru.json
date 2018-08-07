@@ -1,14 +1,28 @@
 {
   "login.short.title": "Войти",
   "login.long.title": "Войти на сайт",
-  "login.email.placeholder": "Электронная почта",
-  "login.password.placeholder": "Пароль",
-  "users.edit.newuser": "Создать нового пользователя",
-  "users.edit.user": "Редактирование пользователя",
+  "login.email": "Электронная почта",
+  "login.password": "Пароль",
+
+  "menu.header": "Панель",
+  "menu.users.header": "Сотрудники",
+  "menu.users.newemployee": "Новый сотрудник",
+  "menu.users.allemployees": "Все сотрудники",
+
+  "users.edit.newuser": "Создать нового сотрудника",
+  "users.edit.personal": "Личная информация",
+  "users.edit.attr": "Атрибуты",
+  "users.edit.user": "Редактирование сотрудника",
   "users.edit.firstname": "Имя",
   "users.edit.lastname": "Фамилия",
-  "users.edit.email.placeholder": "Электронная почта",
   "users.edit.dob": "ДР",
-  "users.edit.nickname.placeholder": "Псевдоним",
-  "users.edit.passport": "Паспорт #"
+  "users.edit.nickname": "Псевдоним",
+  "users.edit.passport": "Паспорт #",
+  "users.edit.homephone": "Домашний телефон",
+  "users.edit.cellphone": "Мобильный телефон",
+  "users.edit.taxpayerid": "ИНН",
+  "users.edit.employmentdate": "Дата приема",
+  "users.edit.dismissaldate": "Дата увольнения",
+  "users.edit.actualstartdate": "Начало работы факт",
+  "users.edit.actuallastdate": "Окончание работы факт"
 }

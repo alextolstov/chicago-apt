@@ -1,5 +1,6 @@
 import React from 'react';
 import Loadable from 'react-loadable'
+import {defineMessages, FormattedMessage} from 'react-intl';
 
 import CodeEditors from './views/Editors/CodeEditors'
 import DefaultLayout from './containers/DefaultLayout';
@@ -311,7 +312,7 @@ const routes = [
   { path: '/apps/invoicing', name: 'Invoice', component: Invoice, exact: true },
   { path: '/apps/invoicing/invoice', name: 'Invoice', component: Invoice },
   { path: '/widgets', name: 'Widgets', component: Widgets },
-  { path: '/users/edituser', name: 'Edit Users', component: EditUser, params: { newuser: true } },
+  { path: '/users/edituser', name: <FormattedMessage id="users.edit.newemployee" defaultMessage="Create new employee"/>, component: EditUser, params: { newuser: true } },
   { path: '/users/manageusers', name: 'Manage Users', component: ManageUsers }
 ];
 
