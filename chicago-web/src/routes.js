@@ -312,7 +312,7 @@ const routes = [
   { path: '/apps/invoicing', name: 'Invoice', component: Invoice, exact: true },
   { path: '/apps/invoicing/invoice', name: 'Invoice', component: Invoice },
   { path: '/widgets', name: 'Widgets', component: Widgets },
-  { path: '/users/edituser', name: <FormattedMessage id="users.edit.newemployee" defaultMessage="Create new employee"/>, component: EditUser, params: { newuser: true } },
+  { path: '/users/edituser/:id', name: <FormattedMessage id="users.edit.newemployee" defaultMessage="Create new employee"/>, component: EditUser },
   { path: '/users/manageusers', name: 'Manage Users', component: ManageUsers }
 ];
 

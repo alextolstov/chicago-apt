@@ -17,12 +17,17 @@
   "users.edit.lastname": "Фамилия",
   "users.edit.dob": "ДР",
   "users.edit.nickname": "Псевдоним",
-  "users.edit.passport": "Паспорт #",
+  "users.edit.passport": "Паспорт №",
   "users.edit.homephone": "Домашний телефон",
   "users.edit.cellphone": "Мобильный телефон",
   "users.edit.taxpayerid": "ИНН",
   "users.edit.employmentdate": "Дата приема",
   "users.edit.dismissaldate": "Дата увольнения",
   "users.edit.actualstartdate": "Начало работы факт",
-  "users.edit.actuallastdate": "Окончание работы факт"
+  "users.edit.actuallastdate": "Окончание работы факт",
+  "users.edit.diploma": "Диплом №",
+  "users.edit.diplomadate": "Диплом дата",
+  "users.edit.retirement": "Пенсионное",
+  "users.edit.medical": "Мед. книжка",
+  "users.edit.employment": "Трудовая. книжка"
 }

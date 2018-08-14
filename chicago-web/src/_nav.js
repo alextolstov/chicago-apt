@@ -19,7 +19,7 @@ export default {
       children: [
         {
           name: <FormattedMessage id="menu.users.newemployee" defaultMessage="New employee"/>,
-          url: '/users/edituser',
+          url: '/users/edituser/0',
           icon: 'icon-user-follow',
         },
         {

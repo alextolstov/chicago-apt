@@ -45,6 +45,22 @@ const messages = defineMessages({
   taxPayerPlace: {
     id: 'users.edit.taxpayerid',
     defaultMessage: 'Tax payer id'
+  },
+  diplomaPlace: {
+    id: 'users.edit.diploma',
+    defaultMessage: 'Diploma'
+  },
+  retirementPlace: {
+  id: 'users.edit.retirement',
+    defaultMessage: 'Retirement'
+  },
+  medicalPlace: {
+    id: 'users.edit.medical',
+    defaultMessage: 'Medical'
+  },
+  employmentPlace: {
+    id: 'users.edit.employment',
+    defaultMessage: 'Employment'
   }
 });
 
@@ -52,7 +68,7 @@ class EditUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      caption: props.match.params.newuser ?
+      caption: props.match.params.id == 0 ?
         <FormattedMessage id="users.edit.personal" defaultMessage="Personal Information"/> :
         <FormattedMessage id="users.edit.user" defaultMessage="Edit employee"/>
     };
@@ -72,7 +88,7 @@ class EditUser extends Component {
             <Card>
               <CardHeader>
                 <button><i className="icon-note"></i></button>
-                <strong><FormattedMessage id="users.edit.personal" defaultMessage="Personal Information"/></strong>
+                <strong>{this.state.caption}</strong>
               </CardHeader>
 
               <CardBody>
@@ -253,25 +269,6 @@ class EditUser extends Component {
               </CardHeader>
 
               <CardBody>
-                {/*Tax payer id*/}
-                <FormGroup row>
-                  <Col md="12">
-                    <InputGroup>
-                      <InputGroupAddon addonType="prepend">
-                        <InputGroupText>
-                          <i className="fa fa-male"></i>
-                        </InputGroupText>
-                      </InputGroupAddon>
-                      <FormattedMessage {...messages.taxPayerPlace}>
-                        {
-                          pholder => <Input onChange={this.handleChange}
-                                            type="text" name="taxpayerid" placeholder={pholder} required/>
-                        }
-                      </FormattedMessage>
-                    </InputGroup>
-                  </Col>
-                </FormGroup>
-
                 {/*Employment date*/}
                 <FormGroup row>
                   <Col md="12">
@@ -284,14 +281,7 @@ class EditUser extends Component {
                         </InputGroupText>
                       </InputGroupAddon>
                       <Input type="date" id="date-input-employment" name="date-input-employment" placeholder="date"/>
-                    </InputGroup>
-                  </Col>
-                </FormGroup>
-
-                {/*Actual start date*/}
-                <FormGroup row>
-                  <Col md="12">
-                    <InputGroup>
+                      {/*Actual start date*/}
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
                           <i>
@@ -316,14 +306,7 @@ class EditUser extends Component {
                         </InputGroupText>
                       </InputGroupAddon>
                       <Input type="date" id="date-input-dismissal" name="date-input-dismissal" placeholder="date"/>
-                    </InputGroup>
-                  </Col>
-                </FormGroup>
-
-                {/*Actual last date*/}
-                <FormGroup row>
-                  <Col md="12">
-                    <InputGroup>
+                      {/*Actual last date*/}
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
                           <i>
@@ -332,6 +315,110 @@ class EditUser extends Component {
                         </InputGroupText>
                       </InputGroupAddon>
                       <Input type="date" id="date-input-actuallast" name="date-input-actuallast" placeholder="date"/>
+                    </InputGroup>
+                  </Col>
+                </FormGroup>
+
+                {/*Tax payer id*/}
+                <FormGroup row>
+                  <Col md="12">
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="fa fa-male"></i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <FormattedMessage {...messages.taxPayerPlace}>
+                        {
+                          pholder => <Input onChange={this.handleChange}
+                                            type="text" name="taxpayerid" placeholder={pholder} required/>
+                        }
+                      </FormattedMessage>
+                      <Input type="date" id="date-input-employment" name="date-input-employment" placeholder="date"/>
+                    </InputGroup>
+                  </Col>
+                </FormGroup>
+
+                {/*Diploma*/}
+                <FormGroup row>
+                  <Col md="12">
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="cui-book"></i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <FormattedMessage {...messages.diplomaPlace}>
+                        {
+                          pholder => <Input onChange={this.handleChange}
+                                            type="text" name="diploma" placeholder={pholder} required/>
+                        }
+                      </FormattedMessage>
+                      {/*Diploma date*/}
+                      <Input type="date" id="date-input-diploma" name="date-input-diploma" placeholder="date"/>
+                    </InputGroup>
+                  </Col>
+                </FormGroup>
+
+                {/*Retirement*/}
+                <FormGroup row>
+                  <Col md="12">
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="cui-book"></i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <FormattedMessage {...messages.retirementPlace}>
+                        {
+                          pholder => <Input onChange={this.handleChange}
+                                            type="text" name="retirement" placeholder={pholder} required/>
+                        }
+                      </FormattedMessage>
+                      {/*Diploma date*/}
+                      <Input type="date" id="date-input-retirement" name="date-input-retirement" placeholder="date"/>
+                    </InputGroup>
+                  </Col>
+                </FormGroup>
+
+                {/*Medical*/}
+                <FormGroup row>
+                  <Col md="12">
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="cui-book"></i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <FormattedMessage {...messages.medicalPlace}>
+                        {
+                          pholder => <Input onChange={this.handleChange}
+                                            type="text" name="retirement" placeholder={pholder} required/>
+                        }
+                      </FormattedMessage>
+                      {/*Diploma date*/}
+                      <Input type="date" id="date-input-medical" name="date-input-medical" placeholder="date"/>
+                    </InputGroup>
+                  </Col>
+                </FormGroup>
+
+                {/*Employment book*/}
+                <FormGroup row>
+                  <Col md="12">
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="cui-book"></i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <FormattedMessage {...messages.employmentPlace}>
+                        {
+                          pholder => <Input onChange={this.handleChange}
+                                            type="text" name="employment" placeholder={pholder} required/>
+                        }
+                      </FormattedMessage>
+                      {/*Employment book date*/}
+                      <Input type="date" id="date-input-employment" name="date-input-employment" placeholder="date"/>
                     </InputGroup>
                   </Col>
                 </FormGroup>

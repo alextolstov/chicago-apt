@@ -44,7 +44,7 @@ class DefaultLayout extends Component {
               <Switch>
                 {routes.map((route, idx) => {
                     return route.component ? (<Route key={idx} path={route.path} exact={route.exact} name={route.name} render={props => (
-                      props.match.params = route.params,
+//                      props.match.params = route.params,
                         <route.component {...props} />
                       )} />)
                       : (null);
