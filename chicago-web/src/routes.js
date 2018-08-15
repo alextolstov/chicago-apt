@@ -313,7 +313,7 @@ const routes = [
   { path: '/apps/invoicing/invoice', name: 'Invoice', component: Invoice },
   { path: '/widgets', name: 'Widgets', component: Widgets },
   { path: '/users/edituser/:id', name: <FormattedMessage id="users.edit.newemployee" defaultMessage="Create new employee"/>, component: EditUser },
-  { path: '/users/manageusers', name: 'Manage Users', component: ManageUsers }
+  { path: '/users/manageusers', name: <FormattedMessage id="users.edit.manageemployees" defaultMessage="Manage employees"/>, component: ManageUsers }
 ];
 
 export default routes;

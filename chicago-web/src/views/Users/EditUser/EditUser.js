@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { TextMask, InputAdapter } from 'react-text-mask-hoc';
 import {defineMessages, FormattedMessage} from 'react-intl';
 import {
   Card,
@@ -12,6 +13,10 @@ import {
   InputGroupText,
   Row
 } from 'reactstrap';
+
+// React select
+import Select from 'react-select';
+import 'react-select/dist/react-select.min.css';
 
 const messages = defineMessages({
   firstNamePlace: {
@@ -61,17 +66,37 @@ const messages = defineMessages({
   employmentPlace: {
     id: 'users.edit.employment',
     defaultMessage: 'Employment'
+  },
+  passportPlace: {
+    id: 'users.edit.passport',
+    defaultMessage: 'Passport'
   }
 });
+
+const positions = [
+  { value: '01', label: 'Barber'},
+  { value: '02', label: 'Manager' },
+  { value: '03', label: 'Supervisor' },
+  { value: '04', label: 'Cleaner' },
+  { value: '05', label: 'Somebody' }
+];
 
 class EditUser extends Component {
   constructor(props) {
     super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.saveSelectChanges = this.saveSelectChanges.bind(this);
+
     this.state = {
+      value: ['01', '02'],
       caption: props.match.params.id == 0 ?
         <FormattedMessage id="users.edit.personal" defaultMessage="Personal Information"/> :
         <FormattedMessage id="users.edit.user" defaultMessage="Edit employee"/>
     };
+  }
+
+  saveSelectChanges(value) {
+    this.setState({ value });
   }
 
   handleChange = event => {
@@ -94,7 +119,6 @@ class EditUser extends Component {
               <CardBody>
                 {/*Email*/}
                 <FormGroup row>
-                  <Col md="12">
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -108,12 +132,10 @@ class EditUser extends Component {
                         }
                       </FormattedMessage>
                     </InputGroup>
-                  </Col>
                 </FormGroup>
 
                 {/*First name*/}
                 <FormGroup row>
-                  <Col md="12">
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -127,12 +149,10 @@ class EditUser extends Component {
                         }
                       </FormattedMessage>
                     </InputGroup>
-                  </Col>
                 </FormGroup>
 
                 {/*Middle name*/}
                 <FormGroup row>
-                  <Col md="12">
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -146,12 +166,10 @@ class EditUser extends Component {
                         }
                       </FormattedMessage>
                     </InputGroup>
-                  </Col>
                 </FormGroup>
 
                 {/*Last name*/}
                 <FormGroup row>
-                  <Col md="12">
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -165,12 +183,10 @@ class EditUser extends Component {
                         }
                       </FormattedMessage>
                     </InputGroup>
-                  </Col>
                 </FormGroup>
 
                 {/*Nickname*/}
                 <FormGroup row>
-                  <Col md="12">
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -184,28 +200,27 @@ class EditUser extends Component {
                         }
                       </FormattedMessage>
                     </InputGroup>
-                  </Col>
                 </FormGroup>
 
                 {/*Passport*/}
                 <FormGroup row>
-                  <Col md="12">
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
-                          <i>
-                            <FormattedMessage id="users.edit.passport" defaultMessage="Passport #"/>
-                          </i>
+                          <i className="fa fa-id-card"></i>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <Input type="text" name="passport"/>
+                      <FormattedMessage {...messages.passportPlace}>
+                        {
+                          pholder => <Input onChange={this.handleChange}
+                                            type="text" name="passport" placeholder={pholder} required/>
+                        }
+                      </FormattedMessage>
                     </InputGroup>
-                  </Col>
                 </FormGroup>
 
                 {/* DOB */}
                 <FormGroup row>
-                  <Col md="12">
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -216,12 +231,10 @@ class EditUser extends Component {
                       </InputGroupAddon>
                       <Input type="date" id="date-input" name="date-input" placeholder="date"/>
                     </InputGroup>
-                  </Col>
                 </FormGroup>
 
                 {/*Home phone*/}
                 <FormGroup row>
-                  <Col md="12">
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -235,12 +248,10 @@ class EditUser extends Component {
                         }
                       </FormattedMessage>
                     </InputGroup>
-                  </Col>
                 </FormGroup>
 
                 {/*Cell phone*/}
                 <FormGroup row>
-                  <Col md="12">
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -254,7 +265,6 @@ class EditUser extends Component {
                         }
                       </FormattedMessage>
                     </InputGroup>
-                  </Col>
                 </FormGroup>
 
               </CardBody>
@@ -271,7 +281,6 @@ class EditUser extends Component {
               <CardBody>
                 {/*Employment date*/}
                 <FormGroup row>
-                  <Col md="12">
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -285,18 +294,16 @@ class EditUser extends Component {
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
                           <i>
-                            <FormattedMessage id="users.edit.actualstartdate" defaultMessage="Actual start date"/>
+                            <FormattedMessage id="users.edit.actualstartdate" defaultMessage="Start date"/>
                           </i>
                         </InputGroupText>
                       </InputGroupAddon>
                       <Input type="date" id="date-input-actualstart" name="date-input-actualstart" placeholder="date"/>
                     </InputGroup>
-                  </Col>
                 </FormGroup>
 
                 {/*Dismissal date*/}
                 <FormGroup row>
-                  <Col md="12">
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -310,18 +317,16 @@ class EditUser extends Component {
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
                           <i>
-                            <FormattedMessage id="users.edit.actuallastdate" defaultMessage="Actual last date"/>
+                            <FormattedMessage id="users.edit.actuallastdate" defaultMessage="Last date"/>
                           </i>
                         </InputGroupText>
                       </InputGroupAddon>
                       <Input type="date" id="date-input-actuallast" name="date-input-actuallast" placeholder="date"/>
                     </InputGroup>
-                  </Col>
                 </FormGroup>
 
                 {/*Tax payer id*/}
                 <FormGroup row>
-                  <Col md="12">
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -336,12 +341,10 @@ class EditUser extends Component {
                       </FormattedMessage>
                       <Input type="date" id="date-input-employment" name="date-input-employment" placeholder="date"/>
                     </InputGroup>
-                  </Col>
                 </FormGroup>
 
                 {/*Diploma*/}
                 <FormGroup row>
-                  <Col md="12">
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -357,12 +360,10 @@ class EditUser extends Component {
                       {/*Diploma date*/}
                       <Input type="date" id="date-input-diploma" name="date-input-diploma" placeholder="date"/>
                     </InputGroup>
-                  </Col>
                 </FormGroup>
 
                 {/*Retirement*/}
                 <FormGroup row>
-                  <Col md="12">
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -378,12 +379,10 @@ class EditUser extends Component {
                       {/*Diploma date*/}
                       <Input type="date" id="date-input-retirement" name="date-input-retirement" placeholder="date"/>
                     </InputGroup>
-                  </Col>
                 </FormGroup>
 
                 {/*Medical*/}
                 <FormGroup row>
-                  <Col md="12">
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -399,12 +398,10 @@ class EditUser extends Component {
                       {/*Diploma date*/}
                       <Input type="date" id="date-input-medical" name="date-input-medical" placeholder="date"/>
                     </InputGroup>
-                  </Col>
                 </FormGroup>
 
                 {/*Employment book*/}
                 <FormGroup row>
-                  <Col md="12">
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -420,7 +417,26 @@ class EditUser extends Component {
                       {/*Employment book date*/}
                       <Input type="date" id="date-input-employment" name="date-input-employment" placeholder="date"/>
                     </InputGroup>
-                  </Col>
+                </FormGroup>
+
+                {/*Positions*/}
+                <FormGroup row>
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="fa fa-id-card"></i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Col md="10">
+                      <Select
+                        name="form-field-positions"
+                        value={this.state.value}
+                        options={positions}
+                        onChange={this.saveSelectChanges}
+                        multi
+                      />
+                      </Col>
+                    </InputGroup>
                 </FormGroup>
 
               </CardBody>
