@@ -463,21 +463,6 @@ class Dashboard extends Component {
       dropdownOpen: false,
       radioSelected: 2,
     };
-
-    this.isLogged();
-  }
-
-  isLogged() {
-    fetch('/api/login/testauth', {
-      method: "GET",
-      credentials: 'include'
-    })
-      .then(response => {
-        if (!response.ok) {
-          // Redirect current page to login
-          this.props.history.push("/login");
-        }
-      });
   }
 
   toggle() {

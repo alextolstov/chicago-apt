@@ -28,6 +28,7 @@ const messages = defineMessages({
 class Login extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       email: "",
       password: "",
@@ -88,20 +89,16 @@ class Login extends Component {
         if (rest_error.status == 401) {
           // Redirect current page to login
           this.handleError("User unauthorized");
-          return;
-        }
-        if (rest_error.status == 404) {
+        }else if (rest_error.status == 404) {
           this.handleError("Error 404. Page not found.");
-          return;
-        }
-        if (rest_error.status == 500) {
+        }else if (rest_error.status == 500) {
           // Redirect current page to login
           this.handleError("Error 500. Server error.");
-          return;
+        }else {
+          rest_error.json().then(errorMessage => {
+            this.handleError(errorMessage);
+          })
         }
-        rest_error.json().then(errorMessage => {
-          this.handleError(errorMessage);
-        })
       })
   }
 
