@@ -69,7 +69,7 @@ public class CassandraRealm extends AuthorizingRealm
                 throw new AuthenticationException(loginUserResponse.getTransactionError().getErrorMessage());
             }
 
-            // Principale are AUX info that we will keep in session
+            // Principals are AUX info that we will keep in session
             principals = createPrincipals(user);
 
         } catch (TimeoutException | InvalidProtocolBufferException e)

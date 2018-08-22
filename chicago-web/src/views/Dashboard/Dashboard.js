@@ -23,6 +23,9 @@ import {
 import Widget03 from '../../views/Widgets/Widget03'
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { getStyle, hexToRgba } from '@coreui/coreui-pro/dist/js/coreui-utilities'
+import {AppStore} from '../../components';
+import {observer } from 'mobx-react';
+
 import config from 'react-global-configuration';
 
 const brandPrimary = getStyle('--primary')
@@ -489,6 +492,7 @@ class Dashboard extends Component {
                   <ButtonDropdown id='card1' isOpen={this.state.card1} toggle={() => { this.setState({ card1: !this.state.card1 }); }}>
                     <DropdownToggle caret className="p-0" color="transparent">
                       <i className="icon-settings"></i>
+                      <div className="Dashboard">{AppStore.userData}</div>
                     </DropdownToggle>
                     <DropdownMenu right>
                       <DropdownItem>Action</DropdownItem>
@@ -1155,4 +1159,4 @@ class Dashboard extends Component {
   }
 }
 
-export default Dashboard;
+export default observer(Dashboard);

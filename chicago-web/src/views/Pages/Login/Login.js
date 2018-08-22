@@ -16,6 +16,7 @@ import {
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
 import {FormattedMessage, intlShape, injectIntl, defineMessages} from 'react-intl';
+import {AppStore} from '../../../components';
 import config from 'react-global-configuration';
 
 const messages = defineMessages({
@@ -83,7 +84,9 @@ class Login extends Component {
         if (!response.ok) {
           throw response;
         }
-        this.props.history.push("/dashbord");
+        AppStore.permissions = ['perm1', 'perm2'];
+        AppStore.userData = 'atelyshev';
+          this.props.history.push("/dashbord");
       })
       .catch(rest_error => {
         if (rest_error.status == 401) {
