@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Users (
     cell_phone varchar,
     home_phone varchar,
     work_phone varchar,
-    address_schema varchar,
     holding_id uuid,
     company_id uuid,
     branch_id uuid,
@@ -23,8 +22,17 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.UserAttributes (
     user_id uuid PRIMARY KEY,
     create_datetime timestamp);
 
-CREATE TABLE IF NOT EXISTS ChicagoErp.Address_ru(
+CREATE TABLE IF NOT EXISTS ChicagoErp.Address(
     address_id uuid PRIMARY KEY, -- uses: user_id, company_id, customer_id, holding_id, branch_id
+    street_name varchar,
+    house_num varchar,
+    building_info varchar,
+    apt_office_num varchar,
+    place_name varchar,
+    area varchar,
+    administrative_division varchar,
+    zip_code varchar,
+    country varchar,
     create_datetime timestamp);
 
 CREATE INDEX update_user_permissions_idx ON ChicagoErp.Users (user_id);
@@ -32,7 +40,6 @@ CREATE INDEX update_user_permissions_idx ON ChicagoErp.Users (user_id);
 CREATE TABLE IF NOT EXISTS ChicagoErp.Holdings (
     holding_id uuid PRIMARY KEY,
     users set<uuid>,
-    address_schema varchar,
     name varchar,
     companies set<uuid>,
     description varchar,
@@ -42,7 +49,6 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Companies(
     company_id uuid PRIMARY KEY,
     holding_id uuid,
     users set<uuid>,
-    address_schema varchar,
     name varchar,
     branches set<uuid>,
     description varchar,
@@ -52,7 +58,6 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Branches(
     branch_id uuid PRIMARY KEY,
     company_id uuid,
     users set<uuid>,
-    address_schema varchar,
     name varchar,
     description varchar,
     create_datetime timestamp);
@@ -131,7 +136,6 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.UserPermissions(
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Customers (
     customer_id uuid PRIMARY KEY,
-    address_schema varchar,
     avatar blob,
     first_name varchar,
     middle_name varchar,
