@@ -3,8 +3,10 @@ package com.chicago.app;
 import com.chicago.ext.bll.user.UserBll;
 import com.chicago.ext.bll.user.UserBllImpl;
 import com.chicago.common.core.ConfigParser;
+import com.chicago.ext.dal.PositionDal;
 import com.chicago.ext.dal.UserDal;
 import com.chicago.ext.dal.cassandra.CassandraConnector;
+import com.chicago.ext.dal.cassandra.PositionDalImpl;
 import com.chicago.ext.dal.cassandra.UserDalImpl;
 import com.chicago.dto.Config;
 import com.chicago.dto.Service;
@@ -40,6 +42,7 @@ public class ApplicationBinder extends AbstractBinder
         bind(new CassandraConnector(config.getCassandraConfig())).to(CassandraConnector.class);
         bind(new UserDalImpl()).to(UserDal.class);
         bind(new UserBllImpl()).to(UserBll.class);
+        bind(new PositionDalImpl()).to(PositionDal.class);
 //        addActiveDescriptor(UserBllImpl.class);
     }
 }

@@ -1,10 +1,9 @@
 package com.chicago.ext.dal.cassandra;
 
-import com.chicago.common.core.AbstractComponent;
-import com.chicago.ext.dal.UserDal;
 import com.chicago.common.util.PasswordUtil;
 import com.chicago.common.util.TimeUtil;
 import com.chicago.dto.UserOuterClass;
+import com.chicago.ext.dal.UserDal;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Statement;
@@ -21,29 +20,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.chicago.ext.dal.cassandra.CassandraConstants.COMPANIES_TABLE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.KEYSPACE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.PERMISSIONS_TABLE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.ROLES_TABLE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.USERS_TABLE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.USER_PERMISSIONS_TABLE;
-import static java.util.Arrays.asList;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.*;
 
-public class UserDalImpl implements UserDal
-{
-    private static final Logger _LOG = LoggerFactory.getLogger(AbstractComponent.class);
+public class UserDalImpl implements UserDal {
+    private static final Logger _LOG = LoggerFactory.getLogger(UserDalImpl.class);
 
     private ServiceLocator _locator;
 
-    public UserDalImpl()
-    {
+    public UserDalImpl() {
         _locator = ServiceLocatorFactory.getInstance().find("servicelocator");
     }
 
-    public String registerUser(UserOuterClass.User newUser, String passwordHash, byte[] passwordSalt) throws Exception
-    {
-        if (isExists(newUser.getEmail()))
-        {
+    public String registerUser(UserOuterClass.User newUser, String passwordHash, byte[] passwordSalt) throws Exception {
+        if (isExists(newUser.getEmail())) {
             throw new Exception("User " + newUser.getEmail() + " already exists");
         }
 
@@ -76,14 +65,12 @@ public class UserDalImpl implements UserDal
     }
 
     @Override
-    public UserOuterClass.SystemPermission getSystemPermissions()
-    {
+    public UserOuterClass.SystemPermission getSystemPermissions() {
         return null;
     }
 
     @Override
-    public void setUserPermissions(UserOuterClass.UserPermissions userPermissions) throws Exception
-    {
+    public void setUserPermissions(UserOuterClass.UserPermissions userPermissions) throws Exception {
         Set<Integer> permissionIds = new HashSet<Integer>();
         permissionIds.addAll(userPermissions.getExtraPermissionsList());
 
@@ -94,8 +81,7 @@ public class UserDalImpl implements UserDal
         ResultSet result = _locator.getService(CassandraConnector.class).getSession().execute(query);
 
         Row roleRow;
-        while ((roleRow = result.one()) != null)
-        {
+        while ((roleRow = result.one()) != null) {
             Set<Integer> rolePermissionsIds = roleRow.getSet("permission_ids", Integer.class);
             permissionIds.addAll(rolePermissionsIds);
         }
@@ -108,9 +94,8 @@ public class UserDalImpl implements UserDal
         Set<String> permissions = new HashSet<>();
 
         Row permissionRow;
-        while ((permissionRow = result.one()) != null)
-        {
-           permissions.add(permissionRow.getString("permission"));
+        while ((permissionRow = result.one()) != null) {
+            permissions.add(permissionRow.getString("permission"));
         }
 
         // Cassandra update same as insert if condition not true
@@ -133,16 +118,14 @@ public class UserDalImpl implements UserDal
     }
 
     @Override
-    public UserOuterClass.UserPermissions getUserPermissions(String userId) throws Exception
-    {
+    public UserOuterClass.UserPermissions getUserPermissions(String userId) throws Exception {
         // Get all premissions
         Statement query = QueryBuilder.select()
                 .from(KEYSPACE, USER_PERMISSIONS_TABLE)
                 .where(QueryBuilder.eq("user_id", UUID.fromString(userId)));
         ResultSet result = _locator.getService(CassandraConnector.class).getSession().execute(query);
         Row permissionsRow = result.one();
-        if (permissionsRow == null)
-        {
+        if (permissionsRow == null) {
             throw new UserPermissionsNotFoundException("No permissions found for user with user Id " + userId);
         }
 
@@ -153,15 +136,13 @@ public class UserDalImpl implements UserDal
                 .build();
     }
 
-    public UserOuterClass.User getUser(String email) throws Exception
-    {
+    public UserOuterClass.User getUser(String email) throws Exception {
         Statement query = QueryBuilder.select()
                 .from(KEYSPACE, USERS_TABLE)
                 .where(QueryBuilder.eq("email", email));
         ResultSet result = _locator.getService(CassandraConnector.class).getSession().execute(query);
         Row userRow = result.one();
-        if (userRow == null)
-        {
+        if (userRow == null) {
             throw new UserNotFoundException("No user with name " + email + " found");
         }
 
@@ -181,35 +162,30 @@ public class UserDalImpl implements UserDal
     }
 
     @Override
-    public void authUser(String email, String password) throws Exception
-    {
+    public void authUser(String email, String password) throws Exception {
         Statement query = QueryBuilder.select("password_hash", "password_salt")
                 .from(KEYSPACE, USERS_TABLE)
                 .where(QueryBuilder.eq("email", email));
         ResultSet result = _locator.getService(CassandraConnector.class).getSession().execute(query);
         Row row = result.one();
 
-        if (row == null)
-        {
+        if (row == null) {
             throw new UserNotFoundException("No user with name " + email + " found");
         }
         String passwordHash = row.getString("password_hash");
         byte[] passwordSalt = row.getBytes("password_salt").array();
         String encryptedPassword = PasswordUtil.getSecurePassword(password, passwordSalt);
 
-        if (!encryptedPassword.equals(passwordHash))
-        {
+        if (!encryptedPassword.equals(passwordHash)) {
             throw new PasswordNotMatchException("Wrong password for user " + email);
         }
     }
 
-    public List<UserOuterClass.User> getUsers()
-    {
+    public List<UserOuterClass.User> getUsers() {
         return null;
     }
 
-    private boolean isExists(String email)
-    {
+    private boolean isExists(String email) {
         Statement query = QueryBuilder.select()
                 .countAll()
                 .from(KEYSPACE, USERS_TABLE)

@@ -1,42 +1,5 @@
 CREATE KEYSPACE ChicagoErp  WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };
 
-CREATE TABLE IF NOT EXISTS ChicagoErp.Users (
-    email varchar PRIMARY KEY,
-    user_id uuid,
-    password_hash varchar,
-    password_salt blob,
-    avatar blob,
-    first_name varchar,
-    middle_name varchar,
-    last_name varchar,
-    cell_phone varchar,
-    home_phone varchar,
-    work_phone varchar,
-    holding_id uuid,
-    company_id uuid,
-    branch_id uuid,
-    permissions set<varchar>,
-    create_datetime timestamp);
-
-CREATE TABLE IF NOT EXISTS ChicagoErp.UserAttributes (
-    user_id uuid PRIMARY KEY,
-    create_datetime timestamp);
-
-CREATE TABLE IF NOT EXISTS ChicagoErp.Address(
-    address_id uuid PRIMARY KEY, -- uses: user_id, company_id, customer_id, holding_id, branch_id
-    street_name varchar,
-    house_num varchar,
-    building_info varchar,
-    apt_office_num varchar,
-    place_name varchar,
-    area varchar,
-    administrative_division varchar,
-    zip_code varchar,
-    country varchar,
-    create_datetime timestamp);
-
-CREATE INDEX update_user_permissions_idx ON ChicagoErp.Users (user_id);
-
 CREATE TABLE IF NOT EXISTS ChicagoErp.Holdings (
     holding_id uuid PRIMARY KEY,
     users set<uuid>,
@@ -61,6 +24,95 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Branches(
     name varchar,
     description varchar,
     create_datetime timestamp);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.Users (
+    email varchar PRIMARY KEY,
+    user_id uuid,
+    password_hash varchar,
+    password_salt blob,
+    avatar blob,
+    first_name varchar,
+    middle_name varchar,
+    last_name varchar,
+    cell_phone varchar,
+    home_phone varchar,
+    work_phone varchar,
+    holding_id uuid,
+    company_id uuid,
+    branch_id uuid,
+    permissions set<varchar>,
+    create_datetime timestamp);
+CREATE INDEX update_user_permissions_idx ON ChicagoErp.Users (user_id);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.Schedule (
+    user_id uuid PRIMARY KEY,
+    template_id,
+    work_date date,
+    appointment_id set<uuid>);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.ScheduleTemplate (
+    template_id uuid PRIMARY KEY,
+    description varchar,
+    monday map<timestamp, timestamp>,
+    tuesday map<timestamp, timestamp>,
+    wednesday map<timestamp, timestamp>,
+    thursday map<timestamp, timestamp>,
+    friday map<timestamp, timestamp>,
+    saturday map<timestamp, timestamp>,
+    sunday map<timestamp, timestamp>,
+    create_datetime timestamp);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.Appointment (
+    user_id uuid,
+    appointment_date date,
+    client_id uuid,
+    start_time timestamp,
+    work_duration duration,
+    procedure_id uuid,
+    comment varchar,
+    create_datetime timestamp,
+    PRIMARY KEY (user_id, appointment_date));
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.Procedure (
+    procedure_id uuid PRIMARY KEY,
+    description varchar);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.UserAttributes (
+    user_id uuid PRIMARY KEY,
+    create_datetime timestamp);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.UserPermissions(
+    user_id uuid PRIMARY KEY,
+    role_ids set<int>,
+    extra_permission_ids set<int>
+);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.Positions(
+    organization_id uuid PRIMARY KEY, -- holding, company, branch id
+    positions map<uuid, varchar>
+);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.Addresses(
+    address_id uuid PRIMARY KEY, -- uses: user_id, company_id, customer_id, holding_id, branch_id
+    street_name varchar,
+    house_number varchar,
+    building_info varchar,
+    apt_office_number varchar,
+    place_name varchar,
+    area varchar,
+    administrative_division varchar,
+    zip_code varchar,
+    country varchar,
+    create_datetime timestamp);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.Customers (
+    customer_id uuid PRIMARY KEY,
+    avatar blob,
+    first_name varchar,
+    middle_name varchar,
+    last_name varchar,
+    phone varchar,
+    address_id uuid);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Permissions (
     permission_id int PRIMARY KEY,
@@ -127,18 +179,3 @@ INSERT INTO ChicagoErp.Roles (role_id, role, permission_ids, description) VALUES
 5,  --customer:edit
 6   --customer:delete
 }, 'Branch level admin');
-
-CREATE TABLE IF NOT EXISTS ChicagoErp.UserPermissions(
-    user_id uuid PRIMARY KEY,
-    role_ids set<int>,
-    extra_permission_ids set<int>
-);
-
-CREATE TABLE IF NOT EXISTS ChicagoErp.Customers (
-    customer_id uuid PRIMARY KEY,
-    avatar blob,
-    first_name varchar,
-    middle_name varchar,
-    last_name varchar,
-    phone varchar
-);

@@ -8,4 +8,5 @@ public class CassandraConstants
     public static final String USER_PERMISSIONS_TABLE = "UserPermissions";
     public static final String ROLES_TABLE = "Roles";
     public static final String PERMISSIONS_TABLE = "Permissions";
+    public static final String POSITIONS_TABLE = "Positions";
 }
