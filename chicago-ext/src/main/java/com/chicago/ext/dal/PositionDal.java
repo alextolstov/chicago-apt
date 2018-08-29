@@ -9,9 +9,9 @@ public interface PositionDal {
     void updatePosition(PositionOuterClass.Position position)
             throws Exception;
 
-    PositionOuterClass.Position deleetPosition(PositionOuterClass.Position position)
+    void deletePosition(PositionOuterClass.Position position)
             throws Exception;
 
-    PositionOuterClass.Positions getPositions(String entityId)
+    PositionOuterClass.Positions getPositions(String organizationId)
             throws Exception;
 }

@@ -3,6 +3,7 @@ package com.chicago.ext.dal.cassandra;
 import com.chicago.dto.PositionOuterClass;
 import com.chicago.ext.dal.PositionDal;
 import com.datastax.driver.core.Statement;
+import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.utils.UUIDs;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -29,42 +30,14 @@ public class PositionDalImpl implements PositionDal {
     @Override
     public PositionOuterClass.Position createPosition(PositionOuterClass.Position position) throws Exception
     {
-//        Statement query = QueryBuilder.select()
-//                .from(KEYSPACE, POSITIONS_TABLE)
-//                .where(QueryBuilder.eq("entity_id", position.getEntityId()));
-//        ResultSet result = _locator.getService(CassandraConnector.class).getSession().execute(query);
-//
-//        Row positionsRow;
-//        Map<UUID, String> positionsMap;
-//        UUID newPositionId = UUIDs.random();
-//
-//        if((positionsRow = result.one()) != null)
-//        {
-//            positionsMap = positionsRow.getMap("positions", UUID.class, String.class);
-//        }
-//        else
-//        {
-//            positionsMap = new HashMap<UUID, String>();
-//        }
-//
-        Map<UUID, String> positionsMap = new HashMap<UUID, String>();
         UUID newPositionId = UUIDs.random();
-        positionsMap.put(newPositionId, position.getDescription());
-        // Create company first
-        Statement query = QueryBuilder.insertInto(KEYSPACE, POSITIONS_TABLE)
-                .value("entity_id", UUID.fromString(position.getEntityId()))
-                .value("positions", positionsMap);
+        Statement query = QueryBuilder.update(KEYSPACE, POSITIONS_TABLE)
+                .where(QueryBuilder.eq("organization_id", UUID.fromString(position.getOrganizationId())))
+                .with(QueryBuilder.put("positions", newPositionId, position.getDescription()));
         _locator.getService(CassandraConnector.class).getSession().execute(query);
 
-//        query = QueryBuilder.select()
-//                .from(KEYSPACE, POSITIONS_TABLE)
-//                .where(QueryBuilder.eq("entity_id", position.getEntityId()));
-//        ResultSet result = _locator.getService(CassandraConnector.class).getSession().execute(query);
-//        Row positionsRow = result.one();
-//        Map<String, String> newMap = positionsRow.getMap("positions", UUID.class, String.class).entrySet().stream()
-//                .collect(Collectors.toMap(e -> (e.getKey().toString()), Map.Entry::getValue));
         return PositionOuterClass.Position.newBuilder()
-                .setEntityId(position.getEntityId())
+                .setOrganizationId(position.getOrganizationId())
                 .setPositionId(newPositionId.toString())
                 .build();
     }
@@ -72,18 +45,26 @@ public class PositionDalImpl implements PositionDal {
     @Override
     public void updatePosition(PositionOuterClass.Position position) throws Exception
     {
-        Map<UUID, String> positionsMap = new HashMap<UUID, String>();
-        positionsMap.put(UUID.fromString(position.getPositionId()), position.getDescription());
+        Statement query = QueryBuilder.update(KEYSPACE, POSITIONS_TABLE)
+                .where(QueryBuilder.eq("organization_id", UUID.fromString(position.getOrganizationId())))
+                .with(QueryBuilder.put("positions", UUID.fromString(position.getPositionId()), position.getDescription()));
+
+        _locator.getService(CassandraConnector.class).getSession().execute(query);
     }
 
     @Override
-    public PositionOuterClass.Position deleetPosition(PositionOuterClass.Position position) throws Exception
+    public void deletePosition(PositionOuterClass.Position position) throws Exception
     {
-        return null;
+        Statement query = QueryBuilder.delete()
+                .mapElt("positions", UUID.fromString(position.getPositionId()))
+                .from(KEYSPACE, POSITIONS_TABLE)
+                .where(QueryBuilder.eq("organization_id", UUID.fromString(position.getOrganizationId())));
+
+        _locator.getService(CassandraConnector.class).getSession().execute(query);
     }
 
     @Override
-    public PositionOuterClass.Positions getPositions(String entityId) throws Exception
+    public PositionOuterClass.Positions getPositions(String organizationId) throws Exception
     {
         return null;
     }

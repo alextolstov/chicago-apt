@@ -6,14 +6,14 @@ option java_package = "com.chicago.dto";
 
 message Position
 {
-    string entity_id = 1;
+    string organization_id = 1;
     string position_id = 2;
     string description = 3;
 }
 
 message Positions
 {
-    string entity_id = 1;
+    string organization_id = 1;
     map<string, string> positions = 2;
 }
 

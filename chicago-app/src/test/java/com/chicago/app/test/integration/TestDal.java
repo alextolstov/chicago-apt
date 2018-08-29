@@ -15,7 +15,7 @@ import java.util.UUID;
 public class TestDal
 {
     @Test
-    public void UpdateMap()
+    public void CreatePos()
     {
         try
         {
@@ -24,10 +24,51 @@ public class TestDal
             ServiceLocatorUtilities.bind(serviceLocator, new ApplicationBinder(confFile));
             PositionDal pd = serviceLocator.getService(PositionDal.class);
             PositionOuterClass.Position pos = PositionOuterClass.Position.newBuilder()
-                    .setEntityId(UUID.randomUUID().toString())
-                    .setDescription("Barber")
+                    .setOrganizationId("bfbdf629-dada-4ecf-aacc-343d9aa609ba")
+                    .setDescription("Barber1")
                     .build();
             PositionOuterClass.Position p = pd.createPosition(pos);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void UpdatePos()
+    {
+        try
+        {
+            String confFile = "file://C:\\dev\\chicago-erp\\chicago-app\\src\\main\\resources\\config\\userservice.cfg";
+            ServiceLocator serviceLocator = ServiceLocatorFactory.getInstance().create("servicelocator");
+            ServiceLocatorUtilities.bind(serviceLocator, new ApplicationBinder(confFile));
+            PositionDal pd = serviceLocator.getService(PositionDal.class);
+            PositionOuterClass.Position pos = PositionOuterClass.Position.newBuilder()
+                    .setOrganizationId(UUID.randomUUID().toString())
+                    .setPositionId(UUID.randomUUID().toString())
+                    .setDescription("BarberChanged")
+                    .build();
+            pd.updatePosition(pos);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void DeleteFromMap()
+    {
+        try
+        {
+            String confFile = "file://C:\\dev\\chicago-erp\\chicago-app\\src\\main\\resources\\config\\userservice.cfg";
+            ServiceLocator serviceLocator = ServiceLocatorFactory.getInstance().create("servicelocator");
+            ServiceLocatorUtilities.bind(serviceLocator, new ApplicationBinder(confFile));
+            PositionDal pd = serviceLocator.getService(PositionDal.class);
+            PositionOuterClass.Position pos = PositionOuterClass.Position.newBuilder()
+                    .setOrganizationId("2a328392-28b3-4f8e-a86b-a48d72819ef5")
+                    .setPositionId("6b6bd32a-db64-4bd4-b2c2-f39dca26e5c7")
+                    .build();
+            pd.deletePosition(pos);
         } catch (Exception e)
         {
             e.printStackTrace();

@@ -9,7 +9,7 @@ option java_package = "com.chicago.dto";
 
 message GetPositionsRequest
 {
-    string entity_id = 1;
+    string organization_id = 1;
 }
 
 message GetPositionsResponse
