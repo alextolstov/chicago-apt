@@ -15,14 +15,8 @@ message Role
 {
     int32 role_id = 1;
     string role = 2;
-    repeated Permission permissions = 3;
-    string description = 4;
-}
-
-message SystemPermission
-{
-    repeated Role roles = 1;
-    repeated Permission extra_permissions = 2;
+    string description = 3;
+    repeated Permission permissions = 4;
 }
 
 message UserPermissions
@@ -36,14 +30,16 @@ message User
 {
     string user_id = 1;
     string email = 2;
-    string phone = 3;
-    string firstName = 4;
-    string middleName = 5;
-    string lastName = 6;
-    string password = 7;
-    string holding_id = 8;
-    string company_id = 9;
-    string branch_id = 10;
-    repeated string permissions = 11;
-    int64 create_datetime = 12;
+    string password = 3;
+    bytes avatar = 4;
+    string firstName = 5;
+    string middleName = 6;
+    string lastName = 7;
+    string cell_phone = 8;
+    string home_phone = 9;
+    string work_phone = 10;
+    string holding_id = 11;
+    string company_id = 12;
+    string branch_id = 13;
+    repeated string permissions = 14;
 }

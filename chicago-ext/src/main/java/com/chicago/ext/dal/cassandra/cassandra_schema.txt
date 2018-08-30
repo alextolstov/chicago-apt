@@ -2,27 +2,40 @@ CREATE KEYSPACE ChicagoErp  WITH REPLICATION = { 'class' : 'SimpleStrategy', 're
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Holdings (
     holding_id uuid PRIMARY KEY,
-    users set<uuid>,
     name varchar,
-    companies set<uuid>,
     description varchar,
+    web_site varchar,
+    email_domain varchar,
+    phones set<varchar>,
+    fax set<varchar>,
+    users set<uuid>,
+    companies set<uuid>,
+    address_id uuid,
     create_datetime timestamp);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Companies(
     company_id uuid PRIMARY KEY,
-    holding_id uuid,
-    users set<uuid>,
     name varchar,
-    branches set<uuid>,
     description varchar,
+    web_site varchar,
+    email_domain varchar,
+    holding_id uuid,
+    phones set<varchar>,
+    fax set<varchar>,
+    users set<uuid>,
+    branches set<uuid>,
+    address_id uuid,
     create_datetime timestamp);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Branches(
     branch_id uuid PRIMARY KEY,
-    company_id uuid,
-    users set<uuid>,
     name varchar,
     description varchar,
+    company_id uuid,
+    phones set<varchar>,
+    fax set<varchar>,
+    users set<uuid>,
+    address_id uuid,
     create_datetime timestamp);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Users (
@@ -40,6 +53,7 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Users (
     holding_id uuid,
     company_id uuid,
     branch_id uuid,
+    address_id uuid,
     permissions set<varchar>,
     create_datetime timestamp);
 CREATE INDEX update_user_permissions_idx ON ChicagoErp.Users (user_id);
@@ -84,13 +98,11 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.UserAttributes (
 CREATE TABLE IF NOT EXISTS ChicagoErp.UserPermissions(
     user_id uuid PRIMARY KEY,
     role_ids set<int>,
-    extra_permission_ids set<int>
-);
+    extra_permission_ids set<int>);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Positions(
     organization_id uuid PRIMARY KEY, -- holding, company, branch id
-    positions map<uuid, varchar>
-);
+    positions map<uuid, varchar>);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Addresses(
     address_id uuid PRIMARY KEY, -- uses: user_id, company_id, customer_id, holding_id, branch_id
@@ -102,8 +114,7 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Addresses(
     area varchar,
     administrative_division varchar,
     zip_code varchar,
-    country varchar,
-    create_datetime timestamp);
+    country varchar);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Customers (
     customer_id uuid PRIMARY KEY,
