@@ -2,6 +2,8 @@ package com.chicago.ext.dal.cassandra;
 
 import com.chicago.dto.PositionOuterClass;
 import com.chicago.ext.dal.PositionDal;
+import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
@@ -14,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import static com.chicago.ext.dal.cassandra.CassandraConstants.KEYSPACE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.POSITIONS_TABLE;
@@ -66,6 +70,23 @@ public class PositionDalImpl implements PositionDal {
     @Override
     public PositionOuterClass.Positions getPositions(String organizationId) throws Exception
     {
-        return null;
+        Statement query = QueryBuilder.select()
+                .from(KEYSPACE, POSITIONS_TABLE)
+                .where(QueryBuilder.eq("organization_id", UUID.fromString(organizationId)));
+        ResultSet result = _locator.getService(CassandraConnector.class).getSession().execute(query);
+        Row positionsRow = result.one();
+        if (positionsRow == null)
+        {
+            return PositionOuterClass.Positions.getDefaultInstance();
+        }
+
+        Map<UUID, String> posMap = positionsRow.getMap("positions", UUID.class, String.class);
+        // Protobuf doesnt support UUID, need to convert to string
+        Map<String, String> newMap = posMap.entrySet().stream()
+                .collect(Collectors.toMap(entry -> entry.getKey().toString(), Map.Entry::getValue));
+        PositionOuterClass.Positions positions = PositionOuterClass.Positions.newBuilder()
+                .putAllPositions(newMap)
+                .build();
+        return positions;
     }
 }

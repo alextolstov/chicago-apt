@@ -15,7 +15,7 @@ import java.util.UUID;
 public class TestDal
 {
     @Test
-    public void CreatePos()
+    public void createPos()
     {
         try
         {
@@ -35,7 +35,7 @@ public class TestDal
     }
 
     @Test
-    public void UpdatePos()
+    public void updatePos()
     {
         try
         {
@@ -56,7 +56,7 @@ public class TestDal
     }
 
     @Test
-    public void DeleteFromMap()
+    public void deleteFromMap()
     {
         try
         {
@@ -69,6 +69,22 @@ public class TestDal
                     .setPositionId("6b6bd32a-db64-4bd4-b2c2-f39dca26e5c7")
                     .build();
             pd.deletePosition(pos);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void getPositions()
+    {
+        try
+        {
+            String confFile = "file://C:\\dev\\chicago-erp\\chicago-app\\src\\main\\resources\\config\\userservice.cfg";
+            ServiceLocator serviceLocator = ServiceLocatorFactory.getInstance().create("servicelocator");
+            ServiceLocatorUtilities.bind(serviceLocator, new ApplicationBinder(confFile));
+            PositionDal pd = serviceLocator.getService(PositionDal.class);
+            PositionOuterClass.Positions positions = pd.getPositions("2a328392-28b3-4f8e-a86b-a48d72819ef5");
         } catch (Exception e)
         {
             e.printStackTrace();
