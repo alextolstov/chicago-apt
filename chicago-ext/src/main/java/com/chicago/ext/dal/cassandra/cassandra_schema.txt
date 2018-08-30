@@ -46,7 +46,7 @@ CREATE INDEX update_user_permissions_idx ON ChicagoErp.Users (user_id);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Schedule (
     user_id uuid PRIMARY KEY,
-    template_id,
+    template_id uuid,
     work_date date,
     appointment_id set<uuid>);
 
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Appointment (
     appointment_date date,
     client_id uuid,
     start_time timestamp,
-    work_duration duration,
+    duration_min int,
     procedure_id uuid,
     comment varchar,
     create_datetime timestamp,
