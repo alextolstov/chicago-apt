@@ -4,8 +4,7 @@ import com.chicago.dto.UserOuterClass;
 
 import java.util.List;
 
-public interface UserDal
-{
+public interface UserDal {
     /**
      * Create user in existing holding/company/branch
      *
@@ -16,8 +15,6 @@ public interface UserDal
      */
     String registerUser(UserOuterClass.User newUser, String passwordHash, byte[] passwordSalt)
             throws Exception;
-
-    UserOuterClass.SystemPermission getSystemPermissions() throws Exception;
 
     void setUserPermissions(UserOuterClass.UserPermissions permissions) throws Exception;
 

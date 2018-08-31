@@ -85,7 +85,7 @@ public class CassandraRealm extends AuthorizingRealm
     {
         LinkedHashMap<String, String> props = new LinkedHashMap<>();
         props.put("username", user.getEmail());
-        props.put("phone", user.getPhone());
+        props.put("phone", user.getCellPhone());
         props.put("firstname", user.getFirstName());
         props.put("lastname", user.getLastName());
         props.put("user_id", user.getUserId());

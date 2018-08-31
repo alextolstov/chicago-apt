@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package com.chicago.dto;
+
+option java_package = "com.chicago.dto";
+
+message Address
+{
+    string address_id = 1;
+    string street_name = 2;
+    string house_number = 3;
+    string building_info = 4;
+    string apt_office_number = 5;
+    string place_name = 6;
+    string area = 7;
+    string administrative_division = 8;
+    string zip_code = 9;
+    string country = 10;
+}
+

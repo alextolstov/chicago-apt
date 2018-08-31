@@ -41,5 +41,6 @@ message User
     string holding_id = 11;
     string company_id = 12;
     string branch_id = 13;
-    repeated string permissions = 14;
+    string address_id = 14;
+    repeated string permissions = 15;
 }

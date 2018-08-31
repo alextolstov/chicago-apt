@@ -31,8 +31,10 @@ public class UserDalImpl implements UserDal {
         _locator = ServiceLocatorFactory.getInstance().find("servicelocator");
     }
 
-    public String registerUser(UserOuterClass.User newUser, String passwordHash, byte[] passwordSalt) throws Exception {
-        if (isExists(newUser.getEmail())) {
+    public String registerUser(UserOuterClass.User newUser, String passwordHash, byte[] passwordSalt) throws Exception
+    {
+        if (isExists(newUser.getEmail()))
+        {
             throw new Exception("User " + newUser.getEmail() + " already exists");
         }
 
@@ -49,14 +51,16 @@ public class UserDalImpl implements UserDal {
         // Create and associate user with new company
         UUID newUserId = UUIDs.random();
         query = QueryBuilder.insertInto(KEYSPACE, USERS_TABLE)
-                .value("user_id", newUserId)
                 .value("email", newUser.getEmail())
+                .value("user_id", newUserId)
                 .value("password_hash", passwordHash)
                 .value("password_salt", ByteBuffer.wrap(passwordSalt))//Bytes.toHexString(passwordSalt))
                 .value("first_name", newUser.getFirstName())
                 .value("middle_name", newUser.getMiddleName())
                 .value("last_name", newUser.getLastName())
-                .value("phone", newUser.getPhone())
+                .value("cell_phone", newUser.getCellPhone())
+                .value("home_phone", newUser.getHomePhone())
+                .value("work_phone", newUser.getWorkPhone())
                 .value("company_id", newComanyId)
                 .value("create_datetime", TimeUtil.getUtcNowInMilliseconds());
         _locator.getService(CassandraConnector.class).getSession().execute(query);
@@ -65,12 +69,8 @@ public class UserDalImpl implements UserDal {
     }
 
     @Override
-    public UserOuterClass.SystemPermission getSystemPermissions() {
-        return null;
-    }
-
-    @Override
-    public void setUserPermissions(UserOuterClass.UserPermissions userPermissions) throws Exception {
+    public void setUserPermissions(UserOuterClass.UserPermissions userPermissions) throws Exception
+    {
         Set<Integer> permissionIds = new HashSet<Integer>();
         permissionIds.addAll(userPermissions.getExtraPermissionsList());
 
@@ -94,7 +94,8 @@ public class UserDalImpl implements UserDal {
         Set<String> permissions = new HashSet<>();
 
         Row permissionRow;
-        while ((permissionRow = result.one()) != null) {
+        while ((permissionRow = result.one()) != null)
+        {
             permissions.add(permissionRow.getString("permission"));
         }
 
@@ -118,7 +119,8 @@ public class UserDalImpl implements UserDal {
     }
 
     @Override
-    public UserOuterClass.UserPermissions getUserPermissions(String userId) throws Exception {
+    public UserOuterClass.UserPermissions getUserPermissions(String userId) throws Exception
+    {
         // Get all premissions
         Statement query = QueryBuilder.select()
                 .from(KEYSPACE, USER_PERMISSIONS_TABLE)
@@ -136,7 +138,8 @@ public class UserDalImpl implements UserDal {
                 .build();
     }
 
-    public UserOuterClass.User getUser(String email) throws Exception {
+    public UserOuterClass.User getUser(String email) throws Exception
+    {
         Statement query = QueryBuilder.select()
                 .from(KEYSPACE, USERS_TABLE)
                 .where(QueryBuilder.eq("email", email));
@@ -150,19 +153,23 @@ public class UserDalImpl implements UserDal {
         return UserOuterClass.User.newBuilder()
                 .setEmail(email)
                 .setUserId(userRow.getUUID("user_id").toString())
-                .setPhone(userRow.getString("phone"))
+                .setCellPhone(userRow.getString("cell_phone"))
+                .setHomePhone(userRow.getString("home_phone"))
+                .setWorkPhone(userRow.getString("work_phone"))
                 .setFirstName(userRow.getString("first_name"))
                 .setMiddleName(userRow.getString("middle_name"))
                 .setLastName(userRow.getString("last_name"))
                 .setHoldingId(userRow.getUUID("holding_id").toString())
                 .setCompanyId(userRow.getUUID("company_id").toString())
                 .setBranchId(userRow.getUUID("branch_id").toString())
+                .setAddressId(userRow.getUUID("address_id").toString())
                 .addAllPermissions(userRow.getSet("permissions", String.class))
                 .build();
     }
 
     @Override
-    public void authUser(String email, String password) throws Exception {
+    public void authUser(String email, String password) throws Exception
+    {
         Statement query = QueryBuilder.select("password_hash", "password_salt")
                 .from(KEYSPACE, USERS_TABLE)
                 .where(QueryBuilder.eq("email", email));
@@ -185,7 +192,8 @@ public class UserDalImpl implements UserDal {
         return null;
     }
 
-    private boolean isExists(String email) {
+    private boolean isExists(String email)
+    {
         Statement query = QueryBuilder.select()
                 .countAll()
                 .from(KEYSPACE, USERS_TABLE)
