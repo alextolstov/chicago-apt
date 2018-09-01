@@ -4,17 +4,12 @@ import com.chicago.dto.UserOuterClass;
 
 import java.util.List;
 
-public interface UserDal {
-    /**
-     * Create user in existing holding/company/branch
-     *
-     * @param newUser
-     * @param passwordHash
-     * @param passwordSalt
-     * @throws Exception
-     */
-    String registerUser(UserOuterClass.User newUser, String passwordHash, byte[] passwordSalt)
+public interface UserDal
+{
+    String createUser(UserOuterClass.User newUser, String passwordHash, byte[] passwordSalt)
             throws Exception;
+
+    boolean isUserExists(String email);
 
     void setUserPermissions(UserOuterClass.UserPermissions permissions) throws Exception;
 

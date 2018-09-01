@@ -4,9 +4,9 @@ import com.chicago.dto.Organization;
 
 public interface OrganizationDal
 {
-    Organization.Holding createHolding(Organization.Holding holding);
+    String createHolding(Organization.Holding holding);
 
-    Organization.Company createCompany(Organization.Company company);
+    String createCompany(Organization.Company company);
 
-    Organization.Branch createBranch(Organization.Branch branch);
+    String createBranch(Organization.Branch branch);
 }

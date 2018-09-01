@@ -29,7 +29,7 @@ message CreateUserRequest
 
 message CreateUserResponse
 {
-    string user_id = 1;
+    User user = 1;
     TransactionError transaction_error = 2;
 }
 

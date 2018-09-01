@@ -6,6 +6,7 @@ import com.datastax.driver.core.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 public class CassandraConnector
@@ -15,7 +16,14 @@ public class CassandraConnector
     private Session _session;
 
     @Inject
-    public CassandraConnector(Config.CassandraConfig cassandraConfig)
+    Config.CassandraConfig cassandraConfig;
+
+    public CassandraConnector()
+    {
+    }
+
+    @PostConstruct
+    private void postConstruct()
     {
         connect(cassandraConfig.getNode());
     }
