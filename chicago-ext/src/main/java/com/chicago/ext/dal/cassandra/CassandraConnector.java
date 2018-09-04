@@ -18,10 +18,6 @@ public class CassandraConnector
     @Inject
     Config.CassandraConfig cassandraConfig;
 
-    public CassandraConnector()
-    {
-    }
-
     @PostConstruct
     private void postConstruct()
     {

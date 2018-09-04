@@ -1,15 +1,12 @@
 package com.chicago.services.controllers;
 
 import com.chicago.common.comm.AsyncCommunicator;
-import com.chicago.dto.Common;
 import com.chicago.dto.Service;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.dto.Usermessages;
 import com.chicago.services.internal.MediaTypeExt;
 import com.chicago.services.util.ResponseErrorUtil;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.Message;
-import com.google.protobuf.util.JsonFormat;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -73,7 +70,7 @@ public class UserController
                         .setUser(usr)
                         .build();
                 response = _asyncComm.transaction(createRequest);
-            }else
+            } else
             {
                 Usermessages.CreateUserRequest createRequest = Usermessages.CreateUserRequest.newBuilder()
                         .setUser(usr)
