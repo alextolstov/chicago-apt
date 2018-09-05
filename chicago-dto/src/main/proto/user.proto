@@ -43,4 +43,5 @@ message User
     string branch_id = 13;
     string address_id = 14;
     repeated string permissions = 15;
+    int64 create_datetime = 16;
 }

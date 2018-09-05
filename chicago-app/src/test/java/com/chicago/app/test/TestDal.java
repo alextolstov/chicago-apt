@@ -1,4 +1,4 @@
-package com.chicago.app.test.integration;
+package com.chicago.app.test;
 
 import com.chicago.app.ApplicationBinder;
 import com.chicago.app.ServiceEntry;

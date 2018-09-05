@@ -9,6 +9,7 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.utils.UUIDs;
+import com.google.protobuf.ByteString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,11 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.chicago.ext.dal.cassandra.CassandraConstants.KEYSPACE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.PERMISSIONS_TABLE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.ROLES_TABLE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.USERS_TABLE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.USER_PERMISSIONS_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.*;
 
 public class UserDalImpl implements UserDal
 {
@@ -142,17 +139,19 @@ public class UserDalImpl implements UserDal
         return UserOuterClass.User.newBuilder()
                 .setEmail(email)
                 .setUserId(userRow.getUUID("user_id").toString())
-                .setCellPhone(userRow.getString("cell_phone"))
-                .setHomePhone(userRow.getString("home_phone"))
-                .setWorkPhone(userRow.getString("work_phone"))
+                .setAvatar(ByteString.copyFrom(userRow.getBytes("avatar").array()))
                 .setFirstName(userRow.getString("first_name"))
                 .setMiddleName(userRow.getString("middle_name"))
                 .setLastName(userRow.getString("last_name"))
+                .setCellPhone(userRow.getString("cell_phone"))
+                .setHomePhone(userRow.getString("home_phone"))
+                .setWorkPhone(userRow.getString("work_phone"))
                 .setHoldingId(userRow.getUUID("holding_id").toString())
                 .setCompanyId(userRow.getUUID("company_id").toString())
                 .setBranchId(userRow.getUUID("branch_id").toString())
                 .setAddressId(userRow.getUUID("address_id").toString())
                 .addAllPermissions(userRow.getSet("permissions", String.class))
+                .setCreateDatetime(userRow.getTimestamp("create_datetime").getTime())
                 .build();
     }
 
