@@ -48,5 +48,6 @@ message User
 
 message UserAvatar
 {
-    bytes avatar = 1;
+    string user_id = 1;
+    bytes avatar = 2;
 }

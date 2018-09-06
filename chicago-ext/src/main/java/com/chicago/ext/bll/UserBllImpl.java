@@ -5,6 +5,8 @@ import com.chicago.dto.Organization;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.ext.dal.OrganizationDal;
 import com.chicago.ext.dal.UserDal;
+import com.chicago.ext.dal.cassandra.PasswordNotMatchException;
+import javafx.util.Pair;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,10 +72,16 @@ public class UserBllImpl implements UserBll
         return createUser(newUser, true);
     }
 
-    public void authUser(String userName, String password) throws Exception
+    public void authUser(String email, String password) throws Exception
     {
-        _LOG.info("Called for user: {}", userName);
-        _userDal.authUser(userName, password);
+        _LOG.info("Called for user: {}", email);
+        Pair<String, byte[]> hashSalt = _userDal.getHashSalt(email);
+        String hashPassword = PasswordUtil.getSecurePassword(password, hashSalt.getValue());
+
+        if (!hashPassword.equals(hashSalt.getKey()))
+        {
+            throw new PasswordNotMatchException("Wrong password for user " + email);
+        }
     }
 
     private UserOuterClass.User createUser(UserOuterClass.User user, boolean sendCredentials) throws Exception

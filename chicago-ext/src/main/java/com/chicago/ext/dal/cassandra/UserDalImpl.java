@@ -1,6 +1,5 @@
 package com.chicago.ext.dal.cassandra;
 
-import com.chicago.common.util.PasswordUtil;
 import com.chicago.common.util.TimeUtil;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.ext.dal.UserDal;
@@ -10,6 +9,7 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.utils.UUIDs;
 import com.google.protobuf.ByteString;
+import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +20,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.chicago.ext.dal.cassandra.CassandraConstants.*;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.KEYSPACE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.PERMISSIONS_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.ROLES_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.USERS_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.USER_PERMISSIONS_TABLE;
 
 public class UserDalImpl implements UserDal
 {
@@ -29,6 +33,7 @@ public class UserDalImpl implements UserDal
     @Inject
     private CassandraConnector _cassandraConnector;
 
+    @Override
     public String createUser(UserOuterClass.User newUser, String passwordHash, byte[] passwordSalt)
     {
         // Create and associate user with new company
@@ -104,7 +109,10 @@ public class UserDalImpl implements UserDal
     @Override
     public void setUserAvatar(UserOuterClass.UserAvatar avatar)
     {
-
+        Statement query = QueryBuilder.update(KEYSPACE, USERS_TABLE)
+                .with(QueryBuilder.set("avatar", avatar.getAvatar()))
+                .where(QueryBuilder.eq("user_id", avatar.getUserId()));
+        _cassandraConnector.getSession().execute(query);
     }
 
     @Override
@@ -128,6 +136,7 @@ public class UserDalImpl implements UserDal
                 .build();
     }
 
+    @Override
     public UserOuterClass.User getUser(String email) throws Exception
     {
         Statement query = QueryBuilder.select()
@@ -161,7 +170,7 @@ public class UserDalImpl implements UserDal
     }
 
     @Override
-    public void authUser(String email, String password) throws Exception
+    public Pair<String, byte[]> getHashSalt(String email) throws Exception
     {
         Statement query = QueryBuilder.select("password_hash", "password_salt")
                 .from(KEYSPACE, USERS_TABLE)
@@ -173,21 +182,16 @@ public class UserDalImpl implements UserDal
         {
             throw new UserNotFoundException("No user with name " + email + " found");
         }
-        String passwordHash = row.getString("password_hash");
-        byte[] passwordSalt = row.getBytes("password_salt").array();
-        String encryptedPassword = PasswordUtil.getSecurePassword(password, passwordSalt);
-
-        if (!encryptedPassword.equals(passwordHash))
-        {
-            throw new PasswordNotMatchException("Wrong password for user " + email);
-        }
+        return new Pair(row.getString("password_hash"), row.getBytes("password_salt").array());
     }
 
+    @Override
     public List<UserOuterClass.User> getUsers()
     {
         return null;
     }
 
+    @Override
     public boolean isUserExists(String email)
     {
         Statement query = QueryBuilder.select()
@@ -201,6 +205,21 @@ public class UserDalImpl implements UserDal
     @Override
     public void updateUser(UserOuterClass.User user)
     {
+        Statement query = QueryBuilder.update(KEYSPACE, USERS_TABLE)
+                .with(QueryBuilder.set("first_name", user.getFirstName()))
+                .and(QueryBuilder.set("middle_name", user.getMiddleName()))
+                .and(QueryBuilder.set("last_name", user.getLastName()))
+                .where(QueryBuilder.eq("user_id", UUID.fromString(user.getUserId())));
+        _cassandraConnector.getSession().execute(query);
+    }
 
+    @Override
+    public void updateUserCredentials(String user_id, String passwordHash, byte[] passwordSalt) throws Exception
+    {
+        Statement query = QueryBuilder.update(KEYSPACE, USERS_TABLE)
+                .with(QueryBuilder.set("password_hash", passwordHash))
+                .and(QueryBuilder.set("password_salt", passwordSalt))
+                .where(QueryBuilder.eq("user_id", user_id));
+        _cassandraConnector.getSession().execute(query);
     }
 }
