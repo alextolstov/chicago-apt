@@ -1,8 +1,6 @@
 package com.chicago.ext.test;
 
 import com.chicago.common.util.TimeUtil;
-import com.google.protobuf.Timestamp;
-import com.sun.org.glassfish.gmbal.Description;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -12,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 
 public class TestTime
 {
-    @Description("Test not to milliseconds and check if it is correct")
+    //@DisplayName("Test not to milliseconds and check if it is correct")
     @Test
     public void compareSystemAndProtoTimestamp()
     {
