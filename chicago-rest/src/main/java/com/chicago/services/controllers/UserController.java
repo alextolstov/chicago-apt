@@ -1,6 +1,7 @@
 package com.chicago.services.controllers;
 
 import com.chicago.common.comm.AsyncCommunicator;
+import com.chicago.dto.Common;
 import com.chicago.dto.Service;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.dto.Usermessages;
@@ -32,7 +33,7 @@ public class UserController
     @Path("image")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
-    public Response setImage(byte[] data) throws TimeoutException, InvalidProtocolBufferException
+    public Response setImage(byte[] data)
     {
         Subject currentUser = SecurityUtils.getSubject();
         currentUser.hasRole("");
@@ -64,20 +65,13 @@ public class UserController
             UserOuterClass.User usr = UserOuterClass.User.parseFrom(data);
             byte[] response;
 
-            if (isAdmin)
-            {
-                Usermessages.CreateAdminUserRequest createRequest = Usermessages.CreateAdminUserRequest.newBuilder()
-                        .setUser(usr)
-                        .build();
-                response = _asyncComm.transaction(createRequest);
-            } else
-            {
-                Usermessages.CreateUserRequest createRequest = Usermessages.CreateUserRequest.newBuilder()
-                        .setUser(usr)
-                        .build();
-                response = _asyncComm.transaction(createRequest);
-            }
+            Usermessages.UserRequest createRequest = Usermessages.UserRequest.newBuilder()
+                    .setCrudOperation(Common.CrudOperation.CREATE)
+                    .setUserType(isAdmin ? Usermessages.UserType.ADMIN : Usermessages.UserType.STANDARD)
+                    .setUser(usr)
+                    .build();
 
+            response = _asyncComm.transaction(createRequest);
             return Response.ok(response).build();
         } catch (TimeoutException | InvalidProtocolBufferException e)
         {

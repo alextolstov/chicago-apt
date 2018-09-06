@@ -45,3 +45,8 @@ message User
     repeated string permissions = 15;
     int64 create_datetime = 16;
 }
+
+message UserAvatar
+{
+    bytes avatar = 1;
+}

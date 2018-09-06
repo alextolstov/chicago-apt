@@ -7,6 +7,12 @@ import "user.proto";
 
 option java_package = "com.chicago.dto";
 
+enum UserType
+{
+    ADMIN = 0;
+    STANDARD = 1;
+}
+
 message SetUserPermissionsRequest
 {
     UserPermissions permissions = 1;
@@ -22,12 +28,14 @@ message CreateAdminUserRequest
     User user = 1;
 }
 
-message CreateUserRequest
+message UserRequest
 {
-    User user = 1;
+    CrudOperation crud_operation = 1;
+    UserType user_type = 2;
+    User user = 3;
 }
 
-message CreateUserResponse
+message UserResponse
 {
     User user = 1;
     TransactionError transaction_error = 2;

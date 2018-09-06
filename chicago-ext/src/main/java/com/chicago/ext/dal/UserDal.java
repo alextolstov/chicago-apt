@@ -11,7 +11,11 @@ public interface UserDal
 
     boolean isUserExists(String email);
 
+    void updateUser(UserOuterClass.User user) throws Exception;
+
     void setUserPermissions(UserOuterClass.UserPermissions permissions) throws Exception;
+
+    void setUserAvatar(UserOuterClass.UserAvatar avatar) throws Exception;
 
     UserOuterClass.UserPermissions getUserPermissions(String userId) throws Exception;
 

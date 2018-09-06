@@ -4,6 +4,14 @@ package com.chicago.dto;
 
 option java_package = "com.chicago.dto";
 
+enum CrudOperation
+{
+    CREATE = 0;
+    READ = 1;
+    UPDATE = 2;
+    DELETE = 3;
+}
+
 message TransactionKey
 {
     string transaction_id = 1;

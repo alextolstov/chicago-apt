@@ -1,6 +1,7 @@
 package com.chicago.app.test;
 
 import com.chicago.common.comm.KafkaAsyncCommunicator;
+import com.chicago.dto.Common;
 import com.chicago.dto.Config;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.dto.Usermessages;
@@ -31,7 +32,8 @@ public class TestSendRequestResponse
                 .setFirstName("Aleksey")
                 .setLastName("Telyshev")
                 .build();
-        Usermessages.CreateUserRequest cur = Usermessages.CreateUserRequest.newBuilder()
+        Usermessages.UserRequest cur = Usermessages.UserRequest.newBuilder()
+                .setCrudOperation(Common.CrudOperation.CREATE)
                 .setUser(usr)
                 .build();
         try
@@ -39,7 +41,7 @@ public class TestSendRequestResponse
             for(int i = 0; i < 100000; i++)
             {
                 byte[] data = comm.transaction(cur);
-                Usermessages.CreateUserResponse resp = Usermessages.CreateUserResponse.parseFrom(data);
+                Usermessages.UserResponse resp = Usermessages.UserResponse.parseFrom(data);
                 System.out.println("Done: " + i);
             }
         } catch (TimeoutException e)

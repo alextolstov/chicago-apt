@@ -15,9 +15,9 @@ public class ResponseFactoryUtil
     {
         _LOG.error(error);
 
-        if (type.getCanonicalName().equals(Usermessages.CreateUserResponse.class.getCanonicalName()))
+        if (type.getCanonicalName().equals(Usermessages.UserResponse.class.getCanonicalName()))
         {
-            return Usermessages.CreateUserResponse
+            return Usermessages.UserResponse
                     .newBuilder()
                     .setTransactionError(ErrorResponseUtil.createErrorResponse(errorCode, error))
                     .build();
@@ -30,7 +30,7 @@ public class ResponseFactoryUtil
                     .build();
         }
 
-        _LOG.error("Unknown message type: {}", Usermessages.CreateUserResponse.class.getCanonicalName());
+        _LOG.error("Unknown message type: {}", Usermessages.UserResponse.class.getCanonicalName());
         return null;
     }
 }

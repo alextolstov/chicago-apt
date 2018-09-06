@@ -29,7 +29,7 @@ public class UserDalImpl implements UserDal
     @Inject
     private CassandraConnector _cassandraConnector;
 
-    public String createUser(UserOuterClass.User newUser, String passwordHash, byte[] passwordSalt) throws Exception
+    public String createUser(UserOuterClass.User newUser, String passwordHash, byte[] passwordSalt)
     {
         // Create and associate user with new company
         UUID newUserId = UUIDs.random();
@@ -52,10 +52,9 @@ public class UserDalImpl implements UserDal
     }
 
     @Override
-    public void setUserPermissions(UserOuterClass.UserPermissions userPermissions) throws Exception
+    public void setUserPermissions(UserOuterClass.UserPermissions userPermissions)
     {
-        Set<Integer> permissionIds = new HashSet<Integer>();
-        permissionIds.addAll(userPermissions.getExtraPermissionsList());
+        Set<Integer> permissionIds = new HashSet<>(userPermissions.getExtraPermissionsList());
 
         // Expand roles
         Statement query = QueryBuilder.select()
@@ -100,6 +99,12 @@ public class UserDalImpl implements UserDal
         query = QueryBuilder.update(KEYSPACE, USERS_TABLE).with(QueryBuilder.set("permissions", permissions))
                 .where(QueryBuilder.eq("email", email));
         _cassandraConnector.getSession().execute(query);
+    }
+
+    @Override
+    public void setUserAvatar(UserOuterClass.UserAvatar avatar)
+    {
+
     }
 
     @Override
@@ -191,5 +196,11 @@ public class UserDalImpl implements UserDal
                 .where(QueryBuilder.eq("email", email));
         ResultSet result = _cassandraConnector.getSession().execute(query);
         return (result.one().getLong("count") > 0);
+    }
+
+    @Override
+    public void updateUser(UserOuterClass.User user)
+    {
+
     }
 }
