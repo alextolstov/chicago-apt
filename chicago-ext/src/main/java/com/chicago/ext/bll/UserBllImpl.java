@@ -92,9 +92,11 @@ public class UserBllImpl implements UserBll
     }
 
     @Override
-    public void updateUserPassword(String userName, String password) throws Exception
+    public void setUserPassword(UserOuterClass.UserPassword password) throws Exception
     {
-
+        byte[] passwordSalt = PasswordUtil.getSalt();
+        String passwordHash = PasswordUtil.getSecurePassword(password.getPassword(), passwordSalt);
+        _userDal.setUserPassword(password.getUserId(), passwordHash, passwordSalt);
     }
 
     private UserOuterClass.User createUser(UserOuterClass.User user, boolean sendCredentials) throws Exception

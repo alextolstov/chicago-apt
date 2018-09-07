@@ -20,11 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.chicago.ext.dal.cassandra.CassandraConstants.KEYSPACE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.PERMISSIONS_TABLE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.ROLES_TABLE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.USERS_TABLE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.USER_PERMISSIONS_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.*;
 
 public class UserDalImpl implements UserDal
 {
@@ -38,9 +34,9 @@ public class UserDalImpl implements UserDal
     {
         // Create and associate user with new company
         UUID newUserId = UUIDs.random();
-        Statement query = QueryBuilder.insertInto(KEYSPACE, USERS_TABLE)
-                .value("email", newUser.getEmail())
+        Statement query = QueryBuilder.insertInto(KEYSPACE, USERS_BY_ID_TABLE)
                 .value("user_id", newUserId)
+                .value("email", newUser.getEmail())
                 .value("password_hash", passwordHash)
                 .value("password_salt", ByteBuffer.wrap(passwordSalt))//Bytes.toHexString(passwordSalt))
                 .value("first_name", newUser.getFirstName())
@@ -96,12 +92,12 @@ public class UserDalImpl implements UserDal
                 .where(QueryBuilder.eq("user_id", UUID.fromString(userPermissions.getUserId())));
         _cassandraConnector.getSession().execute(query);
 
-        query = QueryBuilder.select().from(KEYSPACE, USERS_TABLE)
+        query = QueryBuilder.select().from(KEYSPACE, USERS_BY_ID_TABLE)
                 .where(QueryBuilder.eq("user_id", UUID.fromString(userPermissions.getUserId())));
         result = _cassandraConnector.getSession().execute(query);
         Row userRow = result.one();
         String email = userRow.getString("email");
-        query = QueryBuilder.update(KEYSPACE, USERS_TABLE).with(QueryBuilder.set("permissions", permissions))
+        query = QueryBuilder.update(KEYSPACE, USERS_BY_ID_TABLE).with(QueryBuilder.set("permissions", permissions))
                 .where(QueryBuilder.eq("email", email));
         _cassandraConnector.getSession().execute(query);
     }
@@ -109,7 +105,7 @@ public class UserDalImpl implements UserDal
     @Override
     public void setUserAvatar(UserOuterClass.UserAvatar avatar)
     {
-        Statement query = QueryBuilder.update(KEYSPACE, USERS_TABLE)
+        Statement query = QueryBuilder.update(KEYSPACE, USERS_BY_ID_TABLE)
                 .with(QueryBuilder.set("avatar", avatar.getAvatar()))
                 .where(QueryBuilder.eq("user_id", avatar.getUserId()));
         _cassandraConnector.getSession().execute(query);
@@ -140,7 +136,7 @@ public class UserDalImpl implements UserDal
     public UserOuterClass.User getUser(String email) throws Exception
     {
         Statement query = QueryBuilder.select()
-                .from(KEYSPACE, USERS_TABLE)
+                .from(KEYSPACE, USERS_BY_EMAIL_TABLE)
                 .where(QueryBuilder.eq("email", email));
         ResultSet result = _cassandraConnector.getSession().execute(query);
         Row userRow = result.one();
@@ -151,8 +147,8 @@ public class UserDalImpl implements UserDal
 
         // Populate protobuf
         return UserOuterClass.User.newBuilder()
-                .setEmail(email)
                 .setUserId(userRow.getUUID("user_id").toString())
+                .setEmail(email)
                 .setAvatar(ByteString.copyFrom(userRow.getBytes("avatar").array()))
                 .setFirstName(userRow.getString("first_name"))
                 .setMiddleName(userRow.getString("middle_name"))
@@ -173,7 +169,7 @@ public class UserDalImpl implements UserDal
     public Pair<String, byte[]> getHashSalt(String email) throws Exception
     {
         Statement query = QueryBuilder.select("password_hash", "password_salt")
-                .from(KEYSPACE, USERS_TABLE)
+                .from(KEYSPACE, USERS_BY_EMAIL_TABLE)
                 .where(QueryBuilder.eq("email", email));
         ResultSet result = _cassandraConnector.getSession().execute(query);
         Row row = result.one();
@@ -186,7 +182,7 @@ public class UserDalImpl implements UserDal
     }
 
     @Override
-    public List<UserOuterClass.User> getUsers()
+    public List<UserOuterClass.User> getUsers(String organizationId)
     {
         return null;
     }
@@ -196,7 +192,7 @@ public class UserDalImpl implements UserDal
     {
         Statement query = QueryBuilder.select()
                 .countAll()
-                .from(KEYSPACE, USERS_TABLE)
+                .from(KEYSPACE, USERS_BY_EMAIL_TABLE)
                 .where(QueryBuilder.eq("email", email));
         ResultSet result = _cassandraConnector.getSession().execute(query);
         return (result.one().getLong("count") > 0);
@@ -205,7 +201,7 @@ public class UserDalImpl implements UserDal
     @Override
     public void updateUser(UserOuterClass.User user)
     {
-        Statement query = QueryBuilder.update(KEYSPACE, USERS_TABLE)
+        Statement query = QueryBuilder.update(KEYSPACE, USERS_BY_ID_TABLE)
                 .with(QueryBuilder.set("first_name", user.getFirstName()))
                 .and(QueryBuilder.set("middle_name", user.getMiddleName()))
                 .and(QueryBuilder.set("last_name", user.getLastName()))
@@ -214,12 +210,12 @@ public class UserDalImpl implements UserDal
     }
 
     @Override
-    public void updateUserPassword(String user_id, String passwordHash, byte[] passwordSalt)
+    public void setUserPassword(String user_id, String passwordHash, byte[] passwordSalt)
     {
-        Statement query = QueryBuilder.update(KEYSPACE, USERS_TABLE)
+        Statement query = QueryBuilder.update(KEYSPACE, USERS_BY_ID_TABLE)
                 .with(QueryBuilder.set("password_hash", passwordHash))
                 .and(QueryBuilder.set("password_salt", passwordSalt))
-                .where(QueryBuilder.eq("user_id", user_id));
+                .where(QueryBuilder.eq("user_id", UUID.fromString(user_id)));
         _cassandraConnector.getSession().execute(query);
     }
 }

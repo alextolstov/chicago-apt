@@ -39,8 +39,8 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Branches(
     create_datetime timestamp);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Users (
-    email varchar PRIMARY KEY,
-    user_id uuid,
+    user_id uuid PRIMARY KEY,
+    email varchar,
     password_hash varchar,
     password_salt blob,
     avatar blob,
@@ -56,7 +56,28 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Users (
     address_id uuid,
     permissions set<varchar>,
     create_datetime timestamp);
-CREATE INDEX update_user_permissions_idx ON ChicagoErp.Users (user_id);
+
+CREATE MATERIALIZED VIEW ChicagoErp.UsersByEmail AS SELECT
+    user_id,
+    email,
+    password_hash,
+    password_salt,
+    avatar,
+    first_name,
+    middle_name,
+    last_name,
+    cell_phone,
+    home_phone,
+    work_phone,
+    holding_id,
+    company_id,
+    branch_id,
+    address_id,
+    permissions,
+    create_datetime
+    FROM ChicagoErp.Users
+    WHERE email IS NOT NULL
+    PRIMARY KEY(email, user_id);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Schedule (
     user_id uuid PRIMARY KEY,

@@ -14,5 +14,5 @@ public interface UserBll
 
     void authUser(String userName, String password) throws Exception;
 
-    void updateUserPassword(String userName, String password) throws Exception;
+    void setUserPassword(UserOuterClass.UserPassword userPassword) throws Exception;
 }

@@ -28,6 +28,7 @@ public class UserRequests extends AbstractComponent
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
         _ed.registerHandler(Usermessages.SetUserAvatarRequest.class, new SetUserAvatarHandler());
+        _ed.registerHandler(Usermessages.SetUserPasswordRequest.class, new SetUserPasswordHandler());
         _ed.registerHandler(Usermessages.UserRequest.class, new UserEventHandler());
         _ed.registerHandler(Usermessages.LoginUserRequest.class, new LoginUserEventHandler());
     }
@@ -41,6 +42,29 @@ public class UserRequests extends AbstractComponent
     public static void registerComponentFactories()
     {
         ComponentManager.registerComponentFactory(new Exception().getStackTrace()[0].getClassName());
+    }
+
+    class SetUserPasswordHandler implements EventHandler<Usermessages.SetUserPasswordRequest>
+    {
+        @Override
+        public void handleEvent(Usermessages.SetUserPasswordRequest event, String transactionId)
+        {
+            Message response;
+            try
+            {
+                _userBll.setUserPassword(event.getUserPassword());
+
+                response = Common.VoidResponse
+                        .newBuilder()
+                        .build();
+            } catch (Exception ex)
+            {
+                response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                        Usermessages.UserResponse.class);
+            }
+            _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
+            LOG.info("Published real-time response on request with transaction id: {}", transactionId);
+        }
     }
 
     class SetUserAvatarHandler implements EventHandler<Usermessages.SetUserAvatarRequest>
@@ -81,7 +105,7 @@ public class UserRequests extends AbstractComponent
                         UserOuterClass.User newUser = null;
                         if (event.getUserType() == Usermessages.UserType.ADMIN)
                         {
-                            _userBll.createAdminUser(event.getUser());
+                            newUser = _userBll.createAdminUser(event.getUser());
                         } else
                         {
                             newUser = _userBll.createStandardUser(event.getUser());

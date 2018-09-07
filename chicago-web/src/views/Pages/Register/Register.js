@@ -104,7 +104,7 @@ class Register extends Component {
         return response.arrayBuffer();
       })
       .then(proto => {
-        let user_response = usermessages_proto.CreateUserResponse.deserializeBinary(proto);
+        let user_response = usermessages_proto.UserResponse.deserializeBinary(proto);
         if (user_response.getTransactionError() !== undefined) {
           this.handleError(user_response.getTransactionError().getErrorMessage());
         } else {

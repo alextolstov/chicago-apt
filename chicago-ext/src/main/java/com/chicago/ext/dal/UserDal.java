@@ -14,7 +14,7 @@ public interface UserDal
 
     void updateUser(UserOuterClass.User user) throws Exception;
 
-    void updateUserPassword(String user_id, String passwordHash, byte[] passwordSalt) throws Exception;
+    void setUserPassword(String user_id, String passwordHash, byte[] passwordSalt) throws Exception;
 
     void setUserPermissions(UserOuterClass.UserPermissions permissions) throws Exception;
 
@@ -26,5 +26,5 @@ public interface UserDal
 
     UserOuterClass.User getUser(String email) throws Exception;
 
-    List<UserOuterClass.User> getUsers() throws Exception;
+    List<UserOuterClass.User> getUsers(String organizationId) throws Exception;
 }
