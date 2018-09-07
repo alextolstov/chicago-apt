@@ -17,7 +17,7 @@ import static com.chicago.ext.dal.cassandra.CassandraConstants.KEYSPACE;
 
 public class OrganizationDalImpl implements OrganizationDal
 {
-    private static final Logger _LOG = LoggerFactory.getLogger(UserDalImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserDalImpl.class);
     @Inject
     private CassandraConnector _cassandraConnector;
 

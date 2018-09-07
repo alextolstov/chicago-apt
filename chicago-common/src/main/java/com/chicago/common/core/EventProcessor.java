@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 
 public class EventProcessor
 {
-    private static final Logger _LOG = LoggerFactory.getLogger(EventProcessor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EventProcessor.class);
     private static final int _THREADS = 30;
 
     private HashMap<String, HashSet<EventHandler>> _eventHandlers = new HashMap<>();
@@ -30,12 +30,12 @@ public class EventProcessor
             {
                 // Start and forget, internally it will push response into the queue
                 _executor.execute(() -> eh.handleEvent(event.getMessage(), event.getTransactionId()));
-                _LOG.info("Task with transaction id: {} was submitted and message type: {}", event.getTransactionId(), event.getMessage().getClass());
+                LOG.info("Task with transaction id: {} was submitted and message type: {}", event.getTransactionId(), event.getMessage().getClass());
             }
         }
         else
         {
-            _LOG.error("Event handler for event {} not found", event.getName());
+            LOG.error("Event handler for event {} not found", event.getName());
         }
     }
 

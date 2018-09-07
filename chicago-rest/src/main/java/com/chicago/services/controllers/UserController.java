@@ -7,6 +7,7 @@ import com.chicago.dto.UserOuterClass;
 import com.chicago.dto.Usermessages;
 import com.chicago.services.internal.MediaTypeExt;
 import com.chicago.services.util.ResponseErrorUtil;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -30,14 +31,31 @@ public class UserController
     private AsyncCommunicator _asyncComm;
 
     @POST
-    @Path("image")
+    @Path("avatar")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
-    public Response setImage(byte[] data)
+    public Response setAvatar(byte[] data)
     {
         Subject currentUser = SecurityUtils.getSubject();
         currentUser.hasRole("");
-        return Response.ok(null).build();
+        try
+        {
+            UserOuterClass.UserAvatar userAvatar = UserOuterClass.UserAvatar.newBuilder()
+                    .setAvatar(ByteString.copyFrom(data))
+                    .build();
+            byte[] response;
+
+            Usermessages.SetUserAvatarRequest request = Usermessages.SetUserAvatarRequest.newBuilder()
+                    .setUserAvatar(userAvatar)
+                    .build();
+
+            response = _asyncComm.transaction(request);
+            return Response.ok(response).build();
+        } catch (TimeoutException | InvalidProtocolBufferException e)
+        {
+            return ResponseErrorUtil.createErrorResponse(e.getMessage(),
+                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        }
     }
 
     @POST
@@ -62,16 +80,16 @@ public class UserController
     {
         try
         {
-            UserOuterClass.User usr = UserOuterClass.User.parseFrom(data);
+            UserOuterClass.User user = UserOuterClass.User.parseFrom(data);
             byte[] response;
 
-            Usermessages.UserRequest createRequest = Usermessages.UserRequest.newBuilder()
+            Usermessages.UserRequest request = Usermessages.UserRequest.newBuilder()
                     .setCrudOperation(Common.CrudOperation.CREATE)
                     .setUserType(isAdmin ? Usermessages.UserType.ADMIN : Usermessages.UserType.STANDARD)
-                    .setUser(usr)
+                    .setUser(user)
                     .build();
 
-            response = _asyncComm.transaction(createRequest);
+            response = _asyncComm.transaction(request);
             return Response.ok(response).build();
         } catch (TimeoutException | InvalidProtocolBufferException e)
         {

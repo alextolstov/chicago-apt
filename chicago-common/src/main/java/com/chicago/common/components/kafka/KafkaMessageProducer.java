@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 public class KafkaMessageProducer extends AbstractComponent
 {
-    private static final Logger _LOG = LoggerFactory.getLogger(KafkaMessageProducer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KafkaMessageProducer.class);
     private AbstractEventDispatcher _ed;
     private String _producerTopic;
     private Producer<byte[], byte[]> _producer;
@@ -26,13 +26,13 @@ public class KafkaMessageProducer extends AbstractComponent
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
         _ed.registerHandler(Usermessages.UserResponse.class, new KafkaMessageProducer.MessageEventHandler());
-        _ed.registerHandler(Usermessages.LoginUserResponse.class, new KafkaMessageProducer.MessageEventHandler());
+        _ed.registerHandler(Common.VoidResponse.class, new KafkaMessageProducer.MessageEventHandler());
     }
 
     public boolean init(ConfigAccessor ca)
     {
-        Config.KafkaConfig kafkaConfig = ca.getConfig(KafkaUtil._KAFKA_CONFIG_NAME);
-        Config.ZooKeeperConfig zooConfig = ca.getConfig(KafkaUtil._ZOO_CONFIG_NAME);
+        Config.KafkaConfig kafkaConfig = ca.getConfig(KafkaUtil.KAFKA_CONFIG_NAME);
+        Config.ZooKeeperConfig zooConfig = ca.getConfig(KafkaUtil.ZOO_CONFIG_NAME);
         _producerTopic = kafkaConfig.getProducerTopic();
         _producer = KafkaUtil.createProducer(zooConfig.getServers(), kafkaConfig.getServers(), _producerTopic);
         return true;
@@ -56,7 +56,7 @@ public class KafkaMessageProducer extends AbstractComponent
             byte[] byteValue = event.toByteArray();
             ProducerRecord<byte[], byte[]> data = new ProducerRecord<>(_producerTopic, byteKey, byteValue);
             _producer.send(data);
-            _LOG.info("Published response to kafka with transaction id: {} and type: {}", transactionId, event.getClass());
+            LOG.info("Published response to kafka with transaction id: {} and type: {}", transactionId, event.getClass());
         }
     }
 }

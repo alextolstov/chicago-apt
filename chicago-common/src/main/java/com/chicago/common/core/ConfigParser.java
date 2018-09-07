@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 public class ConfigParser
 {
-    private static final Logger _LOG = LoggerFactory.getLogger(ConfigParser.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigParser.class);
 
     private StringBuffer _fullText = new StringBuffer();
     private StringBuffer _originalText = new StringBuffer();
@@ -24,8 +24,7 @@ public class ConfigParser
         {
             _fullText = fullText;
             TextFormat.merge(fullText, builder);
-            E protoConf = (E)builder.build();
-            return protoConf;
+            return (E)builder.build();
         }
         return null;
     }
@@ -38,7 +37,7 @@ public class ConfigParser
         }
         catch (FileNotFoundException e)
         {
-            _LOG.error(e.getStackTrace().toString());
+            LOG.error(e.getStackTrace().toString());
         }
     }
 
@@ -50,7 +49,7 @@ public class ConfigParser
         }
         catch (FileNotFoundException e)
         {
-            _LOG.error(e.getStackTrace().toString());
+            LOG.error(e.getStackTrace().toString());
         }
     }
 
@@ -120,7 +119,7 @@ public class ConfigParser
             {
                 return null;
             }
-            line.replaceAll(rep, val);
+            line = line.replaceAll(rep, val);
         }
         return line;
     }

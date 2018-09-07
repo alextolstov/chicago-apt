@@ -11,12 +11,12 @@ import javax.inject.Inject;
 
 public class CassandraConnector
 {
-    private static final Logger _LOG = LoggerFactory.getLogger(CassandraConnector.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CassandraConnector.class);
     private Cluster _cluster;
     private Session _session;
 
     @Inject
-    Config.CassandraConfig cassandraConfig;
+    private Config.CassandraConfig cassandraConfig;
 
     @PostConstruct
     private void postConstruct()
@@ -37,7 +37,7 @@ public class CassandraConnector
         _cluster = b.build();
 
         _session = _cluster.connect();
-        _LOG.info("Connected to Cassandra cluster: {}", node);
+        LOG.info("Connected to Cassandra cluster: {}", node);
     }
 
     public Session getSession()

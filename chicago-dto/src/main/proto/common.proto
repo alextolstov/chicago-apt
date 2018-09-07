@@ -23,3 +23,8 @@ message TransactionError
     int32 error_code = 1;
     string error_message = 2;
 }
+
+message VoidResponse
+{
+    TransactionError transaction_error = 1;
+}

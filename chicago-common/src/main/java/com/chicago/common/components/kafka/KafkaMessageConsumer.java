@@ -8,7 +8,6 @@ import com.chicago.common.core.EventBase;
 import com.chicago.common.util.KafkaUtil;
 import com.chicago.dto.Common;
 import com.chicago.dto.Config;
-import com.chicago.dto.Usermessages;
 import com.google.protobuf.Message;
 import org.apache.kafka.clients.consumer.CommitFailedException;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -22,7 +21,7 @@ import java.util.List;
 
 public class KafkaMessageConsumer extends AbstractComponent
 {
-    private static final Logger _LOG = LoggerFactory.getLogger(KafkaMessageConsumer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KafkaMessageConsumer.class);
     private AbstractEventDispatcher _ed;
     private List<String> _topicList;
     private KafkaConsumer<byte[], byte[]> _consumer;
@@ -34,10 +33,10 @@ public class KafkaMessageConsumer extends AbstractComponent
 
     public boolean init(ConfigAccessor ca)
     {
-        Config.ZooKeeperConfig zooConfig = ca.getConfig(KafkaUtil._ZOO_CONFIG_NAME);
-        _LOG.info("Connecting to zookeeper servers: {}", zooConfig.getServers());
-        Config.KafkaConfig kafkaConfig = ca.getConfig(KafkaUtil._KAFKA_CONFIG_NAME);
-        _LOG.info("Connecting to kafka servers: {}", kafkaConfig.getServers());
+        Config.ZooKeeperConfig zooConfig = ca.getConfig(KafkaUtil.ZOO_CONFIG_NAME);
+        LOG.info("Connecting to zookeeper servers: {}", zooConfig.getServers());
+        Config.KafkaConfig kafkaConfig = ca.getConfig(KafkaUtil.KAFKA_CONFIG_NAME);
+        LOG.info("Connecting to kafka servers: {}", kafkaConfig.getServers());
         _topicList = kafkaConfig.getConsumerTopicList();
 
         _consumer = KafkaUtil.createConsumer(zooConfig.getServers(), kafkaConfig.getServers(),
@@ -55,18 +54,18 @@ public class KafkaMessageConsumer extends AbstractComponent
 
     private void run()
     {
-        _LOG.info("Started to consume messages from topic {}", _topicList.get(0));
+        LOG.info("Started to consume messages from topic {}", _topicList.get(0));
         while (true)
         {
             ConsumerRecords<byte[], byte[]> records = _consumer.poll(1000);
-            _LOG.debug("Got {} messages", records.count());
+            LOG.debug("Got {} messages", records.count());
 
             for (ConsumerRecord<byte[], byte[]> record : records)
             {
                 try
                 {
                     Common.TransactionKey transactionKey = Common.TransactionKey.parseFrom(record.key());
-                    _LOG.info("Received request from Kafka with transaction id: {}", transactionKey.getTransactionId());
+                    LOG.info("Received request from Kafka with transaction id: {}", transactionKey.getTransactionId());
                     Message message = _ed.deserializeMessage(transactionKey.getDataType(), record.value());
                     if (message != null)
                     {
@@ -74,7 +73,7 @@ public class KafkaMessageConsumer extends AbstractComponent
                     }
                 } catch (Exception e)
                 {
-                    _LOG.error("Stack trace: {}", e);
+                    LOG.error("Stack trace: {}", e);
                 }
             }
             try
@@ -85,9 +84,9 @@ public class KafkaMessageConsumer extends AbstractComponent
                 }
             } catch (CommitFailedException ex)
             {
-                _LOG.warn("Commit failed. Ignore");
+                LOG.warn("Commit failed. Ignore");
             }
         }
-//        _LOG.info("Exit infinite loop");
+//        LOG.info("Exit infinite loop");
     }
 }

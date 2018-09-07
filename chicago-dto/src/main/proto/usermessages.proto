@@ -23,11 +23,6 @@ message SetUserPermissionsResponse
     TransactionError transaction_error = 1;
 }
 
-message CreateAdminUserRequest
-{
-    User user = 1;
-}
-
 message UserRequest
 {
     CrudOperation crud_operation = 1;
@@ -46,7 +41,13 @@ message LoginUserRequest
     User user = 1;
 }
 
-message LoginUserResponse
+message SetUserAvatarRequest
 {
-    TransactionError transaction_error = 1;
+    UserAvatar user_avatar = 1;
 }
+
+message SetUserPasswordRequest
+{
+    UserPassword user_password = 1;
+}
+

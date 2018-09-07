@@ -1,19 +1,18 @@
 package com.chicago.common.util;
 
-import com.chicago.common.core.LazyLiveEventDispatcher;
+import com.chicago.dto.Common;
 import com.chicago.dto.Usermessages;
 import com.google.protobuf.Message;
-import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ResponseFactoryUtil
 {
-    private static final Logger _LOG = LoggerFactory.getLogger(ResponseFactoryUtil.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ResponseFactoryUtil.class);
 
-    public static Message createErrorResponse(String error,int errorCode, Class type)
+    public static Message createErrorResponse(String error, int errorCode, Class type)
     {
-        _LOG.error(error);
+        LOG.error(error);
 
         if (type.getCanonicalName().equals(Usermessages.UserResponse.class.getCanonicalName()))
         {
@@ -22,15 +21,15 @@ public class ResponseFactoryUtil
                     .setTransactionError(ErrorResponseUtil.createErrorResponse(errorCode, error))
                     .build();
         }
-        if (type.getCanonicalName().equals(Usermessages.LoginUserResponse.class.getCanonicalName()))
+        if (type.getCanonicalName().equals(Common.VoidResponse.class.getCanonicalName()))
         {
-            return Usermessages.LoginUserResponse
+            return Common.VoidResponse
                     .newBuilder()
                     .setTransactionError(ErrorResponseUtil.createErrorResponse(errorCode, error))
                     .build();
         }
 
-        _LOG.error("Unknown message type: {}", Usermessages.UserResponse.class.getCanonicalName());
+        LOG.error("Unknown message type: {}", type.getCanonicalName());
         return null;
     }
 }

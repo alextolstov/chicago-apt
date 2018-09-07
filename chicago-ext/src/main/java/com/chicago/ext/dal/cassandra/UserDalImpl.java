@@ -28,7 +28,7 @@ import static com.chicago.ext.dal.cassandra.CassandraConstants.USER_PERMISSIONS_
 
 public class UserDalImpl implements UserDal
 {
-    private static final Logger _LOG = LoggerFactory.getLogger(UserDalImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserDalImpl.class);
 
     @Inject
     private CassandraConnector _cassandraConnector;
@@ -52,7 +52,7 @@ public class UserDalImpl implements UserDal
                 .value("company_id", UUID.fromString(newUser.getCompanyId()))
                 .value("create_datetime", TimeUtil.getUtcNowInMilliseconds());
         _cassandraConnector.getSession().execute(query);
-        _LOG.info("New user {} created", newUser.getEmail());
+        LOG.info("New user {} created", newUser.getEmail());
         return newUserId.toString();
     }
 
@@ -214,7 +214,7 @@ public class UserDalImpl implements UserDal
     }
 
     @Override
-    public void updateUserCredentials(String user_id, String passwordHash, byte[] passwordSalt) throws Exception
+    public void updateUserPassword(String user_id, String passwordHash, byte[] passwordSalt)
     {
         Statement query = QueryBuilder.update(KEYSPACE, USERS_TABLE)
                 .with(QueryBuilder.set("password_hash", passwordHash))

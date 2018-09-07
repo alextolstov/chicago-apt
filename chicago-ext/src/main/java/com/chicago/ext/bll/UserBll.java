@@ -10,5 +10,9 @@ public interface UserBll
 
     UserOuterClass.User createStandardUser(UserOuterClass.User newUser) throws Exception;
 
+    void setUserAvatar(UserOuterClass.UserAvatar avatar) throws Exception;
+
     void authUser(String userName, String password) throws Exception;
+
+    void updateUserPassword(String userName, String password) throws Exception;
 }

@@ -23,7 +23,7 @@ import static com.chicago.ext.dal.cassandra.CassandraConstants.KEYSPACE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.POSITIONS_TABLE;
 
 public class PositionDalImpl implements PositionDal {
-    private static final Logger _LOG = LoggerFactory.getLogger(PositionDalImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PositionDalImpl.class);
 
     private ServiceLocator _locator;
 
@@ -32,7 +32,7 @@ public class PositionDalImpl implements PositionDal {
     }
 
     @Override
-    public PositionOuterClass.Position createPosition(PositionOuterClass.Position position) throws Exception
+    public PositionOuterClass.Position createPosition(PositionOuterClass.Position position)
     {
         UUID newPositionId = UUIDs.random();
         Statement query = QueryBuilder.update(KEYSPACE, POSITIONS_TABLE)
@@ -47,7 +47,7 @@ public class PositionDalImpl implements PositionDal {
     }
 
     @Override
-    public void updatePosition(PositionOuterClass.Position position) throws Exception
+    public void updatePosition(PositionOuterClass.Position position)
     {
         Statement query = QueryBuilder.update(KEYSPACE, POSITIONS_TABLE)
                 .where(QueryBuilder.eq("organization_id", UUID.fromString(position.getOrganizationId())))
@@ -57,7 +57,7 @@ public class PositionDalImpl implements PositionDal {
     }
 
     @Override
-    public void deletePosition(PositionOuterClass.Position position) throws Exception
+    public void deletePosition(PositionOuterClass.Position position)
     {
         Statement query = QueryBuilder.delete()
                 .mapElt("positions", UUID.fromString(position.getPositionId()))
@@ -68,7 +68,7 @@ public class PositionDalImpl implements PositionDal {
     }
 
     @Override
-    public PositionOuterClass.Positions getPositions(String organizationId) throws Exception
+    public PositionOuterClass.Positions getPositions(String organizationId)
     {
         Statement query = QueryBuilder.select()
                 .from(KEYSPACE, POSITIONS_TABLE)

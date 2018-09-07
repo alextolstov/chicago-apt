@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ConfigAccessor
 {
-    private static final Logger _LOG = LoggerFactory.getLogger(ConfigAccessor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigAccessor.class);
 
     public ConfigAccessor(Message config)
     {
@@ -37,7 +37,7 @@ public class ConfigAccessor
                 }
             } catch (UnsupportedOperationException ex) // It is ok to have this exception, not any fields allow getMessageType()
             {
-                _LOG.info("Exception in ConfigAccessor. It is expected. Ignore it.");
+                LOG.info("Exception in ConfigAccessor. It is expected. Ignore it.");
             }
         }
         return null;

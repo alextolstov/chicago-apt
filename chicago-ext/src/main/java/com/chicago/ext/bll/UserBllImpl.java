@@ -19,7 +19,7 @@ import java.util.Random;
 @Service
 public class UserBllImpl implements UserBll
 {
-    private static final Logger _LOG = LoggerFactory.getLogger(UserBllImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserBllImpl.class);
     @Inject
     private UserDal _userDal;
     @Inject
@@ -55,14 +55,14 @@ public class UserBllImpl implements UserBll
                 .setDescription("New company")
                 .build();
         String companyId = _organizationDal.createCompany(company);
-        _LOG.info("New company {} created for user {}", companyId, user.getEmail());
+        LOG.info("New company {} created for user {}", companyId, user.getEmail());
 
         // Now set new company for user
         user = UserOuterClass.User.newBuilder(user)
                 .setCompanyId(companyId)
                 .build();
         UserOuterClass.User newUser = createUser(user, false);
-        _LOG.info("New user created userId {}", newUser.getUserId());
+        LOG.info("New user created userId {}", newUser.getUserId());
 
         return newUser;
     }
@@ -72,9 +72,16 @@ public class UserBllImpl implements UserBll
         return createUser(newUser, true);
     }
 
+    @Override
+    public void setUserAvatar(UserOuterClass.UserAvatar avatar) throws Exception
+    {
+        LOG.info("Set avatar for user: {}", avatar.getUserId());
+        _userDal.setUserAvatar(avatar);
+    }
+
     public void authUser(String email, String password) throws Exception
     {
-        _LOG.info("Called for user: {}", email);
+        LOG.info("Called for user: {}", email);
         Pair<String, byte[]> hashSalt = _userDal.getHashSalt(email);
         String hashPassword = PasswordUtil.getSecurePassword(password, hashSalt.getValue());
 
@@ -82,6 +89,12 @@ public class UserBllImpl implements UserBll
         {
             throw new PasswordNotMatchException("Wrong password for user " + email);
         }
+    }
+
+    @Override
+    public void updateUserPassword(String userName, String password) throws Exception
+    {
+
     }
 
     private UserOuterClass.User createUser(UserOuterClass.User user, boolean sendCredentials) throws Exception
@@ -97,7 +110,7 @@ public class UserBllImpl implements UserBll
         {
             password = generateRandomString(12);
             // TODO email password
-            _LOG.info("Password was generated for user {} and sent", user.getEmail());
+            LOG.info("Password was generated for user {} and sent", user.getEmail());
         }
 
         byte[] passwordSalt = PasswordUtil.getSalt();

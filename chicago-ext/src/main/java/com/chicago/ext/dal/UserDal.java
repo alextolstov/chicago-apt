@@ -14,7 +14,7 @@ public interface UserDal
 
     void updateUser(UserOuterClass.User user) throws Exception;
 
-    void updateUserCredentials(String user_id, String passwordHash, byte[] passwordSalt) throws Exception;
+    void updateUserPassword(String user_id, String passwordHash, byte[] passwordSalt) throws Exception;
 
     void setUserPermissions(UserOuterClass.UserPermissions permissions) throws Exception;
 

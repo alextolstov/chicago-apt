@@ -1,6 +1,7 @@
 package com.chicago.services.realms;
 
 import com.chicago.common.comm.AsyncCommunicator;
+import com.chicago.dto.Common;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.dto.Usermessages;
 import com.chicago.services.Application;
@@ -63,7 +64,7 @@ public class CassandraRealm extends AuthorizingRealm
                     .build();
             AsyncCommunicator asyncComm = Application.getServiceLocator().getService(AsyncCommunicator.class);
             byte[] response = asyncComm.transaction(loginUserRequest);
-            Usermessages.LoginUserResponse loginUserResponse = Usermessages.LoginUserResponse.parseFrom(response);
+            Common.VoidResponse loginUserResponse = Common.VoidResponse.parseFrom(response);
             if (loginUserResponse.hasTransactionError())
             {
                 throw new AuthenticationException(loginUserResponse.getTransactionError().getErrorMessage());

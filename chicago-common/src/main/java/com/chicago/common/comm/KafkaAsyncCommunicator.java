@@ -4,14 +4,12 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Inbox;
 import com.chicago.common.actors.KafkaResponseActor;
-import com.chicago.common.core.AbstractComponent;
 import com.chicago.common.util.ActorUtil;
 import com.chicago.common.util.KafkaUtil;
 import com.chicago.dto.Common;
 import com.chicago.dto.Config;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
-import com.google.protobuf.util.JsonFormat;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -30,7 +28,7 @@ import java.util.concurrent.TimeoutException;
 @Service
 public class KafkaAsyncCommunicator implements AsyncCommunicator
 {
-    private static final Logger _LOG = LoggerFactory.getLogger(KafkaAsyncCommunicator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KafkaAsyncCommunicator.class);
 
     private KafkaProducer<byte[], byte[]> _kafkaProducer;
     private KafkaConsumer<byte[], byte[]> _kafkaConsumer;
@@ -61,10 +59,10 @@ public class KafkaAsyncCommunicator implements AsyncCommunicator
                 {
                     Common.TransactionKey transactionKey = Common.TransactionKey.parseFrom(record.key());
                     transactionId = transactionKey.getTransactionId();
-                    _LOG.info("Received response with transaction Id: {}", transactionId);
+                    LOG.info("Received response with transaction Id: {}", transactionId);
                 } catch (InvalidProtocolBufferException e)
                 {
-                    _LOG.error(e.getMessage());
+                    LOG.error(e.getMessage());
                 }
                 // Get actor with same name as message key and send message value to it
                 ActorUtil.getRootActor(transactionId).tell(
@@ -94,7 +92,7 @@ public class KafkaAsyncCommunicator implements AsyncCommunicator
         byte[] byteValue = value.toByteArray();
         _kafkaProducer.send(new ProducerRecord<>(_kafkaConfig.getProducerTopic(),
                 byteKey, byteValue));
-        _LOG.info("Sent message with transaction Id: {}", transactionKey.getTransactionId());
+        LOG.info("Sent message with transaction Id: {}", transactionKey.getTransactionId());
 
         return (byte[])inbox.receive(Duration.create(5000, TimeUnit.MILLISECONDS));
     }

@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class LazyLiveEventDispatcher extends AbstractEventDispatcher
 {
-    private static final Logger _LOG = LoggerFactory.getLogger(LazyLiveEventDispatcher.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LazyLiveEventDispatcher.class);
 
     private final Lock _lock = new ReentrantLock();
     private final Condition _cv = _lock.newCondition();
@@ -40,7 +40,7 @@ public class LazyLiveEventDispatcher extends AbstractEventDispatcher
     {
         if(event == null)
         {
-            _LOG.warn("Null event is ignored");
+            LOG.warn("Null event is ignored");
             return;
         }
 
@@ -78,7 +78,7 @@ public class LazyLiveEventDispatcher extends AbstractEventDispatcher
             {
                 if (_eventCount.incrementAndGet() % 100 == 0)
                 {
-                    _LOG.debug("Event count: {}", _eventCount.get());
+                    LOG.debug("Event count: {}", _eventCount.get());
                 }
                 _queueCount.decrementAndGet();
                 _eventProcessor.processEvent(event);
@@ -93,7 +93,7 @@ public class LazyLiveEventDispatcher extends AbstractEventDispatcher
                 }
             } catch (InterruptedException e)
             {
-                _LOG.error(e.getStackTrace().toString());
+                LOG.error(e.getStackTrace().toString());
             } finally
             {
                 _lock.unlock();

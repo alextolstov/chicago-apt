@@ -11,8 +11,6 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +19,9 @@ import java.util.Properties;
 
 public class KafkaUtil
 {
-    private static final Logger _LOG = LoggerFactory.getLogger(KafkaUtil.class);
-    public static final String _KAFKA_CONFIG_NAME = "com.chicago.dto.KafkaConfig";
-    public static final String _ZOO_CONFIG_NAME = "com.chicago.dto.ZooKeeperConfig";
+    private static final Logger LOG = LoggerFactory.getLogger(KafkaUtil.class);
+    public static final String KAFKA_CONFIG_NAME = "com.chicago.dto.KafkaConfig";
+    public static final String ZOO_CONFIG_NAME = "com.chicago.dto.ZooKeeperConfig";
 
     public static <T1, T2> KafkaConsumer<T1, T2> createConsumer(String zookeerServers,
                                                                String bootstrapServers,
@@ -31,7 +29,7 @@ public class KafkaUtil
                                                                String group)
     {
         KafkaUtil.createTopic(zookeerServers, topicList.get(0));
-        _LOG.info("Connecting to kafka servers: {} to create consumer", bootstrapServers);
+        LOG.info("Connecting to kafka servers: {} to create consumer", bootstrapServers);
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, group);
@@ -48,7 +46,7 @@ public class KafkaUtil
                                                                String topic)
     {
         KafkaUtil.createTopic(zookeerServers, topic);
-        _LOG.info("Connecting to kafka servers: {} to create producer", bootstrapServers);
+        LOG.info("Connecting to kafka servers: {} to create producer", bootstrapServers);
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.ACKS_CONFIG, "all");
@@ -60,7 +58,7 @@ public class KafkaUtil
 
     public static void createTopic(String zookeeerServers, String topicName)
     {
-        _LOG.info("Connecting to zookeeperservers: {}", zookeeerServers);
+        LOG.info("Connecting to zookeeperservers: {}", zookeeerServers);
         int sessionTimeOutInMs = 15 * 1000; // 15 secs
         int connectionTimeOutInMs = 10 * 1000; // 10 secs
         ZkClient zkClient = new ZkClient(zookeeerServers, sessionTimeOutInMs, connectionTimeOutInMs, ZKStringSerializer$.MODULE$);
@@ -72,10 +70,10 @@ public class KafkaUtil
             brokerProps.setProperty("broker.id", "0");
 
             AdminUtils.createTopic(zkUtils, topicName, 1, 1, new Properties(), RackAwareMode.Disabled$.MODULE$);
-            _LOG.info("Topic {} was created", topicName);
+            LOG.info("Topic {} was created", topicName);
         } else
         {
-            _LOG.info("Topic {} already exists", topicName);
+            LOG.info("Topic {} already exists", topicName);
         }
 
         zkClient.close();
