@@ -64,14 +64,14 @@ public class CassandraRealm extends AuthorizingRealm
                     .build();
             AsyncCommunicator asyncComm = Application.getServiceLocator().getService(AsyncCommunicator.class);
             byte[] response = asyncComm.transaction(loginUserRequest);
-            Common.VoidResponse loginUserResponse = Common.VoidResponse.parseFrom(response);
+            Usermessages.UserResponse loginUserResponse = Usermessages.UserResponse.parseFrom(response);
             if (loginUserResponse.hasTransactionError())
             {
                 throw new AuthenticationException(loginUserResponse.getTransactionError().getErrorMessage());
             }
 
             // Principals are AUX info that we will keep in session
-            principals = createPrincipals(user);
+            principals = createPrincipals(loginUserResponse.getUser());
 
         } catch (TimeoutException | InvalidProtocolBufferException e)
         {

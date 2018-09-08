@@ -5,31 +5,25 @@ import com.chicago.ext.dal.PositionDal;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Statement;
-import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.utils.UUIDs;
-import org.glassfish.hk2.api.ServiceLocator;
-import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
+import javax.inject.Inject;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static com.chicago.ext.dal.cassandra.CassandraConstants.KEYSPACE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.POSITIONS_TABLE;
 
-public class PositionDalImpl implements PositionDal {
+public class PositionDalImpl implements PositionDal
+{
     private static final Logger LOG = LoggerFactory.getLogger(PositionDalImpl.class);
 
-    private ServiceLocator _locator;
-
-    public PositionDalImpl() {
-        _locator = ServiceLocatorFactory.getInstance().find("servicelocator");
-    }
+    @Inject
+    private CassandraConnector _cassandraConnector;
 
     @Override
     public PositionOuterClass.Position createPosition(PositionOuterClass.Position position)
@@ -38,7 +32,7 @@ public class PositionDalImpl implements PositionDal {
         Statement query = QueryBuilder.update(KEYSPACE, POSITIONS_TABLE)
                 .where(QueryBuilder.eq("organization_id", UUID.fromString(position.getOrganizationId())))
                 .with(QueryBuilder.put("positions", newPositionId, position.getDescription()));
-        _locator.getService(CassandraConnector.class).getSession().execute(query);
+        _cassandraConnector.getSession().execute(query);
 
         return PositionOuterClass.Position.newBuilder()
                 .setOrganizationId(position.getOrganizationId())
@@ -53,7 +47,7 @@ public class PositionDalImpl implements PositionDal {
                 .where(QueryBuilder.eq("organization_id", UUID.fromString(position.getOrganizationId())))
                 .with(QueryBuilder.put("positions", UUID.fromString(position.getPositionId()), position.getDescription()));
 
-        _locator.getService(CassandraConnector.class).getSession().execute(query);
+        _cassandraConnector.getSession().execute(query);
     }
 
     @Override
@@ -64,7 +58,7 @@ public class PositionDalImpl implements PositionDal {
                 .from(KEYSPACE, POSITIONS_TABLE)
                 .where(QueryBuilder.eq("organization_id", UUID.fromString(position.getOrganizationId())));
 
-        _locator.getService(CassandraConnector.class).getSession().execute(query);
+        _cassandraConnector.getSession().execute(query);
     }
 
     @Override
@@ -73,20 +67,19 @@ public class PositionDalImpl implements PositionDal {
         Statement query = QueryBuilder.select()
                 .from(KEYSPACE, POSITIONS_TABLE)
                 .where(QueryBuilder.eq("organization_id", UUID.fromString(organizationId)));
-        ResultSet result = _locator.getService(CassandraConnector.class).getSession().execute(query);
-        Row positionsRow = result.one();
-        if (positionsRow == null)
+        ResultSet result = _cassandraConnector.getSession().execute(query);
+        Row row = result.one();
+        if (row == null)
         {
             return PositionOuterClass.Positions.getDefaultInstance();
         }
 
-        Map<UUID, String> posMap = positionsRow.getMap("positions", UUID.class, String.class);
+        Map<UUID, String> posMap = row.getMap("positions", UUID.class, String.class);
         // Protobuf doesnt support UUID, need to convert to string
         Map<String, String> newMap = posMap.entrySet().stream()
                 .collect(Collectors.toMap(entry -> entry.getKey().toString(), Map.Entry::getValue));
-        PositionOuterClass.Positions positions = PositionOuterClass.Positions.newBuilder()
+        return PositionOuterClass.Positions.newBuilder()
                 .putAllPositions(newMap)
                 .build();
-        return positions;
     }
 }

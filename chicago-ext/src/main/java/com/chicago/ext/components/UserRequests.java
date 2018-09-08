@@ -1,6 +1,11 @@
 package com.chicago.ext.components;
 
-import com.chicago.common.core.*;
+import com.chicago.common.core.AbstractComponent;
+import com.chicago.common.core.AbstractEventDispatcher;
+import com.chicago.common.core.ComponentManager;
+import com.chicago.common.core.ConfigAccessor;
+import com.chicago.common.core.EventBase;
+import com.chicago.common.core.EventHandler;
 import com.chicago.common.util.ResponseFactoryUtil;
 import com.chicago.dto.Common;
 import com.chicago.dto.UserOuterClass;
@@ -15,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class UserRequests extends AbstractComponent
 {
@@ -27,10 +33,11 @@ public class UserRequests extends AbstractComponent
     public UserRequests(ComponentManager cm) throws ClassNotFoundException
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
-        _ed.registerHandler(Usermessages.SetUserAvatarRequest.class, new SetUserAvatarHandler());
-        _ed.registerHandler(Usermessages.SetUserPasswordRequest.class, new SetUserPasswordHandler());
+        _ed.registerHandler(Usermessages.SetUserAvatarRequest.class, new SetUserAvatarEventHandler());
+        _ed.registerHandler(Usermessages.SetUserPasswordRequest.class, new SetUserPasswordEventHandler());
         _ed.registerHandler(Usermessages.UserRequest.class, new UserEventHandler());
         _ed.registerHandler(Usermessages.LoginUserRequest.class, new LoginUserEventHandler());
+        _ed.registerHandler(Usermessages.GetUsersRequest.class, new GetUsersEventHandler());
     }
 
     public boolean init(ConfigAccessor ca)
@@ -44,7 +51,9 @@ public class UserRequests extends AbstractComponent
         ComponentManager.registerComponentFactory(new Exception().getStackTrace()[0].getClassName());
     }
 
-    class SetUserPasswordHandler implements EventHandler<Usermessages.SetUserPasswordRequest>
+    // In: Usermessages.SetUserPasswordRequest
+    // Out: Common.VoidResponse
+    class SetUserPasswordEventHandler implements EventHandler<Usermessages.SetUserPasswordRequest>
     {
         @Override
         public void handleEvent(Usermessages.SetUserPasswordRequest event, String transactionId)
@@ -60,14 +69,16 @@ public class UserRequests extends AbstractComponent
             } catch (Exception ex)
             {
                 response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                        Usermessages.UserResponse.class);
+                        Common.VoidResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
             LOG.info("Published real-time response on request with transaction id: {}", transactionId);
         }
     }
 
-    class SetUserAvatarHandler implements EventHandler<Usermessages.SetUserAvatarRequest>
+    // In: Usermessages.SetUserAvatarRequest
+    // Out: Common.VoidResponse
+    class SetUserAvatarEventHandler implements EventHandler<Usermessages.SetUserAvatarRequest>
     {
         @Override
         public void handleEvent(Usermessages.SetUserAvatarRequest event, String transactionId)
@@ -83,39 +94,49 @@ public class UserRequests extends AbstractComponent
             } catch (Exception ex)
             {
                 response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                        Usermessages.UserResponse.class);
+                        Common.VoidResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
             LOG.info("Published real-time response on request with transaction id: {}", transactionId);
         }
     }
 
+    // In: Usermessages.UserRequest
+    // Out: Usermessages.UserResponse
     class UserEventHandler implements EventHandler<Usermessages.UserRequest>
     {
         @Override
         public void handleEvent(Usermessages.UserRequest event, String transactionId)
         {
-            Message response = null;
+            Message response;
             try
             {
+                UserOuterClass.User user = null;
+
                 switch (event.getCrudOperation())
                 {
                     case CREATE:
                     {
-                        UserOuterClass.User newUser = null;
                         if (event.getUserType() == Usermessages.UserType.ADMIN)
                         {
-                            newUser = _userBll.createAdminUser(event.getUser());
+                            user = _userBll.createAdminUser(event.getUser());
                         } else
                         {
-                            newUser = _userBll.createStandardUser(event.getUser());
+                            user = _userBll.createStandardUser(event.getUser());
                         }
-                        response = Usermessages.UserResponse
-                                .newBuilder()
-                                .setUser(newUser)
-                                .build();
+                        break;
+                    }
+                    case READ:
+                    {
+                        user = _userBll.getUser(event.getUser().getEmail());
+                        break;
                     }
                 }
+
+                response = Usermessages.UserResponse
+                        .newBuilder()
+                        .setUser(user)
+                        .build();
             } catch (Exception ex)
             {
                 response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
@@ -126,6 +147,33 @@ public class UserRequests extends AbstractComponent
         }
     }
 
+    // In: Usermessages.GetUsersRequest
+    // Out: Usermessages.GetUserResponse
+    class GetUsersEventHandler implements EventHandler<Usermessages.GetUsersRequest>
+    {
+        @Override
+        public void handleEvent(Usermessages.GetUsersRequest event, String transactionId)
+        {
+            Message response;
+            try
+            {
+                List<UserOuterClass.User> users = _userBll.getUsers(event.getOrganizationId());
+                response = Usermessages.GetUsersResponse
+                        .newBuilder()
+                        .addAllUsers(users)
+                        .build();
+            } catch (Exception ex)
+            {
+                response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                        Usermessages.UserResponse.class);
+            }
+            _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
+            LOG.info("Published real-time response on request with transaction id: {}", transactionId);
+        }
+    }
+
+    // In: Usermessages.LoginUserRequest
+    // Out: Usermessages.UserResponse
     class LoginUserEventHandler implements EventHandler<Usermessages.LoginUserRequest>
     {
         @Override
@@ -134,22 +182,23 @@ public class UserRequests extends AbstractComponent
             Message response;
             try
             {
-                _userBll.authUser(event.getUser().getEmail(), event.getUser().getPassword());
-                response = Common.VoidResponse
+                UserOuterClass.User user = _userBll.authUser(event.getUser().getEmail(), event.getUser().getPassword());
+                response = Usermessages.UserResponse
                         .newBuilder()
+                        .setUser(user)
                         .build();
             } catch (UserNotFoundException ex)
             {
                 response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_NOT_FOUND,
-                        Common.VoidResponse.class);
+                        Usermessages.UserResponse.class);
             } catch (PasswordNotMatchException ex)
             {
                 response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_UNAUTHORIZED,
-                        Common.VoidResponse.class);
+                        Usermessages.UserResponse.class);
             } catch (Exception ex)
             {
                 response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                        Common.VoidResponse.class);
+                        Usermessages.UserResponse.class);
             }
 
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));

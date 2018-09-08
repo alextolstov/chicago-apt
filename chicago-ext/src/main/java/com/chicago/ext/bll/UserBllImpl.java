@@ -79,7 +79,7 @@ public class UserBllImpl implements UserBll
         _userDal.setUserAvatar(avatar);
     }
 
-    public void authUser(String email, String password) throws Exception
+    public UserOuterClass.User authUser(String email, String password) throws Exception
     {
         LOG.info("Called for user: {}", email);
         Pair<String, byte[]> hashSalt = _userDal.getHashSalt(email);
@@ -89,6 +89,8 @@ public class UserBllImpl implements UserBll
         {
             throw new PasswordNotMatchException("Wrong password for user " + email);
         }
+
+        return _userDal.getUser(email);
     }
 
     @Override
@@ -97,6 +99,18 @@ public class UserBllImpl implements UserBll
         byte[] passwordSalt = PasswordUtil.getSalt();
         String passwordHash = PasswordUtil.getSecurePassword(password.getPassword(), passwordSalt);
         _userDal.setUserPassword(password.getUserId(), passwordHash, passwordSalt);
+    }
+
+    @Override
+    public List<UserOuterClass.User> getUsers(String organization_id) throws Exception
+    {
+        return _userDal.getUsers(organization_id);
+    }
+
+    @Override
+    public UserOuterClass.User getUser(String email) throws Exception
+    {
+        return _userDal.getUser(email);
     }
 
     private UserOuterClass.User createUser(UserOuterClass.User user, boolean sendCredentials) throws Exception

@@ -23,6 +23,7 @@ message SetUserPermissionsResponse
     TransactionError transaction_error = 1;
 }
 
+// Covers GetUser, SetUser, DeleteUser, UpdateUser
 message UserRequest
 {
     CrudOperation crud_operation = 1;
@@ -36,18 +37,32 @@ message UserResponse
     TransactionError transaction_error = 2;
 }
 
+// Return VoidResponse
 message LoginUserRequest
 {
     User user = 1;
 }
 
+// Return VoidResponse
 message SetUserAvatarRequest
 {
     UserAvatar user_avatar = 1;
 }
 
+// Return VoidResponse
 message SetUserPasswordRequest
 {
     UserPassword user_password = 1;
+}
+
+message GetUsersRequest
+{
+    string organization_id = 1;
+}
+
+message GetUsersResponse
+{
+    repeated User users = 1;
+    TransactionError transaction_error = 2;
 }
 

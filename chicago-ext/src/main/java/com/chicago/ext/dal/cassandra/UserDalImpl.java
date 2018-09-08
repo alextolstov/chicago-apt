@@ -15,12 +15,22 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-import static com.chicago.ext.dal.cassandra.CassandraConstants.*;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.BRANCHES_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.COMPANIES_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.HOLDINGS_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.KEYSPACE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.PERMISSIONS_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.ROLES_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.USERS_BY_EMAIL_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.USERS_BY_ID_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.USER_PERMISSIONS_TABLE;
 
 public class UserDalImpl implements UserDal
 {
@@ -63,10 +73,10 @@ public class UserDalImpl implements UserDal
                 .where(QueryBuilder.in("role_id", userPermissions.getRolesList()));
         ResultSet result = _cassandraConnector.getSession().execute(query);
 
-        Row roleRow;
-        while ((roleRow = result.one()) != null)
+        Row row;
+        while ((row = result.one()) != null)
         {
-            Set<Integer> rolePermissionsIds = roleRow.getSet("permission_ids", Integer.class);
+            Set<Integer> rolePermissionsIds = row.getSet("permission_ids", Integer.class);
             permissionIds.addAll(rolePermissionsIds);
         }
         // Get permissions as strings
@@ -77,10 +87,9 @@ public class UserDalImpl implements UserDal
 
         Set<String> permissions = new HashSet<>();
 
-        Row permissionRow;
-        while ((permissionRow = result.one()) != null)
+        while ((row = result.one()) != null)
         {
-            permissions.add(permissionRow.getString("permission"));
+            permissions.add(row.getString("permission"));
         }
 
         // Cassandra update same as insert if condition not true
@@ -119,16 +128,16 @@ public class UserDalImpl implements UserDal
                 .from(KEYSPACE, USER_PERMISSIONS_TABLE)
                 .where(QueryBuilder.eq("user_id", UUID.fromString(userId)));
         ResultSet result = _cassandraConnector.getSession().execute(query);
-        Row permissionsRow = result.one();
-        if (permissionsRow == null)
+        Row row = result.one();
+        if (row == null)
         {
             throw new UserPermissionsNotFoundException("No permissions found for user with user Id " + userId);
         }
 
         return UserOuterClass.UserPermissions.newBuilder()
-                .setUserId(permissionsRow.getUUID("user_id").toString())
-                .addAllRoles(permissionsRow.getSet("role_ids", Integer.class))
-                .addAllExtraPermissions(permissionsRow.getSet("extra_permission_ids", Integer.class))
+                .setUserId(row.getUUID("user_id").toString())
+                .addAllRoles(row.getSet("role_ids", Integer.class))
+                .addAllExtraPermissions(row.getSet("extra_permission_ids", Integer.class))
                 .build();
     }
 
@@ -139,30 +148,14 @@ public class UserDalImpl implements UserDal
                 .from(KEYSPACE, USERS_BY_EMAIL_TABLE)
                 .where(QueryBuilder.eq("email", email));
         ResultSet result = _cassandraConnector.getSession().execute(query);
-        Row userRow = result.one();
-        if (userRow == null)
+        Row row = result.one();
+        if (row == null)
         {
             throw new UserNotFoundException("No user with name " + email + " found");
         }
 
         // Populate protobuf
-        return UserOuterClass.User.newBuilder()
-                .setUserId(userRow.getUUID("user_id").toString())
-                .setEmail(email)
-                .setAvatar(ByteString.copyFrom(userRow.getBytes("avatar").array()))
-                .setFirstName(userRow.getString("first_name"))
-                .setMiddleName(userRow.getString("middle_name"))
-                .setLastName(userRow.getString("last_name"))
-                .setCellPhone(userRow.getString("cell_phone"))
-                .setHomePhone(userRow.getString("home_phone"))
-                .setWorkPhone(userRow.getString("work_phone"))
-                .setHoldingId(userRow.getUUID("holding_id").toString())
-                .setCompanyId(userRow.getUUID("company_id").toString())
-                .setBranchId(userRow.getUUID("branch_id").toString())
-                .setAddressId(userRow.getUUID("address_id").toString())
-                .addAllPermissions(userRow.getSet("permissions", String.class))
-                .setCreateDatetime(userRow.getTimestamp("create_datetime").getTime())
-                .build();
+        return buildUser(row);
     }
 
     @Override
@@ -178,13 +171,81 @@ public class UserDalImpl implements UserDal
         {
             throw new UserNotFoundException("No user with name " + email + " found");
         }
-        return new Pair(row.getString("password_hash"), row.getBytes("password_salt").array());
+        return new Pair<>(row.getString("password_hash"), row.getBytes("password_salt").array());
     }
 
     @Override
+
+    // We dont care what organization type, just dig inside 3 levels. Cassandra give use very cheap read
     public List<UserOuterClass.User> getUsers(String organizationId)
     {
-        return null;
+        List<UUID> usersId = getOrganizationUsers(organizationId, HOLDINGS_TABLE);
+        if (usersId.size() == 0)
+        {
+            usersId = getOrganizationUsers(organizationId, COMPANIES_TABLE);
+        }
+        if (usersId.size() == 0)
+        {
+            usersId = getOrganizationUsers(organizationId, BRANCHES_TABLE);
+        }
+
+        Statement query = QueryBuilder.select()
+                .from(KEYSPACE, USERS_BY_ID_TABLE)
+                .where(QueryBuilder.in("user_id", usersId));
+        ResultSet result = _cassandraConnector.getSession().execute(query);
+        Row row;
+        List<UserOuterClass.User> users = new ArrayList<>();
+
+        while((row = result.one()) != null)
+        {
+            users.add(buildUser(row));
+        }
+
+        return users;
+    }
+
+    private List<UUID> getOrganizationUsers(String tableName, String organizationId)
+    {
+        List<UUID> users = new ArrayList<>();
+        Statement query = QueryBuilder.select("users")
+                .from(KEYSPACE, tableName)
+                .where(QueryBuilder.eq("holding_id", UUID.fromString(organizationId)));
+        ResultSet result = _cassandraConnector.getSession().execute(query);
+        Row row = result.one();
+
+        if (row != null)
+        {
+            Set<UUID> usersSet = row.getSet("users", UUID.class);
+            if (usersSet != null)
+            {
+                users = new ArrayList<>(usersSet);
+            }
+        }
+        LOG.info("Found {} users of organizationId {} in table {}", users.size(), organizationId, tableName);
+        return users;
+    }
+
+    private UserOuterClass.User buildUser(Row row)
+    {
+        UserOuterClass.User.Builder builder = UserOuterClass.User.newBuilder();
+        // Always non empty
+        builder.setUserId(row.getUUID("user_id").toString());
+        builder.setEmail(row.getString("email"));
+        builder.setCreateDatetime(row.getTimestamp("create_datetime").getTime());
+        // Could be empty
+        if (row.getBytes("avatar") != null) builder.setAvatar(ByteString.copyFrom(row.getBytes("avatar").array()));
+        if (row.getString("first_name") != null) builder.setFirstName(row.getString("first_name"));
+        if (row.getString("middle_name") != null) builder.setMiddleName(row.getString("middle_name"));
+        if (row.getString("last_name") != null) builder.setLastName(row.getString("last_name"));
+        if (row.getString("cell_phone") != null) builder.setCellPhone(row.getString("cell_phone"));
+        if (row.getString("home_phone") != null) builder.setHomePhone(row.getString("home_phone"));
+        if (row.getString("work_phone") != null) builder.setWorkPhone(row.getString("work_phone"));
+        if (row.getUUID("holding_id") != null) builder.setHoldingId(row.getUUID("holding_id").toString());
+        if (row.getUUID("company_id") != null) builder.setCompanyId(row.getUUID("company_id").toString());
+        if (row.getUUID("branch_id") != null) builder.setBranchId(row.getUUID("branch_id").toString());
+        if (row.getUUID("address_id") != null) builder.setAddressId(row.getUUID("address_id").toString());
+
+        return builder.build();
     }
 
     @Override
