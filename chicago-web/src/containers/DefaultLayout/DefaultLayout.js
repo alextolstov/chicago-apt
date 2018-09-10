@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
-import { Container } from 'reactstrap';
-
+import React, {Component} from 'react';
+import {Redirect, Route, Switch} from 'react-router-dom';
+import {Container} from 'reactstrap';
+import {inject, observer} from "mobx-react/index";
 import {
   AppAside,
   AppBreadcrumb,
@@ -22,47 +22,63 @@ import routes from '../../routes';
 import DefaultAside from './DefaultAside';
 import DefaultFooter from './DefaultFooter';
 import DefaultHeader from './DefaultHeader';
+import UserApi from "../../api/UserApi";
+
+const user_proto = require('models/user_pb');
 
 class DefaultLayout extends Component {
+  constructor(props) {
+    super(props);
+    this.getUser();
+  }
+
+  getUser() {
+    if (this.props.appStore.userData.getUserId() == "") {
+//      let userBin = window.sessionStorage.getItem("current_user");
+//      this.props.appStore.userData = user_proto.User.deserializeBinary(userBin);
+    }
+  }
+
   render() {
     return (
       <div className="app">
         <AppHeader fixed>
-          <DefaultHeader />
+          <DefaultHeader/>
         </AppHeader>
         <div className="app-body">
           <AppSidebar fixed display="lg">
-            <AppSidebarHeader />
-            <AppSidebarForm />
+            <AppSidebarHeader/>
+            <AppSidebarForm/>
             <AppSidebarNav navConfig={navigation} {...this.props} />
-            <AppSidebarFooter />
-            <AppSidebarMinimizer />
+            <AppSidebarFooter/>
+            <AppSidebarMinimizer/>
           </AppSidebar>
           <main className="main">
             <AppBreadcrumb appRoutes={routes}/>
             <Container fluid>
               <Switch>
                 {routes.map((route, idx) => {
-                    return route.component ? (<Route key={idx} path={route.path} exact={route.exact} name={route.name} render={props => (
-                        <route.component {...props} />
-                      )} />)
+                    return route.component ? (
+                        <Route key={idx} path={route.path} exact={route.exact} name={route.name} render={props => (
+                          <route.component {...props} />
+                        )}/>)
                       : (null);
                   },
                 )}
-                <Redirect from="/" to="/dashboard" />
+                <Redirect from="/" to="/dashboard"/>
               </Switch>
             </Container>
           </main>
           <AppAside fixed hidden>
-            <DefaultAside />
+            <DefaultAside/>
           </AppAside>
         </div>
         <AppFooter>
-          <DefaultFooter />
+          <DefaultFooter/>
         </AppFooter>
       </div>
     );
   }
 }
 
-export default DefaultLayout;
+export default inject("appStore")(observer(DefaultLayout));

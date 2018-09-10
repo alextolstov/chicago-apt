@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { TextMask, InputAdapter } from 'react-text-mask-hoc';
 import {defineMessages, FormattedMessage} from 'react-intl';
+import {inject, observer} from "mobx-react/index";
 import {
   Card,
   CardBody,
@@ -17,7 +18,6 @@ import {
 // React select
 import Select from 'react-select';
 import 'react-select/dist/react-select.min.css';
-import {inject, observer} from "mobx-react/index";
 
 const messages = defineMessages({
   firstNamePlace: {

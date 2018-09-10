@@ -15,11 +15,10 @@ import {
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
 import {defineMessages, FormattedMessage} from 'react-intl';
-import config from 'react-global-configuration';
-import {observer, inject} from 'mobx-react';
+import {inject} from 'mobx-react';
+import UserApi from '../../../api/UserApi';
 
 const user_proto = require('models/user_pb');
-const usermessages_proto = require('models/usermessages_pb.js');
 
 // Localization for place holders
 const messages = defineMessages({
@@ -37,8 +36,13 @@ class Login extends Component {
       email: "",
       password: "",
       error_text: "",
-      show_error: false
+      show_error: false,
+      user_api: new UserApi()
     };
+    if (this.props.appStore.userData.getUserId() != "") {
+      // User already logged in
+      this.props.history.push("/dashbord");
+    }
   }
 
   handleChange = event => {
@@ -73,80 +77,17 @@ class Login extends Component {
     }
     // Username must be lower case
     let form = "username=" + this.state.email.toLowerCase() + "&password=" + this.state.password;
-    let url = config.get("debug").server_url;
+    let self = this;
 
-    this.login(form);
-  }
-
-  login(credentials) {
-    fetch('/login', {
-      method: "POST",
-      body: credentials,
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw response;
+    this.state.user_api.login(form, this.state.email.toLowerCase(), this).then(function (user) {
+        if (user != null) {
+          self.props.appStore.userData = user;
+          window.sessionStorage.setItem("current_user", user.getUserId());
+          // Redirect current page to dashboard
+          self.props.history.push("/dashbord");
         }
-        this.getUser();
-      })
-      .catch(rest_error => {
-        if (rest_error.status == 401) {
-          this.handleError("User unauthorized");
-        } else if (rest_error.status == 404) {
-          this.handleError("Error 404. Page not found.");
-        } else if (rest_error.status == 500) {
-          this.handleError("Error 500. Server error.");
-        } else {
-          rest_error.json().then(errorMessage => {
-            this.handleError(errorMessage);
-          })
-        }
-      })
-  }
-
-  getUser() {
-    let user = new user_proto.User();
-    // Username must be lower case
-    user.setEmail(this.state.email.toLowerCase());
-    let serialized_user = user.serializeBinary();
-
-    fetch('/api/users/user', {
-      method: "POST",
-      body: serialized_user,
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
       }
-    }).then(response => {
-      if (!response.ok) {
-        throw response;
-      }
-      return response.arrayBuffer();
-    }).then(proto => {
-      let user_response = usermessages_proto.UserResponse.deserializeBinary(proto);
-      if (user_response.getTransactionError() !== undefined) {
-        this.handleError(user_response.getTransactionError().getErrorMessage());
-      } else {
-        // AppStore.permissions = ['perm1', 'perm2'];
-        this.props.appStore.userData = user_response.getUser();
-        window.sessionStorage.setItem("current_user", this.props.appStore.userData.getUserId());
-        // Redirect current page to dashboard
-        this.props.history.push("/dashbord");
-      }
-    }).catch(rest_error => {
-      if (rest_error.status == 500) {
-        // Show error
-        this.handleError("Error 500. Server error.");
-        return;
-      }
-      rest_error.json().then(errorMessage => {
-        this.handleError(errorMessage);
-      })
-    })
+    )
   }
 
   render() {
