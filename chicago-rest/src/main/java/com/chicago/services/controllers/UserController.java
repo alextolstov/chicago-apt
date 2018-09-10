@@ -31,6 +31,31 @@ public class UserController
     private AsyncCommunicator _asyncComm;
 
     @POST
+    @Path("user")
+    @RequiresAuthentication
+    @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
+    public Response getUser(byte[] data)
+    {
+        try
+        {
+            UserOuterClass.User user = UserOuterClass.User.parseFrom(data);
+            byte[] response;
+
+            Usermessages.UserRequest request = Usermessages.UserRequest.newBuilder()
+                    .setCrudOperation(Common.CrudOperation.READ)
+                    .setUser(user)
+                    .build();
+
+            response = _asyncComm.transaction(request);
+            return Response.ok(response).build();
+        } catch (TimeoutException | InvalidProtocolBufferException e)
+        {
+            return ResponseErrorUtil.createErrorResponse(e.getMessage(),
+                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        }
+    }
+
+    @POST
     @Path("avatar")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)

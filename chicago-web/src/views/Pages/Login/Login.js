@@ -1,24 +1,27 @@
 import React, {Component} from 'react';
 import {
-  Alert,
   Button,
   Card,
   CardBody,
   CardGroup,
   Col,
   Container,
+  FormFeedback,
   Input,
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  FormFeedback,
   Row
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
-import {FormattedMessage, intlShape, injectIntl, defineMessages} from 'react-intl';
-import {AppStore} from '../../../components';
+import {defineMessages, FormattedMessage} from 'react-intl';
 import config from 'react-global-configuration';
+import {observer, inject} from 'mobx-react';
 
+const user_proto = require('models/user_pb');
+const usermessages_proto = require('models/usermessages_pb.js');
+
+// Localization for place holders
 const messages = defineMessages({
   emailPlace: {
     id: 'login.email.placeholder',
@@ -72,9 +75,13 @@ class Login extends Component {
     let form = "username=" + this.state.email.toLowerCase() + "&password=" + this.state.password;
     let url = config.get("debug").server_url;
 
+    this.login(form);
+  }
+
+  login(credentials) {
     fetch('/login', {
       method: "POST",
-      body: form,
+      body: credentials,
       credentials: 'include',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -84,20 +91,16 @@ class Login extends Component {
         if (!response.ok) {
           throw response;
         }
-        AppStore.permissions = ['perm1', 'perm2'];
-        AppStore.userData = 'atelyshev';
-          this.props.history.push("/dashbord");
+        this.getUser();
       })
       .catch(rest_error => {
         if (rest_error.status == 401) {
-          // Redirect current page to login
           this.handleError("User unauthorized");
-        }else if (rest_error.status == 404) {
+        } else if (rest_error.status == 404) {
           this.handleError("Error 404. Page not found.");
-        }else if (rest_error.status == 500) {
-          // Redirect current page to login
+        } else if (rest_error.status == 500) {
           this.handleError("Error 500. Server error.");
-        }else {
+        } else {
           rest_error.json().then(errorMessage => {
             this.handleError(errorMessage);
           })
@@ -105,7 +108,48 @@ class Login extends Component {
       })
   }
 
-   render() {
+  getUser() {
+    let user = new user_proto.User();
+    // Username must be lower case
+    user.setEmail(this.state.email.toLowerCase());
+    let serialized_user = user.serializeBinary();
+
+    fetch('/api/users/user', {
+      method: "POST",
+      body: serialized_user,
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }).then(response => {
+      if (!response.ok) {
+        throw response;
+      }
+      return response.arrayBuffer();
+    }).then(proto => {
+      let user_response = usermessages_proto.UserResponse.deserializeBinary(proto);
+      if (user_response.getTransactionError() !== undefined) {
+        this.handleError(user_response.getTransactionError().getErrorMessage());
+      } else {
+        // AppStore.permissions = ['perm1', 'perm2'];
+        this.props.appStore.userData = user_response.getUser();
+        window.sessionStorage.setItem("current_user", this.props.appStore.userData.getUserId());
+        // Redirect current page to dashboard
+        this.props.history.push("/dashbord");
+      }
+    }).catch(rest_error => {
+      if (rest_error.status == 500) {
+        // Show error
+        this.handleError("Error 500. Server error.");
+        return;
+      }
+      rest_error.json().then(errorMessage => {
+        this.handleError(errorMessage);
+      })
+    })
+  }
+
+  render() {
     return (
       <div className="app flex-row align-items-center">
         <Container>
@@ -127,10 +171,10 @@ class Login extends Component {
                         <FormattedMessage {...messages.emailPlace}>
                           {
                             pholder => <Input autoFocus
-                                   value={this.state.email}
-                                   id="email"
-                                   onChange={this.handleChange}
-                                   type="text" name="email" placeholder={pholder}/>
+                                              value={this.state.email}
+                                              id="email"
+                                              onChange={this.handleChange}
+                                              type="text" name="email" placeholder={pholder}/>
                           }
                         </FormattedMessage>
                       </InputGroup>
@@ -144,7 +188,7 @@ class Login extends Component {
                                id="password"
                                onChange={this.handleChange}
                                type="password" name="password" placeholder="Password"/>
-                        <Input hidden invalid />
+                        <Input hidden invalid/>
                         <FormFeedback>{this.state.error_text}</FormFeedback>
                       </InputGroup>
                       <Row>
@@ -179,4 +223,4 @@ class Login extends Component {
   }
 }
 
-export default Login;
+export default inject("appStore")(Login);

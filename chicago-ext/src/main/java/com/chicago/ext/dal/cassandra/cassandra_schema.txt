@@ -1,4 +1,5 @@
 CREATE KEYSPACE ChicagoErp  WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };
+CREATE KEYSPACE ChicagoErp  WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Holdings (
     holding_id uuid PRIMARY KEY,
@@ -50,9 +51,7 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Users (
     cell_phone varchar,
     home_phone varchar,
     work_phone varchar,
-    holding_id uuid,
-    company_id uuid,
-    branch_id uuid,
+    organization_id uuid,
     address_id uuid,
     permissions set<varchar>,
     create_datetime timestamp);
@@ -69,9 +68,7 @@ CREATE MATERIALIZED VIEW ChicagoErp.UsersByEmail AS SELECT
     cell_phone,
     home_phone,
     work_phone,
-    holding_id,
-    company_id,
-    branch_id,
+    organization_id,
     address_id,
     permissions,
     create_datetime

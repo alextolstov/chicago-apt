@@ -23,11 +23,16 @@ class DefaultHeaderDropdown extends Component {
 
     this.toggle = this.toggle.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.handleProfile = this.handleProfile.bind(this);
 
     this.state = {
       dropdownOpen: false,
       doLogout: false
     };
+  }
+
+  handleProfile() {
+    this.props.history.push("/users/edituser/current");
   }
 
   handleLogout() {
@@ -40,6 +45,7 @@ class DefaultHeaderDropdown extends Component {
           throw response;
         }
         this.setState({doLogout: true});
+        window.sessionStorage.clear();
       })
       .catch(rest_error => {
         rest_error.json().then(errorMessage => {
@@ -109,7 +115,7 @@ class DefaultHeaderDropdown extends Component {
           <DropdownItem><i className="fa fa-tasks"></i> Tasks<Badge color="danger">42</Badge></DropdownItem>
           <DropdownItem><i className="fa fa-comments"></i> Comments<Badge color="warning">42</Badge></DropdownItem>
           <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem>
-          <DropdownItem><i className="fa fa-user"></i> Profile</DropdownItem>
+          <DropdownItem href="#/users/edituser/ddfsdfsdf"><i className="fa fa-user"></i> Profile</DropdownItem>
           <DropdownItem><i className="fa fa-wrench"></i> Settings</DropdownItem>
           <DropdownItem><i className="fa fa-usd"></i> Payments<Badge color="secondary">42</Badge></DropdownItem>
           <DropdownItem><i className="fa fa-file"></i> Projects<Badge color="primary">42</Badge></DropdownItem>
@@ -252,7 +258,7 @@ class DefaultHeaderDropdown extends Component {
   }
 
   render() {
-    const { dropdownOpen, doLogout } = this.state;
+    const {dropdownOpen, doLogout} = this.state;
     const {notif, accnt, tasks, mssgs} = this.props;
 
     if (doLogout == true) {
@@ -260,6 +266,7 @@ class DefaultHeaderDropdown extends Component {
         <Redirect to="/login"/>
       );
     }
+
     return (
       notif ? this.dropNotif() :
         accnt ? this.dropAccnt() :

@@ -17,6 +17,7 @@ import {
 // React select
 import Select from 'react-select';
 import 'react-select/dist/react-select.min.css';
+import {inject, observer} from "mobx-react/index";
 
 const messages = defineMessages({
   firstNamePlace: {
@@ -448,4 +449,5 @@ class EditUser extends Component {
   }
 }
 
-export default EditUser;
+export default inject("appStore")(observer(EditUser));
+

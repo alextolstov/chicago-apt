@@ -32,18 +32,16 @@ message User
     string email = 2;
     string password = 3;
     bytes avatar = 4;
-    string firstName = 5;
-    string middleName = 6;
-    string lastName = 7;
+    string first_name = 5;
+    string middle_name = 6;
+    string last_name = 7;
     string cell_phone = 8;
     string home_phone = 9;
     string work_phone = 10;
-    string holding_id = 11;
-    string company_id = 12;
-    string branch_id = 13;
-    string address_id = 14;
-    repeated string permissions = 15;
-    int64 create_datetime = 16;
+    string organization_id = 11;
+    string address_id = 12;
+    repeated string permissions = 13;
+    int64 create_datetime = 14;
 }
 
 message UserAvatar

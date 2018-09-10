@@ -80,12 +80,12 @@ class Register extends Component {
     user.setEmail(this.state.email.toLowerCase());
     // Parse full name
     let parts = this.state.fullname.split(" ");
-    user.setFirstname(parts[0]);
+    user.setFirstName(parts[0]);
     if (parts.length === 2) {
-      user.setLastname(parts[1]);
+      user.setLastName(parts[1]);
     } else if (parts.length === 3) {
-      user.setMiddlename(parts[1]);
-      user.setLastname(parts[2]);
+      user.setMiddleName(parts[1]);
+      user.setLastName(parts[2]);
     }
     user.setPassword(this.state.password);
     let serialized_user = user.serializeBinary();

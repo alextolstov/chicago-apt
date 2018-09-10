@@ -59,7 +59,7 @@ public class UserBllImpl implements UserBll
 
         // Now set new company for user
         user = UserOuterClass.User.newBuilder(user)
-                .setCompanyId(companyId)
+                .setOrganizationId(companyId)
                 .build();
         UserOuterClass.User newUser = createUser(user, false);
         LOG.info("New user created userId {}", newUser.getUserId());

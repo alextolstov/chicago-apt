@@ -55,7 +55,7 @@ public class UserDalImpl implements UserDal
                 .value("cell_phone", newUser.getCellPhone())
                 .value("home_phone", newUser.getHomePhone())
                 .value("work_phone", newUser.getWorkPhone())
-                .value("company_id", UUID.fromString(newUser.getCompanyId()))
+                .value("organization_id", UUID.fromString(newUser.getOrganizationId()))
                 .value("create_datetime", TimeUtil.getUtcNowInMilliseconds());
         _cassandraConnector.getSession().execute(query);
         LOG.info("New user {} created", newUser.getEmail());
@@ -240,9 +240,7 @@ public class UserDalImpl implements UserDal
         if (row.getString("cell_phone") != null) builder.setCellPhone(row.getString("cell_phone"));
         if (row.getString("home_phone") != null) builder.setHomePhone(row.getString("home_phone"));
         if (row.getString("work_phone") != null) builder.setWorkPhone(row.getString("work_phone"));
-        if (row.getUUID("holding_id") != null) builder.setHoldingId(row.getUUID("holding_id").toString());
-        if (row.getUUID("company_id") != null) builder.setCompanyId(row.getUUID("company_id").toString());
-        if (row.getUUID("branch_id") != null) builder.setBranchId(row.getUUID("branch_id").toString());
+        if (row.getUUID("organization_id") != null) builder.setOrganizationId(row.getUUID("organization_id").toString());
         if (row.getUUID("address_id") != null) builder.setAddressId(row.getUUID("address_id").toString());
 
         return builder.build();

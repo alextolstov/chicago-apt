@@ -42,9 +42,6 @@ class DefaultHeader extends Component {
           <DefaultHeaderDropdown notif/>
           <DefaultHeaderDropdown tasks/>
           <DefaultHeaderDropdown mssgs/>
-          <NavItem className="d-md-down-none">
-            <NavLink href="#"><i className="icon-location-pin"></i></NavLink>
-          </NavItem>
           <DefaultHeaderDropdown accnt/>
         </Nav>
         <AppAsideToggler className="d-md-down-none" />

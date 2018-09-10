@@ -1,10 +1,11 @@
-import { extendObservable } from 'mobx'
+import {extendObservable} from 'mobx'
+const user_proto = require('models/user_pb');
 
 class AppStore {
-  constructor () {
+  constructor() {
     extendObservable(this, {
       permissions: [],
-      userData: ""
+      userData: new user_proto.User()
     });
   }
 }
