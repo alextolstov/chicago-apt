@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Redirect, Route, Switch} from 'react-router-dom';
 import {Container} from 'reactstrap';
-import {inject, observer} from "mobx-react/index";
 import {
   AppAside,
   AppBreadcrumb,
@@ -22,30 +21,12 @@ import routes from '../../routes';
 import DefaultAside from './DefaultAside';
 import DefaultFooter from './DefaultFooter';
 import DefaultHeader from './DefaultHeader';
-import UserApi from "../../api/UserApi";
 
 const user_proto = require('models/user_pb');
 
 class DefaultLayout extends Component {
   constructor(props) {
     super(props);
-    this.getUser();
-  }
-
-  handleError(error) {
-    // TODO finish the function if neded
-  }
-
-  getUser() {
-    if (this.props.appStore.userData.getUserId() == "") {
-      let self = this;
-      let user_id = window.sessionStorage.getItem("current_user");
-      this.props.appStore.userData = new UserApi().getUserById(user_id, this).then(function (user) {
-        if (user != null) {
-          self.props.appStore.userData = user;
-        }
-      })
-    }
   }
 
   render() {
@@ -90,4 +71,4 @@ class DefaultLayout extends Component {
   }
 }
 
-export default inject("appStore")(observer(DefaultLayout));
+export default DefaultLayout;

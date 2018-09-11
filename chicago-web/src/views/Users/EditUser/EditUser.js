@@ -121,9 +121,21 @@ class EditUser extends Component {
   }
 
   handleChange = event => {
-    this.setState({
-      [event.target.id]: event.target.value
-    });
+    switch (event.name) {
+      case "email":
+        this.state.user.setEmail(event.target.value);
+        break;
+      case "firstname":
+        this.state.user.setFirstName(event.target.value);
+        break;
+      case "middlename":
+        this.state.user.setMiddleName(event.target.value);
+        break;
+      case "lastname":
+        this.state.user.setLastName(event.target.value);
+        break;
+    }
+    this.setState({[event.target.id]: event.target.value});
   }
 
   render() {
@@ -148,7 +160,7 @@ class EditUser extends Component {
                     </InputGroupAddon>
                     <FormattedMessage {...messages.emailPlace}>
                       {
-                        pholder => <Input onChange={event=>{this.state.user.setEmail(event.target.value)}} value={this.state.user.getEmail()}
+                        pholder => <Input onChange={this.handleChange} value={this.state.user.getEmail()}
                                           type="text" name="email" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
