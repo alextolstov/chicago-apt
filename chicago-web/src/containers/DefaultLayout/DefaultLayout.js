@@ -32,10 +32,19 @@ class DefaultLayout extends Component {
     this.getUser();
   }
 
+  handleError(error) {
+    // TODO finish the function if neded
+  }
+
   getUser() {
     if (this.props.appStore.userData.getUserId() == "") {
-//      let userBin = window.sessionStorage.getItem("current_user");
-//      this.props.appStore.userData = user_proto.User.deserializeBinary(userBin);
+      let self = this;
+      let user_id = window.sessionStorage.getItem("current_user");
+      this.props.appStore.userData = new UserApi().getUserById(user_id, this).then(function (user) {
+        if (user != null) {
+          self.props.appStore.userData = user;
+        }
+      })
     }
   }
 

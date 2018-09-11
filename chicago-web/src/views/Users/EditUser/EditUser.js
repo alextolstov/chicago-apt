@@ -18,6 +18,7 @@ import {
 // React select
 import Select from 'react-select';
 import 'react-select/dist/react-select.min.css';
+const user_proto = require('models/user_pb');
 
 const messages = defineMessages({
   firstNamePlace: {
@@ -90,9 +91,8 @@ class EditUser extends Component {
 
     this.state = {
       value: ['01', '02'],
-      caption: props.match.params.id == 0 ?
-        <FormattedMessage id="users.edit.personal" defaultMessage="Personal Information"/> :
-        <FormattedMessage id="users.edit.user" defaultMessage="Edit employee"/>
+      user_id: props.match.params.id,
+      user: new user_proto.User()
     };
   }
 
@@ -114,7 +114,7 @@ class EditUser extends Component {
             <Card>
               <CardHeader>
                 <button><i className="icon-note"></i></button>
-                <strong>{this.state.caption}</strong>
+                <strong><FormattedMessage id="users.edit.personal" defaultMessage="Personal Information"/></strong>
               </CardHeader>
 
               <CardBody>

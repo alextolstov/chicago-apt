@@ -18,8 +18,10 @@ public interface UserBll
 
     void setUserPassword(UserOuterClass.UserPassword userPassword) throws Exception;
 
-    List<UserOuterClass.User> getUsers(String organization_id) throws Exception;
+    List<UserOuterClass.User> getUsers(String organizationId) throws Exception;
 
-    UserOuterClass.User getUser(String email) throws Exception;
+    UserOuterClass.User getUserByEmail(String email) throws Exception;
+
+    UserOuterClass.User getUserById(String userId) throws Exception;
 }
 

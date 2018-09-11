@@ -6,8 +6,8 @@
 
   "menu.header": "Панель",
   "menu.users.header": "Сотрудники",
-  "menu.users.newemployee": "Новый сотрудник",
-  "menu.users.allemployees": "Все сотрудники",
+  "menu.users.newuser": "Новый сотрудник",
+  "menu.users.allusers": "Все сотрудники",
 
   "users.edit.newuser": "Создать нового сотрудника",
   "users.edit.personal": "Личная информация",

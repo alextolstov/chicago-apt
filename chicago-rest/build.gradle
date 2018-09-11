@@ -23,7 +23,7 @@ dependencies {
     // Logging
     implementation "org.slf4j:slf4j-api:${slf4jVer}"
     implementation "ch.qos.logback:logback-classic:${logbackVer}"
-    implementation "commons-logging:commons-logging:1.2"
+    implementation "commons-logging:commons-logging:${commonsLoggingVer}"
     // Shiro
     implementation "org.apache.shiro:shiro-core:${shiroVer}"
     implementation "org.apache.shiro:shiro-web:${shiroVer}"

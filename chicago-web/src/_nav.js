@@ -18,12 +18,12 @@ export default {
       icon: 'icon-people',
       children: [
         {
-          name: <FormattedMessage id="menu.users.newemployee" defaultMessage="New employee"/>,
-          url: '/users/edituser/0',
+          name: <FormattedMessage id="menu.users.newuser" defaultMessage="New employee"/>,
+          url: '/users/edituser/new',
           icon: 'icon-user-follow',
         },
         {
-          name: <FormattedMessage id="menu.users.allemployees" defaultMessage="All employees"/>,
+          name: <FormattedMessage id="menu.users.allusers" defaultMessage="All employees"/>,
           url: '/users/manageusers',
           icon: 'icon-people',
         }

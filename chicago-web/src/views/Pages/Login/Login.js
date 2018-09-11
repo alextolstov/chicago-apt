@@ -18,8 +18,6 @@ import {defineMessages, FormattedMessage} from 'react-intl';
 import {inject} from 'mobx-react';
 import UserApi from '../../../api/UserApi';
 
-const user_proto = require('models/user_pb');
-
 // Localization for place holders
 const messages = defineMessages({
   emailPlace: {
@@ -86,8 +84,7 @@ class Login extends Component {
           // Redirect current page to dashboard
           self.props.history.push("/dashbord");
         }
-      }
-    )
+      })
   }
 
   render() {

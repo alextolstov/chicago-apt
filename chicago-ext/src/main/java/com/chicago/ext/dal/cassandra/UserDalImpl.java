@@ -142,7 +142,7 @@ public class UserDalImpl implements UserDal
     }
 
     @Override
-    public UserOuterClass.User getUser(String email) throws Exception
+    public UserOuterClass.User getUserByEmail(String email) throws Exception
     {
         Statement query = QueryBuilder.select()
                 .from(KEYSPACE, USERS_BY_EMAIL_TABLE)
@@ -152,6 +152,23 @@ public class UserDalImpl implements UserDal
         if (row == null)
         {
             throw new UserNotFoundException("No user with name " + email + " found");
+        }
+
+        // Populate protobuf
+        return buildUser(row);
+    }
+
+    @Override
+    public UserOuterClass.User getUserById(String userId) throws Exception
+    {
+        Statement query = QueryBuilder.select()
+                .from(KEYSPACE, USERS_BY_ID_TABLE)
+                .where(QueryBuilder.eq("user_id", UUID.fromString(userId)));
+        ResultSet result = _cassandraConnector.getSession().execute(query);
+        Row row = result.one();
+        if (row == null)
+        {
+            throw new UserNotFoundException("No user with user_id " + userId + " found");
         }
 
         // Populate protobuf

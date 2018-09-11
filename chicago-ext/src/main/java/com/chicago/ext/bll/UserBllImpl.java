@@ -90,7 +90,7 @@ public class UserBllImpl implements UserBll
             throw new PasswordNotMatchException("Wrong password for user " + email);
         }
 
-        return _userDal.getUser(email);
+        return _userDal.getUserByEmail(email);
     }
 
     @Override
@@ -102,15 +102,21 @@ public class UserBllImpl implements UserBll
     }
 
     @Override
-    public List<UserOuterClass.User> getUsers(String organization_id) throws Exception
+    public List<UserOuterClass.User> getUsers(String organizationId) throws Exception
     {
-        return _userDal.getUsers(organization_id);
+        return _userDal.getUsers(organizationId);
     }
 
     @Override
-    public UserOuterClass.User getUser(String email) throws Exception
+    public UserOuterClass.User getUserByEmail(String email) throws Exception
     {
-        return _userDal.getUser(email);
+        return _userDal.getUserByEmail(email);
+    }
+
+    @Override
+    public UserOuterClass.User getUserById(String userId) throws Exception
+    {
+        return _userDal.getUserById(userId);
     }
 
     private UserOuterClass.User createUser(UserOuterClass.User user, boolean sendCredentials) throws Exception

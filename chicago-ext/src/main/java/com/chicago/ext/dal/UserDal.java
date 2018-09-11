@@ -24,7 +24,9 @@ public interface UserDal
 
     Pair<String, byte[]> getHashSalt(String email) throws Exception;
 
-    UserOuterClass.User getUser(String email) throws Exception;
+    UserOuterClass.User getUserByEmail(String email) throws Exception;
+
+    UserOuterClass.User getUserById(String userId) throws Exception;
 
     List<UserOuterClass.User> getUsers(String organizationId) throws Exception;
 }

@@ -15,7 +15,9 @@ export default class UserApi {
         if (!response.ok) {
           throw response;
         }
-        return this.getUserByEmail(userName, context).then(function(data) {return data});
+        return this.getUserByEmail(userName, context).then(function (data) {
+          return data
+        });
       })
       .catch(rest_error => {
         if (rest_error.status == 401) {
@@ -32,12 +34,23 @@ export default class UserApi {
       })
   }
 
+  getUserById(user_id, context) {
+    let user = new user_proto.User();
+    // Username must be lower case
+    user.setUserId(user_id);
+    let serialized_user = user.serializeBinary();
+    return this.getUser(serialized_user, context);
+  }
+
   getUserByEmail(email, context) {
     let user = new user_proto.User();
     // Username must be lower case
     user.setEmail(email.toLowerCase());
     let serialized_user = user.serializeBinary();
+    return this.getUser(serialized_user, context);
+  }
 
+  getUser(serialized_user, context) {
     return fetch('/api/users/user', {
       method: "POST",
       body: serialized_user,

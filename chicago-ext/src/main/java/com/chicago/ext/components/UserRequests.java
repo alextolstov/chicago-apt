@@ -1,11 +1,6 @@
 package com.chicago.ext.components;
 
-import com.chicago.common.core.AbstractComponent;
-import com.chicago.common.core.AbstractEventDispatcher;
-import com.chicago.common.core.ComponentManager;
-import com.chicago.common.core.ConfigAccessor;
-import com.chicago.common.core.EventBase;
-import com.chicago.common.core.EventHandler;
+import com.chicago.common.core.*;
 import com.chicago.common.util.ResponseFactoryUtil;
 import com.chicago.dto.Common;
 import com.chicago.dto.UserOuterClass;
@@ -128,7 +123,16 @@ public class UserRequests extends AbstractComponent
                     }
                     case READ:
                     {
-                        user = _userBll.getUser(event.getUser().getEmail());
+                        if (event.getUser().getEmail() != "")
+                        {
+                            user = _userBll.getUserByEmail(event.getUser().getEmail());
+                        } else if (event.getUser().getUserId() != "")
+                        {
+                            user = _userBll.getUserById(event.getUser().getUserId());
+                        } else
+                        {
+                            throw new Exception("email or userId should be specified");
+                        }
                         break;
                     }
                 }
