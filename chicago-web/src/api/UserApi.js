@@ -2,6 +2,20 @@ const user_proto = require('models/user_pb');
 const usermessages_proto = require('models/usermessages_pb.js');
 
 export default class UserApi {
+  testAuth() {
+    return fetch('/api/login/testauth', {
+      method: "GET",
+      credentials: 'include'
+    }).then(response => {
+      if (!response.ok) {
+        return null;
+      }
+      return response.text();
+    }).then(user_id => {
+      return user_id;
+    });
+  }
+
   login(credentials, userName, context) {
     return fetch('/login', {
       method: "POST",

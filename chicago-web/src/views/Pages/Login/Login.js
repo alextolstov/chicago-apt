@@ -37,10 +37,6 @@ class Login extends Component {
       show_error: false,
       user_api: new UserApi()
     };
-    if (this.props.appStore.userData.getUserId() != "") {
-      // User already logged in
-      this.props.history.push("/dashbord");
-    }
   }
 
   handleChange = event => {

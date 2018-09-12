@@ -121,7 +121,7 @@ class EditUser extends Component {
   }
 
   handleChange = event => {
-    switch (event.name) {
+    switch (event.target.id) {
       case "email":
         this.state.user.setEmail(event.target.value);
         break;
@@ -161,7 +161,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.emailPlace}>
                       {
                         pholder => <Input onChange={this.handleChange} value={this.state.user.getEmail()}
-                                          type="text" name="email" placeholder={pholder} required/>
+                                          type="text" id="email" name="email" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -178,7 +178,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.firstNamePlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="text" name="firstname" placeholder={pholder} required/>
+                                          type="text" id="firstname" name="firstname" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -195,7 +195,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.midleNamePlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="text" name="midlename" placeholder={pholder} required/>
+                                          type="text" id="midlename" name="midlename" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -212,7 +212,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.lastNamePlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="text" name="lastname" placeholder={pholder} required/>
+                                          type="text" id="lastname" name="lastname" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -229,7 +229,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.nickNamePlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="text" name="nickname" placeholder={pholder} required/>
+                                          type="text" id="nickname" name="nickname" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -246,7 +246,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.passportPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="text" name="passport" placeholder={pholder} required/>
+                                          type="text" id="passport" name="passport" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -262,7 +262,7 @@ class EditUser extends Component {
                         </i>
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="date" id="date-input" name="date-input" placeholder="date"/>
+                    <Input type="date" id="dob-input" name="dob-input" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 
@@ -277,7 +277,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.homePhonePlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="text" name="homephone" placeholder={pholder} required/>
+                                          type="text" id="homephone" name="homephone" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -294,7 +294,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.cellPhonePlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="text" name="cellphone" placeholder={pholder} required/>
+                                          type="text" id="cellphone" name="cellphone" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -322,7 +322,7 @@ class EditUser extends Component {
                         </i>
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="date" id="date-input-employment" name="date-input-employment" placeholder="date"/>
+                    <Input type="date" id="employment-date" name="employment-date" placeholder="date"/>
                     {/*Actual start date*/}
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
@@ -331,7 +331,7 @@ class EditUser extends Component {
                         </i>
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="date" id="date-input-actualstart" name="date-input-actualstart" placeholder="date"/>
+                    <Input type="date" id="actual-start-date" name="actual-start-date" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 
@@ -345,7 +345,7 @@ class EditUser extends Component {
                         </i>
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="date" id="date-input-dismissal" name="date-input-dismissal" placeholder="date"/>
+                    <Input type="date" id="dismissal-date" name="dismissal-date" placeholder="date"/>
                     {/*Actual last date*/}
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
@@ -354,7 +354,7 @@ class EditUser extends Component {
                         </i>
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="date" id="date-input-actuallast" name="date-input-actuallast" placeholder="date"/>
+                    <Input type="date" id="actual-last-date" name="actual-last-date" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 
@@ -369,10 +369,10 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.taxPayerPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="text" name="taxpayerid" placeholder={pholder} required/>
+                                          type="text" id="taxpayer-id" name="taxpayer-id" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
-                    <Input type="date" id="date-input-employment" name="date-input-employment" placeholder="date"/>
+                    <Input type="date" id="employment-date" name="employment-date" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 
@@ -387,11 +387,11 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.diplomaPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="text" name="diploma" placeholder={pholder} required/>
+                                          type="text" id="diploma" name="diploma" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                     {/*Diploma date*/}
-                    <Input type="date" id="date-input-diploma" name="date-input-diploma" placeholder="date"/>
+                    <Input type="date" id="diploma-date" name="diploma-date" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 
@@ -406,11 +406,11 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.retirementPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="text" name="retirement" placeholder={pholder} required/>
+                                          type="text" id="retirement" name="retirement" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                     {/*Diploma date*/}
-                    <Input type="date" id="date-input-retirement" name="date-input-retirement" placeholder="date"/>
+                    <Input type="date" id="retirement-date" name="retirement-date" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 
@@ -428,8 +428,8 @@ class EditUser extends Component {
                                           type="text" name="retirement" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
-                    {/*Diploma date*/}
-                    <Input type="date" id="date-input-medical" name="date-input-medical" placeholder="date"/>
+                    {/*Medical book date*/}
+                    <Input type="date" id="medical-book-date" name="medical-book-date" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 
@@ -444,11 +444,11 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.employmentPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="text" name="employment" placeholder={pholder} required/>
+                                          type="text" id="employment-book" name="employment-book" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                     {/*Employment book date*/}
-                    <Input type="date" id="date-input-employment" name="date-input-employment" placeholder="date"/>
+                    <Input type="date" id="employment-records-date" name="employment-records-date" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 
@@ -462,7 +462,8 @@ class EditUser extends Component {
                     </InputGroupAddon>
                     <Col md="10">
                       <Select
-                        name="form-field-positions"
+                        id="positions"
+                        name="positions"
                         value={this.state.value}
                         options={positions}
                         onChange={this.saveSelectChanges}

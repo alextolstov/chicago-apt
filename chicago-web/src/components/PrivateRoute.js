@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {Redirect, Route} from 'react-router-dom';
 import 'spinkit/css/spinkit.css';
-import Login from "../views/Pages/Login";
+import UserApi from '../api/UserApi';
+import {inject} from "mobx-react/index";
 
 class PrivateRoute extends Component {
   constructor(props) {
@@ -14,14 +15,27 @@ class PrivateRoute extends Component {
   }
 
   componentDidMount() {
-    fetch('/api/login/testauth', {
-      method: "GET",
-      credentials: 'include'
-    }).then(response => {
-        (response.ok) ? this.setState({isAuthenticated: true}) : this.setState({isAuthenticated: false});
-        this.setState({isLoading: false});
+    let self = this;
+    let userApi = new UserApi();
+
+    userApi.testAuth().then(function (user_id) {
+      if (user_id != null) {
+        // Session still alive but is user info left? If not lets take it from server
+        if (self.props.appStore.userData.getUserId() == "") {
+          userApi.getUserById(user_id, null).then(function (user) {
+            if (user != null) {
+              self.props.appStore.userData = user;
+              window.sessionStorage.setItem("current_user", user.getUserId());
+            }
+          });
+        }
+        self.setState({isAuthenticated: true})
       }
-    );
+      else {
+        self.setState({isAuthenticated: false});
+      }
+      self.setState({isLoading: false});
+    });
   }
 
   render() {
@@ -59,4 +73,4 @@ class PrivateRoute extends Component {
   }
 }
 
-export default PrivateRoute;
+export default inject("appStore")(PrivateRoute);

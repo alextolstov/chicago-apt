@@ -3,10 +3,13 @@ package com.chicago.services.controllers;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.SimplePrincipalCollection;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
+import java.util.LinkedHashMap;
 
 @Path("/login")
 public class AuthController
@@ -21,7 +24,14 @@ public class AuthController
     @Path("testauth")
     public Response getUser()
     {
-        Session session = SecurityUtils.getSubject().getSession(false);
-        return (session != null) ? Response.ok(null).build() : Response.status(Response.Status.UNAUTHORIZED).build();
+        PrincipalCollection principals = SecurityUtils.getSubject().getPrincipals();
+        if (principals == null)
+        {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        SimplePrincipalCollection pcoll = (SimplePrincipalCollection)principals.getPrimaryPrincipal();
+        LinkedHashMap<String, String> props = (LinkedHashMap<String, String>) pcoll.iterator().next();
+        String user_id = props.get("user_id");
+        return Response.ok(user_id).build();
     }
 }
