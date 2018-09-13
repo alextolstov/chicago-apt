@@ -35,13 +35,28 @@ message User
     string first_name = 5;
     string middle_name = 6;
     string last_name = 7;
-    string cell_phone = 8;
-    string home_phone = 9;
-    string work_phone = 10;
-    string organization_id = 11;
-    string address_id = 12;
-    repeated string permissions = 13;
-    int64 create_datetime = 14;
+    string nick_name = 8;
+    string cell_phone = 9;
+    string home_phone = 10;
+    string work_phone = 11;
+    string passport_number = 12;
+    int64 date_of_birth = 13;
+    int64 employment_date = 14;
+    int64 actual_employment_date = 15;
+    int64 dismissal_date = 16;
+    int64 actual_dismissal_date=17;
+    string tax_payer_id = 18;
+    string diploma_number = 19;
+    int64 diploma_date = 20;
+    string retirement_id_number = 21;
+    int64 retirement_date = 22;
+    string medical_book = 23;
+    int64 medical_book_date = 24;
+    string employment_bool_number = 25;
+    string organization_id = 26;
+    string address_id = 27;
+    repeated string permissions = 28;
+    int64 create_datetime = 29;
 }
 
 message UserAvatar

@@ -261,7 +261,7 @@ class DefaultHeaderDropdown extends Component {
     const {dropdownOpen, doLogout} = this.state;
     const {notif, accnt, tasks, mssgs} = this.props;
 
-    if (doLogout == true) {
+    if (doLogout === true) {
       return (
         <Redirect to="/login"/>
       );

@@ -21,7 +21,7 @@ class PrivateRoute extends Component {
     userApi.testAuth().then(function (user_id) {
       if (user_id != null) {
         // Session still alive but is user info left? If not lets take it from server
-        if (self.props.appStore.userData.getUserId() == "") {
+        if (self.props.appStore.userData.getUserId() === "") {
           userApi.getUserById(user_id, null).then(function (user) {
             if (user != null) {
               self.props.appStore.userData = user;

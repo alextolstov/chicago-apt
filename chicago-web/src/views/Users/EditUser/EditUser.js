@@ -50,6 +50,10 @@ const messages = defineMessages({
     id: 'users.edit.cellphone',
     defaultMessage: 'Cell phone'
   },
+  workPhonePlace: {
+    id: 'users.edit.workphone',
+    defaultMessage: 'Work phone'
+  },
   taxPayerPlace: {
     id: 'users.edit.taxpayerid',
     defaultMessage: 'Tax payer id'
@@ -177,7 +181,7 @@ class EditUser extends Component {
                     </InputGroupAddon>
                     <FormattedMessage {...messages.firstNamePlace}>
                       {
-                        pholder => <Input onChange={this.handleChange}
+                        pholder => <Input onChange={this.handleChange} value={this.state.user.getFirstName()}
                                           type="text" id="firstname" name="firstname" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
@@ -194,7 +198,7 @@ class EditUser extends Component {
                     </InputGroupAddon>
                     <FormattedMessage {...messages.midleNamePlace}>
                       {
-                        pholder => <Input onChange={this.handleChange}
+                        pholder => <Input onChange={this.handleChange} value={this.state.user.getMiddleName()}
                                           type="text" id="midlename" name="midlename" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
@@ -211,7 +215,7 @@ class EditUser extends Component {
                     </InputGroupAddon>
                     <FormattedMessage {...messages.lastNamePlace}>
                       {
-                        pholder => <Input onChange={this.handleChange}
+                        pholder => <Input onChange={this.handleChange} value={this.state.user.getLastName()}
                                           type="text" id="lastname" name="lastname" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
@@ -228,7 +232,7 @@ class EditUser extends Component {
                     </InputGroupAddon>
                     <FormattedMessage {...messages.nickNamePlace}>
                       {
-                        pholder => <Input onChange={this.handleChange}
+                        pholder => <Input onChange={this.handleChange} value={this.state.user.getNickName()}
                                           type="text" id="nickname" name="nickname" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
@@ -245,7 +249,7 @@ class EditUser extends Component {
                     </InputGroupAddon>
                     <FormattedMessage {...messages.passportPlace}>
                       {
-                        pholder => <Input onChange={this.handleChange}
+                        pholder => <Input onChange={this.handleChange} value={this.state.user.getPassportNumber()}
                                           type="text" id="passport" name="passport" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
@@ -293,8 +297,25 @@ class EditUser extends Component {
                     </InputGroupAddon>
                     <FormattedMessage {...messages.cellPhonePlace}>
                       {
-                        pholder => <Input onChange={this.handleChange}
+                        pholder => <Input onChange={this.handleChange} value={this.state.user.getCellPhone()}
                                           type="text" id="cellphone" name="cellphone" placeholder={pholder} required/>
+                      }
+                    </FormattedMessage>
+                  </InputGroup>
+                </FormGroup>
+
+                {/*Work phone*/}
+                <FormGroup row>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="fa fa-phone"></i>
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <FormattedMessage {...messages.workPhonePlace}>
+                      {
+                        pholder => <Input onChange={this.handleChange} value={this.state.user.getWorkPhone()}
+                                          type="text" id="workphone" name="workphone" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -368,7 +389,7 @@ class EditUser extends Component {
                     </InputGroupAddon>
                     <FormattedMessage {...messages.taxPayerPlace}>
                       {
-                        pholder => <Input onChange={this.handleChange}
+                        pholder => <Input onChange={this.handleChange} value={this.state.user.getTaxPayerId()}
                                           type="text" id="taxpayer-id" name="taxpayer-id" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
@@ -386,8 +407,8 @@ class EditUser extends Component {
                     </InputGroupAddon>
                     <FormattedMessage {...messages.diplomaPlace}>
                       {
-                        pholder => <Input onChange={this.handleChange}
-                                          type="text" id="diploma" name="diploma" placeholder={pholder} required/>
+                        pholder => <Input onChange={this.handleChange} value={this.state.user.getDiplomaNumber()}
+                                          type="text" id="diploma-number" name="diploma-number" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                     {/*Diploma date*/}
@@ -405,8 +426,8 @@ class EditUser extends Component {
                     </InputGroupAddon>
                     <FormattedMessage {...messages.retirementPlace}>
                       {
-                        pholder => <Input onChange={this.handleChange}
-                                          type="text" id="retirement" name="retirement" placeholder={pholder} required/>
+                        pholder => <Input onChange={this.handleChange} value={this.state.user.getRetirementIdNumber()}
+                                          type="text" id="retirement-id-number" name="retirement-id-number" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                     {/*Diploma date*/}
@@ -424,8 +445,8 @@ class EditUser extends Component {
                     </InputGroupAddon>
                     <FormattedMessage {...messages.medicalPlace}>
                       {
-                        pholder => <Input onChange={this.handleChange}
-                                          type="text" name="retirement" placeholder={pholder} required/>
+                        pholder => <Input onChange={this.handleChange} value={this.state.user.getMedicalBook()}
+                                          type="text" id="medical-book" name="medical-book" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                     {/*Medical book date*/}
@@ -443,7 +464,7 @@ class EditUser extends Component {
                     </InputGroupAddon>
                     <FormattedMessage {...messages.employmentPlace}>
                       {
-                        pholder => <Input onChange={this.handleChange}
+                        pholder => <Input onChange={this.handleChange} value={this.state.user.getEmploymentBookNumber()}
                                           type="text" id="employment-book" name="employment-book" placeholder={pholder} required/>
                       }
                     </FormattedMessage>

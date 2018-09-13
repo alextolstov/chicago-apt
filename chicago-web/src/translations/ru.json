@@ -20,6 +20,7 @@
   "users.edit.passport": "Паспорт №",
   "users.edit.homephone": "Домашний телефон",
   "users.edit.cellphone": "Мобильный телефон",
+  "users.edit.workphone": "!!! телефон",
   "users.edit.taxpayerid": "ИНН",
   "users.edit.employmentdate": "Дата приема",
   "users.edit.dismissaldate": "Дата увольнения",
