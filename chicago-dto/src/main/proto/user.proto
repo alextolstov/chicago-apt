@@ -52,7 +52,7 @@ message User
     int64 retirement_date = 22;
     string medical_book = 23;
     int64 medical_book_date = 24;
-    string employment_bool_number = 25;
+    string employment_book_number = 25;
     string organization_id = 26;
     string address_id = 27;
     repeated string permissions = 28;

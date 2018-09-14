@@ -17,6 +17,7 @@ import {
 import Select from 'react-select';
 import 'react-select/dist/react-select.min.css';
 import UserApi from '../../../api/UserApi';
+import DateTimeApi from '../../../api/DateTimeApi';
 
 const jspb = require('google-protobuf');
 const user_proto = require('models/user_pb');
@@ -95,6 +96,7 @@ class EditUser extends Component {
     this.saveSelectChanges = this.saveSelectChanges.bind(this);
 
     this.state = {
+      date_time: new DateTimeApi(),
       value: ['01', '02'],
       user_id: props.match.params.id,
       user: ""
@@ -144,12 +146,8 @@ class EditUser extends Component {
         this.state.user.setLastName(event.target.value);
         break;
       case "dob-input":
-        try {
-          let unixDate = new Date(event.target.value).getTime();
-          this.state.user.setDateOfBirth(unixDate);
-        }catch (e) {
-          console.log("Date time error. Ignore")// Ignore }
-        }
+        let unixDate = this.state.date_time.dateToUnixUTC(event.target.value);
+        this.state.user.setDateOfBirth(unixDate);
         break;
       case "passport":
         this.state.user.setPassportNumber(event.target.value);
@@ -288,7 +286,7 @@ class EditUser extends Component {
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input type="date"
-                            onChange={this.handleChange}
+                           onChange={this.handleChange}
                            defaultValue={this.state.user.getDateOfBirth != undefined ? "" : new Date(this.state.user.getDateOfBirth()).toISOString().substr(0, 10)}
                            id="dob-input" name="dob-input" placeholder="date"/>
                   </InputGroup>
@@ -418,7 +416,8 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getTaxPayerId == undefined ? "" : this.state.user.getTaxPayerId()}
-                                          type="text" id="taxpayer-id" name="taxpayer-id" placeholder={pholder} required/>
+                                          type="text" id="taxpayer-id" name="taxpayer-id" placeholder={pholder}
+                                          required/>
                       }
                     </FormattedMessage>
                     <Input type="date" id="employment-date" name="employment-date" placeholder="date"/>
@@ -437,7 +436,8 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getDiplomaNumber == undefined ? "" : this.state.user.getDiplomaNumber()}
-                                          type="text" id="diploma-number" name="diploma-number" placeholder={pholder} required/>
+                                          type="text" id="diploma-number" name="diploma-number" placeholder={pholder}
+                                          required/>
                       }
                     </FormattedMessage>
                     {/*Diploma date*/}
@@ -457,7 +457,8 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getRetirementIdNumber == undefined ? "" : this.state.user.getRetirementIdNumber()}
-                                          type="text" id="retirement-id-number" name="retirement-id-number" placeholder={pholder} required/>
+                                          type="text" id="retirement-id-number" name="retirement-id-number"
+                                          placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                     {/*Diploma date*/}
@@ -477,7 +478,8 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getMedicalBook == undefined ? "" : this.state.user.getMedicalBook()}
-                                          type="text" id="medical-book" name="medical-book" placeholder={pholder} required/>
+                                          type="text" id="medical-book" name="medical-book" placeholder={pholder}
+                                          required/>
                       }
                     </FormattedMessage>
                     {/*Medical book date*/}
@@ -497,7 +499,8 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getMedicalBook == undefined ? "" : this.state.user.getMedicalBook()}
-                                          type="text" id="employment-book" name="employment-book" placeholder={pholder} required/>
+                                          type="text" id="employment-book" name="employment-book" placeholder={pholder}
+                                          required/>
                       }
                     </FormattedMessage>
                     {/*Employment book date*/}

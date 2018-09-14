@@ -52,9 +52,24 @@ public class UserDalImpl implements UserDal
                 .value("first_name", newUser.getFirstName())
                 .value("middle_name", newUser.getMiddleName())
                 .value("last_name", newUser.getLastName())
+                .value("nick_name", newUser.getNickName())
                 .value("cell_phone", newUser.getCellPhone())
                 .value("home_phone", newUser.getHomePhone())
                 .value("work_phone", newUser.getWorkPhone())
+                .value("passport_number", newUser.getPassportNumber())
+                .value("date_of_birth", newUser.getDateOfBirth())
+                .value("employment_date", newUser.getEmploymentDate())
+                .value("actual_employment_date", newUser.getActualEmploymentDate())
+                .value("dismissal_date", newUser.getDismissalDate())
+                .value("actual_dismissal_date", newUser.getActualDismissalDate())
+                .value("tax_payer_id", newUser.getTaxPayerId())
+                .value("diploma_number", newUser.getDiplomaNumber())
+                .value("diploma_date", newUser.getDiplomaDate())
+                .value("retirement_id_number", newUser.getRetirementIdNumber())
+                .value("retirement_date", newUser.getRetirementDate())
+                .value("medical_book", newUser.getMedicalBook())
+                .value("medical_book_date", newUser.getMedicalBookDate())
+                .value("employment_book_number", newUser.getEmploymentBookNumber())
                 .value("organization_id", UUID.fromString(newUser.getOrganizationId()))
                 .value("create_datetime", TimeUtil.getUtcNowInMilliseconds());
         _cassandraConnector.getSession().execute(query);
@@ -257,6 +272,20 @@ public class UserDalImpl implements UserDal
         if (row.getString("cell_phone") != null) builder.setCellPhone(row.getString("cell_phone"));
         if (row.getString("home_phone") != null) builder.setHomePhone(row.getString("home_phone"));
         if (row.getString("work_phone") != null) builder.setWorkPhone(row.getString("work_phone"));
+        if (row.getString("passport_number") != null) builder.setPassportNumber(row.getString("passport_number"));
+        if (row.getTimestamp("date_of_birth") != null) builder.setDateOfBirth(row.getTimestamp("date_of_birth").getTime());
+        if (row.getTimestamp("employment_date") != null) builder.setDateOfBirth(row.getTimestamp("employment_date").getTime());
+        if (row.getTimestamp("actual_employment_date") != null) builder.setDateOfBirth(row.getTimestamp("actual_employment_date").getTime());
+        if (row.getTimestamp("dismissal_date") != null) builder.setDateOfBirth(row.getTimestamp("dismissal_date").getTime());
+        if (row.getTimestamp("actual_dismissal_date") != null) builder.setDateOfBirth(row.getTimestamp("actual_dismissal_date").getTime());
+        if (row.getString("tax_payer_id") != null) builder.setPassportNumber(row.getString("tax_payer_id"));
+        if (row.getString("diploma_number") != null) builder.setPassportNumber(row.getString("diploma_number"));
+        if (row.getTimestamp("diploma_date") != null) builder.setDateOfBirth(row.getTimestamp("diploma_date").getTime());
+        if (row.getString("retirement_id_number") != null) builder.setPassportNumber(row.getString("retirement_id_number"));
+        if (row.getTimestamp("retirement_date") != null) builder.setDateOfBirth(row.getTimestamp("retirement_date").getTime());
+        if (row.getString("medical_book") != null) builder.setPassportNumber(row.getString("medical_book"));
+        if (row.getTimestamp("medical_book_date") != null) builder.setDateOfBirth(row.getTimestamp("medical_book_date").getTime());
+        if (row.getString("employment_book_number") != null) builder.setPassportNumber(row.getString("employment_book_number"));
         if (row.getUUID("organization_id") != null) builder.setOrganizationId(row.getUUID("organization_id").toString());
         if (row.getUUID("address_id") != null) builder.setAddressId(row.getUUID("address_id").toString());
 
