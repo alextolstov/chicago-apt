@@ -13,6 +13,7 @@ import {
   InputGroupText,
   Row
 } from 'reactstrap';
+import {AppSwitch} from '@coreui/react'
 // React select
 import Select from 'react-select';
 import 'react-select/dist/react-select.min.css';
@@ -23,6 +24,14 @@ const jspb = require('google-protobuf');
 const user_proto = require('models/user_pb');
 
 const messages = defineMessages({
+  passwordPlace: {
+    id: 'users.edit.password',
+    defaultMessage: 'Password'
+  },
+  repeatPasswordPlace: {
+    id: 'users.edit.repeat_password',
+    defaultMessage: 'Repeat Password'
+  },
   firstNamePlace: {
     id: 'users.edit.firstname',
     defaultMessage: 'First Name'
@@ -92,14 +101,15 @@ const positions = [
 class EditUser extends Component {
   constructor(props) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
-    this.saveSelectChanges = this.saveSelectChanges.bind(this);
 
     this.state = {
       date_time: new DateTimeApi(),
       value: ['01', '02'],
       user_id: props.match.params.id,
-      user: ""
+      user: "",
+      // password_management_enabled: false,
+      // personal_info_enabled: false,
+      // attributes_enabled: false
     };
 
     if (this.state.user_id == 'new') {
@@ -118,53 +128,182 @@ class EditUser extends Component {
     }
   }
 
-  handleSavePersonalInfo = (event) => {
-    let unixDate = new Date(event.target.value).getTime();
-    this.state.user.setDateOfBirth(unixDate);
+  componentDidMount() {
+    if (this.state.user_id == 'current') {
+      // this.setState({password_management_enabled: false});
+      // this.setState({personal_info_enabled: false});
+      // this.setState({attributes_enabled: false});
+      document.getElementById('password_management_enabled').click();
+      document.getElementById('personal_info_enabled').click();
+      document.getElementById('attributes_enabled').click();
+    }
   }
 
-  handleError(error) {
+  handleFormEnableDisable = (owner_id, event) => {
+    let el = document.getElementById(owner_id);
+    let buttons = Array.prototype.slice.call(el.getElementsByTagName('button'), 0);
+    let inputs = Array.prototype.slice.call(el.getElementsByTagName('input'), 0);
+    let all = inputs.concat(buttons);
+    for (let i = 0; i < all.length; i++) {
+      // Do not block switch
+      if (event.target.id !== all[i].id) {
+        all[i].disabled = !all[i].disabled;
+      }
+    }
+  }
+
+  handleSavePersonalInfo = (event) => {
+    console.log("Save personal")
+  }
+
+  handleError = (error) => {
     // TODO finish the function if neded
   }
 
-  saveSelectChanges(value) {
+  saveSelectChanges = (value) => {
     this.setState({value});
   }
 
-  handleChange = event => {
+  handleChange = (event) => {
     switch (event.target.id) {
       case "email":
         this.state.user.setEmail(event.target.value);
         break;
-      case "firstname":
+      case "first_name":
         this.state.user.setFirstName(event.target.value);
         break;
-      case "midlename":
+      case "midle_name":
         this.state.user.setMiddleName(event.target.value);
         break;
-      case "lastname":
+      case "last_name":
         this.state.user.setLastName(event.target.value);
         break;
-      case "dob-input":
-        let unixDate = this.state.date_time.dateToUnixUTC(event.target.value);
-        this.state.user.setDateOfBirth(unixDate);
+      case "nick_name":
+        this.state.user.setNickName(event.target.value);
         break;
-      case "passport":
+      case "cell_phone":
+        this.state.user.setCellPhone(event.target.value);
+        break;
+      case "home_phone":
+        this.state.user.setHomePhone(event.target.value);
+        break;
+      case "work_phone":
+        this.state.user.setWorkPhone(event.target.value);
+        break;
+      case "passport_number":
         this.state.user.setPassportNumber(event.target.value);
+        break;
+      case "date_of_birth":
+        this.state.user.setDateOfBirth(this.state.date_time.dateToUnixUTC(event.target.value));
+        break;
+      case "employment_date":
+        this.state.user.setEmploymentDate(this.state.date_time.dateToUnixUTC(event.target.value));
+        break;
+      case "actual_employment_date":
+        this.state.user.setActualEmploymentDate(this.state.date_time.dateToUnixUTC(event.target.value));
+        break;
+      case "dismissal_date":
+        this.state.user.setDismissalDate(this.state.date_time.dateToUnixUTC(event.target.value));
+        break;
+      case "actual_dismissal_date":
+        this.state.user.setActualDismissalDate(this.state.date_time.dateToUnixUTC(event.target.value));
+        break;
+      case "tax_payer_id":
+        this.state.user.setTaxPayerId(event.target.value);
+        break;
+      case "diploma_number":
+        this.state.user.setDiplomaNumber(event.target.value);
+        break;
+      case "diploma_date":
+        this.state.user.setDiplomaDate(this.state.date_time.dateToUnixUTC(event.target.value));
+        break;
+      case "retirement_id_number":
+        this.state.user.setRetirementIdNumber(event.target.value);
+        break;
+      case "retirement_date":
+        this.state.user.setRetirementDate(this.state.date_time.dateToUnixUTC(event.target.value));
+        break;
+      case "medical_book":
+        this.state.user.setMedicalBook(event.target.value);
+        break;
+      case "medical_book_date":
+        this.state.user.setMedicalBookDate(this.state.date_time.dateToUnixUTC(event.target.value));
+        break;
+      case "employment_book_number":
+        this.state.user.setEmploymentBookNumber(event.target.value);
         break;
     }
     this.setState({[event.target.id]: event.target.value});
   }
 
   render() {
+
     return (
       <div className="animated fadeIn">
         <Row>
           <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
-            <Card>
+            <Card id="password">
               <CardHeader>
-                <button onClick={this.handleSavePersonalInfo}><i className="icon-note"></i></button>
+                <button id="save_personal_info" onClick={this.handleSavePersonalInfo}><i
+                  className="icon-cloud-upload"></i></button>
+                <strong><FormattedMessage id="users.edit.password_management"
+                                          defaultMessage="Password management"/></strong>
+                <div className="card-header-actions">
+                  <AppSwitch id="password_management_enabled" onClick={(e) => this.handleFormEnableDisable('password', e)}
+                             className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
+                             label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
+                </div>
+              </CardHeader>
+
+              <CardBody>
+                {/*Password*/}
+                <FormGroup row>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="icon-lock"></i>
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <FormattedMessage {...messages.passwordPlace}>
+                      {
+                        pholder => <Input onChange={this.handleChange}
+                                          type="password" id="email" name="email" placeholder={pholder} required/>
+                      }
+                    </FormattedMessage>
+                  </InputGroup>
+                </FormGroup>
+
+                {/* Repeat Password*/}
+                <FormGroup row>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="icon-lock"></i>
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <FormattedMessage {...messages.repeatPasswordPlace}>
+                      {
+                        pholder => <Input onChange={this.handleChange}
+                                          type="password" id="first_name" name="first_name" placeholder={pholder}
+                                          required/>
+                      }
+                    </FormattedMessage>
+                  </InputGroup>
+                </FormGroup>
+
+              </CardBody>
+            </Card>
+
+            <Card id="personal_info">
+              <CardHeader>
+                <button id="save_personal_info" onClick={this.handleSavePersonalInfo}><i
+                  className="icon-cloud-upload"></i></button>
                 <strong><FormattedMessage id="users.edit.personal" defaultMessage="Personal Information"/></strong>
+                <div className="card-header-actions">
+                  <AppSwitch id="personal_info_enabled" onClick={(e) => this.handleFormEnableDisable('personal_info', e)}
+                             className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
+                             label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
+                </div>
               </CardHeader>
 
               <CardBody>
@@ -197,7 +336,7 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getFirstName == undefined ? "" : this.state.user.getFirstName()}
-                                          type="text" id="firstname" name="firstname" placeholder={pholder} required/>
+                                          type="text" id="first_name" name="first_name" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -215,7 +354,8 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getMiddleName == undefined ? "" : this.state.user.getMiddleName()}
-                                          type="text" id="midlename" name="midlename" placeholder={pholder} required/>
+                                          type="text" id="middle_name" name="middle_name" placeholder={pholder}
+                                          required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -233,7 +373,7 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getLastName == undefined ? "" : this.state.user.getLastName()}
-                                          type="text" id="lastname" name="lastname" placeholder={pholder} required/>
+                                          type="text" id="last_name" name="last_name" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -251,7 +391,7 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getNickName == undefined ? "" : this.state.user.getNickName()}
-                                          type="text" id="nickname" name="nickname" placeholder={pholder} required/>
+                                          type="text" id="nick_name" name="nick_name" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -269,7 +409,8 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getPassportNumber == undefined ? "" : this.state.user.getPassportNumber()}
-                                          type="text" id="passport" name="passport" placeholder={pholder} required/>
+                                          type="text" id="passport_number" name="passport_number" placeholder={pholder}
+                                          required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -288,25 +429,7 @@ class EditUser extends Component {
                     <Input type="date"
                            onChange={this.handleChange}
                            defaultValue={this.state.user.getDateOfBirth != undefined ? "" : new Date(this.state.user.getDateOfBirth()).toISOString().substr(0, 10)}
-                           id="dob-input" name="dob-input" placeholder="date"/>
-                  </InputGroup>
-                </FormGroup>
-
-                {/*Home phone*/}
-                <FormGroup row>
-                  <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="fa fa-phone"></i>
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <FormattedMessage {...messages.homePhonePlace}>
-                      {
-                        pholder => <Input onChange={this.handleChange}
-                                          value={this.state.user.getHomePhone == undefined ? "" : this.state.user.getHomePhone()}
-                                          type="text" id="homephone" name="homephone" placeholder={pholder} required/>
-                      }
-                    </FormattedMessage>
+                           id="date_of_birth" name="date_of_birth" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 
@@ -322,7 +445,25 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getCellPhone == undefined ? "" : this.state.user.getCellPhone()}
-                                          type="text" id="cellphone" name="cellphone" placeholder={pholder} required/>
+                                          type="text" id="cell_phone" name="cell_phone" placeholder={pholder} required/>
+                      }
+                    </FormattedMessage>
+                  </InputGroup>
+                </FormGroup>
+
+                {/*Home phone*/}
+                <FormGroup row>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="fa fa-phone"></i>
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <FormattedMessage {...messages.homePhonePlace}>
+                      {
+                        pholder => <Input onChange={this.handleChange}
+                                          value={this.state.user.getHomePhone == undefined ? "" : this.state.user.getHomePhone()}
+                                          type="text" id="home_phone" name="home_phone" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -340,7 +481,7 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getWorkPhone == undefined ? "" : this.state.user.getWorkPhone()}
-                                          type="text" id="workphone" name="workphone" placeholder={pholder} required/>
+                                          type="text" id="work_phone" name="work_phone" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -351,10 +492,15 @@ class EditUser extends Component {
           </Col>
 
           <Col sm={12} md={6}>
-            <Card>
+            <Card id='attributes'>
               <CardHeader>
-                <button><i className="icon-note"></i></button>
+                <button><i className="icon-cloud-upload"></i></button>
                 <strong><FormattedMessage id="users.edit.personal" defaultMessage="Attributes"/></strong>
+                <div className="card-header-actions">
+                  <AppSwitch id="attributes_enabled" onClick={(e) => this.handleFormEnableDisable('attributes', e)}
+                             className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
+                             label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
+                </div>
               </CardHeader>
 
               <CardBody>
@@ -368,7 +514,7 @@ class EditUser extends Component {
                         </i>
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="date" id="employment-date" name="employment-date" placeholder="date"/>
+                    <Input type="date" id="employment_date" name="employment_date" placeholder="date"/>
                     {/*Actual start date*/}
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
@@ -377,7 +523,7 @@ class EditUser extends Component {
                         </i>
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="date" id="actual-start-date" name="actual-start-date" placeholder="date"/>
+                    <Input type="date" id="actual_employment_date" name="actual_employment_date" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 
@@ -391,7 +537,7 @@ class EditUser extends Component {
                         </i>
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="date" id="dismissal-date" name="dismissal-date" placeholder="date"/>
+                    <Input type="date" id="dismissal_date" name="dismissal_date" placeholder="date"/>
                     {/*Actual last date*/}
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
@@ -400,7 +546,7 @@ class EditUser extends Component {
                         </i>
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="date" id="actual-last-date" name="actual-last-date" placeholder="date"/>
+                    <Input type="date" id="actual_dismissal_date" name="actual_dismissal_date" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 
@@ -416,11 +562,10 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getTaxPayerId == undefined ? "" : this.state.user.getTaxPayerId()}
-                                          type="text" id="taxpayer-id" name="taxpayer-id" placeholder={pholder}
+                                          type="text" id="tax_payer_id" name="tax_payer_id" placeholder={pholder}
                                           required/>
                       }
                     </FormattedMessage>
-                    <Input type="date" id="employment-date" name="employment-date" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 
@@ -436,12 +581,12 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getDiplomaNumber == undefined ? "" : this.state.user.getDiplomaNumber()}
-                                          type="text" id="diploma-number" name="diploma-number" placeholder={pholder}
+                                          type="text" id="diploma_number" name="diploma_number" placeholder={pholder}
                                           required/>
                       }
                     </FormattedMessage>
                     {/*Diploma date*/}
-                    <Input type="date" id="diploma-date" name="diploma-date" placeholder="date"/>
+                    <Input type="date" id="diploma_date" name="diploma_date" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 
@@ -457,12 +602,12 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getRetirementIdNumber == undefined ? "" : this.state.user.getRetirementIdNumber()}
-                                          type="text" id="retirement-id-number" name="retirement-id-number"
+                                          type="text" id="retirement_id_number" name="retirement_id_number"
                                           placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                     {/*Diploma date*/}
-                    <Input type="date" id="retirement-date" name="retirement-date" placeholder="date"/>
+                    <Input type="date" id="retirement_date" name="retirement_date" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 
@@ -478,12 +623,12 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getMedicalBook == undefined ? "" : this.state.user.getMedicalBook()}
-                                          type="text" id="medical-book" name="medical-book" placeholder={pholder}
+                                          type="text" id="medical_book" name="medical_book" placeholder={pholder}
                                           required/>
                       }
                     </FormattedMessage>
                     {/*Medical book date*/}
-                    <Input type="date" id="medical-book-date" name="medical-book-date" placeholder="date"/>
+                    <Input type="date" id="medical_book_date" name="medical_book_date" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 
@@ -499,12 +644,11 @@ class EditUser extends Component {
                       {
                         pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getMedicalBook == undefined ? "" : this.state.user.getMedicalBook()}
-                                          type="text" id="employment-book" name="employment-book" placeholder={pholder}
+                                          type="text" id="employment_book_number" name="employment_book_number"
+                                          placeholder={pholder}
                                           required/>
                       }
                     </FormattedMessage>
-                    {/*Employment book date*/}
-                    <Input type="date" id="employment-records-date" name="employment-records-date" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 

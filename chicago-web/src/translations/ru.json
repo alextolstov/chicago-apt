@@ -9,6 +9,9 @@
   "menu.users.newuser": "Новый сотрудник",
   "menu.users.allusers": "Все сотрудники",
 
+  "users.edit.password_management": "Смена пароля",
+  "users.edit.password": "Пароль",
+  "users.edit.repeate_password": "Повторите Пароль",
   "users.edit.newuser": "Создать нового сотрудника",
   "users.edit.personal": "Личная информация",
   "users.edit.attr": "Атрибуты",
