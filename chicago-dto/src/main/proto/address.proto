@@ -10,11 +10,13 @@ message Address
     string street_name = 2;
     string house_number = 3;
     string building_info = 4;
-    string apt_office_number = 5;
-    string place_name = 6;
-    string area = 7;
-    string administrative_division = 8;
-    string zip_code = 9;
-    string country = 10;
+    string office_number = 5;
+    string apartment_number = 6;
+    string city = 7;
+    string place_name = 8; // Village
+    string administrative_division = 10; //Obl, Kraj, County
+    string state = 11; // Republic
+    string zip_code = 12;
+    string country = 13;
 }
 

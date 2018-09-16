@@ -268,6 +268,7 @@ public class UserDalImpl implements UserDal
         if (row.getBytes("avatar") != null) builder.setAvatar(ByteString.copyFrom(row.getBytes("avatar").array()));
         if (row.getString("first_name") != null) builder.setFirstName(row.getString("first_name"));
         if (row.getString("middle_name") != null) builder.setMiddleName(row.getString("middle_name"));
+        if (row.getString("nick_name") != null) builder.setNickName(row.getString("nick_name"));
         if (row.getString("last_name") != null) builder.setLastName(row.getString("last_name"));
         if (row.getString("cell_phone") != null) builder.setCellPhone(row.getString("cell_phone"));
         if (row.getString("home_phone") != null) builder.setHomePhone(row.getString("home_phone"));
@@ -310,6 +311,24 @@ public class UserDalImpl implements UserDal
                 .with(QueryBuilder.set("first_name", user.getFirstName()))
                 .and(QueryBuilder.set("middle_name", user.getMiddleName()))
                 .and(QueryBuilder.set("last_name", user.getLastName()))
+                .and(QueryBuilder.set("nick_name", user.getNickName()))
+                .and(QueryBuilder.set("cell_phone", user.getCellPhone()))
+                .and(QueryBuilder.set("home_phone", user.getHomePhone()))
+                .and(QueryBuilder.set("work_phone", user.getWorkPhone()))
+                .and(QueryBuilder.set("passport_number", user.getPassportNumber()))
+                .and(QueryBuilder.set("date_of_birth", user.getDateOfBirth()))
+                .and(QueryBuilder.set("employment_date", user.getEmploymentDate()))
+                .and(QueryBuilder.set("actual_employment_date", user.getActualEmploymentDate()))
+                .and(QueryBuilder.set("dismissal_date", user.getDismissalDate()))
+                .and(QueryBuilder.set("actual_dismissal_date", user.getActualDismissalDate()))
+                .and(QueryBuilder.set("tax_payer_id", user.getTaxPayerId()))
+                .and(QueryBuilder.set("diploma_number", user.getDiplomaNumber()))
+                .and(QueryBuilder.set("diploma_date", user.getDiplomaDate()))
+                .and(QueryBuilder.set("retirement_id_number", user.getRetirementIdNumber()))
+                .and(QueryBuilder.set("retirement_date", user.getRetirementDate()))
+                .and(QueryBuilder.set("medical_book", user.getMedicalBook()))
+                .and(QueryBuilder.set("medical_book_date", user.getMedicalBookDate()))
+                .and(QueryBuilder.set("employment_book_number", user.getEmploymentBookNumber()))
                 .where(QueryBuilder.eq("user_id", UUID.fromString(user.getUserId())));
         _cassandraConnector.getSession().execute(query);
     }

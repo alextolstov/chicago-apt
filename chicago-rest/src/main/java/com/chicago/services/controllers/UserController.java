@@ -31,31 +31,6 @@ public class UserController
     private AsyncCommunicator _asyncComm;
 
     @POST
-    @Path("user")
-    @RequiresAuthentication
-    @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
-    public Response getUser(byte[] data)
-    {
-        try
-        {
-            UserOuterClass.User user = UserOuterClass.User.parseFrom(data);
-            byte[] response;
-
-            Usermessages.UserRequest request = Usermessages.UserRequest.newBuilder()
-                    .setCrudOperation(Common.CrudOperation.READ)
-                    .setUser(user)
-                    .build();
-
-            response = _asyncComm.transaction(request);
-            return Response.ok(response).build();
-        } catch (TimeoutException | InvalidProtocolBufferException e)
-        {
-            return ResponseErrorUtil.createErrorResponse(e.getMessage(),
-                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
-        }
-    }
-
-    @POST
     @Path("avatar")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
@@ -84,7 +59,25 @@ public class UserController
     }
 
     @POST
-    @Path("createadminuser")
+    @Path("user")
+    @RequiresAuthentication
+    @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
+    public Response getUser(byte[] data)
+    {
+        return userOperations(data, Common.CrudOperation.READ);
+    }
+
+    @POST
+    @Path("saveuser")
+    @RequiresAuthentication
+    @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
+    public Response saveUser(byte[] data)
+    {
+        return userOperations(data, Common.CrudOperation.UPDATE);
+    }
+
+    @POST
+    @Path("createadmin")
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response createAdminUser(byte[] data)
     {
@@ -111,6 +104,26 @@ public class UserController
             Usermessages.UserRequest request = Usermessages.UserRequest.newBuilder()
                     .setCrudOperation(Common.CrudOperation.CREATE)
                     .setUserType(isAdmin ? Usermessages.UserType.ADMIN : Usermessages.UserType.STANDARD)
+                    .setUser(user)
+                    .build();
+
+            response = _asyncComm.transaction(request);
+            return Response.ok(response).build();
+        } catch (TimeoutException | InvalidProtocolBufferException e)
+        {
+            return ResponseErrorUtil.createErrorResponse(e.getMessage(),
+                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        }
+    }
+
+    private Response userOperations(byte[] data, Common.CrudOperation operation) {
+        try
+        {
+            UserOuterClass.User user = UserOuterClass.User.parseFrom(data);
+            byte[] response;
+
+            Usermessages.UserRequest request = Usermessages.UserRequest.newBuilder()
+                    .setCrudOperation(operation)
                     .setUser(user)
                     .build();
 

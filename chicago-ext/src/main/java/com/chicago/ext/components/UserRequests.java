@@ -135,6 +135,12 @@ public class UserRequests extends AbstractComponent
                         }
                         break;
                     }
+                    case UPDATE:
+                    {
+                        _userBll.updateUser(event.getUser());
+                        user = UserOuterClass.User.getDefaultInstance();
+                        break;
+                    }
                 }
 
                 response = Usermessages.UserResponse

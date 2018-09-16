@@ -19,6 +19,7 @@ import Select from 'react-select';
 import 'react-select/dist/react-select.min.css';
 import UserApi from '../../../api/UserApi';
 import DateTimeApi from '../../../api/DateTimeApi';
+import AddressForm from '../../Forms/AddressForm/AddressForm';
 
 const jspb = require('google-protobuf');
 const user_proto = require('models/user_pb');
@@ -103,13 +104,11 @@ class EditUser extends Component {
     super(props);
 
     this.state = {
-      date_time: new DateTimeApi(),
+      dateTime: new DateTimeApi(),
+      userApi: new UserApi(),
       value: ['01', '02'],
       user_id: props.match.params.id,
-      user: "",
-      // password_management_enabled: false,
-      // personal_info_enabled: false,
-      // attributes_enabled: false
+      user: ""
     };
 
     if (this.state.user_id == 'new') {
@@ -130,12 +129,10 @@ class EditUser extends Component {
 
   componentDidMount() {
     if (this.state.user_id == 'current') {
-      // this.setState({password_management_enabled: false});
-      // this.setState({personal_info_enabled: false});
-      // this.setState({attributes_enabled: false});
       document.getElementById('password_management_enabled').click();
       document.getElementById('personal_info_enabled').click();
       document.getElementById('attributes_enabled').click();
+      document.getElementById('address_enabled').click();
     }
   }
 
@@ -152,8 +149,17 @@ class EditUser extends Component {
     }
   }
 
-  handleSavePersonalInfo = (event) => {
-    console.log("Save personal")
+  handleSaveUserInfo = (event) => {
+    let self = this;
+    if (this.state.user_id == 'new') {
+      this.state.userApi.createUser(this.state.user, self);
+    } else {// Working with existing profile
+      this.state.userApi.saveUser(this.state.user, self).then(function () {
+        if (this.state.user_id == 'current') {
+          self.props.appStore.userData = self.state.user;
+        }
+      });
+    }
   }
 
   handleError = (error) => {
@@ -194,19 +200,19 @@ class EditUser extends Component {
         this.state.user.setPassportNumber(event.target.value);
         break;
       case "date_of_birth":
-        this.state.user.setDateOfBirth(this.state.date_time.dateToUnixUTC(event.target.value));
+        this.state.user.setDateOfBirth(this.state.dateTime.dateToUnixUTC(event.target.value));
         break;
       case "employment_date":
-        this.state.user.setEmploymentDate(this.state.date_time.dateToUnixUTC(event.target.value));
+        this.state.user.setEmploymentDate(this.state.dateTime.dateToUnixUTC(event.target.value));
         break;
       case "actual_employment_date":
-        this.state.user.setActualEmploymentDate(this.state.date_time.dateToUnixUTC(event.target.value));
+        this.state.user.setActualEmploymentDate(this.state.dateTime.dateToUnixUTC(event.target.value));
         break;
       case "dismissal_date":
-        this.state.user.setDismissalDate(this.state.date_time.dateToUnixUTC(event.target.value));
+        this.state.user.setDismissalDate(this.state.dateTime.dateToUnixUTC(event.target.value));
         break;
       case "actual_dismissal_date":
-        this.state.user.setActualDismissalDate(this.state.date_time.dateToUnixUTC(event.target.value));
+        this.state.user.setActualDismissalDate(this.state.dateTime.dateToUnixUTC(event.target.value));
         break;
       case "tax_payer_id":
         this.state.user.setTaxPayerId(event.target.value);
@@ -215,19 +221,19 @@ class EditUser extends Component {
         this.state.user.setDiplomaNumber(event.target.value);
         break;
       case "diploma_date":
-        this.state.user.setDiplomaDate(this.state.date_time.dateToUnixUTC(event.target.value));
+        this.state.user.setDiplomaDate(this.state.dateTime.dateToUnixUTC(event.target.value));
         break;
       case "retirement_id_number":
         this.state.user.setRetirementIdNumber(event.target.value);
         break;
       case "retirement_date":
-        this.state.user.setRetirementDate(this.state.date_time.dateToUnixUTC(event.target.value));
+        this.state.user.setRetirementDate(this.state.dateTime.dateToUnixUTC(event.target.value));
         break;
       case "medical_book":
         this.state.user.setMedicalBook(event.target.value);
         break;
       case "medical_book_date":
-        this.state.user.setMedicalBookDate(this.state.date_time.dateToUnixUTC(event.target.value));
+        this.state.user.setMedicalBookDate(this.state.dateTime.dateToUnixUTC(event.target.value));
         break;
       case "employment_book_number":
         this.state.user.setEmploymentBookNumber(event.target.value);
@@ -244,12 +250,13 @@ class EditUser extends Component {
           <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
             <Card id="password">
               <CardHeader>
-                <button id="save_personal_info" onClick={this.handleSavePersonalInfo}><i
+                <button id="save_personal_info" onClick={this.handleSavePassword}><i
                   className="icon-cloud-upload"></i></button>
                 <strong><FormattedMessage id="users.edit.password_management"
                                           defaultMessage="Password management"/></strong>
                 <div className="card-header-actions">
-                  <AppSwitch id="password_management_enabled" onClick={(e) => this.handleFormEnableDisable('password', e)}
+                  <AppSwitch id="password_management_enabled"
+                             onClick={(e) => this.handleFormEnableDisable('password', e)}
                              className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
@@ -267,7 +274,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.passwordPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="password" id="email" name="email" placeholder={pholder} required/>
+                                          type="password" id="password" name="password" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -284,7 +291,8 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.repeatPasswordPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="password" id="first_name" name="first_name" placeholder={pholder}
+                                          type="password" id="repeat_password" name="repeat_password"
+                                          placeholder={pholder}
                                           required/>
                       }
                     </FormattedMessage>
@@ -296,11 +304,12 @@ class EditUser extends Component {
 
             <Card id="personal_info">
               <CardHeader>
-                <button id="save_personal_info" onClick={this.handleSavePersonalInfo}><i
+                <button id="save_personal_info" onClick={this.handleSaveUserInfo}><i
                   className="icon-cloud-upload"></i></button>
                 <strong><FormattedMessage id="users.edit.personal" defaultMessage="Personal Information"/></strong>
                 <div className="card-header-actions">
-                  <AppSwitch id="personal_info_enabled" onClick={(e) => this.handleFormEnableDisable('personal_info', e)}
+                  <AppSwitch id="personal_info_enabled"
+                             onClick={(e) => this.handleFormEnableDisable('personal_info', e)}
                              className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
@@ -491,10 +500,10 @@ class EditUser extends Component {
             </Card>
           </Col>
 
-          <Col sm={12} md={6}>
+          <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
             <Card id='attributes'>
               <CardHeader>
-                <button><i className="icon-cloud-upload"></i></button>
+                <button><i className="icon-cloud-upload" onClick={this.handleUserInfo}></i></button>
                 <strong><FormattedMessage id="users.edit.personal" defaultMessage="Attributes"/></strong>
                 <div className="card-header-actions">
                   <AppSwitch id="attributes_enabled" onClick={(e) => this.handleFormEnableDisable('attributes', e)}
@@ -675,6 +684,7 @@ class EditUser extends Component {
 
               </CardBody>
             </Card>
+            <AddressForm/>
           </Col>
         </Row>
       </div>

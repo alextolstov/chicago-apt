@@ -35,7 +35,7 @@ class Login extends Component {
       password: "",
       error_text: "",
       show_error: false,
-      user_api: new UserApi()
+      userApi: new UserApi()
     };
   }
 
@@ -73,7 +73,7 @@ class Login extends Component {
     let form = "username=" + this.state.email.toLowerCase() + "&password=" + this.state.password;
     let self = this;
 
-    this.state.user_api.login(form, this.state.email.toLowerCase(), this).then(function (user) {
+    this.state.userApi.login(form, this.state.email.toLowerCase(), this).then(function (user) {
         if (user != null) {
           self.props.appStore.userData = user;
           window.sessionStorage.setItem("current_user", user.getUserId());

@@ -119,6 +119,12 @@ public class UserBllImpl implements UserBll
         return _userDal.getUserById(userId);
     }
 
+    @Override
+    public void updateUser(UserOuterClass.User user) throws Exception
+    {
+        _userDal.updateUser(user);
+    }
+
     private UserOuterClass.User createUser(UserOuterClass.User user, boolean sendCredentials) throws Exception
     {
         if (_userDal.isUserExists(user.getEmail()))

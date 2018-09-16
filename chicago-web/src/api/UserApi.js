@@ -95,4 +95,69 @@ export default class UserApi {
       })
     })
   }
+
+  createUser(user, context) {
+    let serialized_user = user.serializeBinary();
+
+    return fetch('/api/users/create', {
+      method: "POST",
+      body: serialized_user,
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }).then(response => {
+      if (!response.ok) {
+        throw response;
+      }
+      return response.arrayBuffer();
+    }).then(proto => {
+      let user_response = usermessages_proto.UserResponse.deserializeBinary(proto);
+      if (user_response.getTransactionError() !== undefined) {
+        context.handleError(user_response.getTransactionError().getErrorMessage());
+      }
+    }).catch(rest_error => {
+      if (rest_error.status == 500) {
+        // Show error
+        context.handleError("Error 500. Server error.");
+        return;
+      }
+      rest_error.json().then(errorMessage => {
+        context.handleError(errorMessage);
+      })
+    })
+  }
+
+  saveUser(user, context) {
+    let serialized_user = user.serializeBinary();
+
+    return fetch('/api/users/saveuser', {
+      method: "POST",
+      body: serialized_user,
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }).then(response => {
+      if (!response.ok) {
+        throw response;
+      }
+      return response.arrayBuffer();
+    }).then(proto => {
+      let user_response = usermessages_proto.UserResponse.deserializeBinary(proto);
+      if (user_response.getTransactionError() !== undefined) {
+        context.handleError(user_response.getTransactionError().getErrorMessage());
+      }
+    }).catch(rest_error => {
+      if (rest_error.status == 500) {
+        // Show error
+        context.handleError("Error 500. Server error.");
+        return;
+      }
+      rest_error.json().then(errorMessage => {
+        context.handleError(errorMessage);
+      })
+    })
+  }
+
 }

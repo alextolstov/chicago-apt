@@ -33,5 +33,19 @@
   "users.edit.diplomadate": "Диплом дата",
   "users.edit.retirement": "Пенсионное",
   "users.edit.medical": "Мед. книжка",
-  "users.edit.employment": "Трудовая. книжка"
+  "users.edit.employment": "Трудовая. книжка",
+  "users.edit.address": "Адрес",
+
+  "address.edit.street": "Улица",
+  "address.edit.house": "Дом",
+  "address.edit.building": "Корпус",
+  "address.edit.office": "Офис",
+  "address.edit.apartment": "Квартира",
+  "address.edit.city": "Город",
+  "address.edit.place": "Поселок/Деревня",
+  "address.edit.administrative_division": "Область/Край",
+  "address.edit.state": "Республика",
+  "address.edit.zip": "Индекс",
+  "address.edit.country": "Страна"
+
 }
