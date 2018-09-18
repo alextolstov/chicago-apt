@@ -9,7 +9,9 @@
   "menu.users.newuser": "Новый сотрудник",
   "menu.users.allusers": "Все сотрудники",
 
+  "users.edit.wholename": "//",
   "users.edit.password_management": "Смена пароля",
+  "users.edit.email_management": "Смена email",
   "users.edit.password": "Пароль",
   "users.edit.repeate_password": "Повторите Пароль",
   "users.edit.newuser": "Создать нового сотрудника",
@@ -43,7 +45,7 @@
   "address.edit.apartment": "Квартира",
   "address.edit.city": "Город",
   "address.edit.place": "Поселок/Деревня",
-  "address.edit.administrative_division": "Область/Край",
+  "address.edit.county": "Область/Край",
   "address.edit.state": "Республика",
   "address.edit.zip": "Индекс",
   "address.edit.country": "Страна"

@@ -37,6 +37,10 @@ const messages = defineMessages({
     id: 'users.edit.firstname',
     defaultMessage: 'First Name'
   },
+  wholeNamePlace: {
+    id: 'users.edit.wholename',
+    defaultMessage: 'First/Middle/Last Name'
+  },
   midleNamePlace: {
     id: 'users.edit.midlename',
     defaultMessage: 'Midle Name'
@@ -129,6 +133,7 @@ class EditUser extends Component {
 
   componentDidMount() {
     if (this.state.user_id == 'current') {
+      document.getElementById('email_management_enabled').click();
       document.getElementById('password_management_enabled').click();
       document.getElementById('personal_info_enabled').click();
       document.getElementById('attributes_enabled').click();
@@ -248,7 +253,132 @@ class EditUser extends Component {
       <div className="animated fadeIn">
         <Row>
           <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
-            <Card id="password">
+            <Card id="new_user_card">
+              <CardHeader>
+                <button id="save_new_user" onClick={this.handleCreateUser}><i
+                  className="icon-cloud-upload"></i></button>
+                <strong><FormattedMessage id="users.edit.new_user"
+                                          defaultMessage="Create new user"/></strong>
+                <div className="card-header-actions">
+                  <AppSwitch id="email_management_enabled"
+                             onClick={(e) => this.handleFormEnableDisable('email_card', e)}
+                             className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
+                             label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
+                </div>
+              </CardHeader>
+
+              <CardBody>
+                {/*Email*/}
+                <FormGroup row>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="fa fa-envelope-o"></i>
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <FormattedMessage {...messages.emailPlace}>
+                      {
+                        pholder => <Input onChange={this.handleChange}
+                                          type="text" id="email" name="email" placeholder={pholder} required/>
+                      }
+                    </FormattedMessage>
+                  </InputGroup>
+                </FormGroup>
+
+                {/*Whole name First/Last/Middle*/}
+                <FormGroup row>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="fa fa-user"></i>
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <FormattedMessage {...messages.wholeNamePlace}>
+                      {
+                        pholder => <Input onChange={this.handleChange}
+                                          type="text" id="whole_name" name="whole_name" placeholder={pholder} required/>
+                      }
+                    </FormattedMessage>
+                  </InputGroup>
+                </FormGroup>
+
+                {/*Password*/}
+                <FormGroup row>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="icon-lock"></i>
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <FormattedMessage {...messages.passwordPlace}>
+                      {
+                        pholder => <Input onChange={this.handleChange}
+                                          type="password" id="password" name="password" placeholder={pholder} required/>
+                      }
+                    </FormattedMessage>
+                  </InputGroup>
+                </FormGroup>
+
+                {/* Repeat Password*/}
+                <FormGroup row>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="icon-lock"></i>
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <FormattedMessage {...messages.repeatPasswordPlace}>
+                      {
+                        pholder => <Input onChange={this.handleChange}
+                                          type="password" id="repeat_password" name="repeat_password"
+                                          placeholder={pholder}
+                                          required/>
+                      }
+                    </FormattedMessage>
+                  </InputGroup>
+                </FormGroup>
+
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+        <Row hidden>
+          <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
+            <Card id="email_card">
+              <CardHeader>
+                <button id="save_email" onClick={this.handleSaveEmail}><i
+                  className="icon-cloud-upload"></i></button>
+                <strong><FormattedMessage id="users.edit.email_management"
+                                          defaultMessage="Email management"/></strong>
+                <div className="card-header-actions">
+                  <AppSwitch id="email_management_enabled"
+                             onClick={(e) => this.handleFormEnableDisable('email_card', e)}
+                             className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
+                             label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
+                </div>
+              </CardHeader>
+
+              <CardBody>
+                {/*Email*/}
+                <FormGroup row>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="fa fa-envelope-o"></i>
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <FormattedMessage {...messages.emailPlace}>
+                      {
+                        pholder => <Input onChange={this.handleChange} value={this.state.user.getEmail()}
+                                          type="text" id="email" name="email" placeholder={pholder} required/>
+                      }
+                    </FormattedMessage>
+                  </InputGroup>
+                </FormGroup>
+              </CardBody>
+            </Card>
+
+            <Card id="password_card">
               <CardHeader>
                 <button id="save_personal_info" onClick={this.handleSavePassword}><i
                   className="icon-cloud-upload"></i></button>
@@ -256,7 +386,7 @@ class EditUser extends Component {
                                           defaultMessage="Password management"/></strong>
                 <div className="card-header-actions">
                   <AppSwitch id="password_management_enabled"
-                             onClick={(e) => this.handleFormEnableDisable('password', e)}
+                             onClick={(e) => this.handleFormEnableDisable('password_card', e)}
                              className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
@@ -302,36 +432,20 @@ class EditUser extends Component {
               </CardBody>
             </Card>
 
-            <Card id="personal_info">
+            <Card id="personal_info_card">
               <CardHeader>
                 <button id="save_personal_info" onClick={this.handleSaveUserInfo}><i
                   className="icon-cloud-upload"></i></button>
                 <strong><FormattedMessage id="users.edit.personal" defaultMessage="Personal Information"/></strong>
                 <div className="card-header-actions">
                   <AppSwitch id="personal_info_enabled"
-                             onClick={(e) => this.handleFormEnableDisable('personal_info', e)}
+                             onClick={(e) => this.handleFormEnableDisable('personal_info_card', e)}
                              className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
               </CardHeader>
 
               <CardBody>
-                {/*Email*/}
-                <FormGroup row>
-                  <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="fa fa-envelope-o"></i>
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <FormattedMessage {...messages.emailPlace}>
-                      {
-                        pholder => <Input onChange={this.handleChange} value={this.state.user.getEmail()}
-                                          type="text" id="email" name="email" placeholder={pholder} required/>
-                      }
-                    </FormattedMessage>
-                  </InputGroup>
-                </FormGroup>
 
                 {/*First name*/}
                 <FormGroup row>
@@ -406,6 +520,23 @@ class EditUser extends Component {
                   </InputGroup>
                 </FormGroup>
 
+                {/* DOB */}
+                <FormGroup row>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i>
+                          <FormattedMessage id="users.edit.dob" defaultMessage="DOB"/>
+                        </i>
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input type="date"
+                           onChange={this.handleChange}
+                           defaultValue={this.state.user.getDateOfBirth != undefined ? "" : new Date(this.state.user.getDateOfBirth()).toISOString().substr(0, 10)}
+                           id="date_of_birth" name="date_of_birth" placeholder="date"/>
+                  </InputGroup>
+                </FormGroup>
+
                 {/*Passport*/}
                 <FormGroup row>
                   <InputGroup>
@@ -422,23 +553,6 @@ class EditUser extends Component {
                                           required/>
                       }
                     </FormattedMessage>
-                  </InputGroup>
-                </FormGroup>
-
-                {/* DOB */}
-                <FormGroup row>
-                  <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i>
-                          <FormattedMessage id="users.edit.dob" defaultMessage="DOB"/>
-                        </i>
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input type="date"
-                           onChange={this.handleChange}
-                           defaultValue={this.state.user.getDateOfBirth != undefined ? "" : new Date(this.state.user.getDateOfBirth()).toISOString().substr(0, 10)}
-                           id="date_of_birth" name="date_of_birth" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
 
@@ -501,12 +615,12 @@ class EditUser extends Component {
           </Col>
 
           <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
-            <Card id='attributes'>
+            <Card id='attributes_card'>
               <CardHeader>
                 <button><i className="icon-cloud-upload" onClick={this.handleUserInfo}></i></button>
                 <strong><FormattedMessage id="users.edit.personal" defaultMessage="Attributes"/></strong>
                 <div className="card-header-actions">
-                  <AppSwitch id="attributes_enabled" onClick={(e) => this.handleFormEnableDisable('attributes', e)}
+                  <AppSwitch id="attributes_enabled" onClick={(e) => this.handleFormEnableDisable('attributes_card', e)}
                              className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>

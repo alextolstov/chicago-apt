@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Addresses(
     apartment_number varchar,
     city varchar,
     place_name varchar,
-    administrative_division varchar,
+    county varchar,
     zip_code varchar,
     country varchar);
 
