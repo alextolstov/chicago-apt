@@ -131,13 +131,48 @@ class EditUser extends Component {
     }
   }
 
+  setUncheckState = () => {
+    if (document.getElementById('new_user_enabled').checked) {
+      document.getElementById('new_user_enabled').click();
+    }
+    if (document.getElementById('email_management_enabled').checked) {
+      document.getElementById('email_management_enabled').click();
+    }
+    if (document.getElementById('password_management_enabled').checked) {
+      document.getElementById('password_management_enabled').click();
+    }
+    if (document.getElementById('personal_info_enabled').checked) {
+      document.getElementById('personal_info_enabled').click();
+    }
+    if (document.getElementById('attributes_enabled').checked) {
+      document.getElementById('attributes_enabled').click();
+    }
+    if (document.getElementById('address_enabled').checked) {
+      document.getElementById('address_enabled').click();
+    }
+  }
+
   componentDidMount() {
     if (this.state.user_id == 'current') {
-      document.getElementById('email_management_enabled').click();
-      document.getElementById('password_management_enabled').click();
-      document.getElementById('personal_info_enabled').click();
-      document.getElementById('attributes_enabled').click();
-      document.getElementById('address_enabled').click();
+      this.setUncheckState();
+    }
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.match.params.id != prevState.user_id) {
+      return {user_id: nextProps.match.params.id};
+    }
+    return null;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.user_id == 'current') {
+      this.setUncheckState();
+    }
+    if (this.state.user_id == 'new') {
+      if (!document.getElementById('new_user_enabled').checked) {
+        document.getElementById('new_user_enabled').click();
+      }
     }
   }
 
@@ -251,7 +286,7 @@ class EditUser extends Component {
 
     return (
       <div className="animated fadeIn">
-        <Row>
+        <Row hidden={this.state.user_id == 'new' ? false : true}>
           <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
             <Card id="new_user_card">
               <CardHeader>
@@ -260,8 +295,8 @@ class EditUser extends Component {
                 <strong><FormattedMessage id="users.edit.new_user"
                                           defaultMessage="Create new user"/></strong>
                 <div className="card-header-actions">
-                  <AppSwitch id="email_management_enabled"
-                             onClick={(e) => this.handleFormEnableDisable('email_card', e)}
+                  <AppSwitch id="new_user_enabled"
+                             onClick={(e) => this.handleFormEnableDisable('new_user_card', e)}
                              className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
@@ -342,7 +377,7 @@ class EditUser extends Component {
             </Card>
           </Col>
         </Row>
-        <Row hidden>
+        <Row hidden={this.state.user_id == 'new' ? true : false}>
           <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
             <Card id="email_card">
               <CardHeader>
