@@ -1,0 +1,96 @@
+package com.chicago.ext.components;
+
+import com.chicago.common.core.AbstractComponent;
+import com.chicago.common.core.AbstractEventDispatcher;
+import com.chicago.common.core.ComponentManager;
+import com.chicago.common.core.ConfigAccessor;
+import com.chicago.common.core.EventBase;
+import com.chicago.common.core.EventHandler;
+import com.chicago.common.util.ResponseFactoryUtil;
+import com.chicago.dto.AddressOuterClass;
+import com.chicago.dto.Addressmessages;
+import com.chicago.dto.UserOuterClass;
+import com.chicago.dto.Usermessages;
+import com.chicago.ext.bll.AddressBll;
+import com.chicago.ext.dal.cassandra.PasswordNotMatchException;
+import com.chicago.ext.dal.cassandra.UserNotFoundException;
+import com.google.protobuf.Message;
+import org.apache.http.HttpStatus;
+import org.glassfish.hk2.api.ServiceLocatorFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public class AddressRequests extends AbstractComponent
+{
+    private static final Logger LOG = LoggerFactory.getLogger(AddressRequests.class);
+    // Can not be injected, class created with new(). Will use ServiceLocator
+    private AddressBll _addressBll;
+
+    private AbstractEventDispatcher _ed;
+
+    public AddressRequests(ComponentManager cm) throws ClassNotFoundException
+    {
+        _ed = cm.getResource(AbstractEventDispatcher.class.getName());
+//        _ed.registerHandler(Usermessages.SetUserAvatarRequest.class, new SetUserAvatarEventHandler());
+    }
+
+    public boolean init(ConfigAccessor ca)
+    {
+        _addressBll = ServiceLocatorFactory.getInstance().find("servicelocator").getService(AddressBll.class);
+        return true;
+    }
+
+    public static void registerComponentFactories()
+    {
+        ComponentManager.registerComponentFactory(new Exception().getStackTrace()[0].getClassName());
+    }
+
+    // In: Usermessages.UserRequest
+    // Out: Usermessages.UserResponse
+    class AddressEventHandler implements EventHandler<Addressmessages.AddressRequest>
+    {
+        @Override
+        public void handleEvent(Addressmessages.AddressRequest event, String transactionId)
+        {
+            Message response;
+            try
+            {
+                AddressOuterClass.Address address = null;
+
+                switch (event.getCrudOperation())
+                {
+                    case CREATE:
+                    {
+                        address = _addressBll.createAddress(event.getAddress());
+                        break;
+                    }
+                    case READ:
+                    {
+                        address = _addressBll.getAddress(event.getAddress().getAddressId());
+                        break;
+                    }
+                    case UPDATE:
+                    {
+                        _addressBll.updateAddress(event.getAddress());
+                        address = AddressOuterClass.Address.getDefaultInstance();
+                        break;
+                    }
+                }
+
+                response = Addressmessages.AddressResponse
+                        .newBuilder()
+                        .setAddress(address)
+                        .build();
+            } catch (Exception ex)
+            {
+                response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                        Usermessages.UserResponse.class);
+            }
+            _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
+            LOG.info("Published real-time response on request with transaction id: {}", transactionId);
+        }
+    }
+}

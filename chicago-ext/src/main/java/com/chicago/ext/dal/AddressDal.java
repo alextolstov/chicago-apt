@@ -10,7 +10,5 @@ public interface AddressDal
 
     void updateAddress(AddressOuterClass.Address address) throws Exception;
 
-    void deleteAddress(UUID address_id) throws Exception;
-
-    AddressOuterClass.Address getAddress(UUID address_id) throws Exception;
+    AddressOuterClass.Address getAddress(String addressId) throws Exception;
 }
