@@ -3,6 +3,7 @@ package com.chicago.ext.dal.cassandra;
 public class CassandraConstants
 {
     public static final String KEYSPACE = "ChicagoErp";
+    public static final String ADDRESSES_TABLE = "Addresses";
     public static final String HOLDINGS_TABLE = "Holdings";
     public static final String COMPANIES_TABLE = "Companies";
     public static final String BRANCHES_TABLE = "Branches";

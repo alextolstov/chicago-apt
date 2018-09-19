@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public interface AddressDal
 {
-    void createAddress(AddressOuterClass.Address address) throws Exception;
+    String createAddress(AddressOuterClass.Address address) throws Exception;
 
     void updateAddress(AddressOuterClass.Address address) throws Exception;
 

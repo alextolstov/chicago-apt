@@ -14,7 +14,7 @@ message Address
     string apartment_number = 6;
     string city = 7;
     string place_name = 8; // Village
-    string administrative_division = 10; //Obl, Kraj, County
+    string county = 10; //Obl, Kraj, County
     string state = 11; // Republic
     string zip_code = 12;
     string country = 13;
