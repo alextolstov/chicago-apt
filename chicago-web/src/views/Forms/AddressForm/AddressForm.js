@@ -6,6 +6,7 @@ import {AppSwitch} from '@coreui/react'
 import 'react-select/dist/react-select.min.css';
 import FormApi from '../../../api/FormApi';
 import DateTimeApi from "../../../api/DateTimeApi";
+import AddressApi from "../../../api/AddressApi";
 
 const address_proto = require('models/address_pb');
 
@@ -64,17 +65,15 @@ class AddressForm extends Component {
       address: new address_proto.Address(),
       initWritable: false,
       dateTime: new DateTimeApi(),
-      formApi: new FormApi()
+      formApi: new FormApi(),
+      address_api: new AddressApi()
     };
   }
 
   handleChange = (event) => {
     switch (event.target.id) {
-      case "office_number":
-        this.state.address.setOfficeNumber(event.target.value);
-        break;
-      case "apartment_number":
-        this.state.address.setApartmentNumber(event.target.value);
+      case "office_apt_number":
+        this.state.address.setOfficeAptNumber(event.target.value);
         break;
       case "house_number":
         this.state.address.setHouseNumber(event.target.value);
@@ -90,9 +89,6 @@ class AddressForm extends Component {
         break;
       case "place_name":
         this.state.address.setPlaceName(event.target.value);
-        break;
-      case "area":
-        this.state.address.setArea(event.target.value);
         break;
       case "county":
         this.state.address.setCounty(event.target.value);
@@ -110,11 +106,17 @@ class AddressForm extends Component {
     this.setState({[event.target.id]: event.target.value});
   }
 
+  handleAddress = () => {
+    if (this.state.address.getAddressId() == undefined) {
+      this.state.address_api.createAddres(this.state.address, this);
+    }
+  }
+
   render() {
     return (
       <Card id='address_card'>
         <CardHeader>
-          <button><i className="icon-cloud-upload" onClick={this.handleUserInfo}></i></button>
+          <button><i className="icon-cloud-upload" onClick={this.handleAddress}></i></button>
           <strong><FormattedMessage id="users.edit.address" defaultMessage="Address"/></strong>
           <div className="card-header-actions">
             <AppSwitch id="address_enabled" onClick={(e) => this.state.formApi.handleFormEnableDisable('address_card', e)}
@@ -159,8 +161,8 @@ class AddressForm extends Component {
               <FormattedMessage {...messages.apartmentPlace}>
                 {
                   pholder => <Input onChange={this.handleChange}
-                                    value={this.state.address.getApartmentNumber == undefined ? "" : this.state.address.getApartmentNumber()}
-                                    type="text" id="apartment_number" name="apartment_number" placeholder={pholder}
+                                    value={this.state.address.getOfficeAptNumber == undefined ? "" : this.state.address.getApartmentNumber()}
+                                    type="text" id="office_apt_number" name="office_apt_number" placeholder={pholder}
                                     required/>
                 }
               </FormattedMessage>
