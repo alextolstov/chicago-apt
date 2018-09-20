@@ -115,10 +115,10 @@ class EditUser extends Component {
       user: ""
     };
 
-    if (this.state.user_id == 'new') {
+    if (this.state.user_id === 'new') {
       this.state.user = new user_proto.User();
     }
-    else if (this.state.user_id == 'current') {
+    else if (this.state.user_id === 'current') {
       this.state.user = jspb.Message.cloneMessage(this.props.appStore.userData);
     }
     else {
@@ -153,23 +153,23 @@ class EditUser extends Component {
   }
 
   componentDidMount() {
-    if (this.state.user_id == 'current') {
+    if (this.state.user_id === 'current') {
       this.setUncheckState();
     }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.match.params.id != prevState.user_id) {
+    if (nextProps.match.params.id !== prevState.user_id) {
       return {user_id: nextProps.match.params.id};
     }
     return null;
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.user_id == 'current') {
+    if (this.state.user_id === 'current') {
       this.setUncheckState();
     }
-    if (this.state.user_id == 'new') {
+    if (this.state.user_id === 'new') {
       if (!document.getElementById('new_user_enabled').checked) {
         document.getElementById('new_user_enabled').click();
       }
@@ -191,11 +191,11 @@ class EditUser extends Component {
 
   handleSaveUserInfo = (event) => {
     let self = this;
-    if (this.state.user_id == 'new') {
+    if (this.state.user_id === 'new') {
       this.state.userApi.createUser(this.state.user, self);
     } else {// Working with existing profile
       this.state.userApi.saveUser(this.state.user, self).then(function () {
-        if (this.state.user_id == 'current') {
+        if (this.state.user_id === 'current') {
           self.props.appStore.userData = self.state.user;
         }
       });
@@ -286,7 +286,7 @@ class EditUser extends Component {
 
     return (
       <div className="animated fadeIn">
-        <Row hidden={this.state.user_id == 'new' ? false : true}>
+        <Row hidden={this.state.user_id === 'new' ? false : true}>
           <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
             <Card id="new_user_card">
               <CardHeader>
@@ -377,7 +377,7 @@ class EditUser extends Component {
             </Card>
           </Col>
         </Row>
-        <Row hidden={this.state.user_id == 'new' ? true : false}>
+        <Row hidden={this.state.user_id === 'new' ? true : false}>
           <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
             <Card id="email_card">
               <CardHeader>
@@ -439,7 +439,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.passwordPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="password" id="password" name="password" placeholder={pholder} required/>
+                                          type="password" id="mgmt_password" name="mgmt_password" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -456,7 +456,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.repeatPasswordPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="password" id="repeat_password" name="repeat_password"
+                                          type="password" id="mgmt_repeat_password" name="mgmt_repeat_password"
                                           placeholder={pholder}
                                           required/>
                       }
@@ -493,7 +493,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.firstNamePlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          value={this.state.user.getFirstName == undefined ? "" : this.state.user.getFirstName()}
+                                          value={this.state.user.getFirstName === undefined ? "" : this.state.user.getFirstName()}
                                           type="text" id="first_name" name="first_name" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
@@ -511,7 +511,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.midleNamePlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          value={this.state.user.getMiddleName == undefined ? "" : this.state.user.getMiddleName()}
+                                          value={this.state.user.getMiddleName === undefined ? "" : this.state.user.getMiddleName()}
                                           type="text" id="middle_name" name="middle_name" placeholder={pholder}
                                           required/>
                       }
@@ -530,7 +530,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.lastNamePlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          value={this.state.user.getLastName == undefined ? "" : this.state.user.getLastName()}
+                                          value={this.state.user.getLastName === undefined ? "" : this.state.user.getLastName()}
                                           type="text" id="last_name" name="last_name" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
@@ -548,7 +548,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.nickNamePlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          value={this.state.user.getNickName == undefined ? "" : this.state.user.getNickName()}
+                                          value={this.state.user.getNickName === undefined ? "" : this.state.user.getNickName()}
                                           type="text" id="nick_name" name="nick_name" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
@@ -567,7 +567,7 @@ class EditUser extends Component {
                     </InputGroupAddon>
                     <Input type="date"
                            onChange={this.handleChange}
-                           defaultValue={this.state.user.getDateOfBirth != undefined ? "" : new Date(this.state.user.getDateOfBirth()).toISOString().substr(0, 10)}
+                           defaultValue={this.state.user.getDateOfBirth !== undefined ? "" : new Date(this.state.user.getDateOfBirth()).toISOString().substr(0, 10)}
                            id="date_of_birth" name="date_of_birth" placeholder="date"/>
                   </InputGroup>
                 </FormGroup>
@@ -583,7 +583,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.passportPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          value={this.state.user.getPassportNumber == undefined ? "" : this.state.user.getPassportNumber()}
+                                          value={this.state.user.getPassportNumber === undefined ? "" : this.state.user.getPassportNumber()}
                                           type="text" id="passport_number" name="passport_number" placeholder={pholder}
                                           required/>
                       }
@@ -602,7 +602,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.cellPhonePlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          value={this.state.user.getCellPhone == undefined ? "" : this.state.user.getCellPhone()}
+                                          value={this.state.user.getCellPhone === undefined ? "" : this.state.user.getCellPhone()}
                                           type="text" id="cell_phone" name="cell_phone" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
@@ -620,7 +620,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.homePhonePlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          value={this.state.user.getHomePhone == undefined ? "" : this.state.user.getHomePhone()}
+                                          value={this.state.user.getHomePhone === undefined ? "" : this.state.user.getHomePhone()}
                                           type="text" id="home_phone" name="home_phone" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
@@ -638,7 +638,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.workPhonePlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          value={this.state.user.getWorkPhone == undefined ? "" : this.state.user.getWorkPhone()}
+                                          value={this.state.user.getWorkPhone === undefined ? "" : this.state.user.getWorkPhone()}
                                           type="text" id="work_phone" name="work_phone" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
@@ -719,7 +719,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.taxPayerPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          value={this.state.user.getTaxPayerId == undefined ? "" : this.state.user.getTaxPayerId()}
+                                          value={this.state.user.getTaxPayerId === undefined ? "" : this.state.user.getTaxPayerId()}
                                           type="text" id="tax_payer_id" name="tax_payer_id" placeholder={pholder}
                                           required/>
                       }
@@ -738,7 +738,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.diplomaPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          value={this.state.user.getDiplomaNumber == undefined ? "" : this.state.user.getDiplomaNumber()}
+                                          value={this.state.user.getDiplomaNumber === undefined ? "" : this.state.user.getDiplomaNumber()}
                                           type="text" id="diploma_number" name="diploma_number" placeholder={pholder}
                                           required/>
                       }
@@ -759,7 +759,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.retirementPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          value={this.state.user.getRetirementIdNumber == undefined ? "" : this.state.user.getRetirementIdNumber()}
+                                          value={this.state.user.getRetirementIdNumber === undefined ? "" : this.state.user.getRetirementIdNumber()}
                                           type="text" id="retirement_id_number" name="retirement_id_number"
                                           placeholder={pholder} required/>
                       }
@@ -780,7 +780,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.medicalPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          value={this.state.user.getMedicalBook == undefined ? "" : this.state.user.getMedicalBook()}
+                                          value={this.state.user.getMedicalBook === undefined ? "" : this.state.user.getMedicalBook()}
                                           type="text" id="medical_book" name="medical_book" placeholder={pholder}
                                           required/>
                       }
@@ -801,7 +801,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.employmentPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          value={this.state.user.getMedicalBook == undefined ? "" : this.state.user.getMedicalBook()}
+                                          value={this.state.user.getMedicalBook === undefined ? "" : this.state.user.getMedicalBook()}
                                           type="text" id="employment_book_number" name="employment_book_number"
                                           placeholder={pholder}
                                           required/>

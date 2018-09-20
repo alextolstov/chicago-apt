@@ -1,5 +1,6 @@
 package com.chicago.ext.components;
 
+import com.chicago.common.components.kafka.KafkaMessageProducer;
 import com.chicago.common.core.*;
 import com.chicago.common.util.ResponseFactoryUtil;
 import com.chicago.dto.Common;
@@ -33,6 +34,9 @@ public class UserRequests extends AbstractComponent
         _ed.registerHandler(Usermessages.UserRequest.class, new UserEventHandler());
         _ed.registerHandler(Usermessages.LoginUserRequest.class, new LoginUserEventHandler());
         _ed.registerHandler(Usermessages.GetUsersRequest.class, new GetUsersEventHandler());
+        // Response
+        KafkaMessageProducer producer = cm.getResource(KafkaMessageProducer.class.getName());
+        _ed.registerHandler(Usermessages.UserResponse.class, producer.new MessageEventHandler());
     }
 
     public boolean init(ConfigAccessor ca)

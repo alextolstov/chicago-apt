@@ -1,5 +1,6 @@
 package com.chicago.ext.components;
 
+import com.chicago.common.components.kafka.KafkaMessageProducer;
 import com.chicago.common.core.AbstractComponent;
 import com.chicago.common.core.AbstractEventDispatcher;
 import com.chicago.common.core.ComponentManager;
@@ -34,7 +35,11 @@ public class AddressRequests extends AbstractComponent
     public AddressRequests(ComponentManager cm) throws ClassNotFoundException
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
-//        _ed.registerHandler(Usermessages.SetUserAvatarRequest.class, new SetUserAvatarEventHandler());
+        _ed.registerHandler(Addressmessages.AddressRequest.class, new AddressEventHandler());
+        // Response
+        KafkaMessageProducer producer = cm.getResource(KafkaMessageProducer.class.getName());
+        _ed.registerHandler(Addressmessages.AddressResponse.class, producer.new MessageEventHandler());
+
     }
 
     public boolean init(ConfigAccessor ca)

@@ -6,6 +6,7 @@ import com.chicago.common.core.ComponentManager;
 import com.chicago.common.core.ConfigAccessor;
 import com.chicago.common.core.EventHandler;
 import com.chicago.common.util.KafkaUtil;
+import com.chicago.dto.Addressmessages;
 import com.chicago.dto.Common;
 import com.chicago.dto.Config;
 import com.chicago.dto.Usermessages;
@@ -25,7 +26,6 @@ public class KafkaMessageProducer extends AbstractComponent
     public KafkaMessageProducer(ComponentManager cm) throws ClassNotFoundException
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
-        _ed.registerHandler(Usermessages.UserResponse.class, new KafkaMessageProducer.MessageEventHandler());
         _ed.registerHandler(Common.VoidResponse.class, new KafkaMessageProducer.MessageEventHandler());
     }
 
@@ -43,7 +43,7 @@ public class KafkaMessageProducer extends AbstractComponent
         ComponentManager.registerComponentFactory(new Exception().getStackTrace()[0].getClassName());
     }
 
-    class MessageEventHandler implements EventHandler<Message>
+    public class MessageEventHandler implements EventHandler<Message>
     {
         @Override
         public void handleEvent(Message event, String transactionId)

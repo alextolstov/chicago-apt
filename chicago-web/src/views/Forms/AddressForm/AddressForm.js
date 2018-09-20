@@ -23,21 +23,17 @@ const messages = defineMessages({
     id: 'address.edit.building',
     defaultMessage: 'Building'
   },
-  apartmentPlace: {
-    id: 'address.edit.apartment',
-    defaultMessage: 'Apt.'
-  },
-  officePlace: {
-    id: 'address.edit.office',
-    defaultMessage: 'Office'
+  officeAptPlace: {
+    id: 'address.edit.officeapt',
+    defaultMessage: 'Office/Apt.'
   },
   cityPlace: {
     id: 'address.edit.city',
     defaultMessage: 'City'
   },
-  villagePlace: {
-    id: 'address.edit.village',
-    defaultMessage: 'Village'
+  placenamePlace: {
+    id: 'address.edit.place',
+    defaultMessage: 'Place/Village'
   },
   countyPlace: {
     id: 'address.edit.administrative_division',
@@ -63,7 +59,6 @@ class AddressForm extends Component {
 
     this.state = {
       address: new address_proto.Address(),
-      initWritable: false,
       dateTime: new DateTimeApi(),
       formApi: new FormApi(),
       address_api: new AddressApi()
@@ -106,9 +101,23 @@ class AddressForm extends Component {
     this.setState({[event.target.id]: event.target.value});
   }
 
-  handleAddress = () => {
-    if (this.state.address.getAddressId() == undefined) {
-      this.state.address_api.createAddres(this.state.address, this);
+  handleSaveAddress = () => {
+    let self = this;
+
+    if (this.state.address.getAddressId() === "") {
+      this.state.address_api.createAddress(this.state.address, this).then(function (addressMsg) {
+        let address = addressMsg.getAddress();
+        if (address != null) {
+          self.state.address = address;
+        }
+      });
+    }else {
+      this.state.address_api.updateAddress(this.state.address, this).then(function (addressMsg) {
+        let address = addressMsg.getAddress();
+        if (address != null) {
+          self.state.address = address;
+        }
+      });
     }
   }
 
@@ -116,7 +125,7 @@ class AddressForm extends Component {
     return (
       <Card id='address_card'>
         <CardHeader>
-          <button><i className="icon-cloud-upload" onClick={this.handleAddress}></i></button>
+          <button><i className="icon-cloud-upload" onClick={this.handleSaveAddress}></i></button>
           <strong><FormattedMessage id="users.edit.address" defaultMessage="Address"/></strong>
           <div className="card-header-actions">
             <AppSwitch id="address_enabled" onClick={(e) => this.state.formApi.handleFormEnableDisable('address_card', e)}
@@ -136,8 +145,8 @@ class AddressForm extends Component {
               <FormattedMessage {...messages.streetPlace}>
                 {
                   pholder => <Input onChange={this.handleChange}
-                                    value={this.state.address.getStreet == undefined ? "" : this.state.address.getStreet()}
-                                    type="text" id="street" name="street" placeholder={pholder} required/>
+                                    value={this.state.address.getStreetName == undefined ? "" : this.state.address.getStreetName()}
+                                    type="text" id="street_name" name="street_name" placeholder={pholder} required/>
                 }
               </FormattedMessage>
               {/*House*/}
@@ -152,16 +161,16 @@ class AddressForm extends Component {
               <FormattedMessage {...messages.buildingPlace}>
                 {
                   pholder => <Input onChange={this.handleChange}
-                                    value={this.state.address.getBuildingNumber == undefined ? "" : this.state.address.getBuilding()}
-                                    type="text" id="building_number" name="building_number" placeholder={pholder}
+                                    value={this.state.address.getBuildingInfo == undefined ? "" : this.state.address.getBuildingInfo()}
+                                    type="text" id="building_info" name="building_info" placeholder={pholder}
                                     required/>
                 }
               </FormattedMessage>
               {/*Apt/Office*/}
-              <FormattedMessage {...messages.apartmentPlace}>
+              <FormattedMessage {...messages.officeAptPlace}>
                 {
                   pholder => <Input onChange={this.handleChange}
-                                    value={this.state.address.getOfficeAptNumber == undefined ? "" : this.state.address.getApartmentNumber()}
+                                    value={this.state.address.getOfficeAptNumber == undefined ? "" : this.state.address.getOfficeAptNumber()}
                                     type="text" id="office_apt_number" name="office_apt_number" placeholder={pholder}
                                     required/>
                 }
@@ -188,7 +197,7 @@ class AddressForm extends Component {
             </InputGroup>
           </FormGroup>
 
-          {/*Village*/}
+          {/*Place or Village*/}
           <FormGroup row>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
@@ -196,17 +205,16 @@ class AddressForm extends Component {
                   <i className="fa fa-envelope-o"></i>
                 </InputGroupText>
               </InputGroupAddon>
-              <FormattedMessage {...messages.villagePlace}>
+              <FormattedMessage {...messages.placenamePlace}>
                 {
                   pholder => <Input onChange={this.handleChange}
-                                    value={this.state.address.getVillage == undefined ? "" : this.state.address.getVillage()}
-                                    type="text" id="village" name="village" placeholder={pholder} required/>
+                                    value={this.state.address.getPlaceName == undefined ? "" : this.state.address.getPlaceName()}
+                                    type="text" id="place_name" name="place_name" placeholder={pholder} required/>
                 }
               </FormattedMessage>
             </InputGroup>
           </FormGroup>
 
-          {/*County*/}
           <FormGroup row>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
@@ -214,6 +222,7 @@ class AddressForm extends Component {
                   <i className="fa fa-envelope-o"></i>
                 </InputGroupText>
               </InputGroupAddon>
+              {/*County*/}
               <FormattedMessage {...messages.countyPlace}>
                 {
                   pholder => <Input onChange={this.handleChange}

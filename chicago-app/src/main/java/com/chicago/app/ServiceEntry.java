@@ -2,6 +2,7 @@ package com.chicago.app;
 
 import com.chicago.common.components.kafka.KafkaMessageConsumer;
 import com.chicago.common.components.kafka.KafkaMessageProducer;
+import com.chicago.ext.components.AddressRequests;
 import com.chicago.ext.components.UserRequests;
 import com.chicago.common.core.AbstractEventDispatcher;
 import com.chicago.common.core.Application;
@@ -16,6 +17,7 @@ public class ServiceEntry<E, T extends GeneratedMessageV3.Builder<T>> extends Ap
         KafkaMessageConsumer.registerComponentFactories();
         KafkaMessageProducer.registerComponentFactories();
         UserRequests.registerComponentFactories();
+        AddressRequests.registerComponentFactories();
         LazyLiveEventDispatcher.registerComponentFactories();
     }
 

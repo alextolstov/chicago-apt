@@ -33,10 +33,9 @@ public class AddressController
     public Response createAddress(byte[] data)
     {
         Subject currentUser = SecurityUtils.getSubject();
-        currentUser.hasRole("");
+        //currentUser.hasRole("");
         try
         {
-            AddressOuterClass.Address address = AddressOuterClass.Address.parseFrom(data);
             byte[] response = _asyncComm.transaction(prepareRequest(data, Common.CrudOperation.CREATE));
             return Response.ok(response).build();
         } catch (Exception e)
