@@ -2,6 +2,7 @@ package com.chicago.ext.bll;
 
 import com.chicago.dto.AddressOuterClass;
 import com.chicago.ext.dal.AddressDal;
+import com.chicago.ext.dal.UserDal;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,12 +16,16 @@ public class AddressBllImpl implements AddressBll
     @Inject
     private AddressDal _addressDal;
 
+    @Inject
+    private UserDal _userDal;
+
     @Override
     public AddressOuterClass.Address createAddress(AddressOuterClass.Address address) throws Exception
     {
-        String newAddressId = _addressDal.createAddress(address);
+        String addressId = _addressDal.createAddress(address);
+        _userDal.setUserAddress(addressId, address.getUserId());
         return AddressOuterClass.Address.newBuilder(address)
-                .setAddressId(newAddressId.toString())
+                .setAddressId(addressId.toString())
                 .build();
     }
 

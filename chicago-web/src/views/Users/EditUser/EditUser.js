@@ -833,7 +833,7 @@ class EditUser extends Component {
 
               </CardBody>
             </Card>
-            <AddressForm/>
+            <AddressForm userId={this.props.appStore.userData.getUserId()}/>
           </Col>
         </Row>
       </div>

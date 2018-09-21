@@ -103,7 +103,7 @@ class AddressForm extends Component {
 
   handleSaveAddress = () => {
     let self = this;
-
+    this.state.address.setUserId(this.props.userId);
     if (this.state.address.getAddressId() === "") {
       this.state.address_api.createAddress(this.state.address, this).then(function (addressMsg) {
         let address = addressMsg.getAddress();

@@ -131,7 +131,16 @@ public class UserDalImpl implements UserDal
     {
         Statement query = QueryBuilder.update(KEYSPACE, USERS_BY_ID_TABLE)
                 .with(QueryBuilder.set("avatar", avatar.getAvatar()))
-                .where(QueryBuilder.eq("user_id", avatar.getUserId()));
+                .where(QueryBuilder.eq("user_id", UUID.fromString(avatar.getUserId())));
+        _cassandraConnector.getSession().execute(query);
+    }
+
+    @Override
+    public void setUserAddress(String addressId, String userId)
+    {
+        Statement query = QueryBuilder.update(KEYSPACE, USERS_BY_ID_TABLE)
+                .with(QueryBuilder.set("address_id", UUID.fromString(addressId)))
+                .where(QueryBuilder.eq("user_id", UUID.fromString(userId)));
         _cassandraConnector.getSession().execute(query);
     }
 

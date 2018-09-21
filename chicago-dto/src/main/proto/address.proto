@@ -7,15 +7,16 @@ option java_package = "com.chicago.dto";
 message Address
 {
     string address_id = 1;
-    string street_name = 2;
-    string house_number = 3;
-    string building_info = 4;
-    string office_apt_number = 5;
-    string city = 6;
-    string place_name = 7; // Village
-    string county = 8; //Obl, Kraj, County
-    string state = 9; // Republic
-    string zip_code = 10;
-    string country = 11;
+    string user_id = 2;
+    string street_name = 3;
+    string house_number = 4;
+    string building_info = 5;
+    string office_apt_number = 6;
+    string city = 7;
+    string place_name = 8; // Village
+    string county = 9; //Obl, Kraj, County
+    string state = 10; // Republic
+    string zip_code = 11;
+    string country = 12;
 }
 

@@ -20,6 +20,8 @@ public interface UserDal
 
     void setUserAvatar(UserOuterClass.UserAvatar avatar) throws Exception;
 
+    void setUserAddress(String userId, String addressId) throws Exception;
+
     UserOuterClass.UserPermissions getUserPermissions(String userId) throws Exception;
 
     Pair<String, byte[]> getHashSalt(String email) throws Exception;

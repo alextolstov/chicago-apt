@@ -10,7 +10,7 @@ option java_package = "com.chicago.dto";
 message AddressRequest
 {
     CrudOperation crud_operation = 1;
-    Address address = 3;
+    Address address = 2;
 }
 
 message AddressResponse
