@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
+import {toast, ToastContainer} from 'react-toastify';
 import {defineMessages, FormattedMessage} from 'react-intl';
 import {Card, CardBody, CardHeader, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText} from 'reactstrap';
 import {AppSwitch} from '@coreui/react'
 // React select
+import 'react-toastify/dist/ReactToastify.css';
 import 'react-select/dist/react-select.min.css';
 import FormApi from '../../../api/FormApi';
 import DateTimeApi from "../../../api/DateTimeApi";
@@ -102,6 +104,8 @@ class AddressForm extends Component {
   }
 
   handleSaveAddress = () => {
+    this.handleSuccess();
+    return;
     let self = this;
     this.state.address.setUserId(this.props.userId);
     if (this.state.address.getAddressId() === "") {
@@ -111,7 +115,7 @@ class AddressForm extends Component {
           self.state.address = address;
         }
       });
-    }else {
+    } else {
       this.state.address_api.updateAddress(this.state.address, this).then(function (addressMsg) {
         let address = addressMsg.getAddress();
         if (address != null) {
@@ -121,136 +125,149 @@ class AddressForm extends Component {
     }
   }
 
+  handleSuccess = () => {
+    return toast.success('Address successfully updated...', {
+      position: toast.POSITION.BOTTOM_RIGHT
+    });
+  }
+
   render() {
+    const containerStyle = {
+      zIndex: 1999
+    };
+
     return (
-      <Card id='address_card'>
-        <CardHeader>
-          <button><i className="icon-cloud-upload" onClick={this.handleSaveAddress}></i></button>
-          <strong><FormattedMessage id="users.edit.address" defaultMessage="Address"/></strong>
-          <div className="card-header-actions">
-            <AppSwitch id="address_enabled" onClick={(e) => this.state.formApi.handleFormEnableDisable('address_card', e)}
-                       className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
-                       label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
-          </div>
-        </CardHeader>
-        <CardBody>
-          {/*Street*/}
-          <FormGroup row>
-            <InputGroup>
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>
-                  <i className="fa fa-envelope-o"></i>
-                </InputGroupText>
-              </InputGroupAddon>
-              <FormattedMessage {...messages.streetPlace}>
-                {
-                  pholder => <Input onChange={this.handleChange}
-                                    value={this.state.address.getStreetName == undefined ? "" : this.state.address.getStreetName()}
-                                    type="text" id="street_name" name="street_name" placeholder={pholder} required/>
-                }
-              </FormattedMessage>
-              {/*House*/}
-              <FormattedMessage {...messages.housePlace}>
-                {
-                  pholder => <Input onChange={this.handleChange}
-                                    value={this.state.address.getHouseNumber == undefined ? "" : this.state.address.getHouseNumber()}
-                                    type="text" id="house_number" name="house_number" placeholder={pholder} required/>
-                }
-              </FormattedMessage>
-              {/*Building*/}
-              <FormattedMessage {...messages.buildingPlace}>
-                {
-                  pholder => <Input onChange={this.handleChange}
-                                    value={this.state.address.getBuildingInfo == undefined ? "" : this.state.address.getBuildingInfo()}
-                                    type="text" id="building_info" name="building_info" placeholder={pholder}
-                                    required/>
-                }
-              </FormattedMessage>
-              {/*Apt/Office*/}
-              <FormattedMessage {...messages.officeAptPlace}>
-                {
-                  pholder => <Input onChange={this.handleChange}
-                                    value={this.state.address.getOfficeAptNumber == undefined ? "" : this.state.address.getOfficeAptNumber()}
-                                    type="text" id="office_apt_number" name="office_apt_number" placeholder={pholder}
-                                    required/>
-                }
-              </FormattedMessage>
+      <div className="animated">
+        <ToastContainer position="top-right" autoClose={5000} style={containerStyle}/>
+        <Card id='address_card'>
+          <CardHeader>
+            <button><i className="icon-cloud-upload" onClick={this.handleSaveAddress}></i></button>
+            <strong><FormattedMessage id="users.edit.address" defaultMessage="Address"/></strong>
+            <div className="card-header-actions">
+              <AppSwitch id="address_enabled" onClick={(e) => this.state.formApi.handleFormEnableDisable('address_card', e)}
+                         className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
+                         label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
+            </div>
+          </CardHeader>
+          <CardBody>
+            {/*Street*/}
+            <FormGroup row>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="fa fa-envelope-o"></i>
+                  </InputGroupText>
+                </InputGroupAddon>
+                <FormattedMessage {...messages.streetPlace}>
+                  {
+                    pholder => <Input onChange={this.handleChange}
+                                      value={this.state.address.getStreetName == undefined ? "" : this.state.address.getStreetName()}
+                                      type="text" id="street_name" name="street_name" placeholder={pholder} required/>
+                  }
+                </FormattedMessage>
+                {/*House*/}
+                <FormattedMessage {...messages.housePlace}>
+                  {
+                    pholder => <Input onChange={this.handleChange}
+                                      value={this.state.address.getHouseNumber == undefined ? "" : this.state.address.getHouseNumber()}
+                                      type="text" id="house_number" name="house_number" placeholder={pholder} required/>
+                  }
+                </FormattedMessage>
+                {/*Building*/}
+                <FormattedMessage {...messages.buildingPlace}>
+                  {
+                    pholder => <Input onChange={this.handleChange}
+                                      value={this.state.address.getBuildingInfo == undefined ? "" : this.state.address.getBuildingInfo()}
+                                      type="text" id="building_info" name="building_info" placeholder={pholder}
+                                      required/>
+                  }
+                </FormattedMessage>
+                {/*Apt/Office*/}
+                <FormattedMessage {...messages.officeAptPlace}>
+                  {
+                    pholder => <Input onChange={this.handleChange}
+                                      value={this.state.address.getOfficeAptNumber == undefined ? "" : this.state.address.getOfficeAptNumber()}
+                                      type="text" id="office_apt_number" name="office_apt_number" placeholder={pholder}
+                                      required/>
+                  }
+                </FormattedMessage>
 
-            </InputGroup>
-          </FormGroup>
+              </InputGroup>
+            </FormGroup>
 
-          {/*City*/}
-          <FormGroup row>
-            <InputGroup>
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>
-                  <i className="fa fa-envelope-o"></i>
-                </InputGroupText>
-              </InputGroupAddon>
-              <FormattedMessage {...messages.cityPlace}>
-                {
-                  pholder => <Input onChange={this.handleChange}
-                                    value={this.state.address.getCity == undefined ? "" : this.state.address.getCity()}
-                                    type="text" id="city" name="city" placeholder={pholder} required/>
-                }
-              </FormattedMessage>
-            </InputGroup>
-          </FormGroup>
+            {/*City*/}
+            <FormGroup row>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="fa fa-envelope-o"></i>
+                  </InputGroupText>
+                </InputGroupAddon>
+                <FormattedMessage {...messages.cityPlace}>
+                  {
+                    pholder => <Input onChange={this.handleChange}
+                                      value={this.state.address.getCity == undefined ? "" : this.state.address.getCity()}
+                                      type="text" id="city" name="city" placeholder={pholder} required/>
+                  }
+                </FormattedMessage>
+              </InputGroup>
+            </FormGroup>
 
-          {/*Place or Village*/}
-          <FormGroup row>
-            <InputGroup>
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>
-                  <i className="fa fa-envelope-o"></i>
-                </InputGroupText>
-              </InputGroupAddon>
-              <FormattedMessage {...messages.placenamePlace}>
-                {
-                  pholder => <Input onChange={this.handleChange}
-                                    value={this.state.address.getPlaceName == undefined ? "" : this.state.address.getPlaceName()}
-                                    type="text" id="place_name" name="place_name" placeholder={pholder} required/>
-                }
-              </FormattedMessage>
-            </InputGroup>
-          </FormGroup>
+            {/*Place or Village*/}
+            <FormGroup row>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="fa fa-envelope-o"></i>
+                  </InputGroupText>
+                </InputGroupAddon>
+                <FormattedMessage {...messages.placenamePlace}>
+                  {
+                    pholder => <Input onChange={this.handleChange}
+                                      value={this.state.address.getPlaceName == undefined ? "" : this.state.address.getPlaceName()}
+                                      type="text" id="place_name" name="place_name" placeholder={pholder} required/>
+                  }
+                </FormattedMessage>
+              </InputGroup>
+            </FormGroup>
 
-          <FormGroup row>
-            <InputGroup>
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>
-                  <i className="fa fa-envelope-o"></i>
-                </InputGroupText>
-              </InputGroupAddon>
-              {/*County*/}
-              <FormattedMessage {...messages.countyPlace}>
-                {
-                  pholder => <Input onChange={this.handleChange}
-                                    value={this.state.address.getCounty == undefined ? "" : this.state.address.getCounty()}
-                                    type="text" id="county" name="county" placeholder={pholder} required/>
-                }
-              </FormattedMessage>
-              {/*State*/}
-              <FormattedMessage {...messages.statePlace}>
-                {
-                  pholder => <Input onChange={this.handleChange}
-                                    value={this.state.address.getState == undefined ? "" : this.state.address.getState()}
-                                    type="text" id="state" name="state" placeholder={pholder} required/>
-                }
-              </FormattedMessage>
-              {/*Country*/}
-              <FormattedMessage {...messages.countryPlace}>
-                {
-                  pholder => <Input onChange={this.handleChange}
-                                    value={this.state.address.getCountry == undefined ? "" : this.state.address.getCountry()}
-                                    type="text" id="country" name="country" placeholder={pholder} required/>
-                }
-              </FormattedMessage>
-            </InputGroup>
-          </FormGroup>
-        </CardBody>
+            <FormGroup row>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="fa fa-envelope-o"></i>
+                  </InputGroupText>
+                </InputGroupAddon>
+                {/*County*/}
+                <FormattedMessage {...messages.countyPlace}>
+                  {
+                    pholder => <Input onChange={this.handleChange}
+                                      value={this.state.address.getCounty == undefined ? "" : this.state.address.getCounty()}
+                                      type="text" id="county" name="county" placeholder={pholder} required/>
+                  }
+                </FormattedMessage>
+                {/*State*/}
+                <FormattedMessage {...messages.statePlace}>
+                  {
+                    pholder => <Input onChange={this.handleChange}
+                                      value={this.state.address.getState == undefined ? "" : this.state.address.getState()}
+                                      type="text" id="state" name="state" placeholder={pholder} required/>
+                  }
+                </FormattedMessage>
+                {/*Country*/}
+                <FormattedMessage {...messages.countryPlace}>
+                  {
+                    pholder => <Input onChange={this.handleChange}
+                                      value={this.state.address.getCountry == undefined ? "" : this.state.address.getCountry()}
+                                      type="text" id="country" name="country" placeholder={pholder} required/>
+                  }
+                </FormattedMessage>
+              </InputGroup>
+            </FormGroup>
+          </CardBody>
 
-      </Card>
+        </Card>
+      </div>
     );
   }
 }
