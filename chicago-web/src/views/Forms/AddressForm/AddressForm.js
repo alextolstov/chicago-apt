@@ -69,9 +69,9 @@ class AddressForm extends Component {
     if (props.addressId !== "") {
       let self = this;
       this.state.address.setAddressId(props.addressId);
-      this.state.address_api.getAddress(this.state.address).then(function (address) {
-        if (address != null) {
-          self.state.address = address;
+      this.state.address_api.getAddress(this.state.address).then(function (addressMsg) {
+        if (addressMsg != null) {
+          self.setState({address: addressMsg.getAddress()});
         }
       });
     }
@@ -135,7 +135,7 @@ class AddressForm extends Component {
   }
 
   handleSuccess = () => {
-    return toast.success('Address successfully updated...', {
+    return toast.info('Address successfully updated...', {
       position: toast.POSITION.BOTTOM_RIGHT
     });
   }

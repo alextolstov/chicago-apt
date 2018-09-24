@@ -123,9 +123,9 @@ class EditUser extends Component {
     }
     else {
       let self = this;
-      new UserApi().getUserById(this.state.user_id, this).then(function (user) {
-        if (user != null) {
-          self.state.user = user;
+      new UserApi().getUserById(this.state.user_id, this).then(function (userMsg) {
+        if (userMsg != null) {
+          self.state.user = userMsg.getUser();
         }
       })
     }
