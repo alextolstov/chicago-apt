@@ -83,7 +83,7 @@ public class AddressDalImpl implements AddressDal
         // Always non empty
         builder.setAddressId(row.getUUID("address_id").toString());
         // Could be empty
-        if (row.getBytes("street_name") != null) builder.setStreetName(row.getString("street_name"));
+        if (row.getString("street_name") != null) builder.setStreetName(row.getString("street_name"));
         if (row.getString("house_number") != null) builder.setHouseNumber(row.getString("house_number"));
         if (row.getString("building_info") != null) builder.setBuildingInfo(row.getString("building_info"));
         if (row.getString("office_apt_number") != null) builder.setOfficeAptNumber(row.getString("office_apt_number"));

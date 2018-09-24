@@ -65,6 +65,16 @@ class AddressForm extends Component {
       formApi: new FormApi(),
       address_api: new AddressApi()
     };
+
+    if (props.addressId !== "") {
+      let self = this;
+      this.state.address.setAddressId(props.addressId);
+      this.state.address_api.getAddress(this.state.address).then(function (address) {
+        if (address != null) {
+          self.state.address = address;
+        }
+      });
+    }
   }
 
   handleChange = (event) => {
@@ -104,8 +114,6 @@ class AddressForm extends Component {
   }
 
   handleSaveAddress = () => {
-    this.handleSuccess();
-    return;
     let self = this;
     this.state.address.setUserId(this.props.userId);
     if (this.state.address.getAddressId() === "") {
@@ -120,6 +128,7 @@ class AddressForm extends Component {
         let address = addressMsg.getAddress();
         if (address != null) {
           self.state.address = address;
+          self.handleSuccess();
         }
       });
     }
@@ -161,7 +170,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.streetPlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getStreetName == undefined ? "" : this.state.address.getStreetName()}
+                                      value={this.state.address.getStreetName === undefined ? "" : this.state.address.getStreetName()}
                                       type="text" id="street_name" name="street_name" placeholder={pholder} required/>
                   }
                 </FormattedMessage>
@@ -169,7 +178,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.housePlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getHouseNumber == undefined ? "" : this.state.address.getHouseNumber()}
+                                      value={this.state.address.getHouseNumber === undefined ? "" : this.state.address.getHouseNumber()}
                                       type="text" id="house_number" name="house_number" placeholder={pholder} required/>
                   }
                 </FormattedMessage>
@@ -177,7 +186,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.buildingPlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getBuildingInfo == undefined ? "" : this.state.address.getBuildingInfo()}
+                                      value={this.state.address.getBuildingInfo === undefined ? "" : this.state.address.getBuildingInfo()}
                                       type="text" id="building_info" name="building_info" placeholder={pholder}
                                       required/>
                   }
@@ -186,7 +195,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.officeAptPlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getOfficeAptNumber == undefined ? "" : this.state.address.getOfficeAptNumber()}
+                                      value={this.state.address.getOfficeAptNumber === undefined ? "" : this.state.address.getOfficeAptNumber()}
                                       type="text" id="office_apt_number" name="office_apt_number" placeholder={pholder}
                                       required/>
                   }
@@ -206,7 +215,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.cityPlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getCity == undefined ? "" : this.state.address.getCity()}
+                                      value={this.state.address.getCity === undefined ? "" : this.state.address.getCity()}
                                       type="text" id="city" name="city" placeholder={pholder} required/>
                   }
                 </FormattedMessage>
@@ -224,7 +233,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.placenamePlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getPlaceName == undefined ? "" : this.state.address.getPlaceName()}
+                                      value={this.state.address.getPlaceName === undefined ? "" : this.state.address.getPlaceName()}
                                       type="text" id="place_name" name="place_name" placeholder={pholder} required/>
                   }
                 </FormattedMessage>
@@ -242,7 +251,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.countyPlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getCounty == undefined ? "" : this.state.address.getCounty()}
+                                      value={this.state.address.getCounty === undefined ? "" : this.state.address.getCounty()}
                                       type="text" id="county" name="county" placeholder={pholder} required/>
                   }
                 </FormattedMessage>
@@ -250,7 +259,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.statePlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getState == undefined ? "" : this.state.address.getState()}
+                                      value={this.state.address.getState === undefined ? "" : this.state.address.getState()}
                                       type="text" id="state" name="state" placeholder={pholder} required/>
                   }
                 </FormattedMessage>
@@ -258,7 +267,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.countryPlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getCountry == undefined ? "" : this.state.address.getCountry()}
+                                      value={this.state.address.getCountry === undefined ? "" : this.state.address.getCountry()}
                                       type="text" id="country" name="country" placeholder={pholder} required/>
                   }
                 </FormattedMessage>

@@ -6,6 +6,7 @@ export default class AddressApi {
   constructor(){
     this.createAddressUrl = '/api/address/create';
     this.updateAddressUrl = '/api/address/update';
+    this.getAddressUrl = '/api/address/get';
     this.fetchApi = new FetchApi();
   }
 
@@ -20,6 +21,14 @@ export default class AddressApi {
   updateAddress(address, context) {
     let serialized_address = address.serializeBinary();
     return this.fetchApi.defaultFetch(this.updateAddressUrl,
+      serialized_address,
+      addressmessages_proto.AddressResponse.deserializeBinary,
+      context);
+  }
+
+  getAddress(address, context) {
+    let serialized_address = address.serializeBinary();
+    return this.fetchApi.defaultFetch(this.getAddressUrl,
       serialized_address,
       addressmessages_proto.AddressResponse.deserializeBinary,
       context);

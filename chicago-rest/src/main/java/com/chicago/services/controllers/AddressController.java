@@ -52,10 +52,29 @@ public class AddressController
     public Response updateAddress(byte[] data)
     {
         Subject currentUser = SecurityUtils.getSubject();
-        currentUser.hasRole("");
+        //currentUser.hasRole("");
         try
         {
             byte[] response = _asyncComm.transaction(prepareRequest(data, Common.CrudOperation.UPDATE));
+            return Response.ok(response).build();
+        } catch (Exception e)
+        {
+            return ResponseErrorUtil.createErrorResponse(e.getMessage(),
+                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        }
+    }
+
+    @POST
+    @Path("get")
+    @RequiresAuthentication
+    @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
+    public Response getAddress(byte[] data)
+    {
+        Subject currentUser = SecurityUtils.getSubject();
+        //currentUser.hasRole("");
+        try
+        {
+            byte[] response = _asyncComm.transaction(prepareRequest(data, Common.CrudOperation.READ));
             return Response.ok(response).build();
         } catch (Exception e)
         {
