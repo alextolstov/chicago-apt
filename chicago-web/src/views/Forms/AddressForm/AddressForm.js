@@ -70,8 +70,9 @@ class AddressForm extends Component {
       let self = this;
       this.state.address.setAddressId(props.addressId);
       this.state.address_api.getAddress(this.state.address).then(function (addressMsg) {
-        if (addressMsg != null) {
-          self.setState({address: addressMsg.getAddress()});
+        let savedAddress = addressMsg.getAddress();
+        if (savedAddress != null) {
+          self.setState({address: savedAddress});
         }
       });
     }
@@ -113,23 +114,26 @@ class AddressForm extends Component {
     this.setState({[event.target.id]: event.target.value});
   }
 
-  handleSaveAddress = () => {
-    let self = this;
+  handleSaveAddress = (event) => {
+    // Even disabled button fire event
+    if (event.target.parentNode.disabled == true) {
+      return;
+    }
     this.state.address.setUserId(this.props.userId);
+    let callBack;
+    let self = this;
+
     if (this.state.address.getAddressId() === "") {
       this.state.address_api.createAddress(this.state.address, this).then(function (addressMsg) {
-        let address = addressMsg.getAddress();
-        if (address != null) {
-          self.state.address = address;
+        let savedAddress = addressMsg.getAddress();
+        if (savedAddress != null) {
+          self.setState({address: savedAddress});
+          self.handleSuccess();
         }
       });
     } else {
       this.state.address_api.updateAddress(this.state.address, this).then(function (addressMsg) {
-        let address = addressMsg.getAddress();
-        if (address != null) {
-          self.state.address = address;
           self.handleSuccess();
-        }
       });
     }
   }
@@ -150,7 +154,7 @@ class AddressForm extends Component {
         <ToastContainer position="top-right" autoClose={5000} style={containerStyle}/>
         <Card id='address_card'>
           <CardHeader>
-            <button><i className="icon-cloud-upload" onClick={this.handleSaveAddress}></i></button>
+            <button onClick={this.handleSaveAddress}><i className="icon-cloud-upload" ></i></button>
             <strong><FormattedMessage id="users.edit.address" defaultMessage="Address"/></strong>
             <div className="card-header-actions">
               <AppSwitch id="address_enabled" onClick={(e) => this.state.formApi.handleFormEnableDisable('address_card', e)}
