@@ -7,44 +7,25 @@ import "position.proto";
 
 option java_package = "com.chicago.dto";
 
-message GetPositionsRequest
+message PositionRequest
+{
+    CrudOperation crud_operation = 1;
+    Position position = 2;
+}
+
+message PositionResponse
+{
+    Position position = 1;
+    TransactionError transaction_error = 2;
+}
+
+message PositionsRequest
 {
     string organization_id = 1;
 }
 
-message GetPositionsResponse
+message PositionsResponse
 {
-    repeated Position positions = 1;
-    TransactionError transaction_error = 2;
-}
-
-message CreatePositionRequest
-{
-    Position position = 1;
-}
-
-message CreatePositionResponse
-{
-    Position position = 1;
-    TransactionError transaction_error = 2;
-}
-
-message DeletePositionRequest
-{
-    Position position = 1;
-}
-
-message DeletePositionResponse
-{
-    TransactionError transaction_error = 2;
-}
-
-message UpdatePositionRequest
-{
-    Position position = 1;
-}
-
-message UpdatePositionResponse
-{
+    Positions positions = 1;
     TransactionError transaction_error = 2;
 }

@@ -16,4 +16,3 @@ message Positions
     string organization_id = 1;
     map<string, string> positions = 2;
 }
-

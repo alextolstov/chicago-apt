@@ -1,9 +1,6 @@
 package com.chicago.app;
 
-import com.chicago.ext.bll.AddressBll;
-import com.chicago.ext.bll.AddressBllImpl;
-import com.chicago.ext.bll.UserBll;
-import com.chicago.ext.bll.UserBllImpl;
+import com.chicago.ext.bll.*;
 import com.chicago.common.core.ConfigParser;
 import com.chicago.ext.dal.AddressDal;
 import com.chicago.ext.dal.OrganizationDal;
@@ -54,6 +51,7 @@ public class ApplicationBinder extends AbstractBinder
         bind(AddressDalImpl.class).to(AddressDal.class).in(Singleton.class);
         bind(AddressBllImpl.class).to(AddressBll.class).in(Singleton.class);
         bind(PositionDalImpl.class).to(PositionDal.class).in(Singleton.class);
+        bind(PositionDalImpl.class).to(PositionBll.class).in(Singleton.class);
         bind(OrganizationDalImpl.class).to(OrganizationDal.class).in(Singleton.class);
     }
 }
