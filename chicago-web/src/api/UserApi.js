@@ -1,9 +1,20 @@
+import FetchApi from './FetchApi'
+
 const user_proto = require('models/user_pb');
 const usermessages_proto = require('models/usermessages_pb.js');
 
 export default class UserApi {
+  constructor(){
+    this.testAuthUrl = '/api/login/testauth';
+    this.loginUrl = '/login';
+    this.getUserUrl = '/api/users/user';
+    this.createUserUrl = '/api/users/create';
+    this.saveUserUrl = '/api/users/saveuser';
+    this.fetchApi = new FetchApi();
+  }
+
   testAuth() {
-    return fetch('/api/login/testauth', {
+    return fetch(this.testAuthUrl, {
       method: "GET",
       credentials: 'include'
     }).then(response => {
@@ -17,7 +28,7 @@ export default class UserApi {
   }
 
   login(credentials, userName, context) {
-    return fetch('/login', {
+    return fetch(this.loginUrl, {
       method: "POST",
       body: credentials,
       credentials: 'include',
@@ -65,7 +76,7 @@ export default class UserApi {
   }
 
   getUser(serialized_user, context) {
-    return fetch('/api/users/user', {
+    return fetch(this.getUserUrl, {
       method: "POST",
       body: serialized_user,
       credentials: 'include',
@@ -99,7 +110,7 @@ export default class UserApi {
   createUser(user, context) {
     let serialized_user = user.serializeBinary();
 
-    return fetch('/api/users/create', {
+    return fetch(this.createUserUrl, {
       method: "POST",
       body: serialized_user,
       credentials: 'include',
@@ -131,7 +142,7 @@ export default class UserApi {
   saveUser(user, context) {
     let serialized_user = user.serializeBinary();
 
-    return fetch('/api/users/saveuser', {
+    return fetch(this.saveUserUrl, {
       method: "POST",
       body: serialized_user,
       credentials: 'include',
@@ -159,5 +170,4 @@ export default class UserApi {
       })
     })
   }
-
 }

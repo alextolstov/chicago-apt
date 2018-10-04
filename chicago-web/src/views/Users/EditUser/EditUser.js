@@ -18,6 +18,7 @@ import {AppSwitch} from '@coreui/react'
 import Select from 'react-select';
 import 'react-select/dist/react-select.min.css';
 import UserApi from '../../../api/UserApi';
+import PositionApi from '../../../api/PositionApi';
 import DateTimeApi from '../../../api/DateTimeApi';
 import AddressForm from '../../Forms/AddressForm/AddressForm';
 
@@ -92,6 +93,10 @@ const messages = defineMessages({
   passportPlace: {
     id: 'users.edit.passport',
     defaultMessage: 'Passport'
+  },
+  positionPlace: {
+    id: 'users.edit.newposition',
+    defaultMessage: 'New position'
   }
 });
 
@@ -110,9 +115,11 @@ class EditUser extends Component {
     this.state = {
       dateTime: new DateTimeApi(),
       userApi: new UserApi(),
+      positionApi: new PositionApi(),
       value: ['01', '02'],
       user_id: props.match.params.id,
-      user: ""
+      user: "",
+      newPosition: ""
     };
 
     if (this.state.user_id === 'new') {
@@ -176,6 +183,11 @@ class EditUser extends Component {
     }
   }
 
+  handleAddPosition = (id, event) => {
+    let state = !document.getElementById(id).hidden;
+    document.getElementById(id).hidden = state;
+  }
+
   handleFormEnableDisable = (owner_id, event) => {
     let el = document.getElementById(owner_id);
     let buttons = Array.prototype.slice.call(el.getElementsByTagName('button'), 0);
@@ -208,6 +220,15 @@ class EditUser extends Component {
 
   saveSelectChanges = (value) => {
     this.setState({value});
+  }
+
+  saveNewPosition = (event) => {
+    let self = this;
+    console.log(self.state.newPosition);
+  }
+
+  handleNewPositionChange = (event) => {
+    console.log("");
   }
 
   handleChange = (event) => {
@@ -277,6 +298,9 @@ class EditUser extends Component {
         break;
       case "employment_book_number":
         this.state.user.setEmploymentBookNumber(event.target.value);
+        break;
+      case "new_position":
+        this.state.newPosition = event.target.value;
         break;
     }
     this.setState({[event.target.id]: event.target.value});
@@ -439,7 +463,8 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.passwordPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="password" id="mgmt_password" name="mgmt_password" placeholder={pholder} required/>
+                                          type="password" id="mgmt_password" name="mgmt_password" placeholder={pholder}
+                                          required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -737,7 +762,7 @@ class EditUser extends Component {
                     </InputGroupAddon>
                     <FormattedMessage {...messages.diplomaPlace}>
                       {
-                        pholder => <Input onChange={this.handleChange}
+                        pholder => <Input onChange={this.handleNewPositionChange}
                                           value={this.state.user.getDiplomaNumber === undefined ? "" : this.state.user.getDiplomaNumber()}
                                           type="text" id="diploma_number" name="diploma_number" placeholder={pholder}
                                           required/>
@@ -828,11 +853,40 @@ class EditUser extends Component {
                         multi
                       />
                     </Col>
+                    <button onClick={(e) => this.handleAddPosition('add_position_card', e)}><i
+                      className="icon-plus"></i></button>
                   </InputGroup>
                 </FormGroup>
 
               </CardBody>
             </Card>
+
+            <Card id='add_position_card' hidden>
+              <CardHeader>
+                <button onClick={this.saveNewPosition}><i className="icon-cloud-upload"></i></button>
+                <strong><FormattedMessage id="users.edit.newposition" defaultMessage="New position"/></strong>
+              </CardHeader>
+              <CardBody>
+                {/*Position*/}
+                <FormGroup row>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="icon-star"></i>
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <FormattedMessage {...messages.positionPlace}>
+                      {
+                        pholder => <Input onChange={this.handleChange}
+                                          type="text" id="new_position" name="new_position" placeholder={pholder}
+                                          required/>
+                      }
+                    </FormattedMessage>
+                  </InputGroup>
+                </FormGroup>
+              </CardBody>
+            </Card>
+
             <AddressForm userId={this.props.appStore.userData.getUserId()}
                          addressId={this.state.user.getAddressId === undefined ? "" : this.state.user.getAddressId()}/>
           </Col>

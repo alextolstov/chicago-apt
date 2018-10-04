@@ -1,4 +1,5 @@
 import FetchApi from './FetchApi'
+
 const address_proto = require('models/address_pb');
 const addressmessages_proto = require('models/addressmessages_pb.js');
 
@@ -11,24 +12,20 @@ export default class AddressApi {
   }
 
   createAddress(address, context) {
-    let serialized_address = address.serializeBinary();
-    return this.fetchApi.defaultFetch(this.createAddressUrl,
-      serialized_address,
-      addressmessages_proto.AddressResponse.deserializeBinary,
-      context);
+    return this.addressCrud(this.createAddressUrl, address, context);
   }
 
   updateAddress(address, context) {
-    let serialized_address = address.serializeBinary();
-    return this.fetchApi.defaultFetch(this.updateAddressUrl,
-      serialized_address,
-      addressmessages_proto.AddressResponse.deserializeBinary,
-      context);
+    return this.addressCrud(this.updateAddressUrl, address, context);
   }
 
   getAddress(address, context) {
+    return this.addressCrud(this.getAddressUrl, address, context);
+  }
+
+  addressCrud(url, address, context){
     let serialized_address = address.serializeBinary();
-    return this.fetchApi.defaultFetch(this.getAddressUrl,
+    return this.fetchApi.defaultFetch(url,
       serialized_address,
       addressmessages_proto.AddressResponse.deserializeBinary,
       context);
