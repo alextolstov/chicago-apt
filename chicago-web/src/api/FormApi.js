@@ -1,3 +1,5 @@
+// This API can enable or disable whole form
+
 export default class FormApi {
   handleFormEnableDisable = (owner_id, event) => {
     let el = document.getElementById(owner_id);

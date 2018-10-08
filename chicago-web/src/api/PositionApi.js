@@ -1,6 +1,5 @@
 import FetchApi from './FetchApi'
 
-const position_proto = require('models/position_pb');
 const positionmessages_proto = require('models/positionmessages_pb.js');
 
 export default class PositionApi {
@@ -13,25 +12,25 @@ export default class PositionApi {
   }
 
   createPosition(position, context) {
-    this.positionCrud(this.createPositionUrl, position, context);
+    return this.positionCrud(this.createPositionUrl, position, context);
   }
 
   updatePosition(position, context) {
-    this.positionCrud(this.updatePositionUrl, position, context);
+    return this.positionCrud(this.updatePositionUrl, position, context);
   }
 
   deletePosition(position, context) {
-    this.positionCrud(this.deletePositionUrl, position, context);
+    return this.positionCrud(this.deletePositionUrl, position, context);
   }
 
   getPosition(position, context) {
-    this.positionCrud(this.getPositionUrl, position, context);
+    return this.positionCrud(this.getPositionUrl, position, context);
   }
 
-  positionCrud(url, position, context) {
-    let serialized_position = position.serializeBinary();
-    return this.fetchApi.defaultFetch(this.getPositionUrl,
-      serialized_position,
+  positionCrud(url, userObject, context) {
+    let serialized_object = userObject.serializeBinary();
+    return this.fetchApi.defaultFetch(url,
+      serialized_object,
       positionmessages_proto.PositionResponse.deserializeBinary,
       context);
   }

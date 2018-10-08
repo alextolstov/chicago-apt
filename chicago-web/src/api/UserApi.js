@@ -63,111 +63,33 @@ export default class UserApi {
     let user = new user_proto.User();
     // Username must be lower case
     user.setUserId(user_id);
-    let serialized_user = user.serializeBinary();
-    return this.getUser(serialized_user, context);
+    return this.getUser(user, context);
   }
 
   getUserByEmail(email, context) {
     let user = new user_proto.User();
     // Username must be lower case
     user.setEmail(email.toLowerCase());
-    let serialized_user = user.serializeBinary();
-    return this.getUser(serialized_user, context);
+    return this.getUser(user, context);
   }
 
-  getUser(serialized_user, context) {
-    return fetch(this.getUserUrl, {
-      method: "POST",
-      body: serialized_user,
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    }).then(response => {
-      if (!response.ok) {
-        throw response;
-      }
-      return response.arrayBuffer();
-    }).then(proto => {
-      let user_response = usermessages_proto.UserResponse.deserializeBinary(proto);
-      if (user_response.getTransactionError() !== undefined) {
-        context.handleError(user_response.getTransactionError().getErrorMessage());
-      } else {
-        return user_response.getUser();
-      }
-    }).catch(rest_error => {
-      if (rest_error.status == 500) {
-        // Show error
-        context.handleError("Error 500. Server error.");
-        return;
-      }
-      rest_error.json().then(errorMessage => {
-        context.handleError(errorMessage);
-      })
-    })
+  getUser(user, context) {
+    return this.userCrud(this.getUserUrl, user);
   }
 
   createUser(user, context) {
-    let serialized_user = user.serializeBinary();
-
-    return fetch(this.createUserUrl, {
-      method: "POST",
-      body: serialized_user,
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    }).then(response => {
-      if (!response.ok) {
-        throw response;
-      }
-      return response.arrayBuffer();
-    }).then(proto => {
-      let user_response = usermessages_proto.UserResponse.deserializeBinary(proto);
-      if (user_response.getTransactionError() !== undefined) {
-        context.handleError(user_response.getTransactionError().getErrorMessage());
-      }
-    }).catch(rest_error => {
-      if (rest_error.status == 500) {
-        // Show error
-        context.handleError("Error 500. Server error.");
-        return;
-      }
-      rest_error.json().then(errorMessage => {
-        context.handleError(errorMessage);
-      })
-    })
+    return this.userCrud(this.createUserUrl, user);
   }
 
   saveUser(user, context) {
-    let serialized_user = user.serializeBinary();
+    return this.userCrud(this.saveUserUrl, user);
+  }
 
-    return fetch(this.saveUserUrl, {
-      method: "POST",
-      body: serialized_user,
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    }).then(response => {
-      if (!response.ok) {
-        throw response;
-      }
-      return response.arrayBuffer();
-    }).then(proto => {
-      let user_response = usermessages_proto.UserResponse.deserializeBinary(proto);
-      if (user_response.getTransactionError() !== undefined) {
-        context.handleError(user_response.getTransactionError().getErrorMessage());
-      }
-    }).catch(rest_error => {
-      if (rest_error.status == 500) {
-        // Show error
-        context.handleError("Error 500. Server error.");
-        return;
-      }
-      rest_error.json().then(errorMessage => {
-        context.handleError(errorMessage);
-      })
-    })
+  userCrud(url, userObject, context) {
+    let serialized_object = userObject.serializeBinary();
+    return this.fetchApi.defaultFetch(url,
+      serialized_object,
+      usermessages_proto.UserResponse.deserializeBinary,
+      context);
   }
 }

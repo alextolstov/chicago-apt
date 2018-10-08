@@ -1,6 +1,5 @@
 import FetchApi from './FetchApi'
 
-const address_proto = require('models/address_pb');
 const addressmessages_proto = require('models/addressmessages_pb.js');
 
 export default class AddressApi {

@@ -117,20 +117,20 @@ class EditUser extends Component {
       userApi: new UserApi(),
       positionApi: new PositionApi(),
       value: ['01', '02'],
-      user_id: props.match.params.id,
+      userId: props.match.params.id,
       user: "",
       newPosition: ""
     };
 
-    if (this.state.user_id === 'new') {
+    if (this.state.userId === 'new') {
       this.state.user = new user_proto.User();
     }
-    else if (this.state.user_id === 'current') {
+    else if (this.state.userId === 'current') {
       this.state.user = jspb.Message.cloneMessage(this.props.appStore.userData);
     }
     else {
       let self = this;
-      new UserApi().getUserById(this.state.user_id, this).then(function (userMsg) {
+      new UserApi().getUserById(this.state.userId, this).then(function (userMsg) {
         if (userMsg != null) {
           self.state.user = userMsg.getUser();
         }
@@ -160,23 +160,23 @@ class EditUser extends Component {
   }
 
   componentDidMount() {
-    if (this.state.user_id === 'current') {
+    if (this.state.userId === 'current') {
       this.setUncheckState();
     }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.match.params.id !== prevState.user_id) {
-      return {user_id: nextProps.match.params.id};
+    if (nextProps.match.params.id !== prevState.userId) {
+      return {userId: nextProps.match.params.id};
     }
     return null;
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.user_id === 'current') {
+    if (this.state.userId === 'current') {
       this.setUncheckState();
     }
-    if (this.state.user_id === 'new') {
+    if (this.state.userId === 'new') {
       if (!document.getElementById('new_user_enabled').checked) {
         document.getElementById('new_user_enabled').click();
       }
@@ -188,8 +188,8 @@ class EditUser extends Component {
     document.getElementById(id).hidden = state;
   }
 
-  handleFormEnableDisable = (owner_id, event) => {
-    let el = document.getElementById(owner_id);
+  handleFormEnableDisable = (ownerId, event) => {
+    let el = document.getElementById(ownerId);
     let buttons = Array.prototype.slice.call(el.getElementsByTagName('button'), 0);
     let inputs = Array.prototype.slice.call(el.getElementsByTagName('input'), 0);
     let all = inputs.concat(buttons);
@@ -203,11 +203,11 @@ class EditUser extends Component {
 
   handleSaveUserInfo = (event) => {
     let self = this;
-    if (this.state.user_id === 'new') {
+    if (this.state.userId === 'new') {
       this.state.userApi.createUser(this.state.user, self);
     } else {// Working with existing profile
       this.state.userApi.saveUser(this.state.user, self).then(function () {
-        if (this.state.user_id === 'current') {
+        if (self.state.userId === 'current') {
           self.props.appStore.userData = self.state.user;
         }
       });
@@ -310,7 +310,7 @@ class EditUser extends Component {
 
     return (
       <div className="animated fadeIn">
-        <Row hidden={this.state.user_id === 'new' ? false : true}>
+        <Row hidden={this.state.userId === 'new' ? false : true}>
           <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
             <Card id="new_user_card">
               <CardHeader>
@@ -401,7 +401,7 @@ class EditUser extends Component {
             </Card>
           </Col>
         </Row>
-        <Row hidden={this.state.user_id === 'new' ? true : false}>
+        <Row hidden={this.state.userId === 'new' ? true : false}>
           <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
             <Card id="email_card">
               <CardHeader>

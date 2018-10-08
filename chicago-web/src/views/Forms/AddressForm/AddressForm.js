@@ -63,13 +63,13 @@ class AddressForm extends Component {
       address: new address_proto.Address(),
       dateTime: new DateTimeApi(),
       formApi: new FormApi(),
-      address_api: new AddressApi()
+      addressApi: new AddressApi()
     };
 
     if (props.addressId !== "") {
       let self = this;
       this.state.address.setAddressId(props.addressId);
-      this.state.address_api.getAddress(this.state.address).then(function (addressMsg) {
+      this.state.addressApi.getAddress(this.state.address).then(function (addressMsg) {
         let savedAddress = addressMsg.getAddress();
         if (savedAddress != null) {
           self.setState({address: savedAddress});
@@ -124,7 +124,7 @@ class AddressForm extends Component {
     let self = this;
 
     if (this.state.address.getAddressId() === "") {
-      this.state.address_api.createAddress(this.state.address, this).then(function (addressMsg) {
+      this.state.addressApi.createAddress(this.state.address, this).then(function (addressMsg) {
         let savedAddress = addressMsg.getAddress();
         if (savedAddress != null) {
           self.setState({address: savedAddress});
@@ -132,7 +132,7 @@ class AddressForm extends Component {
         }
       });
     } else {
-      this.state.address_api.updateAddress(this.state.address, this).then(function (addressMsg) {
+      this.state.addressApi.updateAddress(this.state.address, this).then(function (addressMsg) {
           self.handleSuccess();
       });
     }
