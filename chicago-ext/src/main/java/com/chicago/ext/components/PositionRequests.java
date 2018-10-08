@@ -37,6 +37,7 @@ public class PositionRequests extends AbstractComponent
     public boolean init(ConfigAccessor ca)
     {
         _positionBll = ServiceLocatorFactory.getInstance().find("servicelocator").getService(PositionBll.class);
+        LOG.info("Service locator found PositionBll");
         return true;
     }
 

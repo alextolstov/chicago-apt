@@ -42,6 +42,7 @@ public class UserRequests extends AbstractComponent
     public boolean init(ConfigAccessor ca)
     {
         _userBll = ServiceLocatorFactory.getInstance().find("servicelocator").getService(UserBll.class);
+        LOG.info("Service locator found UserBll");
         return true;
     }
 
@@ -127,10 +128,10 @@ public class UserRequests extends AbstractComponent
                     }
                     case READ:
                     {
-                        if (event.getUser().getEmail() != "")
+                        if (!event.getUser().getEmail().isEmpty())
                         {
                             user = _userBll.getUserByEmail(event.getUser().getEmail());
-                        } else if (event.getUser().getUserId() != "")
+                        } else if (!event.getUser().getUserId().isEmpty())
                         {
                             user = _userBll.getUserById(event.getUser().getUserId());
                         } else

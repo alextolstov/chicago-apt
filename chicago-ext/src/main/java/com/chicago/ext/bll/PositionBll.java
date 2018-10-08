@@ -1,6 +1,5 @@
 package com.chicago.ext.bll;
 
-import com.chicago.dto.AddressOuterClass;
 import com.chicago.dto.PositionOuterClass;
 import org.jvnet.hk2.annotations.Contract;
 

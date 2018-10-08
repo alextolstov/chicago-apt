@@ -10,11 +10,8 @@ import com.chicago.common.core.EventHandler;
 import com.chicago.common.util.ResponseFactoryUtil;
 import com.chicago.dto.AddressOuterClass;
 import com.chicago.dto.Addressmessages;
-import com.chicago.dto.UserOuterClass;
 import com.chicago.dto.Usermessages;
 import com.chicago.ext.bll.AddressBll;
-import com.chicago.ext.dal.cassandra.PasswordNotMatchException;
-import com.chicago.ext.dal.cassandra.UserNotFoundException;
 import com.google.protobuf.Message;
 import org.apache.http.HttpStatus;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
@@ -22,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class AddressRequests extends AbstractComponent
 {
@@ -39,12 +35,12 @@ public class AddressRequests extends AbstractComponent
         // Response
         KafkaMessageProducer producer = cm.getResource(KafkaMessageProducer.class.getName());
         _ed.registerHandler(Addressmessages.AddressResponse.class, producer.new MessageEventHandler());
-
     }
 
     public boolean init(ConfigAccessor ca)
     {
         _addressBll = ServiceLocatorFactory.getInstance().find("servicelocator").getService(AddressBll.class);
+        LOG.info("Service locator found AddressBll");
         return true;
     }
 
