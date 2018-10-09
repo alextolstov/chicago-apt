@@ -1092,7 +1092,7 @@ class BasicForms extends Component {
                             <InputGroupAddon addonType="prepend">
                               <InputGroupText>@</InputGroupText>
                             </InputGroupAddon>
-                            <Input id="prependedInput" size="6" type="text" />
+                            <Input id="prependedInput" size="16" type="text" />
                           </InputGroup>
                           <p className="help-block">Here's some help text</p>
                         </div>

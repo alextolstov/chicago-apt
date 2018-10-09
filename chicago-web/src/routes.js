@@ -161,6 +161,11 @@ const BasicForms = Loadable({
   loading: Loading,
 });
 
+const ValidationForms = Loadable({
+  loader: () => import('./views/Forms/ValidationForms'),
+  loading: Loading,
+});
+
 const GoogleMaps = Loadable({
   loader: () => import('./views/GoogleMaps'),
   loading: Loading,
@@ -208,6 +213,11 @@ const Toastr = Loadable({
 
 const Calendar = Loadable({
   loader: () => import('./views/Plugins/Calendar'),
+  loading: Loading,
+});
+
+const Draggable = Loadable({
+  loader: () => import('./views/Plugins/Draggable'),
   loading: Loading,
 });
 
@@ -287,6 +297,7 @@ const routes = [
   { path: '/forms', name: 'Forms', component: BasicForms, exact: true },
   { path: '/forms/advanced-forms', name: 'Advanced Forms', component: AdvancedForms },
   { path: '/forms/basic-forms', name: 'Basic Forms', component: BasicForms },
+  { path: '/forms/validation-forms', name: 'Form Validation', component: ValidationForms },
   { path: '/google-maps', name: 'Google Maps', component: GoogleMaps },
   { path: '/icons', exact: true, name: 'Icons', component: CoreUIIcons },
   { path: '/icons/coreui-icons', name: 'CoreUI Icons', component: CoreUIIcons },
@@ -300,10 +311,12 @@ const routes = [
   { path: '/notifications/toastr', name: 'Toastr', component: Toastr },
   { path: '/plugins', name: 'Plugins', component: Calendar, exact: true },
   { path: '/plugins/calendar', name: 'Calendar', component: Calendar },
+  { path: '/plugins/draggable', name: 'Draggable Cards', component: Draggable },
   { path: '/plugins/spinners', name: 'Spinners', component: Spinners },
   { path: '/tables', name: 'Tables', component: Tables, exact: true },
   { path: '/tables/data-table', name: 'Data Table', component: DataTable },
   { path: '/tables/tables', name: 'Tables', component: Tables },
+  { path: '/widgets', name: 'Widgets', component: Widgets },
   { path: '/apps', name: 'Apps', component: Compose, exact: true },
   { path: '/apps/email', name: 'Email', component: Compose, exact: true },
   { path: '/apps/email/compose', name: 'Compose', component: Compose },
@@ -311,7 +324,6 @@ const routes = [
   { path: '/apps/email/message', name: 'Message', component: Message },
   { path: '/apps/invoicing', name: 'Invoice', component: Invoice, exact: true },
   { path: '/apps/invoicing/invoice', name: 'Invoice', component: Invoice },
-  { path: '/widgets', name: 'Widgets', component: Widgets },
   { path: '/users/edituser/:id', name: <FormattedMessage id="users.edit.user" defaultMessage="Edit profile"/>, component: EditUser, exact: true },
 ];
 

@@ -6,7 +6,6 @@ class Switches extends Component {
   render() {
     return (
       <div className="animated fadeIn">
-
         <Row>
           <Col xs="12" md="6">
             <Card>
@@ -48,7 +47,7 @@ class Switches extends Component {
             <Card>
               <CardHeader>
                 3d Switch
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} variant={'3d'} color={'primary'} defaultChecked />
@@ -67,7 +66,7 @@ class Switches extends Component {
             <Card>
               <CardHeader>
                 3d Switch <small><code>disabled</code></small>
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} variant={'3d'} color={'primary'} checked disabled />
@@ -82,12 +81,11 @@ class Switches extends Component {
               </CardBody>
             </Card>
           </Col>
-
           <Col xs="12" md="6">
             <Card>
               <CardHeader>
                 3d Switch <small><code>outline="alt"</code></small>
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} variant={'3d'} color={'primary'} checked outline={'alt'} />
@@ -106,7 +104,7 @@ class Switches extends Component {
             <Card>
               <CardHeader>
                 3d Switch <small><code>label</code></small>
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} variant={'3d'} color={'primary'} defaultChecked label dataOn={'\u2713'} dataOff={'\u2715'} />
@@ -125,7 +123,7 @@ class Switches extends Component {
             <Card>
               <CardHeader>
                 3d Switch <small><code>outline="alt" label</code></small>
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} variant={'3d'} outline={'alt'} color={'primary'} defaultChecked label dataOn={'\u2713'} dataOff={'\u2715'} />
@@ -144,7 +142,7 @@ class Switches extends Component {
             <Card>
               <CardHeader>
                 3d Switch <small><code>outline="alt" label</code></small>
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} variant={'3d'} outline={'alt'} color={'primary'} defaultChecked label />
@@ -163,7 +161,7 @@ class Switches extends Component {
             <Card>
               <CardHeader>
                 Switch outline
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} color={'primary'} outline checked />
@@ -182,7 +180,7 @@ class Switches extends Component {
             <Card>
               <CardHeader>
                 Switch outline pills
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} variant={'pill'} color={'primary'} outline checked />
@@ -201,7 +199,7 @@ class Switches extends Component {
             <Card>
               <CardHeader>
                 Switch outline alternative
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} color={'primary'} outline={'alt'} checked />
@@ -216,12 +214,11 @@ class Switches extends Component {
               </CardBody>
             </Card>
           </Col>
-
           <Col xs="12" md="6">
             <Card>
               <CardHeader>
                 Switch outline alternative - pills
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} variant={'pill'} color={'primary'} outline={'alt'} checked />
@@ -236,12 +233,11 @@ class Switches extends Component {
               </CardBody>
             </Card>
           </Col>
-
           <Col xs="12" md="6">
             <Card>
               <CardHeader>
                 Switch with text
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} color={'primary'} label checked />
@@ -260,7 +256,7 @@ class Switches extends Component {
             <Card>
               <CardHeader>
                 Switch with text pills
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} variant={'pill'} color={'primary'} label checked />
@@ -279,7 +275,7 @@ class Switches extends Component {
             <Card>
               <CardHeader>
                 Switch with text outline
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} color={'primary'} outline label checked />
@@ -298,7 +294,7 @@ class Switches extends Component {
             <Card>
               <CardHeader>
                 Switch with text outline pills
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} variant={'pill'} color={'primary'} outline label checked />
@@ -317,7 +313,7 @@ class Switches extends Component {
             <Card>
               <CardHeader>
                 Switch with text outline alternative pills
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} color={'primary'} outline={'alt'} label checked />
@@ -336,7 +332,7 @@ class Switches extends Component {
             <Card>
               <CardHeader>
                 Switch with text outline alternative pills
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} variant={'pill'} color={'primary'} outline={'alt'} label checked />
@@ -351,12 +347,11 @@ class Switches extends Component {
               </CardBody>
             </Card>
           </Col>
-
           <Col xs="12" md="6">
             <Card>
               <CardHeader>
                 Switch with text outline alternative
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} color={'primary'} outline checked label dataOn={'\u2713'} dataOff={'\u2715'}/>
@@ -375,7 +370,7 @@ class Switches extends Component {
             <Card>
               <CardHeader>
                 Switch with text outline alternative pills
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} variant={'pill'} color={'primary'} outline checked label dataOn={'\u2713'} dataOff={'\u2715'} />
@@ -395,7 +390,7 @@ class Switches extends Component {
             <Card>
               <CardHeader>
                 Switch with text outline alternative
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} color={'primary'} outline={'alt'} checked label dataOn={'\u2713'} dataOff={'\u2715'}/>
@@ -414,7 +409,7 @@ class Switches extends Component {
             <Card>
               <CardHeader>
                 Switch with text outline alternative pills
-                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                {' '}<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro</a>
               </CardHeader>
               <CardBody>
                 <AppSwitch className={'mx-1'} variant={'pill'} color={'primary'} outline={'alt'} checked label dataOn={'\u2713'} dataOff={'\u2715'} />
@@ -429,7 +424,6 @@ class Switches extends Component {
               </CardBody>
             </Card>
           </Col>
-
           <Col xs="12">
             <Card>
               <CardHeader>
@@ -483,10 +477,8 @@ class Switches extends Component {
               </CardBody>
             </Card>
           </Col>
-
         </Row>
       </div>
-
     );
   }
 }

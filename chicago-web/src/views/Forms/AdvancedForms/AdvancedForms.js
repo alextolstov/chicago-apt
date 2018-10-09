@@ -165,17 +165,17 @@ class AdvancedForms extends React.Component {
             </Card>
           </Col>
           <Col sm={12} md={6}>
-            {/*<Card>*/}
-              {/*<CardHeader>*/}
-                {/*<i className="icon-note"></i><strong>React-Select</strong>{' '}*/}
-                {/*<a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>*/}
-                {/*<div className="card-header-actions">*/}
-                  {/*<a href="https://github.com/JedWatson/react-select" rel="noreferrer noopener" target="_blank" className="card-header-action">*/}
-                  {/*<small className="text-muted">docs</small>*/}
-                {/*</a>*/}
-              {/*</div>*/}
-            {/*</CardHeader>*/}
-            {/*<CardBody>*/}
+            <Card>
+              <CardHeader>
+                <i className="icon-note"></i><strong>React-Select</strong>{' '}
+                <a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
+                <div className="card-header-actions">
+                  <a href="https://github.com/JedWatson/react-select" rel="noreferrer noopener" target="_blank" className="card-header-action">
+                  <small className="text-muted">docs</small>
+                </a>
+              </div>
+            </CardHeader>
+            <CardBody>
               <Select
                 name="form-field-name2"
                 value={this.state.value}
@@ -183,8 +183,8 @@ class AdvancedForms extends React.Component {
                 onChange={this.saveChanges}
                 multi
               />
-            {/*</CardBody>*/}
-          {/*</Card>*/}
+            </CardBody>
+          </Card>
           <Card>
             <CardHeader>
               <i className="icon-calendar"></i><strong>React-Dates</strong>{' '}

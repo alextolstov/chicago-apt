@@ -1,5 +1,69 @@
 ## [CoreUI](https://coreui.io/) for [react](./REACT.md) changelog
 
+##### `v2.0.9`
+- chore: update `@coreui/icons` to `0.3.0`
+- refactor(CoreUIIcons): move to `@coreui/icons v0.3.0`
+- chore: update `enzyme` to `3.5.0`
+- chore: update `enzyme-adapter-react-16` to `1.3.1`
+- chore: update `react-loadable` to `5.5.0`
+- chore: update `reactstrap` to `6.4.0`
+- chore: update `react-scripts` to `1.1.5`
+- fix(User): add missing unique key prop
+- fix(Login): add missing form and autoComplete
+- fix(Register): add missing form and autoComplete
+- chore: update `codemirror` to `5.40.0`
+- chore: update `formik` to `1.1.1`
+- chore: update `react-dates` to `17.2.0`
+- chore: update `react-toastify` to `4.2.3`
+- chore: update `yup` to `0.26.3`
+
+##### `v2.0.8`
+- feat(Forms): Form Validation _**pro**_  
+- chore: add dependency `formik v1.0.2`
+- chore: add dependency `yup v0.26.0`
+- chore: update `@coreui/coreui-pro` to `^2.0.6`,
+- chore: update `@coreui/react` to `^2.0.5`  
+- chore: update `bootstrap` to `^4.1.3`  
+- chore: update `codemirror` to `5.39.2`
+- chore: update `react` to `^16.4.2`  
+- chore: update `react-dom` to `^16.4.2`,
+- chore: update `react-test-renderer` to `^16.4.2`,
+- chore: update `react-chartjs-2` to `^2.7.4`  
+- chore: update `react-dates` to `17.1.1`  
+- chore: update `react-quill` to `1.3.1`  
+- chore: update `react-select` to `^1.3.0`  
+- chore: update `reactstrap` to `^6.3.1`  
+- chore: update `babel-jest` to `^23.4.2`  
+- chore: update `node-sass-chokidar` to `^1.3.3`  
+
+##### `v2.0.7`
+- feat(Plugins): Draggable Cards _**pro**_
+- chore: add dependency `react-grid-layout v0.16.6`
+- chore: update `coreui/coreui-pro` to `^2.0.5`,
+- chore: update `react-big-calendar` to `0.19.2`,
+
+##### `v2.0.6`
+- feat(router): Users/User Breadcrumb example with `/users/:id`
+- chore: update `@coreui/react` to `2.0.4`,
+- chore: update `prop-types` to `15.6.2`
+- chore: update `react` to `16.4.1`
+- chore: update `react-dom` to `16.4.1`
+- chore: update `react-test-renderer` to `16.4.1`
+- chore: update `npm-run-all` to `4.1.3`
+- chore: add `.env` file
+- chore: update `codemirror` to `5.39.0`
+- chore: update `react-dates` to `17.0.0`
+- chore: update `react-quill` to `1.3.0`
+- refactor(Compose): add `autoComplete` prop to `Input type="email"`
+
+##### `v2.0.5`
+chore: update `@coreui/coreui-pro` to `^2.0.4`  
+chore: update `@coreui/react` to `^2.0.3`  
+chore: update `prop-types` to `^15.6.2`  
+chore: update `react` to `^16.4.1`  
+chore: update `react-dom` to `^16.4.1`  
+chore: update `react-test-renderer` to `^16.4.1`  
+
 ##### `v2.0.4`
 - feat(scss): dark theme layout `coreui-dark` _**pro**_
 - chore: update `@coreui/coreui-pro` to `2.0.3`,

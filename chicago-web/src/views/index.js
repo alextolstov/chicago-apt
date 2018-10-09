@@ -21,7 +21,7 @@ import Charts from './Charts';
 import Dashboard from './Dashboard';
 import { EditUser, ManageUsers } from './Users';
 import { CodeEditors, TextEditors } from './Editors';
-import { AdvancedForms, BasicForms } from './Forms';
+import { AdvancedForms, BasicForms, ValidationForms } from './Forms';
 import ReactGoogleMaps from './GoogleMaps';
 import { CoreUIIcons, Flags, FontAwesome, SimpleLineIcons } from './Icons';
 import { Alerts, Badges, Modals, Toastr } from './Notifications';
@@ -76,6 +76,7 @@ export {
   TextEditors,
   AdvancedForms,
   BasicForms,
+  ValidationForms,
   Toastr,
   Calendar,
   Spinners,

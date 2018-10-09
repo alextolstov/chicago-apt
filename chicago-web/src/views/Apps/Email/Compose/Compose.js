@@ -52,19 +52,19 @@ class Compose extends Component {
                 {/* strange reactstrap sizing for Label: className="col-2 col-sm-1 col-form-label" */}
                 <Label for="to" xs={2} sm={1}>To:</Label>
                 <Col xs={10} sm={11}>
-                  <Input type="email" id="to" placeholder="Type email"/>
+                  <Input type="email" id="to" placeholder="Type email" autoComplete="email"/>
                 </Col>
               </FormGroup>
               <FormGroup row className="mb-3">
                 <Label for="cc" xs={2} sm={1}>CC:</Label>
                 <Col xs={10} sm={11}>
-                  <Input type="email" id="cc" placeholder="Type email"/>
+                  <Input type="email" id="cc" placeholder="Type email" autoComplete="email"/>
                 </Col>
               </FormGroup>
               <FormGroup row className="mb-3">
                 <Label for="bcc" xs={2} sm={1}>BCC:</Label>
                 <Col xs={10} sm={11}>
-                  <Input type="email" id="bcc" placeholder="Type email"/>
+                  <Input type="email" id="bcc" placeholder="Type email" autoComplete="email"/>
                 </Col>
               </FormGroup>
             </Form>
