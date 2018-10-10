@@ -879,51 +879,41 @@ class EditUser extends Component {
                   <Table responsive size="sm">
                     <thead>
                     <tr>
-                      <th>Username</th>
-                      <th>Date registered</th>
-                      <th>Role</th>
-                      <th>Status</th>
+                      <th>Position</th>
+                      <th>Delete</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                      <td>Carwyn Fachtna</td>
-                      <td>2012/01/01</td>
-                      <td>Member</td>
                       <td>
-                        <Badge color="success">Active</Badge>
+                        <Input onChange={this.handleChange}  bsSize="sm" className="input-sm" value="Barber" type="text" />
+                      </td>
+                      <td>
+                        <i className="cui-delete icons font-2xl"></i>
                       </td>
                     </tr>
                     <tr>
-                      <td>Nehemiah Tatius</td>
-                      <td>2012/02/01</td>
-                      <td>Staff</td>
                       <td>
-                        <Badge color="danger">Banned</Badge>
+                        <Input onChange={this.handleChange}  bsSize="sm" className="input-sm" value="Manager" type="text" />
+                      </td>
+                      <td>
+                        <i className="cui-delete icons font-2xl"></i>
                       </td>
                     </tr>
                     <tr>
-                      <td>Ebbe Gemariah</td>
-                      <td>2012/02/01</td>
-                      <td>Admin</td>
                       <td>
-                        <Badge color="secondary">Inactive</Badge>
+                        <Input onChange={this.handleChange}  bsSize="sm" className="input-sm" value="Security" type="text" />
+                      </td>
+                      <td>
+                        <i className="cui-delete icons font-2xl"></i>
                       </td>
                     </tr>
                     <tr>
-                      <td>Eustorgios Amulius</td>
-                      <td>2012/03/01</td>
-                      <td>Member</td>
                       <td>
-                        <Badge color="warning">Pending</Badge>
+                        <Input onChange={this.handleChange}  bsSize="sm" className="input-sm" value="Help Desk" type="text" />
                       </td>
-                    </tr>
-                    <tr>
-                      <td>Leopold Gáspár</td>
-                      <td>2012/01/21</td>
-                      <td>Staff</td>
                       <td>
-                        <Badge color="success">Active</Badge>
+                        <i className="cui-delete icons font-2xl"></i>
                       </td>
                     </tr>
                     </tbody>
