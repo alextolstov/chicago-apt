@@ -24,6 +24,7 @@ import FormApi from '../../../api/FormApi';
 import PositionApi from '../../../api/PositionApi';
 import DateTimeApi from '../../../api/DateTimeApi';
 import AddressForm from '../../Forms/AddressForm/AddressForm';
+import PositionForm from '../../Forms/PositionForm/PositionForm';
 
 const jspb = require('google-protobuf');
 const user_proto = require('models/user_pb');
@@ -852,77 +853,7 @@ class EditUser extends Component {
               </CardBody>
             </Card>
 
-            <Card id='add_position_card' hidden>
-              <CardHeader>
-                <button onClick={this.saveNewPosition}>
-                  <i className="icon-cloud-upload"></i>
-                </button>
-                <strong><FormattedMessage id="users.edit.newposition" defaultMessage="New position"/></strong>
-              </CardHeader>
-              <CardBody>
-                {/*Position*/}
-                <FormGroup row>
-                  <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="icon-star"></i>
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <FormattedMessage {...messages.positionPlace}>
-                      {
-                        pholder => <Input onChange={this.handleChange}
-                                          type="text" id="new_position" name="new_position" placeholder={pholder}
-                                          required/>
-                      }
-                    </FormattedMessage>
-                  </InputGroup>
-                  <Table responsive size="sm">
-                    <thead>
-                    <tr>
-                      <th>Position</th>
-                      <th>Delete</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                      <td>
-                        <Input onChange={this.handleChange}  bsSize="sm" className="input-sm" value="Barber" type="text" />
-                      </td>
-                      <td>
-                        <i className="cui-delete icons font-2xl"></i>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <Input onChange={this.handleChange}  bsSize="sm" className="input-sm" value="Manager" type="text" />
-                      </td>
-                      <td>
-                        <i className="cui-delete icons font-2xl"></i>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <Input onChange={this.handleChange}  bsSize="sm" className="input-sm" value="Security" type="text" />
-                      </td>
-                      <td>
-                        <i className="cui-delete icons font-2xl"></i>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <Input onChange={this.handleChange}  bsSize="sm" className="input-sm" value="Help Desk" type="text" />
-                      </td>
-                      <td>
-                        <i className="cui-delete icons font-2xl"></i>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </Table>
-
-                </FormGroup>
-              </CardBody>
-            </Card>
-
+            <PositionForm />
             <AddressForm userId={this.props.appStore.userData.getUserId()}
                          addressId={this.state.user.getAddressId === undefined ? "" : this.state.user.getAddressId()}/>
           </Col>

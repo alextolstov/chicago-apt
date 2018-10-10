@@ -43,9 +43,7 @@ class DefaultHeaderDropdown extends Component {
   }
 
   toggle = () => {
-    this.setState({
-      dropdownOpen: !this.state.dropdownOpen,
-    });
+    this.setState({dropdownOpen: !this.state.dropdownOpen});
   }
 
   dropNotif() {
