@@ -11,27 +11,27 @@ export default class PositionApi {
     this.fetchApi = new FetchApi();
   }
 
-  createPosition(position, context) {
-    return this.positionCrud(this.createPositionUrl, position, context);
+  createPosition(position, errorHandler) {
+    return this.positionCrud(this.createPositionUrl, position, errorHandler);
   }
 
-  updatePosition(position, context) {
-    return this.positionCrud(this.updatePositionUrl, position, context);
+  updatePosition(position, errorHandler) {
+    return this.positionCrud(this.updatePositionUrl, position, errorHandler);
   }
 
-  deletePosition(position, context) {
-    return this.positionCrud(this.deletePositionUrl, position, context);
+  deletePosition(position, errorHandler) {
+    return this.positionCrud(this.deletePositionUrl, position, errorHandler);
   }
 
-  getPosition(position, context) {
-    return this.positionCrud(this.getPositionUrl, position, context);
+  getPosition(position, errorHandler) {
+    return this.positionCrud(this.getPositionUrl, position, errorHandler);
   }
 
-  positionCrud(url, userObject, context) {
+  positionCrud(url, userObject, errorHandler) {
     let serialized_object = userObject.serializeBinary();
     return this.fetchApi.defaultFetch(url,
       serialized_object,
       positionmessages_proto.PositionResponse.deserializeBinary,
-      context);
+      errorHandler);
   }
 }

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Badge, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Progress} from 'reactstrap';
 import {Redirect} from "react-router-dom";
+import UserApi from '../../api/UserApi';
 
 const propTypes = {
   notif: PropTypes.bool,
@@ -21,40 +22,27 @@ class DefaultHeaderDropdown extends Component {
   constructor(props) {
     super(props);
 
-    this.toggle = this.toggle.bind(this);
-    this.handleLogout = this.handleLogout.bind(this);
-    this.handleProfile = this.handleProfile.bind(this);
-
     this.state = {
+      userApi: new UserApi(),
       dropdownOpen: false,
       doLogout: false
     };
   }
 
-  handleProfile() {
+  handleProfile = () =>  {
     this.props.history.push("/users/edituser/current");
   }
 
-  handleLogout() {
-    fetch('/logout', {
-      method: "GET",
-      credentials: 'include'
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw response;
-        }
-        this.setState({doLogout: true});
-        window.sessionStorage.clear();
-      })
-      .catch(rest_error => {
-        rest_error.json().then(errorMessage => {
-          this.handleError(errorMessage);
-        })
-      })
+  handleLogout = () => {
+    this.state.userApi.logout(this.handleSuccessfullLogout, null);
   }
 
-  toggle() {
+  handleSuccessfullLogout = () => {
+    this.setState({doLogout: true});
+    window.sessionStorage.clear();
+  }
+
+  toggle = () => {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen,
     });

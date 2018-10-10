@@ -1,5 +1,5 @@
 export default class FetchApi {
-  defaultFetch(url, serialized_obj, deserializer, context) {
+  defaultFetch(url, serialized_obj, deserializer, errorHandler) {
     return fetch(url, {
       method: "POST",
       body: serialized_obj,
@@ -15,18 +15,24 @@ export default class FetchApi {
     }).then(proto => {
       let response = deserializer(proto);
       if (response.getTransactionError() !== undefined) {
-        context.handleError(response.getTransactionError().getErrorMessage());
+        if (errorHandler !== null) {
+          errorHandler(response.getTransactionError().getErrorMessage());
+        }
       } else {
         return response;
       }
     }).catch(rest_error => {
       if (rest_error.status === 500) {
         // Show error
-        context.handleError("Error 500. Server error.");
+        if (errorHandler !== null) {
+          errorHandler("Error 500. Server error.");
+        }
         return;
       }
       rest_error.json().then(errorMessage => {
-        context.handleError(errorMessage);
+        if (errorHandler !== null) {
+          errorHandler(errorMessage);
+        }
       })
     })
   }

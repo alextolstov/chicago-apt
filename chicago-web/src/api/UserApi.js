@@ -7,6 +7,7 @@ export default class UserApi {
   constructor(){
     this.testAuthUrl = '/api/login/testauth';
     this.loginUrl = '/login';
+    this.logoutUrl = '/logout';
     this.getUserUrl = '/api/users/user';
     this.createUserUrl = '/api/users/create';
     this.saveUserUrl = '/api/users/saveuser';
@@ -27,7 +28,7 @@ export default class UserApi {
     });
   }
 
-  login(credentials, userName, context) {
+  login(credentials, userName, errorHandler) {
     return fetch(this.loginUrl, {
       method: "POST",
       body: credentials,
@@ -40,56 +41,78 @@ export default class UserApi {
         if (!response.ok) {
           throw response;
         }
-        return this.getUserByEmail(userName, context).then(function (data) {
+        return this.getUserByEmail(userName, errorHandler).then(function (data) {
           return data
         });
       })
       .catch(rest_error => {
-        if (rest_error.status == 401) {
-          context.handleError("User unauthorized");
-        } else if (rest_error.status == 404) {
-          context.handleError("Error 404. Page not found.");
-        } else if (rest_error.status == 500) {
-          context.handleError("Error 500. Server error.");
+        if (rest_error.status == 401 && errorHandler !== null) {
+          errorHandler("User unauthorized");
+        } else if (rest_error.status == 404 && errorHandler !== null) {
+          errorHandler("Error 404. Page not found.");
+        } else if (rest_error.status == 500 && errorHandler !== null) {
+          errorHandler("Error 500. Server error.");
         } else {
           rest_error.json().then(errorMessage => {
-            context.handleError(errorMessage);
+            if (errorHandler !== null) {
+              errorHandler(errorMessage);
+            }
           })
         }
       })
   }
 
-  getUserById(user_id, context) {
+  logout(successHandler, errorHandler) {
+    fetch(this.logoutUrl, {
+      method: "GET",
+      credentials: 'include'
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw response;
+        }
+        successHandler();
+      })
+      .catch(rest_error => {
+        rest_error.json().then(errorMessage => {
+          if (errorHandler !== null) {
+            errorHandler(errorMessage);
+          }
+        })
+      })
+  }
+
+  getUserById(user_id, errorHandler) {
     let user = new user_proto.User();
     // Username must be lower case
     user.setUserId(user_id);
-    return this.getUser(user, context);
+    return this.getUser(user, errorHandler);
   }
 
-  getUserByEmail(email, context) {
+  getUserByEmail(email, errorHandler) {
     let user = new user_proto.User();
     // Username must be lower case
     user.setEmail(email.toLowerCase());
-    return this.getUser(user, context);
+    return this.getUser(user, errorHandler);
   }
 
-  getUser(user, context) {
+  getUser(user, errorHandler) {
     return this.userCrud(this.getUserUrl, user);
   }
 
-  createUser(user, context) {
+  createUser(user, errorHandler) {
     return this.userCrud(this.createUserUrl, user);
   }
 
-  saveUser(user, context) {
-    return this.userCrud(this.saveUserUrl, user);
+  saveUser(user, errorHandler) {
+    return this.userCrud(this.saveUserUrl, user, errorHandler);
   }
 
-  userCrud(url, userObject, context) {
+  userCrud(url, userObject, errorHandler) {
     let serialized_object = userObject.serializeBinary();
     return this.fetchApi.defaultFetch(url,
       serialized_object,
       usermessages_proto.UserResponse.deserializeBinary,
-      context);
+      errorHandler);
   }
 }

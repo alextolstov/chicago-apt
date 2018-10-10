@@ -73,7 +73,7 @@ class Login extends Component {
     let form = "username=" + this.state.email.toLowerCase() + "&password=" + this.state.password;
     let self = this;
 
-    this.state.userApi.login(form, this.state.email.toLowerCase(), this).then(function (data) {
+    this.state.userApi.login(form, this.state.email.toLowerCase(), this.handleError).then(function (data) {
         if (data != null) {
           let user = data.getUser();
           self.props.appStore.userData = user;

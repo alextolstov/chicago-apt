@@ -10,23 +10,23 @@ export default class AddressApi {
     this.fetchApi = new FetchApi();
   }
 
-  createAddress(address, context) {
-    return this.addressCrud(this.createAddressUrl, address, context);
+  createAddress(address, errorHandler) {
+    return this.addressCrud(this.createAddressUrl, address, errorHandler);
   }
 
-  updateAddress(address, context) {
-    return this.addressCrud(this.updateAddressUrl, address, context);
+  updateAddress(address, errorHandler) {
+    return this.addressCrud(this.updateAddressUrl, address, errorHandler);
   }
 
-  getAddress(address, context) {
-    return this.addressCrud(this.getAddressUrl, address, context);
+  getAddress(address, errorHandler) {
+    return this.addressCrud(this.getAddressUrl, address, errorHandler);
   }
 
-  addressCrud(url, address, context){
+  addressCrud(url, address, errorHandler){
     let serialized_address = address.serializeBinary();
     return this.fetchApi.defaultFetch(url,
       serialized_address,
       addressmessages_proto.AddressResponse.deserializeBinary,
-      context);
+      errorHandler);
   }
 }
