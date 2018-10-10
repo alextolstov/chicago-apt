@@ -11,13 +11,16 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  Row
+  Row,
+  Table,
+  Badge
 } from 'reactstrap';
 import {AppSwitch} from '@coreui/react'
 // React select
 import Select from 'react-select';
 import 'react-select/dist/react-select.min.css';
 import UserApi from '../../../api/UserApi';
+import FormApi from '../../../api/FormApi';
 import PositionApi from '../../../api/PositionApi';
 import DateTimeApi from '../../../api/DateTimeApi';
 import AddressForm from '../../Forms/AddressForm/AddressForm';
@@ -113,9 +116,10 @@ class EditUser extends Component {
     super(props);
 
     this.state = {
-      dateTime: new DateTimeApi(),
+      dateTimeApi: new DateTimeApi(),
       userApi: new UserApi(),
       positionApi: new PositionApi(),
+      formApi: new FormApi(),
       value: ['01', '02'],
       userId: props.match.params.id,
       user: "",
@@ -172,33 +176,9 @@ class EditUser extends Component {
     return null;
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.userId === 'current') {
-      this.setUncheckState();
-    }
-    if (this.state.userId === 'new') {
-      if (!document.getElementById('new_user_enabled').checked) {
-        document.getElementById('new_user_enabled').click();
-      }
-    }
-  }
-
   handleAddPosition = (id, event) => {
     let state = !document.getElementById(id).hidden;
     document.getElementById(id).hidden = state;
-  }
-
-  handleFormEnableDisable = (ownerId, event) => {
-    let el = document.getElementById(ownerId);
-    let buttons = Array.prototype.slice.call(el.getElementsByTagName('button'), 0);
-    let inputs = Array.prototype.slice.call(el.getElementsByTagName('input'), 0);
-    let all = inputs.concat(buttons);
-    for (let i = 0; i < all.length; i++) {
-      // Do not block switch
-      if (event.target.id !== all[i].id) {
-        all[i].disabled = !all[i].disabled;
-      }
-    }
   }
 
   handleSaveUserInfo = (event) => {
@@ -209,6 +189,7 @@ class EditUser extends Component {
       this.state.userApi.saveUser(this.state.user, self).then(function () {
         if (self.state.userId === 'current') {
           self.props.appStore.userData = self.state.user;
+          self.setUncheckState();
         }
       });
     }
@@ -228,6 +209,10 @@ class EditUser extends Component {
   }
 
   handleNewPositionChange = (event) => {
+    console.log("");
+  }
+
+  handleCreateUser = (event) => {
     console.log("");
   }
 
@@ -261,19 +246,19 @@ class EditUser extends Component {
         this.state.user.setPassportNumber(event.target.value);
         break;
       case "date_of_birth":
-        this.state.user.setDateOfBirth(this.state.dateTime.dateToUnixUTC(event.target.value));
+        this.state.user.setDateOfBirth(this.state.dateTimeApi.dateToUnixUTC(event.target.value));
         break;
       case "employment_date":
-        this.state.user.setEmploymentDate(this.state.dateTime.dateToUnixUTC(event.target.value));
+        this.state.user.setEmploymentDate(this.state.dateTimeApi.dateToUnixUTC(event.target.value));
         break;
       case "actual_employment_date":
-        this.state.user.setActualEmploymentDate(this.state.dateTime.dateToUnixUTC(event.target.value));
+        this.state.user.setActualEmploymentDate(this.state.dateTimeApi.dateToUnixUTC(event.target.value));
         break;
       case "dismissal_date":
-        this.state.user.setDismissalDate(this.state.dateTime.dateToUnixUTC(event.target.value));
+        this.state.user.setDismissalDate(this.state.dateTimeApi.dateToUnixUTC(event.target.value));
         break;
       case "actual_dismissal_date":
-        this.state.user.setActualDismissalDate(this.state.dateTime.dateToUnixUTC(event.target.value));
+        this.state.user.setActualDismissalDate(this.state.dateTimeApi.dateToUnixUTC(event.target.value));
         break;
       case "tax_payer_id":
         this.state.user.setTaxPayerId(event.target.value);
@@ -282,19 +267,19 @@ class EditUser extends Component {
         this.state.user.setDiplomaNumber(event.target.value);
         break;
       case "diploma_date":
-        this.state.user.setDiplomaDate(this.state.dateTime.dateToUnixUTC(event.target.value));
+        this.state.user.setDiplomaDate(this.state.dateTimeApi.dateToUnixUTC(event.target.value));
         break;
       case "retirement_id_number":
         this.state.user.setRetirementIdNumber(event.target.value);
         break;
       case "retirement_date":
-        this.state.user.setRetirementDate(this.state.dateTime.dateToUnixUTC(event.target.value));
+        this.state.user.setRetirementDate(this.state.dateTimeApi.dateToUnixUTC(event.target.value));
         break;
       case "medical_book":
         this.state.user.setMedicalBook(event.target.value);
         break;
       case "medical_book_date":
-        this.state.user.setMedicalBookDate(this.state.dateTime.dateToUnixUTC(event.target.value));
+        this.state.user.setMedicalBookDate(this.state.dateTimeApi.dateToUnixUTC(event.target.value));
         break;
       case "employment_book_number":
         this.state.user.setEmploymentBookNumber(event.target.value);
@@ -314,14 +299,15 @@ class EditUser extends Component {
           <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
             <Card id="new_user_card">
               <CardHeader>
-                <button id="save_new_user" onClick={this.handleCreateUser}><i
-                  className="icon-cloud-upload"></i></button>
+                <button id="save_new_user" onClick={this.handleCreateUser}>
+                  <i className="icon-cloud-upload"></i>
+                </button>
                 <strong><FormattedMessage id="users.edit.new_user"
                                           defaultMessage="Create new user"/></strong>
                 <div className="card-header-actions">
                   <AppSwitch id="new_user_enabled"
-                             onClick={(e) => this.handleFormEnableDisable('new_user_card', e)}
-                             className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
+                             onClick={(e) => this.state.formApi.handleFormEnableDisable('new_user_card', e)}
+                             className={'mx-1'} color={'dark'} outline={'alt'}
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
               </CardHeader>
@@ -338,7 +324,7 @@ class EditUser extends Component {
                     <FormattedMessage {...messages.emailPlace}>
                       {
                         pholder => <Input onChange={this.handleChange}
-                                          type="text" id="email" name="email" placeholder={pholder} required/>
+                                          type="text" id="new_email" name="new_email" placeholder={pholder} required/>
                       }
                     </FormattedMessage>
                   </InputGroup>
@@ -405,13 +391,14 @@ class EditUser extends Component {
           <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
             <Card id="email_card">
               <CardHeader>
-                <button id="save_email" onClick={this.handleSaveEmail}><i
-                  className="icon-cloud-upload"></i></button>
+                <button id="save_email" onClick={this.handleSaveEmail}>
+                  <i className="icon-cloud-upload"></i>
+                </button>
                 <strong><FormattedMessage id="users.edit.email_management"
                                           defaultMessage="Email management"/></strong>
                 <div className="card-header-actions">
                   <AppSwitch id="email_management_enabled"
-                             onClick={(e) => this.handleFormEnableDisable('email_card', e)}
+                             onClick={(e) => this.state.formApi.handleFormEnableDisable('email_card', e)}
                              className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
@@ -439,13 +426,14 @@ class EditUser extends Component {
 
             <Card id="password_card">
               <CardHeader>
-                <button id="save_personal_info" onClick={this.handleSavePassword}><i
-                  className="icon-cloud-upload"></i></button>
+                <button id="save_personal_info" onClick={this.handleSavePassword}>
+                  <i className="icon-cloud-upload"></i>
+                </button>
                 <strong><FormattedMessage id="users.edit.password_management"
                                           defaultMessage="Password management"/></strong>
                 <div className="card-header-actions">
                   <AppSwitch id="password_management_enabled"
-                             onClick={(e) => this.handleFormEnableDisable('password_card', e)}
+                             onClick={(e) => this.state.formApi.handleFormEnableDisable('password_card', e)}
                              className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
@@ -494,12 +482,13 @@ class EditUser extends Component {
 
             <Card id="personal_info_card">
               <CardHeader>
-                <button id="save_personal_info" onClick={this.handleSaveUserInfo}><i
-                  className="icon-cloud-upload"></i></button>
+                <button id="save_personal_info" onClick={this.handleSaveUserInfo}>
+                  <i className="icon-cloud-upload"></i>
+                </button>
                 <strong><FormattedMessage id="users.edit.personal" defaultMessage="Personal Information"/></strong>
                 <div className="card-header-actions">
                   <AppSwitch id="personal_info_enabled"
-                             onClick={(e) => this.handleFormEnableDisable('personal_info_card', e)}
+                             onClick={(e) => this.state.formApi.handleFormEnableDisable('personal_info_card', e)}
                              className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
@@ -677,10 +666,12 @@ class EditUser extends Component {
           <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
             <Card id='attributes_card'>
               <CardHeader>
-                <button><i className="icon-cloud-upload" onClick={this.handleUserInfo}></i></button>
+                <button  onClick={this.handleUserInfo}>
+                  <i className="icon-cloud-upload"></i>
+                </button>
                 <strong><FormattedMessage id="users.edit.personal" defaultMessage="Attributes"/></strong>
                 <div className="card-header-actions">
-                  <AppSwitch id="attributes_enabled" onClick={(e) => this.handleFormEnableDisable('attributes_card', e)}
+                  <AppSwitch id="attributes_enabled" onClick={(e) => this.state.formApi.handleFormEnableDisable('attributes_card', e)}
                              className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
@@ -863,7 +854,9 @@ class EditUser extends Component {
 
             <Card id='add_position_card' hidden>
               <CardHeader>
-                <button onClick={this.saveNewPosition}><i className="icon-cloud-upload"></i></button>
+                <button onClick={this.saveNewPosition}>
+                  <i className="icon-cloud-upload"></i>
+                </button>
                 <strong><FormattedMessage id="users.edit.newposition" defaultMessage="New position"/></strong>
               </CardHeader>
               <CardBody>
@@ -883,6 +876,59 @@ class EditUser extends Component {
                       }
                     </FormattedMessage>
                   </InputGroup>
+                  <Table responsive size="sm">
+                    <thead>
+                    <tr>
+                      <th>Username</th>
+                      <th>Date registered</th>
+                      <th>Role</th>
+                      <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>Carwyn Fachtna</td>
+                      <td>2012/01/01</td>
+                      <td>Member</td>
+                      <td>
+                        <Badge color="success">Active</Badge>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Nehemiah Tatius</td>
+                      <td>2012/02/01</td>
+                      <td>Staff</td>
+                      <td>
+                        <Badge color="danger">Banned</Badge>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Ebbe Gemariah</td>
+                      <td>2012/02/01</td>
+                      <td>Admin</td>
+                      <td>
+                        <Badge color="secondary">Inactive</Badge>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Eustorgios Amulius</td>
+                      <td>2012/03/01</td>
+                      <td>Member</td>
+                      <td>
+                        <Badge color="warning">Pending</Badge>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Leopold Gáspár</td>
+                      <td>2012/01/21</td>
+                      <td>Staff</td>
+                      <td>
+                        <Badge color="success">Active</Badge>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </Table>
+
                 </FormGroup>
               </CardBody>
             </Card>
