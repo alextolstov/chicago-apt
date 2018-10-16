@@ -3,6 +3,7 @@ package com.chicago.ext.components;
 import com.chicago.common.components.kafka.KafkaMessageProducer;
 import com.chicago.common.core.*;
 import com.chicago.common.util.ResponseFactoryUtil;
+import com.chicago.dto.Common;
 import com.chicago.dto.PositionOuterClass;
 import com.chicago.dto.Positionmessages;
 import com.chicago.dto.Usermessages;
@@ -27,7 +28,6 @@ public class PositionRequests extends AbstractComponent
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
         _ed.registerHandler(Positionmessages.PositionRequest.class, new PositionEventHandler());
-        _ed.registerHandler(Positionmessages.PositionsRequest.class, new PositionsEventHandler());
         // Response
         KafkaMessageProducer producer = cm.getResource(KafkaMessageProducer.class.getName());
         _ed.registerHandler(Positionmessages.PositionResponse.class, producer.new MessageEventHandler());
@@ -46,29 +46,6 @@ public class PositionRequests extends AbstractComponent
         ComponentManager.registerComponentFactory(new Exception().getStackTrace()[0].getClassName());
     }
 
-    class PositionsEventHandler implements EventHandler<Positionmessages.PositionsRequest>
-    {
-        @Override
-        public void handleEvent(Positionmessages.PositionsRequest event, String transactionId)
-        {
-            Message response;
-            try
-            {
-                PositionOuterClass.Positions positions = _positionBll.getPositions(event.getOrganizationId());
-                response = Positionmessages.PositionsResponse
-                        .newBuilder()
-                        .setPositions(positions)
-                        .build();
-            } catch (Exception ex)
-            {
-                response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                        Usermessages.UserResponse.class);
-            }
-            _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
-            LOG.info("Published real-time response on request with transaction id: {}", transactionId);
-        }
-    }
-
     class PositionEventHandler implements EventHandler<Positionmessages.PositionRequest>
     {
         @Override
@@ -77,33 +54,48 @@ public class PositionRequests extends AbstractComponent
             Message response;
             try
             {
-                PositionOuterClass.Position position = null;
+                Message posMsg = null;
 
                 switch (event.getCrudOperation())
                 {
                     case CREATE:
                     {
-                        position = _positionBll.createPosition(event.getPosition());
+                        posMsg = _positionBll.createPosition(event.getPosition());
                         break;
                     }
                     case UPDATE:
                     {
                         _positionBll.updatePosition(event.getPosition());
-                        position = PositionOuterClass.Position.getDefaultInstance();
+                        posMsg = PositionOuterClass.Position.getDefaultInstance();
                         break;
                     }
                     case DELETE:
                     {
                         _positionBll.deletePosition(event.getPosition());
-                        position = PositionOuterClass.Position.getDefaultInstance();
+                        posMsg = PositionOuterClass.Position.getDefaultInstance();
+                        break;
+                    }
+                    case READ:
+                    {
+                        posMsg = _positionBll.getPositions(event.getPosition().getOrganizationId());
                         break;
                     }
                 }
 
-                response = Positionmessages.PositionResponse
-                        .newBuilder()
-                        .setPosition(position)
-                        .build();
+                if (event.getCrudOperation() == Common.CrudOperation.READ)
+                {
+                    response = Positionmessages.PositionsResponse
+                            .newBuilder()
+                            .setPositions((PositionOuterClass.Positions)posMsg)
+                            .build();
+                }
+                else
+                {
+                    response = Positionmessages.PositionResponse
+                            .newBuilder()
+                            .setPosition((PositionOuterClass.Position)posMsg)
+                            .build();
+                }
             } catch (Exception ex)
             {
                 response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,

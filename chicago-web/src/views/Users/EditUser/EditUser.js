@@ -135,7 +135,7 @@ class EditUser extends Component {
     }
     else {
       let self = this;
-      new UserApi().getUserById(this.state.userId, this).then(function (userMsg) {
+      new UserApi().getUserById(this.state.userId, this.handleError).then(function (userMsg) {
         if (userMsg != null) {
           self.state.user = userMsg.getUser();
         }
@@ -853,7 +853,7 @@ class EditUser extends Component {
               </CardBody>
             </Card>
 
-            <PositionForm />
+            <PositionForm positionApiParent={this.state.positionApi} organizationId={this.state.user.getOrganizationId()}/>
             <AddressForm userId={this.props.appStore.userData.getUserId()}
                          addressId={this.state.user.getAddressId === undefined ? "" : this.state.user.getAddressId()}/>
           </Col>

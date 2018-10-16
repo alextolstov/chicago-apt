@@ -84,7 +84,7 @@ public class PositionController
     @Path("get")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
-    public Response getAddress(byte[] data)
+    public Response getPositions(byte[] data)
     {
         Subject currentUser = SecurityUtils.getSubject();
         //currentUser.hasRole("");

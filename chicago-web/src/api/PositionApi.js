@@ -1,5 +1,6 @@
 import FetchApi from './FetchApi'
 
+const position_proto = require('models/position_pb.js');
 const positionmessages_proto = require('models/positionmessages_pb.js');
 
 export default class PositionApi {
@@ -7,31 +8,36 @@ export default class PositionApi {
     this.createPositionUrl = '/api/position/create';
     this.updatePositionUrl = '/api/position/update';
     this.deletePositionUrl = '/api/position/delete';
-    this.getPositionUrl = '/api/position/get';
+    this.getPositionsUrl = '/api/position/get';
     this.fetchApi = new FetchApi();
   }
 
-  createPosition(position, errorHandler) {
-    return this.positionCrud(this.createPositionUrl, position, errorHandler);
+  createPosition(organizationId, description, errorHandler) {
+    let position = new position_proto.Position();
+    position.setOrganizationId(organizationId);
+    position.setDescription(description);
+    return this.positionCrud(this.createPositionUrl, position, positionmessages_proto.PositionResponse.deserializeBinary, errorHandler);
   }
 
   updatePosition(position, errorHandler) {
-    return this.positionCrud(this.updatePositionUrl, position, errorHandler);
+    return this.positionCrud(this.updatePositionUrl, position, positionmessages_proto.PositionResponse.deserializeBinary, errorHandler);
   }
 
-  deletePosition(position, errorHandler) {
-    return this.positionCrud(this.deletePositionUrl, position, errorHandler);
+  deletePosition(organizationId, position, errorHandler) {
+    return this.positionCrud(this.deletePositionUrl, position, positionmessages_proto.PositionResponse.deserializeBinary, errorHandler);
   }
 
-  getPosition(position, errorHandler) {
-    return this.positionCrud(this.getPositionUrl, position, errorHandler);
+  getPositions(organizationId, errorHandler) {
+    let position = new position_proto.Position();
+    position.setOrganizationId(organizationId);
+    return this.positionCrud(this.getPositionsUrl, position, positionmessages_proto.PositionsResponse.deserializeBinary, errorHandler);
   }
 
-  positionCrud(url, userObject, errorHandler) {
+  positionCrud(url, userObject, deserializer, errorHandler) {
     let serialized_object = userObject.serializeBinary();
     return this.fetchApi.defaultFetch(url,
       serialized_object,
-      positionmessages_proto.PositionResponse.deserializeBinary,
+      deserializer,
       errorHandler);
   }
 }

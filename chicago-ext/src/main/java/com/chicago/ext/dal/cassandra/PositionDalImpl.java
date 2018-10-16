@@ -37,6 +37,7 @@ public class PositionDalImpl implements PositionDal
         return PositionOuterClass.Position.newBuilder()
                 .setOrganizationId(position.getOrganizationId())
                 .setPositionId(newPositionId.toString())
+                .setDescription(position.getDescription())
                 .build();
     }
 
