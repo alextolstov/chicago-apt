@@ -190,6 +190,11 @@ class EditUser extends Component {
     console.log("");
   }
 
+  handleSelectChange = (event) => {
+    this.setState({userPositions:event});
+    console.log(this.state.userPositions);
+  }
+
   handleChange = (event) => {
     switch (event.target.id) {
       case "email":
@@ -739,7 +744,7 @@ class EditUser extends Component {
                         value={this.state.userPositions}
                         options={this.props.appStore.companyPositions}
 //                        onChange={this.saveSelectChanges}
-                        onChange={this.handleChange}
+                        onChange={this.handleSelectChange}
                         multi
                       />
                     </Col>
