@@ -25,6 +25,7 @@ import PositionApi from '../../../api/PositionApi';
 import DateTimeApi from '../../../api/DateTimeApi';
 import AddressForm from '../../Forms/AddressForm/AddressForm';
 import PositionForm from '../../Forms/PositionForm/PositionForm';
+import RegisterForm from '../../Forms/RegisterForm/RegisterForm';
 
 const jspb = require('google-protobuf');
 const user_proto = require('models/user_pb');
@@ -41,10 +42,6 @@ const messages = defineMessages({
   firstNamePlace: {
     id: 'users.edit.firstname',
     defaultMessage: 'First Name'
-  },
-  wholeNamePlace: {
-    id: 'users.edit.wholename',
-    defaultMessage: 'First/Middle/Last Name'
   },
   midleNamePlace: {
     id: 'users.edit.midlename',
@@ -97,20 +94,8 @@ const messages = defineMessages({
   passportPlace: {
     id: 'users.edit.passport',
     defaultMessage: 'Passport'
-  },
-  positionPlace: {
-    id: 'users.edit.newposition',
-    defaultMessage: 'New position'
   }
 });
-
-const positions = [
-  {value: '01', label: 'Barber'},
-  {value: '02', label: 'Manager'},
-  {value: '03', label: 'Supervisor'},
-  {value: '04', label: 'Cleaner'},
-  {value: '05', label: 'Somebody'}
-];
 
 class EditUser extends Component {
   constructor(props) {
@@ -121,10 +106,10 @@ class EditUser extends Component {
       userApi: new UserApi(),
       positionApi: new PositionApi(),
       formApi: new FormApi(),
-      value: ['01', '02'],
+
+      userPositions: [],
       userId: props.match.params.id,
-      user: "",
-      newPosition: ""
+      user: ""
     };
 
     if (this.state.userId === 'new') {
@@ -143,10 +128,7 @@ class EditUser extends Component {
     }
   }
 
-  setUncheckState = () => {
-    if (document.getElementById('new_user_enabled').checked) {
-      document.getElementById('new_user_enabled').click();
-    }
+  setUncheckedState = () => {
     if (document.getElementById('email_management_enabled').checked) {
       document.getElementById('email_management_enabled').click();
     }
@@ -166,7 +148,7 @@ class EditUser extends Component {
 
   componentDidMount() {
     if (this.state.userId === 'current') {
-      this.setUncheckState();
+      this.setUncheckedState();
     }
   }
 
@@ -190,7 +172,7 @@ class EditUser extends Component {
       this.state.userApi.saveUser(this.state.user, self).then(function () {
         if (self.state.userId === 'current') {
           self.props.appStore.userData = self.state.user;
-          self.setUncheckState();
+          self.setUncheckedState();
         }
       });
     }
@@ -201,16 +183,7 @@ class EditUser extends Component {
   }
 
   saveSelectChanges = (value) => {
-    this.setState({value});
-  }
-
-  saveNewPosition = (event) => {
-    let self = this;
-    console.log(self.state.newPosition);
-  }
-
-  handleNewPositionChange = (event) => {
-    console.log("");
+    this.setState({userPositions:value});
   }
 
   handleCreateUser = (event) => {
@@ -285,15 +258,11 @@ class EditUser extends Component {
       case "employment_book_number":
         this.state.user.setEmploymentBookNumber(event.target.value);
         break;
-      case "new_position":
-        this.state.newPosition = event.target.value;
-        break;
     }
     this.setState({[event.target.id]: event.target.value});
   }
 
   render() {
-
     return (
       <div className="animated fadeIn">
         <Row hidden={this.state.userId === 'new' ? false : true}>
@@ -308,83 +277,11 @@ class EditUser extends Component {
                 <div className="card-header-actions">
                   <AppSwitch id="new_user_enabled"
                              onClick={(e) => this.state.formApi.handleFormEnableDisable('new_user_card', e)}
-                             className={'mx-1'} color={'dark'} outline={'alt'}
+                             className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
               </CardHeader>
-
-              <CardBody>
-                {/*Email*/}
-                <FormGroup row>
-                  <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="fa fa-envelope-o"></i>
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <FormattedMessage {...messages.emailPlace}>
-                      {
-                        pholder => <Input onChange={this.handleChange}
-                                          type="text" id="new_email" name="new_email" placeholder={pholder} required/>
-                      }
-                    </FormattedMessage>
-                  </InputGroup>
-                </FormGroup>
-
-                {/*Whole name First/Last/Middle*/}
-                <FormGroup row>
-                  <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="fa fa-user"></i>
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <FormattedMessage {...messages.wholeNamePlace}>
-                      {
-                        pholder => <Input onChange={this.handleChange}
-                                          type="text" id="whole_name" name="whole_name" placeholder={pholder} required/>
-                      }
-                    </FormattedMessage>
-                  </InputGroup>
-                </FormGroup>
-
-                {/*Password*/}
-                <FormGroup row>
-                  <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="icon-lock"></i>
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <FormattedMessage {...messages.passwordPlace}>
-                      {
-                        pholder => <Input onChange={this.handleChange}
-                                          type="password" id="password" name="password" placeholder={pholder} required/>
-                      }
-                    </FormattedMessage>
-                  </InputGroup>
-                </FormGroup>
-
-                {/* Repeat Password*/}
-                <FormGroup row>
-                  <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="icon-lock"></i>
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <FormattedMessage {...messages.repeatPasswordPlace}>
-                      {
-                        pholder => <Input onChange={this.handleChange}
-                                          type="password" id="repeat_password" name="repeat_password"
-                                          placeholder={pholder}
-                                          required/>
-                      }
-                    </FormattedMessage>
-                  </InputGroup>
-                </FormGroup>
-
-              </CardBody>
+              <RegisterForm/>
             </Card>
           </Col>
         </Row>
@@ -839,9 +736,10 @@ class EditUser extends Component {
                       <Select
                         id="positions"
                         name="positions"
-                        value={this.state.value}
-                        options={positions}
-                        onChange={this.saveSelectChanges}
+                        value={this.state.userPositions}
+                        options={this.props.appStore.companyPositions}
+//                        onChange={this.saveSelectChanges}
+                        onChange={this.handleChange}
                         multi
                       />
                     </Col>
@@ -853,7 +751,7 @@ class EditUser extends Component {
               </CardBody>
             </Card>
 
-            <PositionForm positionApiParent={this.state.positionApi} organizationId={this.state.user.getOrganizationId()}/>
+            <PositionForm positionApiParent={this.state.positionApi}/>
             <AddressForm userId={this.props.appStore.userData.getUserId()}
                          addressId={this.state.user.getAddressId === undefined ? "" : this.state.user.getAddressId()}/>
           </Col>

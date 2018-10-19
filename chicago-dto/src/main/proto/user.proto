@@ -56,7 +56,8 @@ message User
     string organization_id = 26;
     string address_id = 27;
     repeated string permissions = 28;
-    int64 create_datetime = 29;
+    repeated string positions = 29;
+    int64 create_datetime = 30;
 }
 
 message UserAvatar

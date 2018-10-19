@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Users (
     employment_book_number varchar,
     organization_id uuid,
     address_id uuid,
+    positions set<uuid>,
     permissions set<varchar>,
     create_datetime timestamp);
 
@@ -99,6 +100,7 @@ CREATE MATERIALIZED VIEW ChicagoErp.UsersByEmail AS SELECT
     employment_book_number,
     organization_id,
     address_id,
+    positions,
     permissions,
     create_datetime
     FROM ChicagoErp.Users

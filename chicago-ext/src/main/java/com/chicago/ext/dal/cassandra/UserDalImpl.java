@@ -280,6 +280,12 @@ public class UserDalImpl implements UserDal
     @Override
     public void updateUser(UserOuterClass.User user)
     {
+        Set<UUID> positionsSet = new HashSet<UUID>();
+        for (String position : user.getPositionsList())
+        {
+            positionsSet.add(UUID.fromString(position));
+        }
+
         Statement query = QueryBuilder.update(KEYSPACE, USERS_BY_ID_TABLE)
                 .with(QueryBuilder.set("first_name", user.getFirstName()))
                 .and(QueryBuilder.set("middle_name", user.getMiddleName()))
@@ -302,6 +308,7 @@ public class UserDalImpl implements UserDal
                 .and(QueryBuilder.set("medical_book", user.getMedicalBook()))
                 .and(QueryBuilder.set("medical_book_date", user.getMedicalBookDate()))
                 .and(QueryBuilder.set("employment_book_number", user.getEmploymentBookNumber()))
+                .and(QueryBuilder.addAll("positions", positionsSet))
                 .where(QueryBuilder.eq("user_id", UUID.fromString(user.getUserId())));
         _cassandraConnector.getSession().execute(query);
     }
@@ -348,6 +355,15 @@ public class UserDalImpl implements UserDal
         if (row.getString("employment_book_number") != null) builder.setPassportNumber(row.getString("employment_book_number"));
         if (row.getUUID("organization_id") != null) builder.setOrganizationId(row.getUUID("organization_id").toString());
         if (row.getUUID("address_id") != null) builder.setAddressId(row.getUUID("address_id").toString());
+        // Positions as sering set
+        if (row.getSet("positions", UUID.class) != null)
+        {
+            Set<UUID> positions = row.getSet("positions", UUID.class);
+            for (UUID position : positions )
+            {
+                builder.addPositions(position.toString());
+            }
+        }
 
         return builder.build();
     }

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {inject, observer} from "mobx-react/index";
 import {defineMessages, FormattedMessage} from 'react-intl';
 import {
   Card,
@@ -24,19 +25,26 @@ class PositionForm extends Component {
     super(props);
 
     this.state = {
-      positionApiParent: props.positionApiParent,
-      organizationId: props.organizationId,
-      positions: new Map()
+      positionApi: props.positionApiParent,
+      organizationId: this.props.appStore.userData.getOrganizationId(),
+      positionsArr: [],
+      positionsMap: new Map()
     };
   }
 
   componentDidMount = () => {
     let self = this;
-    this.state.positionApiParent.getPositions(this.state.organizationId, null)
+    this.state.positionApi.getPositions(this.state.organizationId, null)
       .then(function (data) {
         if (data !== undefined && data !== null) {
-          let pos = data.getPositions().getPositionsMap();
-          self.setState({positions: pos})
+          self.props.appStore.companyPositions = [];
+          let positions = data.getPositions().getPositionsMap();
+
+          positions.forEach((l, v) => {
+            self.props.appStore.companyPositions.push({value:v, label:l});
+            self.state.positionsArr.push([v, l]);
+          });
+          self.setState({positionsArr: self.state.positionsArr});
         }
       });
   }
@@ -47,26 +55,23 @@ class PositionForm extends Component {
       let val = event.target.value;
       event.target.value = "";
 
-      this.state.positionApiParent.createPosition(this.state.organizationId, val, null)
+      this.state.positionApi.createPosition(this.state.organizationId, val, null)
         .then(function (data) {
           if (data !== undefined && data !== null) {
             let newPos = data.getPosition();
-            self.state.positions.set(newPos.getPositionId(), newPos.getDescription());
-            self.setState({positions: self.state.positions});
+            self.props.appStore.companyPositions.push({value:newPos.getPositionId(), label:newPos.getDescription()});
+            self.state.positionsArr.push([newPos.getPositionId(), newPos.getDescription()]);
+            self.setState({positionsArr: self.state.positionsArr});
           }
         });
     }
   }
 
   render() {
-    let arr = [];
-    this.state.positions.forEach((l, r) => {
-      arr.push([l, r]);
-    });
-    let table = arr.map((r) => {
-      return <tr key={r[1]}>
+    let table = this.state.positionsArr.map((r) => {
+      return <tr key={r[0]}>
         <td>
-          <Input id={r[1]} onChange={this.handleChange} bsSize="sm" className="input-sm" defaultValue={r[0]}
+          <Input id={r[0]} onChange={this.handleChange} bsSize="sm" className="input-sm" defaultValue={r[1]}
                  type="text"/>
         </td>
         <td>
@@ -81,7 +86,7 @@ class PositionForm extends Component {
           <button onClick={this.saveNewPosition}>
             <i className="icon-cloud-upload"></i>
           </button>
-          <strong><FormattedMessage id="users.edit.newposition" defaultMessage="New position"/></strong>
+          <strong><FormattedMessage id="users.edit.newposition" defaultMessage="Type new position and press Enter"/></strong>
         </CardHeader>
         <CardBody>
           {/*Position*/}
@@ -119,4 +124,4 @@ class PositionForm extends Component {
   }
 }
 
-export default PositionForm;
+export default inject("appStore")(observer(PositionForm));

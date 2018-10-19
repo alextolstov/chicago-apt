@@ -4,7 +4,9 @@ const user_proto = require('models/user_pb');
 class AppStore {
   constructor() {
     extendObservable(this, {
-      permissions: [],
+      userPermissions: [],
+      userPositions: [],
+      companyPositions: [],
       userData: new user_proto.User()
     });
   }
