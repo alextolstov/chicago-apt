@@ -117,6 +117,7 @@ class EditUser extends Component {
     }
     else if (this.state.userId === 'current') {
       this.state.user = jspb.Message.cloneMessage(this.props.appStore.userData);
+      this.state.userPositions = this.state.user.getPositionsList();
     }
     else {
       let self = this;
@@ -169,6 +170,9 @@ class EditUser extends Component {
     if (this.state.userId === 'new') {
       this.state.userApi.createUser(this.state.user, self);
     } else {// Working with existing profile
+      let positionsArr = [];
+      this.state.userPositions.forEach((l, v) => { positionsArr.push(l.value) });
+      this.state.user.setPositionsList(positionsArr);
       this.state.userApi.saveUser(this.state.user, self).then(function () {
         if (self.state.userId === 'current') {
           self.props.appStore.userData = self.state.user;
@@ -180,10 +184,6 @@ class EditUser extends Component {
 
   handleError = (error) => {
     // TODO finish the function if neded
-  }
-
-  saveSelectChanges = (value) => {
-    this.setState({userPositions:value});
   }
 
   handleCreateUser = (event) => {
@@ -569,7 +569,7 @@ class EditUser extends Component {
           <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
             <Card id='attributes_card'>
               <CardHeader>
-                <button  onClick={this.handleUserInfo}>
+                <button  onClick={this.handleSaveUserInfo}>
                   <i className="icon-cloud-upload"></i>
                 </button>
                 <strong><FormattedMessage id="users.edit.personal" defaultMessage="Attributes"/></strong>
@@ -656,7 +656,7 @@ class EditUser extends Component {
                     </InputGroupAddon>
                     <FormattedMessage {...messages.diplomaPlace}>
                       {
-                        pholder => <Input onChange={this.handleNewPositionChange}
+                        pholder => <Input onChange={this.handleChange}
                                           value={this.state.user.getDiplomaNumber === undefined ? "" : this.state.user.getDiplomaNumber()}
                                           type="text" id="diploma_number" name="diploma_number" placeholder={pholder}
                                           required/>
@@ -743,7 +743,6 @@ class EditUser extends Component {
                         name="positions"
                         value={this.state.userPositions}
                         options={this.props.appStore.companyPositions}
-//                        onChange={this.saveSelectChanges}
                         onChange={this.handleSelectChange}
                         multi
                       />

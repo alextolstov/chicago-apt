@@ -308,7 +308,7 @@ public class UserDalImpl implements UserDal
                 .and(QueryBuilder.set("medical_book", user.getMedicalBook()))
                 .and(QueryBuilder.set("medical_book_date", user.getMedicalBookDate()))
                 .and(QueryBuilder.set("employment_book_number", user.getEmploymentBookNumber()))
-                .and(QueryBuilder.addAll("positions", positionsSet))
+                .and(QueryBuilder.set("positions", positionsSet))
                 .where(QueryBuilder.eq("user_id", UUID.fromString(user.getUserId())));
         _cassandraConnector.getSession().execute(query);
     }
