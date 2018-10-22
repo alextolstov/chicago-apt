@@ -766,4 +766,3 @@ class EditUser extends Component {
 }
 
 export default inject("appStore")(observer(EditUser));
-

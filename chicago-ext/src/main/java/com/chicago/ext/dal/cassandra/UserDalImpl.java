@@ -1,6 +1,7 @@
 package com.chicago.ext.dal.cassandra;
 
 import com.chicago.common.util.TimeUtil;
+import com.chicago.dto.PermissionOuterClass;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.ext.dal.UserDal;
 import com.datastax.driver.core.ResultSet;
@@ -78,51 +79,58 @@ public class UserDalImpl implements UserDal
     }
 
     @Override
-    public void setUserPermissions(UserOuterClass.UserPermissions userPermissions)
+    public void setUserPermissions(String userId, List<PermissionOuterClass.Role> roles, List<PermissionOuterClass.Permission> extraPermissions)
     {
-        Set<Integer> permissionIds = new HashSet<>(userPermissions.getExtraPermissionsList());
-
-        // Expand roles
+        Set<UUID> roleIds = new HashSet<>();
+        for(PermissionOuterClass.Role role : roles)
+        {
+            roleIds.add(UUID.fromString(role.getRoleId()));
+        }
+        // Expand roles we dont trust permission names from client
         Statement query = QueryBuilder.select()
                 .from(KEYSPACE, ROLES_TABLE)
-                .where(QueryBuilder.in("role_id", userPermissions.getRolesList()));
+                .where(QueryBuilder.in("role_id", roleIds));
         ResultSet result = _cassandraConnector.getSession().execute(query);
 
+        // Collect extra permissions
+        Set<Integer> extraPermissionIds = new HashSet<>();
+        Set<Integer> permissionIds = new HashSet<>();
+        for(PermissionOuterClass.Permission ePermission : extraPermissions)
+        {
+            permissionIds.add(ePermission.getPermissionId());
+            extraPermissionIds.add(ePermission.getPermissionId());
+        }
+
+        // Merge permissions from roles with extra permissions
         Row row;
         while ((row = result.one()) != null)
         {
             Set<Integer> rolePermissionsIds = row.getSet("permission_ids", Integer.class);
             permissionIds.addAll(rolePermissionsIds);
         }
-        // Get permissions as strings
+        // Get permissions names
         query = QueryBuilder.select()
                 .from(KEYSPACE, PERMISSIONS_TABLE)
                 .where(QueryBuilder.in("permission_id", permissionIds));
         result = _cassandraConnector.getSession().execute(query);
 
-        Set<String> permissions = new HashSet<>();
+        Set<String> permissionNames = new HashSet<>();
 
         while ((row = result.one()) != null)
         {
-            permissions.add(row.getString("permission"));
+            permissionNames.add(row.getString("permission_name"));
         }
 
+        // Update user permissions now
         // Cassandra update same as insert if condition not true
-        Set<Integer> roleIdsSet = new HashSet<>(userPermissions.getRolesList());
-        Set<Integer> permissionIdsSet = new HashSet<>(userPermissions.getExtraPermissionsList());
         query = QueryBuilder.update(KEYSPACE, USER_PERMISSIONS_TABLE)
-                .with(QueryBuilder.set("role_ids", roleIdsSet))
-                .and(QueryBuilder.set("extra_permission_ids", permissionIdsSet))
-                .where(QueryBuilder.eq("user_id", UUID.fromString(userPermissions.getUserId())));
+                .with(QueryBuilder.set("role_ids", roleIds))
+                .and(QueryBuilder.set("extra_permission_ids", extraPermissionIds))
+                .where(QueryBuilder.eq("user_id", UUID.fromString(userId)));
         _cassandraConnector.getSession().execute(query);
 
-        query = QueryBuilder.select().from(KEYSPACE, USERS_BY_ID_TABLE)
-                .where(QueryBuilder.eq("user_id", UUID.fromString(userPermissions.getUserId())));
-        result = _cassandraConnector.getSession().execute(query);
-        Row userRow = result.one();
-        String email = userRow.getString("email");
-        query = QueryBuilder.update(KEYSPACE, USERS_BY_ID_TABLE).with(QueryBuilder.set("permissions", permissions))
-                .where(QueryBuilder.eq("email", email));
+        query = QueryBuilder.update(KEYSPACE, USERS_BY_ID_TABLE).with(QueryBuilder.set("permissions", permissionNames))
+                .where(QueryBuilder.eq("user_id", UUID.fromString(userId)));
         _cassandraConnector.getSession().execute(query);
     }
 
@@ -158,10 +166,24 @@ public class UserDalImpl implements UserDal
             throw new UserPermissionsNotFoundException("No permissions found for user with user Id " + userId);
         }
 
+        Set<UUID> roleIds = row.getSet("role_ids", UUID.class);
+        List<PermissionOuterClass.Role> roles = new ArrayList<>();
+        for (UUID roleId : roleIds)
+        {
+            roles.add(PermissionOuterClass.Role.newBuilder().setRoleId(roleId.toString()).build());
+        }
+
+        Set<Integer> extraPermissionIds = row.getSet("extra_permission_ids", Integer.class);
+        List<PermissionOuterClass.Permission> permissions = new ArrayList<>();
+        for (int permissionId : extraPermissionIds)
+        {
+            permissions.add(PermissionOuterClass.Permission.newBuilder().setPermissionId(permissionId).build());
+        }
+
         return UserOuterClass.UserPermissions.newBuilder()
                 .setUserId(row.getUUID("user_id").toString())
-                .addAllRoles(row.getSet("role_ids", Integer.class))
-                .addAllExtraPermissions(row.getSet("extra_permission_ids", Integer.class))
+                .addAllRoles(roles)
+                .addAllExtraPermissions(permissions)
                 .build();
     }
 
@@ -280,7 +302,7 @@ public class UserDalImpl implements UserDal
     @Override
     public void updateUser(UserOuterClass.User user)
     {
-        Set<UUID> positionsSet = new HashSet<UUID>();
+        Set<UUID> positionsSet = new HashSet<>();
         for (String position : user.getPositionsList())
         {
             positionsSet.add(UUID.fromString(position));

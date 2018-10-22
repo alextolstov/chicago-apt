@@ -2,6 +2,7 @@ package com.chicago.ext.bll;
 
 import com.chicago.common.util.PasswordUtil;
 import com.chicago.dto.Organization;
+import com.chicago.dto.PermissionOuterClass;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.ext.dal.OrganizationDal;
 import com.chicago.ext.dal.UserDal;
@@ -25,7 +26,7 @@ public class UserBllImpl implements UserBll
     @Inject
     private OrganizationDal _organizationDal;
 
-    public void setUserPermissions(String userId, List<Integer> roles, List<Integer> extraPermissions) throws Exception
+    public void setUserPermissions(String userId, List<PermissionOuterClass.Role> roles, List<PermissionOuterClass.Permission> extraPermissions) throws Exception
     {
         if (roles == null)
         {
@@ -40,7 +41,7 @@ public class UserBllImpl implements UserBll
                 .addAllRoles(roles)
                 .addAllExtraPermissions(extraPermissions)
                 .build();
-        _userDal.setUserPermissions(permissions);
+        _userDal.setUserPermissions(userId, roles, extraPermissions);
     }
 
     public UserOuterClass.User createAdminUser(UserOuterClass.User user) throws Exception

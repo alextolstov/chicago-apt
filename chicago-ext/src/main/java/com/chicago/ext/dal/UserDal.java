@@ -1,5 +1,6 @@
 package com.chicago.ext.dal;
 
+import com.chicago.dto.PermissionOuterClass;
 import com.chicago.dto.UserOuterClass;
 import javafx.util.Pair;
 
@@ -16,7 +17,7 @@ public interface UserDal
 
     void setUserPassword(String user_id, String passwordHash, byte[] passwordSalt) throws Exception;
 
-    void setUserPermissions(UserOuterClass.UserPermissions permissions) throws Exception;
+    void setUserPermissions(String userId, List<PermissionOuterClass.Role> roles, List<PermissionOuterClass.Permission> extraPermissions) throws Exception;
 
     void setUserAvatar(UserOuterClass.UserAvatar avatar) throws Exception;
 

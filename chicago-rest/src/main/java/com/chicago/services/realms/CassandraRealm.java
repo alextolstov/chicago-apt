@@ -92,7 +92,7 @@ public class CassandraRealm extends AuthorizingRealm
         props.put("user_id", user.getUserId());
         Collection<Object> principals = new ArrayList<>(2);
         principals.add(props);
-        principals.add(user.getPermissionsList());
+        principals.add(user.getPermissionNamesList());
         return new SimplePrincipalCollection(props, getName());
     }
 

@@ -3,6 +3,7 @@ syntax = "proto3";
 package com.chicago.dto;
 
 import "common.proto";
+import "permission.proto";
 import "user.proto";
 
 option java_package = "com.chicago.dto";

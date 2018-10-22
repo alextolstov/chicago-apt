@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package com.chicago.dto;
+
+option java_package = "com.chicago.dto";
+
+message Permission
+{
+    int32 permission_id = 1;
+    string permission_name = 2;
+    string permission_description = 3;
+}
+
+message Role
+{
+    string role_id = 1;
+    string role_name = 2;
+    string role_description = 3;
+    repeated Permission permissions = 4;
+}
+
