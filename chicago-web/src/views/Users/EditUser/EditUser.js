@@ -268,6 +268,7 @@ class EditUser extends Component {
   }
 
   render() {
+    console.log('EditUser render')
     return (
       <div className="animated fadeIn">
         <Row hidden={this.state.userId === 'new' ? false : true}>
