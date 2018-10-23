@@ -45,12 +45,12 @@ class Login extends Component {
     });
   }
 
-  handleError(error) {
+  handleError = error => {
     this.setState({show_error: true});
     this.setState({error_text: error});
   }
 
-  resetError() {
+  resetError = () => {
     this.setState({show_error: false});
     this.setState({error_text: ""});
   }
