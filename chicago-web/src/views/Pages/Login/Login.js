@@ -25,7 +25,7 @@ const messages = defineMessages({
     defaultMessage: 'Email',
   }
 });
-
+ 
 class Login extends Component {
   constructor(props) {
     super(props);
