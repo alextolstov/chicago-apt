@@ -112,7 +112,7 @@ class EditUser extends Component {
       user: "",
       selOption2:  { value: '1', label: 'Парикмахер' }
     };
-
+    this.after05s = this.after05s.bind(this);
     if (this.state.userId === 'new') {
       this.state.user = new user_proto.User();
     }
@@ -159,7 +159,12 @@ class EditUser extends Component {
     if (this.state.userId === 'new') {
       this.setUncheckedState( false);
     }
-
+    setTimeout(this.after05s,500);
+  }
+  
+  after05s() {
+    console.log("after05s");
+    this.setState({'dalay05s': true});
   }
 
   componentWillUpdate() {
