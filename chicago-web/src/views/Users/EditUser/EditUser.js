@@ -109,7 +109,8 @@ class EditUser extends Component {
 
       userPositions: [],
       userId: props.match.params.id,
-      user: ""
+      user: "",
+      selOption2:  { value: '1', label: 'Парикмахер' }
     };
 
     if (this.state.userId === 'new') {
@@ -129,27 +130,42 @@ class EditUser extends Component {
     }
   }
 
-  setUncheckedState = () => {
-    if (document.getElementById('email_management_enabled').checked) {
+  setUncheckedState = (mode) => {
+    if (document.getElementById('email_management_enabled').checked === mode) {
       document.getElementById('email_management_enabled').click();
     }
-    if (document.getElementById('password_management_enabled').checked) {
+    if (document.getElementById('password_management_enabled').checked === mode) {
       document.getElementById('password_management_enabled').click();
     }
-    if (document.getElementById('personal_info_enabled').checked) {
+    if (document.getElementById('personal_info_enabled').checked  === mode) {
       document.getElementById('personal_info_enabled').click();
     }
-    if (document.getElementById('attributes_enabled').checked) {
+    if (document.getElementById('attributes_enabled').checked  === mode) {
       document.getElementById('attributes_enabled').click();
     }
-    if (document.getElementById('address_enabled').checked) {
+    if (document.getElementById('address_enabled').checked  === mode) {
       document.getElementById('address_enabled').click();
     }
+  //  document.getElementById('positions').click();
+    
   }
 
   componentDidMount() {
+    console.log("component did mount")
     if (this.state.userId === 'current') {
-      this.setUncheckedState();
+      this.setUncheckedState( true);
+    }
+    else
+    if (this.state.userId === 'new') {
+      this.setUncheckedState( false);
+    }
+
+  }
+
+  componentWillUpdate() {
+    console.log("component will update")
+    if (this.state.userId === 'current') {
+      this.setUncheckedState(true);
     }
   }
 
@@ -176,7 +192,7 @@ class EditUser extends Component {
       this.state.userApi.saveUser(this.state.user, self).then(function () {
         if (self.state.userId === 'current') {
           self.props.appStore.userData = self.state.user;
-          self.setUncheckedState();
+          self.setUncheckedState(true);
         }
       });
     }
@@ -193,6 +209,11 @@ class EditUser extends Component {
   handleSelectChange = (event) => {
     this.setState({userPositions:event});
     console.log(this.state.userPositions);
+  }
+  handleSelectChange2 = (value) => {
+    this.setState({selOption2:value});
+    console.log("handleSelectChange2 value=", value);
+
   }
 
   handleChange = (event) => {
@@ -268,6 +289,16 @@ class EditUser extends Component {
   }
 
   render() {
+    console.log('render EditUser');
+    const options = [
+      { value: '1', label: 'Парикмахер' },
+      { value: '2', label: 'Цирюльник' },
+      { value: '3', label: 'Брадобрей' }
+    ];
+    const {selOption2} =  this.state;
+    console.log('selOption2 = ', selOption2, this.state);
+
+
     return (
       <div className="animated fadeIn">
         <Row hidden={this.state.userId === 'new' ? false : true}>
@@ -275,7 +306,7 @@ class EditUser extends Component {
             <Card id="new_user_card">
               <CardHeader>
                 <button id="save_new_user" onClick={this.handleCreateUser}>
-                  <i className="icon-cloud-upload"></i>
+                  <i className="icon-cloud-upload">Сохр</i>
                 </button>
                 <strong><FormattedMessage id="users.edit.new_user"
                                           defaultMessage="Create new user"/></strong>
@@ -295,7 +326,7 @@ class EditUser extends Component {
             <Card id="email_card">
               <CardHeader>
                 <button id="save_email" onClick={this.handleSaveEmail}>
-                  <i className="icon-cloud-upload"></i>
+                  <i className="icon-cloud-upload">Save</i>
                 </button>
                 <strong><FormattedMessage id="users.edit.email_management"
                                           defaultMessage="Email management"/></strong>
@@ -330,7 +361,7 @@ class EditUser extends Component {
             <Card id="password_card">
               <CardHeader>
                 <button id="save_personal_info" onClick={this.handleSavePassword}>
-                  <i className="icon-cloud-upload"></i>
+                  <i className="icon-cloud-upload">Save Password</i>
                 </button>
                 <strong><FormattedMessage id="users.edit.password_management"
                                           defaultMessage="Password management"/></strong>
@@ -746,6 +777,28 @@ class EditUser extends Component {
                         onChange={this.handleSelectChange}
                         multi
                       />
+                    </Col>
+                    <button onClick={(e) => this.handleAddPosition('add_position_card', e)}><i
+                      className="icon-plus"></i></button>
+                  </InputGroup>
+                </FormGroup>
+                {/*Positions2*/}
+                <FormGroup row>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="fa fa-id-card"></i>
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Col md="10">
+                      <Select
+                        id="positions2"
+                        name="positions2"
+                        value={selOption2}
+                        options={options}
+                        onChange={this.handleSelectChange2}
+                        multi
+                       />
                     </Col>
                     <button onClick={(e) => this.handleAddPosition('add_position_card', e)}><i
                       className="icon-plus"></i></button>

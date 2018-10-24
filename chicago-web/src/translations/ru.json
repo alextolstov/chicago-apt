@@ -13,12 +13,13 @@
   "users.edit.password_management": "Смена пароля",
   "users.edit.email_management": "Смена email",
   "users.edit.password": "Пароль",
-  "users.edit.repeate_password": "Повторите Пароль",
-  "users.edit.newuser": "Создать нового сотрудника",
+  "users.edit.repeat_password": "Повторите Пароль", 
+  "users.edit.new_user": "Создать нового сотрудника",
   "users.edit.personal": "Личная информация",
   "users.edit.attr": "Атрибуты",
   "users.edit.user": "Редактирование сотрудника",
   "users.edit.firstname": "Имя",
+  "users.edit.midlename": "Отчество",
   "users.edit.lastname": "Фамилия",
   "users.edit.dob": "ДР",
   "users.edit.nickname": "Псевдоним",
@@ -38,7 +39,7 @@
   "users.edit.employment": "Трудовая. книжка",
   "users.edit.address": "Адрес",
   "users.edit.newposition": "Адрес",
-
+  
   "address.edit.street": "Улица",
   "address.edit.house": "Дом",
   "address.edit.building": "Корпус",
@@ -49,6 +50,7 @@
   "address.edit.county": "Область/Край",
   "address.edit.state": "Республика",
   "address.edit.zip": "Индекс",
-  "address.edit.country": "Страна"
-
+  "address.edit.country": "Страна",
+  "address.edit.officeapt":"Номер офиса",
+  "address.edit.administrative_division":"Административное подразделение"
 }
