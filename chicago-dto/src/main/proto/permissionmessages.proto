@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package com.chicago.dto;
+
+import "common.proto";
+import "user.proto";
+import "permission.proto";
+
+option java_package = "com.chicago.dto";
+
+message UserPermissionsRequest
+{
+    CrudOperation crud_operation = 1;
+    UserPermissions permissions = 2;
+}
+
+message UserPermissionsResponse
+{
+    UserPermissions permissions = 1;
+    TransactionError transaction_error = 2;
+}
+
+message SystemPermissionsRequest
+{
+}
+
+message SystemPermissionsResponse
+{
+    Roles roles = 1;
+    TransactionError transaction_error = 2;
+}
+
