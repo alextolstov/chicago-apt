@@ -4,11 +4,13 @@ import com.chicago.ext.bll.*;
 import com.chicago.common.core.ConfigParser;
 import com.chicago.ext.dal.AddressDal;
 import com.chicago.ext.dal.OrganizationDal;
+import com.chicago.ext.dal.PermissionDal;
 import com.chicago.ext.dal.PositionDal;
 import com.chicago.ext.dal.UserDal;
 import com.chicago.ext.dal.cassandra.AddressDalImpl;
 import com.chicago.ext.dal.cassandra.CassandraConnector;
 import com.chicago.ext.dal.cassandra.OrganizationDalImpl;
+import com.chicago.ext.dal.cassandra.PermissionDalImpl;
 import com.chicago.ext.dal.cassandra.PositionDalImpl;
 import com.chicago.ext.dal.cassandra.UserDalImpl;
 import com.chicago.dto.Config;
@@ -31,7 +33,7 @@ public class ApplicationBinder extends AbstractBinder
     protected void configure()
     {
         ConfigParser cp = new ConfigParser();
-        Service.ServiceConfig config = null;
+        Service.ServiceConfig config;
         try
         {
             config = cp.parse(_configFile, Service.ServiceConfig.newBuilder());
@@ -53,5 +55,7 @@ public class ApplicationBinder extends AbstractBinder
         bind(PositionDalImpl.class).to(PositionDal.class).in(Singleton.class);
         bind(PositionBllImpl.class).to(PositionBll.class).in(Singleton.class);
         bind(OrganizationDalImpl.class).to(OrganizationDal.class).in(Singleton.class);
+        bind(PermissionDalImpl.class).to(PermissionDal.class).in(Singleton.class);
+        bind(PermissionBllImpl.class).to(PermissionBll.class).in(Singleton.class);
     }
 }
