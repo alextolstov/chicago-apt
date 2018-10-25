@@ -110,7 +110,6 @@ class EditUser extends Component {
       userPositions: [],
       userId: props.match.params.id,
       user: "",
-      selOption2:  { value: '1', label: 'Парикмахер' }
     };
     this.after05s = this.after05s.bind(this);
     if (this.state.userId === 'new') {
@@ -146,12 +145,10 @@ class EditUser extends Component {
     if (document.getElementById('address_enabled').checked  === mode) {
       document.getElementById('address_enabled').click();
     }
-  //  document.getElementById('positions').click();
     
   }
 
   componentDidMount() {
-    console.log("component did mount")
     if (this.state.userId === 'current') {
       this.setUncheckedState( true);
     }
@@ -163,15 +160,7 @@ class EditUser extends Component {
   }
   
   after05s() {
-    console.log("after05s");
     this.setState({'dalay05s': true});
-  }
-
-  componentWillUpdate() {
-    console.log("component will update")
-    if (this.state.userId === 'current') {
-      this.setUncheckedState(true);
-    }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -213,12 +202,7 @@ class EditUser extends Component {
 
   handleSelectChange = (event) => {
     this.setState({userPositions:event});
-    console.log(this.state.userPositions);
-  }
-  handleSelectChange2 = (value) => {
-    this.setState({selOption2:value});
-    console.log("handleSelectChange2 value=", value);
-
+//    console.log(this.state.userPositions);
   }
 
   handleChange = (event) => {
@@ -294,15 +278,6 @@ class EditUser extends Component {
   }
 
   render() {
-    console.log('render EditUser');
-    const options = [
-      { value: '1', label: 'Парикмахер' },
-      { value: '2', label: 'Цирюльник' },
-      { value: '3', label: 'Брадобрей' }
-    ];
-    const {selOption2} =  this.state;
-    console.log('selOption2 = ', selOption2, this.state);
-
 
     return (
       <div className="animated fadeIn">
@@ -311,7 +286,7 @@ class EditUser extends Component {
             <Card id="new_user_card">
               <CardHeader>
                 <button id="save_new_user" onClick={this.handleCreateUser}>
-                  <i className="icon-cloud-upload">Сохр</i>
+                  <i className="icon-cloud-upload"></i>
                 </button>
                 <strong><FormattedMessage id="users.edit.new_user"
                                           defaultMessage="Create new user"/></strong>
@@ -331,7 +306,7 @@ class EditUser extends Component {
             <Card id="email_card">
               <CardHeader>
                 <button id="save_email" onClick={this.handleSaveEmail}>
-                  <i className="icon-cloud-upload">Save</i>
+                  <i className="icon-cloud-upload"></i>
                 </button>
                 <strong><FormattedMessage id="users.edit.email_management"
                                           defaultMessage="Email management"/></strong>
@@ -366,7 +341,7 @@ class EditUser extends Component {
             <Card id="password_card">
               <CardHeader>
                 <button id="save_personal_info" onClick={this.handleSavePassword}>
-                  <i className="icon-cloud-upload">Save Password</i>
+                  <i className="icon-cloud-upload"></i>
                 </button>
                 <strong><FormattedMessage id="users.edit.password_management"
                                           defaultMessage="Password management"/></strong>
@@ -787,29 +762,6 @@ class EditUser extends Component {
                       className="icon-plus"></i></button>
                   </InputGroup>
                 </FormGroup>
-                {/*Positions2*/}
-                <FormGroup row>
-                  <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="fa fa-id-card"></i>
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Col md="10">
-                      <Select
-                        id="positions2"
-                        name="positions2"
-                        value={selOption2}
-                        options={options}
-                        onChange={this.handleSelectChange2}
-                        multi
-                       />
-                    </Col>
-                    <button onClick={(e) => this.handleAddPosition('add_position_card', e)}><i
-                      className="icon-plus"></i></button>
-                  </InputGroup>
-                </FormGroup>
-
               </CardBody>
             </Card>
 
