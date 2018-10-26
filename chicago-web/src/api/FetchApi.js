@@ -1,5 +1,7 @@
 export default class FetchApi {
   defaultFetch(url, serialized_obj, deserializer, errorHandler) {
+    console.log('FetchApi url=', url);
+    
     return fetch(url, {
       method: "POST",
       body: serialized_obj,
@@ -8,6 +10,8 @@ export default class FetchApi {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     }).then(response => {
+      console.log('FetchApi response=', response);
+
       if (!response.ok) {
         throw response;
       }
@@ -19,6 +23,7 @@ export default class FetchApi {
           errorHandler(response.getTransactionError().getErrorMessage());
         }
       } else {
+        console.log('FetchApi return response=', response);
         return response;
       }
     }).catch(rest_error => {

@@ -97,7 +97,7 @@ export default class UserApi {
   }
 
   getUser(user, errorHandler) {
-    return this.userCrud(this.getUserUrl, user);
+     return this.userCrud(this.getUserUrl, user);
   }
 
   createUser(user, errorHandler) {

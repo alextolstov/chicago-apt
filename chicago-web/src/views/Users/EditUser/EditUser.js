@@ -94,7 +94,12 @@ const messages = defineMessages({
   passportPlace: {
     id: 'users.edit.passport',
     defaultMessage: 'Passport'
+  },
+  role: {
+    id: 'users.edit.role',
+    defaultMessage: 'Role'
   }
+
 });
 
 class EditUser extends Component {
@@ -133,6 +138,9 @@ class EditUser extends Component {
     if (document.getElementById('email_management_enabled').checked === mode) {
       document.getElementById('email_management_enabled').click();
     }
+    if (document.getElementById('role_management_enabled').checked === mode) {
+      document.getElementById('role_management_enabled').click();
+    }
     if (document.getElementById('password_management_enabled').checked === mode) {
       document.getElementById('password_management_enabled').click();
     }
@@ -157,6 +165,22 @@ class EditUser extends Component {
       this.setUncheckedState( false);
     }
     setTimeout(this.after05s,500);
+/*
+     if(  this.state.userId === 'current' && this.state.user ) {
+        const {user}  =  this.state;
+        console.log('componentDidMount getPositionsList user=', user);
+
+        user.getPositionsList().then(
+          (result) => {
+             this.setState({userPositions:result})
+          }
+
+        )
+        
+     }  
+//     this.state.userPositions = this.state.user.getPositionsList();
+*/ 
+
   }
   
   after05s() {
@@ -191,6 +215,12 @@ class EditUser extends Component {
       });
     }
   }
+
+  handleSaveRole = (event) => {
+    console.log('Save Role')
+  }
+
+
 
   handleError = (error) => {
     // TODO finish the function if neded
@@ -278,7 +308,9 @@ class EditUser extends Component {
   }
 
   render() {
-
+    console.log("render this.state.user.=",  this.state.user);
+//    console.log("render this.state.user.=",  this.state.user.getPermissionNamesList());
+    
     return (
       <div className="animated fadeIn">
         <Row hidden={this.state.userId === 'new' ? false : true}>
@@ -764,8 +796,41 @@ class EditUser extends Component {
                 </FormGroup>
               </CardBody>
             </Card>
-
             <PositionForm positionApiParent={this.state.positionApi}/>
+            <Card id="role_card">
+              <CardHeader>
+                <button id="save_role" onClick={this.handleSaveRole}>
+                  <i className="icon-cloud-upload"></i>
+                </button>
+                <strong><FormattedMessage id="users.edit.role_management"
+                                          defaultMessage="Role management"/></strong>
+                <div className="card-header-actions">
+                  <AppSwitch id="role_management_enabled"
+                             onClick={(e) => this.state.formApi.handleFormEnableDisable('role_card', e)}
+                             className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
+                             label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
+                </div>
+              </CardHeader>
+              <CardBody>
+                {/*Role*/}
+                <FormGroup row>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="fa fa-user-plus"></i>
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <FormattedMessage {...messages.role}>
+                      {
+                        pholder => <Input onChange={this.handleChange} value={this.state.user.getPermissionNamesList()}
+                                          type="text" id="role" name="role" placeholder={pholder} required/>
+                      }
+                    </FormattedMessage>
+                  </InputGroup>
+                </FormGroup>
+              </CardBody>
+            </Card>
+
             <AddressForm userId={this.props.appStore.userData.getUserId()}
                          addressId={this.state.user.getAddressId === undefined ? "" : this.state.user.getAddressId()}/>
           </Col>
