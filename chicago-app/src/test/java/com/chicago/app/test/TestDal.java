@@ -1,14 +1,13 @@
 package com.chicago.app.test;
 
 import com.chicago.app.ApplicationBinder;
-import com.chicago.app.ServiceEntry;
 import com.chicago.dto.PositionOuterClass;
-import com.chicago.dto.Service;
 import com.chicago.ext.dal.PositionDal;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
@@ -56,6 +55,7 @@ public class TestDal
     }
 
     @Test
+    @DisplayName("")
     public void deleteFromMap()
     {
         try

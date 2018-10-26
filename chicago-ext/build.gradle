@@ -20,5 +20,7 @@ dependencies {
 
     implementation project(":chicago-common")
     implementation project(":chicago-dto")
-    testImplementation "junit:junit:${junitVer}"
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVer}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVer}")
 }

@@ -6,9 +6,7 @@ import com.chicago.dto.Config;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.dto.Usermessages;
 import com.google.protobuf.InvalidProtocolBufferException;
-import org.junit.Test;
-
-import java.util.ArrayList;
+import org.junit.jupiter.api.Test;
 import java.util.concurrent.TimeoutException;
 
 public class TestSendRequestResponse

@@ -64,6 +64,7 @@ public class UserController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response getUser(byte[] data)
     {
+        Subject currentUser = SecurityUtils.getSubject();
         return userOperations(data, Common.CrudOperation.READ);
     }
 
