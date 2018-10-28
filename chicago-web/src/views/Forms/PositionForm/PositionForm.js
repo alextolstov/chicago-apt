@@ -43,6 +43,7 @@ class PositionForm extends Component {
           positions.forEach((l, v) => {
             self.props.appStore.companyPositions.push({value:v, label:l});
             self.state.positionsArr.push([v, l]);
+            self.props.readyPosition();            // setState  and render parent
           });
           self.setState({positionsArr: self.state.positionsArr});
         }

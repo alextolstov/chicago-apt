@@ -115,8 +115,12 @@ class EditUser extends Component {
       userPositions: [],
       userId: props.match.params.id,
       user: "",
+
+      readyPosition : false,
+    
     };
-    this.after05s = this.after05s.bind(this);
+    this.readyPosition = this.readyPosition.bind(this);
+    
     if (this.state.userId === 'new') {
       this.state.user = new user_proto.User();
     }
@@ -155,6 +159,10 @@ class EditUser extends Component {
     }
     
   }
+  
+  readyPosition = () => {
+    this.setState({readyPosition : true});
+  }
 
   componentDidMount() {
     if (this.state.userId === 'current') {
@@ -164,29 +172,7 @@ class EditUser extends Component {
     if (this.state.userId === 'new') {
       this.setUncheckedState( false);
     }
-    setTimeout(this.after05s,500);
-/*
-     if(  this.state.userId === 'current' && this.state.user ) {
-        const {user}  =  this.state;
-        console.log('componentDidMount getPositionsList user=', user);
-
-        user.getPositionsList().then(
-          (result) => {
-             this.setState({userPositions:result})
-          }
-
-        )
-        
-     }  
-//     this.state.userPositions = this.state.user.getPositionsList();
-*/ 
-
   }
-  
-  after05s() {
-    this.setState({'dalay05s': true});
-  }
-
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.match.params.id !== prevState.userId) {
       return {userId: nextProps.match.params.id};
@@ -308,9 +294,11 @@ class EditUser extends Component {
   }
 
   render() {
-    console.log("render this.state.user.=",  this.state.user);
+    console.log("render this.state.user.",  this.state.user);
 //    console.log("render this.state.user.=",  this.state.user.getPermissionNamesList());
-    
+    let options1 = this.props.appStore.companyPositions
+    console.log("render options1=",  options1);
+
     return (
       <div className="animated fadeIn">
         <Row hidden={this.state.userId === 'new' ? false : true}>
@@ -796,7 +784,7 @@ class EditUser extends Component {
                 </FormGroup>
               </CardBody>
             </Card>
-            <PositionForm positionApiParent={this.state.positionApi}/>
+            <PositionForm positionApiParent={this.state.positionApi}  readyPosition={this.readyPosition}/>
             <Card id="role_card">
               <CardHeader>
                 <button id="save_role" onClick={this.handleSaveRole}>
