@@ -22,9 +22,11 @@ import 'react-select/dist/react-select.min.css';
 import UserApi from '../../../api/UserApi';
 import FormApi from '../../../api/FormApi';
 import PositionApi from '../../../api/PositionApi';
+import PermissionApi from '../../../api/PermissionApi';
 import DateTimeApi from '../../../api/DateTimeApi';
 import AddressForm from '../../Forms/AddressForm/AddressForm';
 import PositionForm from '../../Forms/PositionForm/PositionForm';
+import PermissionForm from '../../Forms/PermissionForm/PermissionForm';
 import RegisterForm from '../../Forms/RegisterForm/RegisterForm';
 
 const jspb = require('google-protobuf');
@@ -110,6 +112,7 @@ class EditUser extends Component {
       dateTimeApi: new DateTimeApi(),
       userApi: new UserApi(),
       positionApi: new PositionApi(),
+      permissionApi: new PermissionApi(),
       formApi: new FormApi(),
 
       userPositions: [],
@@ -142,8 +145,8 @@ class EditUser extends Component {
     if (document.getElementById('email_management_enabled').checked === mode) {
       document.getElementById('email_management_enabled').click();
     }
-    if (document.getElementById('role_management_enabled').checked === mode) {
-      document.getElementById('role_management_enabled').click();
+    if (document.getElementById('permission_management_enabled').checked === mode) {
+      document.getElementById('permission_management_enabled').click();
     }
     if (document.getElementById('password_management_enabled').checked === mode) {
       document.getElementById('password_management_enabled').click();
@@ -181,6 +184,11 @@ class EditUser extends Component {
   }
 
   handleAddPosition = (id, event) => {
+    let state = !document.getElementById(id).hidden;
+    document.getElementById(id).hidden = state;
+  }
+// пока так, но думаю надо объединить с функцией выше
+  handleAddPermission = (id, event) => {
     let state = !document.getElementById(id).hidden;
     document.getElementById(id).hidden = state;
   }
@@ -785,39 +793,46 @@ class EditUser extends Component {
               </CardBody>
             </Card>
             <PositionForm positionApiParent={this.state.positionApi}  readyPosition={this.readyPosition}/>
-            <Card id="role_card">
+            <Card id="permission_card">
               <CardHeader>
-                <button id="save_role" onClick={this.handleSaveRole}>
+                <button id="save_permission" onClick={this.handleSaveRole}>
                   <i className="icon-cloud-upload"></i>
                 </button>
                 <strong><FormattedMessage id="users.edit.role_management"
                                           defaultMessage="Role management"/></strong>
                 <div className="card-header-actions">
-                  <AppSwitch id="role_management_enabled"
-                             onClick={(e) => this.state.formApi.handleFormEnableDisable('role_card', e)}
+                  <AppSwitch id="permission_management_enabled"
+                             onClick={(e) => this.state.formApi.handleFormEnableDisable('permission_card', e)}
                              className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
               </CardHeader>
               <CardBody>
-                {/*Role*/}
+                {/*Permission*/}
                 <FormGroup row>
-                  <InputGroup>
+                <InputGroup>
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <i className="fa fa-user-plus"></i>
                       </InputGroupText>
                     </InputGroupAddon>
-                    <FormattedMessage {...messages.role}>
-                      {
-                        pholder => <Input onChange={this.handleChange} value={this.state.user.getPermissionNamesList()}
-                                          type="text" id="role" name="role" placeholder={pholder} required/>
-                      }
-                    </FormattedMessage>
+                    <Col md="10">
+                      <Select
+                        id="permissions"
+                        name="permissions"
+                        value={this.state.userPermissions}
+                        options={this.props.appStore.companyPermissions}
+                        onChange={this.handleSelectChange}
+                        multi
+                      />
+                    </Col>
+                    <button onClick={(e) => this.handleAddPermission('add_permission_card', e)}><i
+                      className="icon-plus"></i></button>
                   </InputGroup>
                 </FormGroup>
               </CardBody>
             </Card>
+            <PermissionForm permissionApiParent={this.state.permissionApi}  readyPermission={this.readyPermission}/>
 
             <AddressForm userId={this.props.appStore.userData.getUserId()}
                          addressId={this.state.user.getAddressId === undefined ? "" : this.state.user.getAddressId()}/>
