@@ -28,6 +28,10 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVer}")
 }
 
+test {
+    useJUnitPlatform()
+}
+
 mainClassName = "com.chicago.app.ServiceMain"
 
 distributions {

@@ -17,9 +17,9 @@ public class PermissionBllImpl implements PermissionBll
     private PermissionDal _permissionDal;
 
     @Override
-    public void setUserPermissions(UserOuterClass.UserPermissions permissions)
+    public void setUserPermissions(UserOuterClass.UserPermissions userPermissions) throws Exception
     {
-        _permissionDal.setUserPermissions(permissions);
+        _permissionDal.setUserPermissions(userPermissions.getUserId(), userPermissions.getRolesList(), userPermissions.getExtraPermissionsList());
     }
 
     @Override

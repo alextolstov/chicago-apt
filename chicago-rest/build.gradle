@@ -33,7 +33,6 @@ dependencies {
     implementation project(":chicago-common")
     implementation project(":chicago-dto")
 
-    testImplementation "junit:junit:${junitVer}"
     testImplementation "org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-inmemory:2.27"
 }
 

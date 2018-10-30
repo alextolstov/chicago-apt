@@ -24,3 +24,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVer}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVer}")
 }
+
+test {
+    useJUnitPlatform()
+}

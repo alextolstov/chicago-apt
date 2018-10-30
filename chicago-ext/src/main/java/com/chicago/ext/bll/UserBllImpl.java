@@ -26,24 +26,6 @@ public class UserBllImpl implements UserBll
     @Inject
     private OrganizationDal _organizationDal;
 
-    public void setUserPermissions(String userId, List<PermissionOuterClass.Role> roles, List<PermissionOuterClass.Permission> extraPermissions) throws Exception
-    {
-        if (roles == null)
-        {
-            roles = new ArrayList<>();
-        }
-        if (extraPermissions == null)
-        {
-            extraPermissions = new ArrayList<>();
-        }
-        UserOuterClass.UserPermissions permissions = UserOuterClass.UserPermissions.newBuilder()
-                .setUserId(userId)
-                .addAllRoles(roles)
-                .addAllExtraPermissions(extraPermissions)
-                .build();
-        _userDal.setUserPermissions(userId, roles, extraPermissions);
-    }
-
     public UserOuterClass.User createAdminUser(UserOuterClass.User user) throws Exception
     {
         if (_userDal.isUserExists(user.getEmail()))
