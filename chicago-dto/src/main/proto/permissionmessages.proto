@@ -22,6 +22,7 @@ message UserPermissionsResponse
 
 message SystemPermissionsRequest
 {
+    string user_id = 1;
 }
 
 message SystemPermissionsResponse

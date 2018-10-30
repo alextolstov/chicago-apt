@@ -36,8 +36,8 @@ public class PermissionRequests extends AbstractComponent
         _ed.registerHandler(Permissionmessages.SystemPermissionsRequest.class, new SystemPermissionsEventHandler());
         // Response
         KafkaMessageProducer producer = cm.getResource(KafkaMessageProducer.class.getName());
-        _ed.registerHandler(Positionmessages.PositionResponse.class, producer.new MessageEventHandler());
-        _ed.registerHandler(Positionmessages.PositionsResponse.class, producer.new MessageEventHandler());
+        _ed.registerHandler(Permissionmessages.SystemPermissionsResponse.class, producer.new MessageEventHandler());
+        _ed.registerHandler(Permissionmessages.UserPermissionsResponse.class, producer.new MessageEventHandler());
     }
 
     public boolean init(ConfigAccessor ca)
