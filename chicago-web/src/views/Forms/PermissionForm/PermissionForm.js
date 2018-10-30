@@ -34,12 +34,14 @@ class PermissionForm extends Component {
 
   componentDidMount = () => {
     let self = this;
-    this.state.permissionApi.getPermission(this.state.organizationId, null)
+    this.state.permissionApi.getPermission(null)
       .then(function (data) {
         if (data !== undefined && data !== null) {
           self.props.appStore.companyPermissions = [];
-          let permissions = data.getPermission().getPermisionsMap();
-
+          console.log('PermissionForm componentDidMount data=',data);
+/* ?  как получить  из возвращенного data permission? */          
+          let permissions = data.getPermissionsList();/* наугад */
+/* ? */
           permissions.forEach((l, v) => {
             self.props.appStore.companyPermissions.push({value:v, label:l});
             self.state.permissoonsArr.push([v, l]);
