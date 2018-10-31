@@ -116,14 +116,19 @@ class EditUser extends Component {
       formApi: new FormApi(),
 
       userPositions: [],
+      userPermissions: [],
+      userRoles: [],
+
       userId: props.match.params.id,
       user: "",
 
       readyPosition : false,
+      readyPermission: false,
     
     };
     this.readyPosition = this.readyPosition.bind(this);
-    
+    this.readyPermission = this.readyPermission.bind(this);
+
     if (this.state.userId === 'new') {
       this.state.user = new user_proto.User();
     }
@@ -167,6 +172,10 @@ class EditUser extends Component {
     this.setState({readyPosition : true});
   }
 
+  readyPermission  = () => {
+    this.setState({readyPermission : true});
+  }
+
   componentDidMount() {
     if (this.state.userId === 'current') {
       this.setUncheckedState( true);
@@ -187,7 +196,7 @@ class EditUser extends Component {
     let state = !document.getElementById(id).hidden;
     document.getElementById(id).hidden = state;
   }
-// пока так, но думаю надо объединить с функцией выше
+
   handleAddPermission = (id, event) => {
     let state = !document.getElementById(id).hidden;
     document.getElementById(id).hidden = state;
@@ -224,9 +233,11 @@ class EditUser extends Component {
     console.log("");
   }
 
-  handleSelectChange = (event) => {
+  handleSelectChangeRole = (event) => {
+    this.setState({userPermissions:event});
+  }
+  handleSelectChangePosition = (event) => {
     this.setState({userPositions:event});
-//    console.log(this.state.userPositions);
   }
 
   handleChange = (event) => {
@@ -782,7 +793,7 @@ class EditUser extends Component {
                         name="positions"
                         value={this.state.userPositions}
                         options={this.props.appStore.companyPositions}
-                        onChange={this.handleSelectChange}
+                        onChange={this.handleSelectChangePosition}
                         multi
                       />
                     </Col>
@@ -822,7 +833,7 @@ class EditUser extends Component {
                         name="permissions"
                         value={this.state.userPermissions}
                         options={this.props.appStore.companyPermissions}
-                        onChange={this.handleSelectChange}
+                        onChange={this.handleSelectChangeRole}
                         multi
                       />
                     </Col>
@@ -832,7 +843,7 @@ class EditUser extends Component {
                 </FormGroup>
               </CardBody>
             </Card>
-            <PermissionForm permissionApiParent={this.state.permissionApi}  readyPermission={this.readyPermission}/>
+            <PermissionForm permissionApiParent={this.state.permissionApi}  readyPermission={this.readyPermission} user={this.state.user}/>
 
             <AddressForm userId={this.props.appStore.userData.getUserId()}
                          addressId={this.state.user.getAddressId === undefined ? "" : this.state.user.getAddressId()}/>
