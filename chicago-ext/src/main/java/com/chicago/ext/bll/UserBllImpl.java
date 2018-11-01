@@ -2,9 +2,9 @@ package com.chicago.ext.bll;
 
 import com.chicago.common.util.PasswordUtil;
 import com.chicago.dto.Organization;
-import com.chicago.dto.PermissionOuterClass;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.ext.dal.OrganizationDal;
+import com.chicago.ext.dal.PermissionDal;
 import com.chicago.ext.dal.UserDal;
 import com.chicago.ext.dal.cassandra.PasswordNotMatchException;
 import javafx.util.Pair;
@@ -13,9 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 @Service
 public class UserBllImpl implements UserBll
@@ -23,6 +23,8 @@ public class UserBllImpl implements UserBll
     private static final Logger LOG = LoggerFactory.getLogger(UserBllImpl.class);
     @Inject
     private UserDal _userDal;
+    @Inject
+    private PermissionDal _permissionDal;
     @Inject
     private OrganizationDal _organizationDal;
 
@@ -47,7 +49,11 @@ public class UserBllImpl implements UserBll
         UserOuterClass.User newUser = createUser(user, false);
         LOG.info("New user created userId {}", newUser.getUserId());
 
-        return newUser;
+        // Finally turn user to system admin and return with permissions
+        Set<String> permissionNames = _permissionDal.setSystemAdminRole(newUser.getUserId());
+        return newUser.toBuilder()
+                .addAllPermissionNames(permissionNames)
+                .build();
     }
 
     public UserOuterClass.User createStandardUser(UserOuterClass.User newUser) throws Exception

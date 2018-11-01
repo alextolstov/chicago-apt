@@ -49,7 +49,7 @@ public class UserDalImpl implements UserDal
                 .value("user_id", newUserId)
                 .value("email", newUser.getEmail())
                 .value("password_hash", passwordHash)
-                .value("password_salt", ByteBuffer.wrap(passwordSalt))//Bytes.toHexString(passwordSalt))
+                .value("password_salt", ByteBuffer.wrap(passwordSalt))
                 .value("first_name", newUser.getFirstName())
                 .value("middle_name", newUser.getMiddleName())
                 .value("last_name", newUser.getLastName())

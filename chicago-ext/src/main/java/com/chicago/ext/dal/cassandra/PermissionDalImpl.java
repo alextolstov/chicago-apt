@@ -11,11 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static com.chicago.ext.dal.cassandra.CassandraConstants.*;
 
@@ -27,10 +23,53 @@ public class PermissionDalImpl implements PermissionDal
     private CassandraConnector _cassandraConnector;
 
     @Override
+    public Set<String> setSystemAdminRole(String userId) throws Exception
+    {
+        // Get first row, it is sysadmin role by design
+        Statement query = QueryBuilder.select()
+                .from(KEYSPACE, ROLES_TABLE)
+                .limit(1);
+        ResultSet result = _cassandraConnector.getSession().execute(query);
+        Row row = result.one();
+        if (row != null)
+        {
+            throw new Exception("Roles table is empty");
+        }
+        Set<UUID> roleIds = new HashSet<>();
+        roleIds.add(row.getUUID("role_id"));
+        Set<Integer> permissionIds = new HashSet<>(row.getSet("permission_ids", Integer.class));
+
+        // Expand Role to permission set
+        query = QueryBuilder.select()
+                .from(KEYSPACE, PERMISSIONS_TABLE)
+                .where(QueryBuilder.in("permission_id", permissionIds));
+        result = _cassandraConnector.getSession().execute(query);
+        Set<String> permissionNames = new HashSet<>();
+        while ((row = result.one()) != null)
+        {
+            permissionNames.add(row.getString("permission_name"));
+        }
+
+        // Update user permission set in user table
+        query = QueryBuilder.update(KEYSPACE, USERS_BY_ID_TABLE)
+                .with(QueryBuilder.set("permissions", permissionNames))
+                .where(QueryBuilder.eq("user_id", UUID.fromString(userId)));
+        _cassandraConnector.getSession().execute(query);
+
+        // Update user roles
+        query = QueryBuilder.update(KEYSPACE, USER_PERMISSIONS_TABLE)
+                .with(QueryBuilder.set("role_ids", roleIds))
+                .where(QueryBuilder.eq("user_id", UUID.fromString(userId)));
+        _cassandraConnector.getSession().execute(query);
+
+        return permissionNames;
+    }
+
+    @Override
     public void setUserPermissions(String userId, List<PermissionOuterClass.Role> roles, List<PermissionOuterClass.Permission> extraPermissions)
     {
         Set<UUID> roleIds = new HashSet<>();
-        for(PermissionOuterClass.Role role : roles)
+        for (PermissionOuterClass.Role role : roles)
         {
             roleIds.add(UUID.fromString(role.getRoleId()));
         }
@@ -43,7 +82,7 @@ public class PermissionDalImpl implements PermissionDal
         // Collect extra permissions
         Set<Integer> extraPermissionIds = new HashSet<>();
         Set<Integer> permissionIds = new HashSet<>();
-        for(PermissionOuterClass.Permission ePermission : extraPermissions)
+        for (PermissionOuterClass.Permission ePermission : extraPermissions)
         {
             permissionIds.add(ePermission.getPermissionId());
             extraPermissionIds.add(ePermission.getPermissionId());
