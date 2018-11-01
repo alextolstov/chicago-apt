@@ -197,7 +197,7 @@ class EditUser extends Component {
     document.getElementById(id).hidden = state;
   }
 
-  handleAddPermission = (id, event) => {
+  handleAddRole = (id, event) => {
     let state = !document.getElementById(id).hidden;
     document.getElementById(id).hidden = state;
   }
@@ -220,7 +220,18 @@ class EditUser extends Component {
   }
 
   handleSaveRole = (event) => {
-    console.log('Save Role')
+    let self = this;
+    console.log('Save Role userRole=', this.state.userRole);
+    let roleArr = [];
+    this.state.userRole.forEach((l, v) => { roleArr.push(l.value) });
+    console.log('Save Role roleArr=',roleArr);
+ 
+    this.state.permissionApi.saveUserRoles(this.state.user, roleArr, null).then(function () {
+      console.log('handleSaveRole success');
+       
+
+    })
+
   }
 
 
@@ -234,7 +245,7 @@ class EditUser extends Component {
   }
 
   handleSelectChangeRole = (event) => {
-    this.setState({userPermissions:event});
+    this.setState({userRole:event});
   }
   handleSelectChangePosition = (event) => {
     this.setState({userPositions:event});
@@ -831,13 +842,13 @@ class EditUser extends Component {
                       <Select
                         id="permissions"
                         name="permissions"
-                        value={this.state.userPermissions}
+                        value={this.state.userRole}
                         options={this.props.appStore.companyPermissions}
                         onChange={this.handleSelectChangeRole}
                         multi
                       />
                     </Col>
-                    <button onClick={(e) => this.handleAddPermission('add_permission_card', e)}><i
+                    <button onClick={(e) => this.handleAddRole('add_permission_card', e)}><i
                       className="icon-plus"></i></button>
                   </InputGroup>
                 </FormGroup>

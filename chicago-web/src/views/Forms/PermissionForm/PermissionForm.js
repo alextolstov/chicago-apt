@@ -44,22 +44,19 @@ class PermissionForm extends Component {
           rolesList.forEach((item, i) => {
             const v = item.getRoleId();
             const l = item.getRoleName();
-
-            console.log('Roles i=', i, " id=", v + " name= " + l);
+//            console.log('Roles i=', i, " id=", v + " name= " + l);
             self.props.appStore.companyPermissions.push({value: v, label:l});
             self.state.permissionsArr.push([v, l]);
-// в работе
-            self.state.permissionApi.getUserRoles(self.props.user, null) 
-             .then(function (data) {
-                console.log('!!!!!getUserRoles data = ', data);
-                
-             })  
-         
-         
-            self.props.readyPermission()            // setState  and render parent
          
           });
+          // в работе сейчас пусто возвращает
+          self.state.permissionApi.getUserRoles(self.props.user, null) 
+           .then(function (data) {
+              console.log('!!!!!getUserRoles data = ', data);
+              
+            })  
 
+          self.props.readyPermission()            // setState  and render parent
           self.setState({permissionsArr: self.state.permissionsArr}); 
         }
       });

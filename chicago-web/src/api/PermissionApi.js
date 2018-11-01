@@ -2,14 +2,16 @@ import FetchApi from './FetchApi'
 
 const permission_proto = require('models/permission_pb.js');
 const permissionmessages_proto = require('models/permissionmessages_pb.js');
+const user_proto = require('models/user_pb');
+const usermessages_proto = require('models/usermessages_pb.js');
 
 export default class PermissionApi {
   constructor(){
     this.createPermissionsUrl = '/api/permissions/create';
-    this.updatePermissionsUrl = '/api/permissions/update';
     this.deletePermissionsUrl = '/api/permissions/delete';
     this.getPermissionsUrl = '/api/permissions/getsystem';
     this.getUserRolesUrl = '/api/permissions/get';
+    this.saveUserRoleUrl = '/api/permissions/update';
     this.fetchApi = new FetchApi();
   }
 
@@ -32,21 +34,36 @@ export default class PermissionApi {
     let permission = new permission_proto.Permission();
     return this.permissionCrud(this.getPermissionsUrl, permission, permissionmessages_proto.SystemPermissionsResponse.deserializeBinary, errorHandler);
   }
+  
   getUserRoles(user, errorHandler) {
-    let permission = new permission_proto.Permission();
-    let role = new permission_proto.Role();
-    let roles = new permission_proto.Roles();
-  /*  
-    return this.permissionCrud(this.getUserRolesUrl, permission, permissionmessages_proto.SystemPermissionsResponse.deserializeBinary, errorHandler);
-  */
-   console.log('getUserRoles pemission=', permission);
-   console.log('getUserRoles role=', role);
-   console.log('getUserRoles roles=', roles);
-   console.log('userId=', user.getUserId());
-   permission.setPermissionId(user.getUserId());
-   return this.permissionCrud(this.getUserRolesUrl, permission, permissionmessages_proto.SystemPermissionsResponse.deserializeBinary, errorHandler);
+    let roles = new user_proto.UserPermissions();
+    console.log('getUserRoles roles=', roles);
+    console.log('userId=', user.getUserId());
+    roles.setUserId(user.getUserId());
+    return this.permissionCrud(this.getUserRolesUrl, roles, usermessages_proto.SetUserPermissionsResponse.deserializeBinary, errorHandler);
        
   }
+
+ // user - объект пользователя
+ // new roles - масссив id выбранных ролей
+  saveUserRoles(user, newRoles, errorHandler) {
+    let roles = new user_proto.UserPermissions();
+    roles.setUserId(user.getUserId());
+
+    let role = new permission_proto.Role(); 
+ // дял пробы записываю только одну роль
+    role.setRoleId(newRoles[0]);  // у меня сохранен только id выбранной роли - надеюсь этого хватит?
+    let rolesArr = [];
+    rolesArr.push(role);          // сохраняю роль в массив
+ 
+  
+    roles.setRolesList(rolesArr); // массив ролей в объект 
+    console.log('mod roles=', roles);
+  
+    return this.permissionCrud(this.saveUserRoleUrl, roles, usermessages_proto.SetUserPermissionsResponse.deserializeBinary, errorHandler);
+    // сервре возвращает ошибку 500   
+  }
+
 
   permissionCrud(url, userObject, deserializer, errorHandler) {
     let serialized_object = userObject.serializeBinary();
