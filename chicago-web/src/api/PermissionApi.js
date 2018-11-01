@@ -61,7 +61,7 @@ export default class PermissionApi {
     console.log('mod roles=', roles);
   
     return this.permissionCrud(this.saveUserRoleUrl, roles, usermessages_proto.SetUserPermissionsResponse.deserializeBinary, errorHandler);
-    // сервре возвращает ошибку 500   
+    // сервер возвращает ошибку 500   
   }
 
 
