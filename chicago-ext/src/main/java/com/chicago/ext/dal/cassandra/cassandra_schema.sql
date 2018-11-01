@@ -202,10 +202,12 @@ INSERT INTO ChicagoErp.Permissions (permission_id, permission_name, description)
 INSERT INTO ChicagoErp.Permissions (permission_id, permission_name, description) VALUES(15, 'holding:delete:company', 'Can delete the company inside the holding');
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Roles (
-    role_id uuid PRIMARY KEY,
+    role_id uuid,
     role_name varchar,
     permission_ids set<int>,
-    description varchar);
+    description varchar,
+    primary key (role_name, role_id ));
+
 INSERT INTO ChicagoErp.Roles (role_id, role_name, permission_ids, description) VALUES(uuid(), 'system:admin',
 {
 0 -- *:*:*

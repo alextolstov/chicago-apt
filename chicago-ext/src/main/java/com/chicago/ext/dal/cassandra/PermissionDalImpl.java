@@ -25,13 +25,13 @@ public class PermissionDalImpl implements PermissionDal
     @Override
     public Set<String> setSystemAdminRole(String userId) throws Exception
     {
-        // Get first row, it is sysadmin role by design
+        // Get sysadmin row
         Statement query = QueryBuilder.select()
                 .from(KEYSPACE, ROLES_TABLE)
-                .limit(1);
+                .where(QueryBuilder.eq("role_name", "system:admin"));
         ResultSet result = _cassandraConnector.getSession().execute(query);
         Row row = result.one();
-        if (row != null)
+        if (row == null)
         {
             throw new Exception("Roles table is empty");
         }
