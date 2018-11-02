@@ -244,7 +244,7 @@ class DefaultHeaderDropdown extends Component {
   }
 
   render() {
-    const {dropdownOpen, doLogout} = this.state;
+    const { doLogout} = this.state;
     const {notif, accnt, tasks, mssgs} = this.props;
 
     if (doLogout === true) {

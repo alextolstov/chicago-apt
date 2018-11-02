@@ -25,7 +25,7 @@ import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { getStyle, hexToRgba } from '@coreui/coreui-pro/dist/js/coreui-utilities'
 import {observer, inject } from 'mobx-react';
 
-import config from 'react-global-configuration';
+//import config from 'react-global-configuration';
 
 const brandPrimary = getStyle('--primary')
 const brandSuccess = getStyle('--success')

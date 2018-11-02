@@ -46,11 +46,11 @@ export default class UserApi {
         });
       })
       .catch(rest_error => {
-        if (rest_error.status == 401 && errorHandler !== null) {
+        if (rest_error.status === 401 && errorHandler !== null) {
           errorHandler("User unauthorized");
-        } else if (rest_error.status == 404 && errorHandler !== null) {
+        } else if (rest_error.status === 404 && errorHandler !== null) {
           errorHandler("Error 404. Page not found.");
-        } else if (rest_error.status == 500 && errorHandler !== null) {
+        } else if (rest_error.status === 500 && errorHandler !== null) {
           errorHandler("Error 500. Server error.");
         } else {
           rest_error.json().then(errorMessage => {

@@ -40,7 +40,7 @@ class PermissionForm extends Component {
           self.props.appStore.companyPermissions = [];
           let roles = data.getRoles();
           let rolesList = roles.getRoleList();  
-          console.log('PermissionForm componentDidMount rolesList=', rolesList);
+//          console.log('PermissionForm componentDidMount rolesList=', rolesList);
           rolesList.forEach((item, i) => {
             const v = item.getRoleId();
             const l = item.getRoleName();

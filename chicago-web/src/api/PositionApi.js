@@ -1,5 +1,5 @@
 import FetchApi from './FetchApi'
-import { log } from 'core-js';
+
 
 const position_proto = require('models/position_pb.js');
 const positionmessages_proto = require('models/positionmessages_pb.js');

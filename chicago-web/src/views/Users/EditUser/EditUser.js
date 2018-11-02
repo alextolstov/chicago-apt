@@ -12,8 +12,6 @@ import {
   InputGroupAddon,
   InputGroupText,
   Row,
-  Table,
-  Badge
 } from 'reactstrap';
 import {AppSwitch} from '@coreui/react'
 // React select
@@ -220,7 +218,6 @@ class EditUser extends Component {
   }
 
   handleSaveRole = (event) => {
-    let self = this;
     console.log('Save Role userRole=', this.state.userRole);
     let roleArr = [];
     this.state.userRole.forEach((l, v) => { roleArr.push(l.value) });
@@ -319,6 +316,8 @@ class EditUser extends Component {
       case "employment_book_number":
         this.state.user.setEmploymentBookNumber(event.target.value);
         break;
+      default:
+        break;   
     }
     this.setState({[event.target.id]: event.target.value});
   }

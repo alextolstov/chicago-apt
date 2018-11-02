@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {
-  Alert,
   Button,
   Card,
   CardBody,
@@ -15,7 +14,7 @@ import {
   Row
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
-import config from 'react-global-configuration';
+//import config from 'react-global-configuration';
 
 const user_proto = require('models/user_pb');
 const usermessages_proto = require('models/usermessages_pb.js');
@@ -113,7 +112,7 @@ class Register extends Component {
         }
       })
       .catch(rest_error => {
-        if (rest_error.status == 500) {
+        if (rest_error.status === 500) {
           // Redirect current page to login
           this.handleError("Error 500. Server error.");
           return;
