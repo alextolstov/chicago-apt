@@ -27,7 +27,7 @@ public class PermissionDalImpl implements PermissionDal
     {
         // Get sysadmin row
         Statement query = QueryBuilder.select()
-                .from(KEYSPACE, ROLES_TABLE)
+                .from(KEYSPACE, ROLES_BY_NAME_TABLE)
                 .where(QueryBuilder.eq("role_name", "system:admin"));
         ResultSet result = _cassandraConnector.getSession().execute(query);
         Row row = result.one();

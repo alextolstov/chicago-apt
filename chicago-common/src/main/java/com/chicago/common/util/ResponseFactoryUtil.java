@@ -28,6 +28,13 @@ public class ResponseFactoryUtil
                     .setTransactionError(ErrorResponseUtil.createErrorResponse(errorCode, error))
                     .build();
         }
+        if (type.getCanonicalName().equals(Common.VoidResponse.class.getCanonicalName()))
+        {
+            return Common.VoidResponse
+                    .newBuilder()
+                    .setTransactionError(ErrorResponseUtil.createErrorResponse(errorCode, error))
+                    .build();
+        }
 
         LOG.error("Unknown message type: {}", type.getCanonicalName());
         return null;
