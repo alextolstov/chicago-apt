@@ -24,7 +24,12 @@ dependencies {
     implementation project(":chicago-ext")
     implementation project(":chicago-dto")
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVer}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVer}")
+}
+
+test {
+    useJUnitPlatform()
 }
 
 mainClassName = "com.chicago.app.ServiceMain"

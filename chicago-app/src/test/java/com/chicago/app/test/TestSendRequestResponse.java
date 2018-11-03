@@ -6,9 +6,8 @@ import com.chicago.dto.Config;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.dto.Usermessages;
 import com.google.protobuf.InvalidProtocolBufferException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 
 public class TestSendRequestResponse
@@ -38,19 +37,15 @@ public class TestSendRequestResponse
                 .build();
         try
         {
-            for(int i = 0; i < 100000; i++)
+            for (int i = 0; i < 100000; i++)
             {
                 byte[] data = comm.transaction(cur);
                 Usermessages.UserResponse resp = Usermessages.UserResponse.parseFrom(data);
                 System.out.println("Done: " + i);
             }
-        } catch (TimeoutException e)
-        {
-            e.printStackTrace();
-        } catch (InvalidProtocolBufferException e)
+        } catch (TimeoutException | InvalidProtocolBufferException e)
         {
             e.printStackTrace();
         }
-
     }
 }

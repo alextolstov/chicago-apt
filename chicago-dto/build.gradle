@@ -13,8 +13,6 @@ repositories {
 dependencies {
     implementation "com.google.protobuf:protobuf-java:${protobufVer}"
     implementation "org.apache.shiro:shiro-core:${shiroVer}"
-
-    testImplementation "junit:junit:${junitVer}"
 }
 
 protobuf {

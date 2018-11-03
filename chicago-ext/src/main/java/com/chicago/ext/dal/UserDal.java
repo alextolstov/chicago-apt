@@ -17,8 +17,6 @@ public interface UserDal
 
     void setUserPassword(String user_id, String passwordHash, byte[] passwordSalt) throws Exception;
 
-    void setUserPermissions(String userId, List<PermissionOuterClass.Role> roles, List<PermissionOuterClass.Permission> extraPermissions) throws Exception;
-
     void setUserAvatar(UserOuterClass.UserAvatar avatar) throws Exception;
 
     void setUserAddress(String userId, String addressId) throws Exception;

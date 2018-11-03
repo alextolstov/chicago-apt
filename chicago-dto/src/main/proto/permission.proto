@@ -19,3 +19,7 @@ message Role
     repeated Permission permissions = 4;
 }
 
+message Roles
+{
+    repeated Role role = 1;
+}
