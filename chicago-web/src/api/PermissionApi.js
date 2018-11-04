@@ -40,7 +40,7 @@ export default class PermissionApi {
     console.log('getUserRoles roles=', roles);
     console.log('userId=', user.getUserId());
     roles.setUserId(user.getUserId());
-    return this.permissionCrud(this.getUserRolesUrl, roles, usermessages_proto.SetUserPermissionsResponse.deserializeBinary, errorHandler);
+    return this.permissionCrud(this.getUserRolesUrl, roles, permissionmessages_proto.UserPermissionsResponse.deserializeBinary, errorHandler);
        
   }
 
