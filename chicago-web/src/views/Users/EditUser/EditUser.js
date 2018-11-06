@@ -323,10 +323,10 @@ class EditUser extends Component {
   }
 
   render() {
-    console.log("render this.state.user.",  this.state.user);
-//    console.log("render this.state.user.=",  this.state.user.getPermissionNamesList());
+//    console.log("render this.state.user=",  this.state.user);
+//    console.log("render this.state.user=",  this.state.user.getPermissionNamesList());
     let options1 = this.props.appStore.companyPositions
-    console.log("render options1=",  options1);
+//    console.log("render options1=",  options1);
 
     return (
       <div className="animated fadeIn">

@@ -37,9 +37,15 @@ export default class PermissionApi {
   
   getUserRoles(user, errorHandler) {
     let roles = new user_proto.UserPermissions();
+    // пытаюсь получить пользовательские роли 
     console.log('getUserRoles roles=', roles);
     console.log('userId=', user.getUserId());
     roles.setUserId(user.getUserId());
+
+    //  посдставляю в качестве десериализатора - usermessages_proto.SetUserPermissionsResponse.deserializeBinary
+    //  после запроса ниже приходит 42 байта - но десериализатор обнаруживает ошибку
+    //  можеn что то другое надо подставлять?
+
     return this.permissionCrud(this.getUserRolesUrl, roles, usermessages_proto.SetUserPermissionsResponse.deserializeBinary, errorHandler);
        
   }
@@ -61,7 +67,7 @@ export default class PermissionApi {
     console.log('mod roles=', roles);
   
     return this.permissionCrud(this.saveUserRoleUrl, roles, usermessages_proto.SetUserPermissionsResponse.deserializeBinary, errorHandler);
-    // сервер возвращает ошибку 500   
+    
   }
 
 
