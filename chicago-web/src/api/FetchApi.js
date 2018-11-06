@@ -19,7 +19,9 @@ export default class FetchApi {
     }).then(proto => {
       console.log('FetchApi state proto=', proto);
       let response = deserializer(proto);
-      console.log('FetchApi       Response=', response);
+      console.log('FetchApi after  deserialize=', response);
+      return response;
+/*
       if (response.getTransactionError() !== undefined) {
         console.log('FetchApi Normal  Deserialize error=', response);
         if (errorHandler !== null) {
@@ -29,6 +31,7 @@ export default class FetchApi {
         console.log('FetchApi Normal  Response=', response);
         return response;
       }
+*/      
     }).catch(rest_error => {
       if (rest_error.status === 500) {
         // Show error

@@ -45,8 +45,8 @@ export default class PermissionApi {
     //  посдставляю в качестве десериализатора - usermessages_proto.SetUserPermissionsResponse.deserializeBinary
     //  после запроса ниже приходит 42 байта - но десериализатор обнаруживает ошибку
     //  можеn что то другое надо подставлять?
-
-    return this.permissionCrud(this.getUserRolesUrl, roles, usermessages_proto.SetUserPermissionsResponse.deserializeBinary, errorHandler);
+   // UserPermissions
+    return this.permissionCrud(this.getUserRolesUrl, roles, usermessages_proto.SetUserPermissionsRequest.deserializeBinary, errorHandler);
        
   }
 
@@ -56,12 +56,15 @@ export default class PermissionApi {
     let roles = new user_proto.UserPermissions();
     roles.setUserId(user.getUserId());
 
-    let role = new permission_proto.Role(); 
- // дял пробы записываю только одну роль
-    role.setRoleId(newRoles[0]);  // у меня сохранен только id выбранной роли - надеюсь этого хватит?
     let rolesArr = [];
-    rolesArr.push(role);          // сохраняю роль в массив
- 
+    let role = [];
+    for(let i=0; i<newRoles.length; i++ ) {
+      role.push[i];
+      role[i] = new permission_proto.Role(); 
+     // для пробы записываю только одну роль
+      role[i].setRoleId(newRoles[i]);  // у меня сохранен только id выбранной роли - надеюсь этого хватит?
+      rolesArr.push(role[i]);          // сохраняю роль в массив
+    } 
   
     roles.setRolesList(rolesArr); // массив ролей в объект 
     console.log('mod roles=', roles);
