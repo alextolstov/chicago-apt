@@ -40,7 +40,8 @@
   "users.edit.address": "Адрес",
   "users.edit.newposition": "Адрес",
   "users.edit.role_management": "Роли и права",
-  
+  "users.edit.newpermission": "Новые права",
+
   "address.edit.street": "Улица",
   "address.edit.house": "Дом",
   "address.edit.building": "Корпус",

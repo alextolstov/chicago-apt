@@ -110,17 +110,18 @@ class AddressForm extends Component {
       case "country":
         this.state.address.setCountry(event.target.value);
         break;
+      default:
+        break;  
     }
     this.setState({[event.target.id]: event.target.value});
   }
 
   handleSaveAddress = (event) => {
     // Even disabled button fire event
-    if (event.target.parentNode.disabled == true) {
+    if (event.target.parentNode.disabled === true) {
       return;
     }
     this.state.address.setUserId(this.props.userId);
-    let callBack;
     let self = this;
 
     if (this.state.address.getAddressId() === "") {

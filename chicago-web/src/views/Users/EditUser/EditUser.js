@@ -12,8 +12,6 @@ import {
   InputGroupAddon,
   InputGroupText,
   Row,
-  Table,
-  Badge
 } from 'reactstrap';
 import {AppSwitch} from '@coreui/react'
 // React select
@@ -220,7 +218,6 @@ class EditUser extends Component {
   }
 
   handleSaveRole = (event) => {
-    let self = this;
     console.log('Save Role userRole=', this.state.userRole);
     let roleArr = [];
     this.state.userRole.forEach((l, v) => { roleArr.push(l.value) });
@@ -319,15 +316,17 @@ class EditUser extends Component {
       case "employment_book_number":
         this.state.user.setEmploymentBookNumber(event.target.value);
         break;
+      default:
+        break;   
     }
     this.setState({[event.target.id]: event.target.value});
   }
 
   render() {
-    console.log("render this.state.user.",  this.state.user);
-//    console.log("render this.state.user.=",  this.state.user.getPermissionNamesList());
+//    console.log("render this.state.user=",  this.state.user);
+//    console.log("render this.state.user=",  this.state.user.getPermissionNamesList());
     let options1 = this.props.appStore.companyPositions
-    console.log("render options1=",  options1);
+//    console.log("render options1=",  options1);
 
     return (
       <div className="animated fadeIn">

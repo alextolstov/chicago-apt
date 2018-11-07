@@ -22,12 +22,7 @@ import DefaultAside from './DefaultAside';
 import DefaultFooter from './DefaultFooter';
 import DefaultHeader from './DefaultHeader';
 
-const user_proto = require('models/user_pb');
-
 class DefaultLayout extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return (
