@@ -39,25 +39,31 @@ class PermissionForm extends Component {
         if (data !== undefined && data !== null) {
           self.props.appStore.companyPermissions = [];
           let roles = data.getRoles();
-          let rolesList = roles.getRoleList();  
+          let rolesList = roles.getRoleList();
 //          console.log('PermissionForm componentDidMount rolesList=', rolesList);
           rolesList.forEach((item, i) => {
             const v = item.getRoleId();
             const l = item.getRoleName();
 //            console.log('Roles i=', i, " id=", v + " name= " + l);
-            self.props.appStore.companyPermissions.push({value: v, label:l});
+            self.props.appStore.companyPermissions.push({value: v, label: l});
             self.state.permissionsArr.push([v, l]);
-         
+
           });
           // в работе сейчас пусто возвращает
-          self.state.permissionApi.getUserRoles(self.props.user, null) 
-           .then(function (data) {
+          self.state.permissionApi.getUserRoles(self.props.user, null)
+            .then(function (data) {
               console.log('!!!!!getUserRoles data = ', data);
-              
-            })  
+              let userPermissions = data.getPermissions();
+              let rolesList = userPermissions.getRolesList();
+
+              for(let i = 0; i < rolesList.length; i++) {
+                console.log(rolesList[i].getRoleId());
+              };
+
+            })
 
           self.props.readyPermission()            // setState  and render parent
-          self.setState({permissionsArr: self.state.permissionsArr}); 
+          self.setState({permissionsArr: self.state.permissionsArr});
         }
       });
   }
@@ -72,7 +78,10 @@ class PermissionForm extends Component {
         .then(function (data) {
           if (data !== undefined && data !== null) {
             let newPermission = data.getPermission();
-            self.props.appStore.companyPermissions.push({value:newPermission.getPermissionId(), label:newPermission.getDescription()});
+            self.props.appStore.companyPermissions.push({
+              value: newPermission.getPermissionId(),
+              label: newPermission.getDescription()
+            });
             self.state.permissionsArr.push([newPermission.getPositionId(), newPermission.getDescription()]);
             self.setState({permissionsArr: self.state.permissionsArr});
           }
