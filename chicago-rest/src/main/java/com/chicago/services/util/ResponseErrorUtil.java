@@ -1,28 +1,43 @@
-package com.chicago.services.util;
+package com.chicago.common.util;
 
 import com.chicago.dto.Common;
-import com.google.protobuf.InvalidProtocolBufferException;
+import com.chicago.dto.Permissionmessages;
+import com.chicago.dto.Usermessages;
 import com.google.protobuf.Message;
-import com.google.protobuf.util.JsonFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.Response;
-
-public class ResponseErrorUtil
+public class ResponseFactoryUtil
 {
-    public static Response createErrorResponse(String error, int errorCode)
+    private static final Logger LOG = LoggerFactory.getLogger(ResponseFactoryUtil.class);
+
+    public static Message createErrorResponse(String error, int errorCode, Class type)
     {
-        Common.TransactionError transactionError = Common.TransactionError.newBuilder()
-                .setErrorCode(errorCode)
-                .setErrorMessage(error)
-                .build();
-        String jsonError = null;
-        try
+        LOG.error(error);
+
+        if (type.getCanonicalName().equals(Usermessages.UserResponse.class.getCanonicalName()))
         {
-            jsonError = JsonFormat.printer().print(transactionError);
-        } catch (InvalidProtocolBufferException e1)
-        {
-            e1.printStackTrace();
+            return Usermessages.UserResponse
+                    .newBuilder()
+                    .setTransactionError(ErrorResponseUtil.createErrorResponse(errorCode, error))
+                    .build();
         }
-        return Response.serverError().entity(jsonError).type("application/json").build();
+        if (type.getCanonicalName().equals(Permissionmessages.UserPermissionsResponse.class.getCanonicalName()))
+        {
+            return Permissionmessages.UserPermissionsResponse
+                    .newBuilder()
+                    .setTransactionError(ErrorResponseUtil.createErrorResponse(errorCode, error))
+                    .build();
+        }
+        if (type.getCanonicalName().equals(Common.VoidResponse.class.getCanonicalName()))
+        {
+            return Common.VoidResponse
+                    .newBuilder()
+                    .setTransactionError(ErrorResponseUtil.createErrorResponse(errorCode, error))
+                    .build();
+        }
+
+        LOG.error("Unknown message type: {}", type.getCanonicalName());
+        return null;
     }
 }

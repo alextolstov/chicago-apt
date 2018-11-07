@@ -57,7 +57,7 @@ public class KafkaMessageConsumer extends AbstractComponent
         LOG.info("Started to consume messages from topic {}", _topicList.get(0));
         while (true)
         {
-            ConsumerRecords<byte[], byte[]> records = _consumer.poll(1000);
+            ConsumerRecords<byte[], byte[]> records = _consumer.poll(Integer.MAX_VALUE);
             LOG.debug("Got {} messages", records.count());
 
             for (ConsumerRecord<byte[], byte[]> record : records)

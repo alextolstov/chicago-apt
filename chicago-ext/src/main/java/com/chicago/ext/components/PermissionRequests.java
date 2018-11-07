@@ -67,6 +67,7 @@ public class PermissionRequests extends AbstractComponent
                     case UPDATE:
                     {
                         _permissionBll.setUserPermissions(event.getPermissions());
+                        permissionsMsg = UserOuterClass.UserPermissions.getDefaultInstance();
                         break;
                     }
                     case READ:
