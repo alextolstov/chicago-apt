@@ -29,7 +29,7 @@ export default class PositionApi {
   }
 
   getPositions(organizationId, errorHandler) {
-    console.log('getPositions par=', organizationId, errorHandler);
+  //  console.log('getPositions par=', organizationId, errorHandler);
     
     let position = new position_proto.Position();
     position.setOrganizationId(organizationId);

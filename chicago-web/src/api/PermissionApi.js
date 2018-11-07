@@ -38,8 +38,8 @@ export default class PermissionApi {
   getUserRoles(user, errorHandler) {
     let roles = new user_proto.UserPermissions();
     // пытаюсь получить пользовательские роли
-    console.log('getUserRoles roles=', roles);
-    console.log('userId=', user.getUserId());
+//    console.log('getUserRoles roles=', roles);
+//    console.log('userId=', user.getUserId());
     roles.setUserId(user.getUserId());
     return this.permissionCrud(this.getUserRolesUrl, roles, permissionmessages_proto.UserPermissionsResponse.deserializeBinary, errorHandler);
        
@@ -56,14 +56,11 @@ export default class PermissionApi {
     for(let i=0; i<newRoles.length; i++ ) {
       role.push[i];
       role[i] = new permission_proto.Role();
-     // для пробы записываю только одну роль
-      role[i].setRoleId(newRoles[i]);  // у меня сохранен только id выбранной роли - надеюсь этого хватит?
-      rolesArr.push(role[i]);          // сохраняю роль в массив
+      role[i].setRoleId(newRoles[i]);  
+      rolesArr.push(role[i]);          
     }
   
     roles.setRolesList(rolesArr); // массив ролей в объект 
-    console.log('mod roles=', roles);
-  
     return this.permissionCrud(this.saveUserRoleUrl, roles, usermessages_proto.SetUserPermissionsResponse.deserializeBinary, errorHandler);
 
   }

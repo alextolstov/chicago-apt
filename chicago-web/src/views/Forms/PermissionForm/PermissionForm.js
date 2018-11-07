@@ -12,6 +12,7 @@ import {
   InputGroupText,
   Table,
 } from 'reactstrap';
+var _ = require('lodash');
 
 const messages = defineMessages({
   positionPlace: {
@@ -28,6 +29,7 @@ class PermissionForm extends Component {
       permissionApi: props.permissionApiParent,
       organizationId: this.props.appStore.userData.getOrganizationId(),
       permissionsArr: [],
+      permissionsUserArr: [],
       permissionsMap: new Map()
     };
   }
@@ -38,32 +40,33 @@ class PermissionForm extends Component {
       .then(function (data) {
         if (data !== undefined && data !== null) {
           self.props.appStore.companyPermissions = [];
+          self.props.appStore.userPermissions = [];
           let roles = data.getRoles();
           let rolesList = roles.getRoleList();
-//          console.log('PermissionForm componentDidMount rolesList=', rolesList);
           rolesList.forEach((item, i) => {
             const v = item.getRoleId();
             const l = item.getRoleName();
-//            console.log('Roles i=', i, " id=", v + " name= " + l);
             self.props.appStore.companyPermissions.push({value: v, label: l});
-            self.state.permissionsArr.push([v, l]);
+            self.state.permissionsArr.push({value: v, label: l});
 
           });
-          // в работе сейчас пусто возвращает
           self.state.permissionApi.getUserRoles(self.props.user, null)
             .then(function (data) {
-              console.log('!!!!!getUserRoles data = ', data);
-              let userPermissions = data.getPermissions();
-              let rolesList = userPermissions.getRolesList();
+              if(data) {
+                let userPermissions = data.getPermissions();
+                let rolesList = userPermissions.getRolesList();
 
-              for(let i = 0; i < rolesList.length; i++) {
-                console.log(rolesList[i].getRoleId());
-              };
-
+                rolesList.forEach((item, i) => {
+                  const v = item.getRoleId();
+                  const lobj = _.find(self.state.permissionsArr, { value: v });
+                  const l = lobj.label;  
+                  self.props.appStore.userPermissions.push({value:v, label:l});
+                  self.state.permissionsUserArr.push({value:v, label:l});
+                });
+              } 
+              self.props.readyPermission()            // setState  and render parent
             })
 
-          self.props.readyPermission()            // setState  and render parent
-          self.setState({permissionsArr: self.state.permissionsArr});
         }
       });
   }

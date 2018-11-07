@@ -1,6 +1,6 @@
 export default class FetchApi {
   defaultFetch(url, serialized_obj, deserializer, errorHandler) {
-    console.log('FetchApi url=', url);
+ //   console.log('FetchApi url=', url);
     
     return fetch(url, {
       method: "POST",
@@ -17,21 +17,17 @@ export default class FetchApi {
       }
       return response.arrayBuffer();
     }).then(proto => {
-      console.log('FetchApi state proto=', proto);
+//      console.log('FetchApi state proto=', proto);
       let response = deserializer(proto);
-      console.log('FetchApi after  deserialize=', response);
-      return response;
-/*
       if (response.getTransactionError() !== undefined) {
-        console.log('FetchApi Normal  Deserialize error=', response);
+//        console.log('FetchApi Normal  Deserialize error=', response);
         if (errorHandler !== null) {
           errorHandler(response.getTransactionError().getErrorMessage());
         }
       } else {
-        console.log('FetchApi Normal  Response=', response);
+//        console.log('FetchApi Normal  Response=', response);
         return response;
       }
-*/      
     }).catch(rest_error => {
       if (rest_error.status === 500) {
         // Show error

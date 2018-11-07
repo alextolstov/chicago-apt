@@ -218,15 +218,9 @@ class EditUser extends Component {
   }
 
   handleSaveRole = (event) => {
-    console.log('Save Role userRole=', this.state.userRole);
     let roleArr = [];
-    this.state.userRole.forEach((l, v) => { roleArr.push(l.value) });
-    console.log('Save Role roleArr=',roleArr);
- 
+    this.props.appStore.userPermissions.forEach((l, v) => { roleArr.push(l.value) });
     this.state.permissionApi.saveUserRoles(this.state.user, roleArr, null).then(function () {
-      console.log('handleSaveRole success');
-       
-
     })
 
   }
@@ -241,8 +235,8 @@ class EditUser extends Component {
     console.log("");
   }
 
-  handleSelectChangeRole = (event) => {
-    this.setState({userRole:event});
+  handleSelectChangeRole = (value) => {
+    this.props.appStore.userPermissions = value;
   }
   handleSelectChangePosition = (event) => {
     this.setState({userPositions:event});
@@ -841,14 +835,12 @@ class EditUser extends Component {
                       <Select
                         id="permissions"
                         name="permissions"
-                        value={this.state.userRole}
+                        value={this.props.appStore.userPermissions}
                         options={this.props.appStore.companyPermissions}
                         onChange={this.handleSelectChangeRole}
                         multi
                       />
                     </Col>
-                    <button onClick={(e) => this.handleAddRole('add_permission_card', e)}><i
-                      className="icon-plus"></i></button>
                   </InputGroup>
                 </FormGroup>
               </CardBody>
