@@ -255,13 +255,7 @@ const EditUser = Loadable({
   loader: () => import('./views/Users/EditUser'),
   loading: Loading,
 });
-/*
-const ManageUsers = Loadable({
-  loader: () => import('./views/Users/ManageUsers'),
-  loading: Loading,
-});
-*/
-// https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
+
 const routes = [
   { path: '/', name: 'Home', component: DefaultLayout, exact: true },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },

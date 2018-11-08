@@ -14,7 +14,6 @@ import {
   Row
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
-//import config from 'react-global-configuration';
 
 const user_proto = require('models/user_pb');
 const usermessages_proto = require('models/usermessages_pb.js');

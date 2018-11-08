@@ -7,27 +7,10 @@ const usermessages_proto = require('models/usermessages_pb.js');
 
 export default class PermissionApi {
   constructor(){
-    this.createPermissionsUrl = '/api/permissions/create';
-    this.deletePermissionsUrl = '/api/permissions/delete';
     this.getPermissionsUrl = '/api/permissions/getsystem';
     this.getUserRolesUrl = '/api/permissions/get';
     this.saveUserRoleUrl = '/api/permissions/update';
     this.fetchApi = new FetchApi();
-  }
-
-  createPermission(organizationId, description, errorHandler) {
-    let permission = new  permission_proto.Permission();
-    permission.setOrganizationId(organizationId);
-    permission.setDescription(description);
-    return this.permissionCrud(this.createPermissionUrl, permission, permissionmessages_proto.SystemPermissionsResponse.deserializeBinary, errorHandler);
-  }
-
-  updatePermission(permission, errorHandler) {
-    return this.permissionCrud(this.updatePermissionUrl, permission, permissionmessages_proto.SystemPermissionsResponse.deserializeBinary, errorHandler);
-  }
-
-  deletePermission(organizationId, permission, errorHandler) {
-    return this.permissionCrud(this.deletePermissionUrl, permission, permissionmessages_proto.SystemPermissionsResponse.deserializeBinary, errorHandler);
   }
 
   getPermission(errorHandler) {
@@ -37,16 +20,11 @@ export default class PermissionApi {
   
   getUserRoles(user, errorHandler) {
     let roles = new user_proto.UserPermissions();
-    // пытаюсь получить пользовательские роли
-//    console.log('getUserRoles roles=', roles);
-//    console.log('userId=', user.getUserId());
     roles.setUserId(user.getUserId());
     return this.permissionCrud(this.getUserRolesUrl, roles, permissionmessages_proto.UserPermissionsResponse.deserializeBinary, errorHandler);
        
   }
 
- // user - объект пользователя
- // new roles - масссив id выбранных ролей
   saveUserRoles(user, newRoles, errorHandler) {
     let roles = new user_proto.UserPermissions();
     roles.setUserId(user.getUserId());
@@ -60,11 +38,10 @@ export default class PermissionApi {
       rolesArr.push(role[i]);          
     }
   
-    roles.setRolesList(rolesArr); // массив ролей в объект 
+    roles.setRolesList(rolesArr); 
     return this.permissionCrud(this.saveUserRoleUrl, roles, usermessages_proto.SetUserPermissionsResponse.deserializeBinary, errorHandler);
 
   }
-
 
   permissionCrud(url, userObject, deserializer, errorHandler) {
     let serialized_object = userObject.serializeBinary();

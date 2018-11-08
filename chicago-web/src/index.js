@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-//import registerServiceWorker from './registerServiceWorker';
+
 import config from 'react-global-configuration';
 import configuration from './config';
 import {IntlProvider, addLocaleData} from "react-intl";
