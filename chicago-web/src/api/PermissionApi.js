@@ -1,4 +1,5 @@
 import FetchApi from './FetchApi'
+import _ from 'lodash';
 
 const permission_proto = require('models/permission_pb.js');
 const permissionmessages_proto = require('models/permissionmessages_pb.js');
@@ -11,6 +12,7 @@ export default class PermissionApi {
     this.getUserRolesUrl = '/api/permissions/get';
     this.saveUserRoleUrl = '/api/permissions/update';
     this.fetchApi = new FetchApi();
+    this.permissionsArr = [];
   }
 
   getPermission(errorHandler) {
@@ -32,7 +34,7 @@ export default class PermissionApi {
     let rolesArr = [];
     let role = [];
     for(let i=0; i<newRoles.length; i++ ) {
-      role.push[i];
+      role.push(i);
       role[i] = new permission_proto.Role();
       role[i].setRoleId(newRoles[i]);  
       rolesArr.push(role[i]);          
@@ -42,6 +44,43 @@ export default class PermissionApi {
     return this.permissionCrud(this.saveUserRoleUrl, roles, usermessages_proto.SetUserPermissionsResponse.deserializeBinary, errorHandler);
 
   }
+ // get user Permissions and save to appStore
+  setPermissionsUser(appStore,user, callback) {
+       let self = this;
+       self.getPermission(null)
+          .then(function (data) {
+            if(data!==undefined&&data!==null) {
+              appStore.companyPermissions=[];
+              appStore.userPermissions=[];
+              let roles=data.getRoles();
+              let rolesList=roles.getRoleList();
+              rolesList.forEach((item, i) => {
+                const v=item.getRoleId();
+                const l=item.getRoleName();
+                appStore.companyPermissions.push({value: v, label: l});
+                self.permissionsArr.push({value: v, label: l});
+
+              });
+              self.getUserRoles(user, null)
+                .then(function (data) {
+                  if(data) {
+                    let userPermissions=data.getPermissions();
+                    let rolesList=userPermissions.getRolesList();
+
+                    rolesList.forEach((item, i) => {
+                      const v=item.getRoleId();
+                      const lobj=_.find(self.permissionsArr, {value: v});
+                      const l=lobj.label;
+                      appStore.userPermissions.push({value: v, label: l});
+                    });
+                  }
+                  // Redirect current page to dashboard
+                  callback();
+                })
+
+            }
+          });
+  }        
 
   permissionCrud(url, userObject, deserializer, errorHandler) {
     let serialized_object = userObject.serializeBinary();

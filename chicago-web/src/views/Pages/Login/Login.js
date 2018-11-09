@@ -19,7 +19,6 @@ import {inject} from 'mobx-react';
 import UserApi from '../../../api/UserApi';
 import PermissionApi from '../../../api/PermissionApi';
 
-import _ from 'lodash';
 
 // Localization for place holders
 const messages=defineMessages({
@@ -86,39 +85,7 @@ class Login extends Component {
         self.props.appStore.userData=user;
         window.sessionStorage.setItem("current_user", user.getUserId());
         // get Roles/Permission
-        self.state.permissionApi.getPermission(null)
-          .then(function (data) {
-            if(data!==undefined&&data!==null) {
-              self.props.appStore.companyPermissions=[];
-              self.props.appStore.userPermissions=[];
-              let roles=data.getRoles();
-              let rolesList=roles.getRoleList();
-              rolesList.forEach((item, i) => {
-                const v=item.getRoleId();
-                const l=item.getRoleName();
-                self.props.appStore.companyPermissions.push({value: v, label: l});
-                self.state.permissionsArr.push({value: v, label: l});
-
-              });
-              self.state.permissionApi.getUserRoles(user, null)
-                .then(function (data) {
-                  if(data) {
-                    let userPermissions=data.getPermissions();
-                    let rolesList=userPermissions.getRolesList();
-
-                    rolesList.forEach((item, i) => {
-                      const v=item.getRoleId();
-                      const lobj=_.find(self.state.permissionsArr, {value: v});
-                      const l=lobj.label;
-                      self.props.appStore.userPermissions.push({value: v, label: l});
-                    });
-                  }
-                  // Redirect current page to dashboard
-                  self.props.history.push("/dashbord");
-                })
-
-            }
-          });
+         self.state.permissionApi.setPermissionsUser(self.props.appStore,user, ()=> self.props.history.push("/dashbord")); 
       }
     })
   }

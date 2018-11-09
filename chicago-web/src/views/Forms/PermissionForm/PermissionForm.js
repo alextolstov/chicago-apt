@@ -12,7 +12,6 @@ import {
   InputGroupText,
   Table,
 } from 'reactstrap';
-var _ = require('lodash');
 
 const messages = defineMessages({
   positionPlace: {
@@ -36,39 +35,7 @@ class PermissionForm extends Component {
 
   componentDidMount = () => {
     let self = this;
-    this.state.permissionApi.getPermission(null)
-      .then(function (data) {
-        if (data !== undefined && data !== null) {
-          self.props.appStore.companyPermissions = [];
-          self.props.appStore.userPermissions = [];
-          let roles = data.getRoles();
-          let rolesList = roles.getRoleList();
-          rolesList.forEach((item, i) => {
-            const v = item.getRoleId();
-            const l = item.getRoleName();
-            self.props.appStore.companyPermissions.push({value: v, label: l});
-            self.state.permissionsArr.push({value: v, label: l});
-
-          });
-          self.state.permissionApi.getUserRoles(self.props.user, null)
-            .then(function (data) {
-              if(data) {
-                let userPermissions = data.getPermissions();
-                let rolesList = userPermissions.getRolesList();
-
-                rolesList.forEach((item, i) => {
-                  const v = item.getRoleId();
-                  const lobj = _.find(self.state.permissionsArr, { value: v });
-                  const l = lobj.label;  
-                  self.props.appStore.userPermissions.push({value:v, label:l});
-                  self.state.permissionsUserArr.push({value:v, label:l});
-                });
-              } 
-              self.props.readyPermission()            // setState  and render parent
-            })
-
-        }
-      });
+    self.state.permissionApi.setPermissionsUser(self.props.appStore, self.props.user, ()=> self.props.readyPermission()); 
   }
 
   handleKeyPress = (event) => {
