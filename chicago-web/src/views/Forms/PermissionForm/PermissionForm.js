@@ -13,41 +13,29 @@ import {
   Table,
 } from 'reactstrap';
 
-
 const messages = defineMessages({
   positionPlace: {
-    id: 'users.edit.newposition',
-    defaultMessage: 'New position'
+    id: 'users.edit.newpermission',
+    defaultMessage: 'New permission'
   }
 });
 
-class PositionForm extends Component {
+class PermissionForm extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      positionApi: props.positionApiParent,
+      permissionApi: props.permissionApiParent,
       organizationId: this.props.appStore.userData.getOrganizationId(),
-      positionsArr: [],
-      positionsMap: new Map()
+      permissionsArr: [],
+      permissionsUserArr: [],
+      permissionsMap: new Map()
     };
   }
 
   componentDidMount = () => {
     let self = this;
-    this.state.positionApi.getPositions(this.state.organizationId, null)
-      .then(function (data) {
-        if (data !== undefined && data !== null) {
-          self.props.appStore.companyPositions = [];
-          let positions = data.getPositions().getPositionsMap();
-
-          positions.forEach((l, v) => {
-            self.props.appStore.companyPositions.push({value:v, label:l});
-            self.state.positionsArr.push([v, l]);
-          });
-          self.props.readyPosition();           
-        }
-      });
+    self.state.permissionApi.setPermissionsUser(self.props.appStore, self.props.user, ()=> self.props.readyPermission()); 
   }
 
   handleKeyPress = (event) => {
@@ -56,20 +44,23 @@ class PositionForm extends Component {
       let val = event.target.value;
       event.target.value = "";
 
-      this.state.positionApi.createPosition(this.state.organizationId, val, null)
+      this.state.permissionApi.createPermission(this.state.organizationId, val, null)
         .then(function (data) {
           if (data !== undefined && data !== null) {
-            let newPos = data.getPosition();
-            self.props.appStore.companyPositions.push({value:newPos.getPositionId(), label:newPos.getDescription()});
-            self.state.positionsArr.push([newPos.getPositionId(), newPos.getDescription()]);
-            self.setState({positionsArr: self.state.positionsArr});
+            let newPermission = data.getPermission();
+            self.props.appStore.companyPermissions.push({
+              value: newPermission.getPermissionId(),
+              label: newPermission.getDescription()
+            });
+            self.state.permissionsArr.push([newPermission.getPositionId(), newPermission.getDescription()]);
+            self.setState({permissionsArr: self.state.permissionsArr});
           }
         });
     }
   }
 
   render() {
-    let table = this.state.positionsArr.map((r) => {
+    let table = this.state.permissionsArr.map((r) => {
       return <tr key={r[0]}>
         <td>
           <Input id={r[0]} onChange={this.handleChange} bsSize="sm" className="input-sm" defaultValue={r[1]}
@@ -82,12 +73,12 @@ class PositionForm extends Component {
     });
 
     return (
-      <Card id='add_position_card' hidden>
+      <Card id='add_permission_card' hidden>
         <CardHeader>
           <button onClick={this.saveNewPosition}>
             <i className="icon-cloud-upload"></i>
           </button>
-          <strong><FormattedMessage id="users.edit.newposition" defaultMessage="Type new position and press Enter"/></strong>
+          <strong><FormattedMessage id="users.edit.newpermission" defaultMessage="Type new permission and press Enter"/></strong>
         </CardHeader>
         <CardBody>
           {/*Position*/}
@@ -101,7 +92,7 @@ class PositionForm extends Component {
               <FormattedMessage {...messages.positionPlace}>
                 {
                   pholder => <Input onKeyPress={this.handleKeyPress}
-                                    type="text" id="new_position" name="new_position" placeholder={pholder}
+                                    type="text" id="new_permission" name="new_permission" placeholder={pholder}
                                     required/>
                 }
               </FormattedMessage>
@@ -109,7 +100,7 @@ class PositionForm extends Component {
             <Table responsive size="sm">
               <thead>
               <tr>
-                <th>Position</th>
+                <th>Permission</th>
                 <th>Delete</th>
               </tr>
               </thead>
@@ -125,4 +116,4 @@ class PositionForm extends Component {
   }
 }
 
-export default inject("appStore")(observer(PositionForm));
+export default inject("appStore")(observer(PermissionForm));

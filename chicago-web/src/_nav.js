@@ -1,5 +1,5 @@
 import React from 'react';
-import {defineMessages, FormattedMessage} from 'react-intl';
+import { FormattedMessage} from 'react-intl';
 
 export default {
   items: [
