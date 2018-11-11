@@ -1,43 +1,27 @@
-package com.chicago.common.util;
+package com.chicago.services.util;
 
 import com.chicago.dto.Common;
-import com.chicago.dto.Permissionmessages;
-import com.chicago.dto.Usermessages;
-import com.google.protobuf.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
 
-public class ResponseFactoryUtil
+import javax.ws.rs.core.Response;
+
+public class ResponseErrorUtil
 {
-    private static final Logger LOG = LoggerFactory.getLogger(ResponseFactoryUtil.class);
-
-    public static Message createErrorResponse(String error, int errorCode, Class type)
+    public static Response createErrorResponse(String error, int errorCode)
     {
-        LOG.error(error);
-
-        if (type.getCanonicalName().equals(Usermessages.UserResponse.class.getCanonicalName()))
+        Common.TransactionError transactionError = Common.TransactionError.newBuilder()
+                .setErrorCode(errorCode)
+                .setErrorMessage(error)
+                .build();
+        String jsonError = null;
+        try
         {
-            return Usermessages.UserResponse
-                    .newBuilder()
-                    .setTransactionError(ErrorResponseUtil.createErrorResponse(errorCode, error))
-                    .build();
-        }
-        if (type.getCanonicalName().equals(Permissionmessages.UserPermissionsResponse.class.getCanonicalName()))
+            jsonError = JsonFormat.printer().print(transactionError);
+        } catch (InvalidProtocolBufferException e1)
         {
-            return Permissionmessages.UserPermissionsResponse
-                    .newBuilder()
-                    .setTransactionError(ErrorResponseUtil.createErrorResponse(errorCode, error))
-                    .build();
+            e1.printStackTrace();
         }
-        if (type.getCanonicalName().equals(Common.VoidResponse.class.getCanonicalName()))
-        {
-            return Common.VoidResponse
-                    .newBuilder()
-                    .setTransactionError(ErrorResponseUtil.createErrorResponse(errorCode, error))
-                    .build();
-        }
-
-        LOG.error("Unknown message type: {}", type.getCanonicalName());
-        return null;
+        return Response.serverError().entity(jsonError).type("application/json").build();
     }
 }
