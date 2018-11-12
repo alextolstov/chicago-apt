@@ -1,6 +1,6 @@
 import React from 'react';
 import Loadable from 'react-loadable'
-import {defineMessages, FormattedMessage} from 'react-intl';
+import { FormattedMessage} from 'react-intl';
 
 import CodeEditors from './views/Editors/CodeEditors'
 import DefaultLayout from './containers/DefaultLayout';
@@ -256,12 +256,6 @@ const EditUser = Loadable({
   loading: Loading,
 });
 
-const ManageUsers = Loadable({
-  loader: () => import('./views/Users/ManageUsers'),
-  loading: Loading,
-});
-
-// https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', name: 'Home', component: DefaultLayout, exact: true },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },

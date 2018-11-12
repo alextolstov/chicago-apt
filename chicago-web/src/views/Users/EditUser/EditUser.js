@@ -12,8 +12,6 @@ import {
   InputGroupAddon,
   InputGroupText,
   Row,
-  Table,
-  Badge
 } from 'reactstrap';
 import {AppSwitch} from '@coreui/react'
 // React select
@@ -22,9 +20,11 @@ import 'react-select/dist/react-select.min.css';
 import UserApi from '../../../api/UserApi';
 import FormApi from '../../../api/FormApi';
 import PositionApi from '../../../api/PositionApi';
+import PermissionApi from '../../../api/PermissionApi';
 import DateTimeApi from '../../../api/DateTimeApi';
 import AddressForm from '../../Forms/AddressForm/AddressForm';
 import PositionForm from '../../Forms/PositionForm/PositionForm';
+import PermissionForm from '../../Forms/PermissionForm/PermissionForm';
 import RegisterForm from '../../Forms/RegisterForm/RegisterForm';
 
 const jspb = require('google-protobuf');
@@ -94,7 +94,12 @@ const messages = defineMessages({
   passportPlace: {
     id: 'users.edit.passport',
     defaultMessage: 'Passport'
+  },
+  role: {
+    id: 'users.edit.role',
+    defaultMessage: 'Role'
   }
+
 });
 
 class EditUser extends Component {
@@ -105,12 +110,22 @@ class EditUser extends Component {
       dateTimeApi: new DateTimeApi(),
       userApi: new UserApi(),
       positionApi: new PositionApi(),
+      permissionApi: new PermissionApi(),
       formApi: new FormApi(),
 
       userPositions: [],
+      userPermissions: [],
+      userRoles: [],
+
       userId: props.match.params.id,
-      user: ""
+      user: "",
+
+      readyPosition : false,
+      readyPermission: false,
+    
     };
+    this.readyPosition = this.readyPosition.bind(this);
+    this.readyPermission = this.readyPermission.bind(this);
 
     if (this.state.userId === 'new') {
       this.state.user = new user_proto.User();
@@ -129,30 +144,45 @@ class EditUser extends Component {
     }
   }
 
-  setUncheckedState = () => {
-    if (document.getElementById('email_management_enabled').checked) {
+  setUncheckedState = (mode) => {
+    if (document.getElementById('email_management_enabled').checked === mode) {
       document.getElementById('email_management_enabled').click();
     }
-    if (document.getElementById('password_management_enabled').checked) {
+    if (document.getElementById('permission_management_enabled').checked === mode) {
+      document.getElementById('permission_management_enabled').click();
+    }
+    if (document.getElementById('password_management_enabled').checked === mode) {
       document.getElementById('password_management_enabled').click();
     }
-    if (document.getElementById('personal_info_enabled').checked) {
+    if (document.getElementById('personal_info_enabled').checked  === mode) {
       document.getElementById('personal_info_enabled').click();
     }
-    if (document.getElementById('attributes_enabled').checked) {
+    if (document.getElementById('attributes_enabled').checked  === mode) {
       document.getElementById('attributes_enabled').click();
     }
-    if (document.getElementById('address_enabled').checked) {
+    if (document.getElementById('address_enabled').checked  === mode) {
       document.getElementById('address_enabled').click();
     }
+    
+  }
+  
+  readyPosition = () => {
+    this.setState({readyPosition : true});
+  }
+
+  readyPermission  = () => {
+    this.setState({readyPermission : true});
   }
 
   componentDidMount() {
     if (this.state.userId === 'current') {
-      this.setUncheckedState();
+      this.setUncheckedState( true);
+    }
+    else
+    if (this.state.userId === 'new') {
+      this.setUncheckedState( false);
     }
   }
-
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.match.params.id !== prevState.userId) {
       return {userId: nextProps.match.params.id};
@@ -161,6 +191,11 @@ class EditUser extends Component {
   }
 
   handleAddPosition = (id, event) => {
+    let state = !document.getElementById(id).hidden;
+    document.getElementById(id).hidden = state;
+  }
+
+  handleAddRole = (id, event) => {
     let state = !document.getElementById(id).hidden;
     document.getElementById(id).hidden = state;
   }
@@ -176,11 +211,21 @@ class EditUser extends Component {
       this.state.userApi.saveUser(this.state.user, self).then(function () {
         if (self.state.userId === 'current') {
           self.props.appStore.userData = self.state.user;
-          self.setUncheckedState();
+          self.setUncheckedState(true);
         }
       });
     }
   }
+
+  handleSaveRole = (event) => {
+    let roleArr = [];
+    this.props.appStore.userPermissions.forEach((l, v) => { roleArr.push(l.value) });
+    this.state.permissionApi.saveUserRoles(this.state.user, roleArr, null).then(function () {
+    })
+
+  }
+
+
 
   handleError = (error) => {
     // TODO finish the function if neded
@@ -190,9 +235,11 @@ class EditUser extends Component {
     console.log("");
   }
 
-  handleSelectChange = (event) => {
+  handleSelectChangeRole = (value) => {
+    this.props.appStore.userPermissions = value;
+  }
+  handleSelectChangePosition = (event) => {
     this.setState({userPositions:event});
-    console.log(this.state.userPositions);
   }
 
   handleChange = (event) => {
@@ -263,11 +310,14 @@ class EditUser extends Component {
       case "employment_book_number":
         this.state.user.setEmploymentBookNumber(event.target.value);
         break;
+      default:
+        break;   
     }
     this.setState({[event.target.id]: event.target.value});
   }
 
   render() {
+
     return (
       <div className="animated fadeIn">
         <Row hidden={this.state.userId === 'new' ? false : true}>
@@ -743,7 +793,7 @@ class EditUser extends Component {
                         name="positions"
                         value={this.state.userPositions}
                         options={this.props.appStore.companyPositions}
-                        onChange={this.handleSelectChange}
+                        onChange={this.handleSelectChangePosition}
                         multi
                       />
                     </Col>
@@ -751,11 +801,48 @@ class EditUser extends Component {
                       className="icon-plus"></i></button>
                   </InputGroup>
                 </FormGroup>
-
               </CardBody>
             </Card>
+            <PositionForm positionApiParent={this.state.positionApi}  readyPosition={this.readyPosition}/>
+            <Card id="permission_card">
+              <CardHeader>
+                <button id="save_permission" onClick={this.handleSaveRole}>
+                  <i className="icon-cloud-upload"></i>
+                </button>
+                <strong><FormattedMessage id="users.edit.role_management"
+                                          defaultMessage="Role management"/></strong>
+                <div className="card-header-actions">
+                  <AppSwitch id="permission_management_enabled"
+                             onClick={(e) => this.state.formApi.handleFormEnableDisable('permission_card', e)}
+                             className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
+                             label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
+                </div>
+              </CardHeader>
+              <CardBody>
+                {/*Permission*/}
+                <FormGroup row>
+                <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="fa fa-user-plus"></i>
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Col md="10">
+                      <Select
+                        id="permissions"
+                        name="permissions"
+                        value={this.props.appStore.userPermissions}
+                        options={this.props.appStore.companyPermissions}
+                        onChange={this.handleSelectChangeRole}
+                        multi
+                      />
+                    </Col>
+                  </InputGroup>
+                </FormGroup>
+              </CardBody>
+            </Card>
+            <PermissionForm permissionApiParent={this.state.permissionApi}  readyPermission={this.readyPermission} user={this.state.user}/>
 
-            <PositionForm positionApiParent={this.state.positionApi}/>
             <AddressForm userId={this.props.appStore.userData.getUserId()}
                          addressId={this.state.user.getAddressId === undefined ? "" : this.state.user.getAddressId()}/>
           </Col>

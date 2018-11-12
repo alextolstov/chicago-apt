@@ -28,12 +28,17 @@ class PermissionForm extends Component {
       permissionApi: props.permissionApiParent,
       organizationId: this.props.appStore.userData.getOrganizationId(),
       permissionsArr: [],
+<<<<<<< HEAD
+=======
+      permissionsUserArr: [],
+>>>>>>> e2570b48344397c372493fb37f23d9db676999e6
       permissionsMap: new Map()
     };
   }
 
   componentDidMount = () => {
     let self = this;
+<<<<<<< HEAD
     this.state.permissionApi.getPermission(null)
       .then(function (data) {
         if (data !== undefined && data !== null) {
@@ -67,6 +72,9 @@ class PermissionForm extends Component {
           self.setState({permissionsArr: self.state.permissionsArr});
         }
       });
+=======
+    self.state.permissionApi.setPermissionsUser(self.props.appStore, self.props.user, ()=> self.props.readyPermission()); 
+>>>>>>> e2570b48344397c372493fb37f23d9db676999e6
   }
 
   handleKeyPress = (event) => {

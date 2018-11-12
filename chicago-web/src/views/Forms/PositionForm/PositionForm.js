@@ -13,6 +13,7 @@ import {
   Table,
 } from 'reactstrap';
 
+
 const messages = defineMessages({
   positionPlace: {
     id: 'users.edit.newposition',
@@ -44,7 +45,7 @@ class PositionForm extends Component {
             self.props.appStore.companyPositions.push({value:v, label:l});
             self.state.positionsArr.push([v, l]);
           });
-          self.setState({positionsArr: self.state.positionsArr});
+          self.props.readyPosition();           
         }
       });
   }

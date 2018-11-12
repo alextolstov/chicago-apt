@@ -46,11 +46,11 @@ export default class UserApi {
         });
       })
       .catch(rest_error => {
-        if (rest_error.status == 401 && errorHandler !== null) {
+        if (rest_error.status === 401 && errorHandler !== null) {
           errorHandler("User unauthorized");
-        } else if (rest_error.status == 404 && errorHandler !== null) {
+        } else if (rest_error.status ===404 && errorHandler !== null) {
           errorHandler("User not found or password is invalid");
-        } else if (rest_error.status == 500 && errorHandler !== null) {
+        } else if (rest_error.status === 500 && errorHandler !== null) {
           errorHandler("Server error");
         } else {
           rest_error.json().then(errorMessage => {
@@ -97,7 +97,7 @@ export default class UserApi {
   }
 
   getUser(user, errorHandler) {
-    return this.userCrud(this.getUserUrl, user);
+     return this.userCrud(this.getUserUrl, user);
   }
 
   createUser(user, errorHandler) {

@@ -17,71 +17,77 @@ import {Link} from 'react-router-dom'
 import {defineMessages, FormattedMessage} from 'react-intl';
 import {inject} from 'mobx-react';
 import UserApi from '../../../api/UserApi';
+import PermissionApi from '../../../api/PermissionApi';
+
 
 // Localization for place holders
-const messages = defineMessages({
+const messages=defineMessages({
   emailPlace: {
     id: 'login.email.placeholder',
     defaultMessage: 'Email',
   }
 });
- 
+
 class Login extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
+    this.state={
       email: "",
       password: "",
       error_text: "",
       show_error: false,
-      userApi: new UserApi()
+      userApi: new UserApi(),
+      permissionApi: new PermissionApi(),
+      permissionsArr: [],
+      permissionsUserArr: [],
+
     };
   }
 
-  handleChange = event => {
+  handleChange=event => {
     this.setState({
       [event.target.id]: event.target.value
     });
   }
 
-  handleError = error => {
+  handleError=error => {
     this.setState({show_error: true});
     this.setState({error_text: error});
   }
 
-  resetError = () => {
+  resetError=() => {
     this.setState({show_error: false});
     this.setState({error_text: ""});
   }
 
-  handleSubmit = event => {
+  handleSubmit=event => {
     event.stopPropagation();
     event.preventDefault();
     this.resetError();
 
-    if (this.state.email === "") {
+    if(this.state.email==="") {
       this.handleError("Email can't be empty");
       return;
     }
 
-    if (this.state.password === "") {
+    if(this.state.password==="") {
       this.handleError("Password can't be empty");
       return;
     }
     // Username must be lower case
-    let form = "username=" + this.state.email.toLowerCase() + "&password=" + this.state.password;
-    let self = this;
+    let form="username="+this.state.email.toLowerCase()+"&password="+this.state.password;
+    let self=this;
 
     this.state.userApi.login(form, this.state.email.toLowerCase(), this.handleError).then(function (data) {
-        if (data != null) {
-          let user = data.getUser();
-          self.props.appStore.userData = user;
-          window.sessionStorage.setItem("current_user", user.getUserId());
-          // Redirect current page to dashboard
-          self.props.history.push("/dashbord");
-        }
-      })
+      if(data!=null) {
+        let user=data.getUser();
+        self.props.appStore.userData=user;
+        window.sessionStorage.setItem("current_user", user.getUserId());
+        // get Roles/Permission
+         self.state.permissionApi.setPermissionsUser(self.props.appStore,user, ()=> self.props.history.push("/dashbord")); 
+      }
+    })
   }
 
   render() {
@@ -93,9 +99,9 @@ class Login extends Component {
               <CardGroup>
                 <Card className="p-4">
                   <CardBody>
-                    <h1><FormattedMessage id="login.short.title" defaultMessage="Login"/></h1>
+                    <h1><FormattedMessage id="login.short.title" defaultMessage="Login" /></h1>
                     <p className="text-muted"><FormattedMessage id="login.long.title"
-                                                                defaultMessage="Sign In to your account"/></p>
+                      defaultMessage="Sign In to your account" /></p>
                     <form action="/login" method="post">
                       <InputGroup className="mb-3">
                         <InputGroupAddon addonType="prepend">
@@ -106,10 +112,10 @@ class Login extends Component {
                         <FormattedMessage {...messages.emailPlace}>
                           {
                             pholder => <Input autoFocus
-                                              value={this.state.email}
-                                              id="email"
-                                              onChange={this.handleChange}
-                                              type="text" name="email" placeholder={pholder}/>
+                              value={this.state.email}
+                              id="email"
+                              onChange={this.handleChange}
+                              type="text" name="email" placeholder={pholder} />
                           }
                         </FormattedMessage>
                       </InputGroup>
@@ -120,16 +126,16 @@ class Login extends Component {
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input value={this.state.password}
-                               id="password"
-                               onChange={this.handleChange}
-                               type="password" name="password" placeholder="Password"/>
-                        <Input hidden invalid/>
+                          id="password"
+                          onChange={this.handleChange}
+                          type="password" name="password" placeholder="Password" />
+                        <Input hidden invalid />
                         <FormFeedback>{this.state.error_text}</FormFeedback>
                       </InputGroup>
                       <Row>
                         <Col xs="6">
                           <Button onClick={this.handleSubmit}
-                                  color="primary" className="px-4" type="submit">Login</Button>
+                            color="primary" className="px-4" type="submit">Login</Button>
                         </Col>
                         <Col xs="6" className="text-right">
                           <Button color="link" className="px-0">Forgot password?</Button>
