@@ -6,6 +6,7 @@ export default class FormApi {
     let buttons = Array.prototype.slice.call(el.getElementsByTagName('button'), 0);
     let inputs = Array.prototype.slice.call(el.getElementsByTagName('input'), 0);
     let all = inputs.concat(buttons);
+
     for (let i = 0; i < all.length; i++) {
       // Do not block switch
       if (event.target.id !== all[i].id) {
