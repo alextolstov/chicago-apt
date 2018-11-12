@@ -196,9 +196,7 @@ class EditUser extends Component {
   
   handleFormEnableDisable = (name) => {
      const {personal_info_enabled, attributes_enabled, permission_enabled} = this.state;
-     console.log('set handleFormEnableDisable name=',name);
      if(name === 'personal_info_enabled') {
-       console.log('set handleFormEnableDisable personal_info_enabled=',personal_info_enabled);
        this.setState({personal_info_enabled : !personal_info_enabled});
      }  
      else if( name ===  'attributes_card') {
@@ -341,8 +339,6 @@ class EditUser extends Component {
 
   render() {
     const {personal_info_enabled, attributes_enabled, permission_enabled} = this.state;
-
-    console.log('render: ', personal_info_enabled, attributes_enabled );
     
     return (
       <div className="animated fadeIn">
