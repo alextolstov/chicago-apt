@@ -69,6 +69,31 @@ public class UserController
     }
 
     @POST
+    @Path("getusers")
+    @RequiresAuthentication
+    @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
+    public Response getUsers(byte[] data)
+    {
+        Subject currentUser = SecurityUtils.getSubject();
+        try
+        {
+            UserOuterClass.UserOrganization userOrganization = UserOuterClass.UserOrganization.parseFrom(data);
+            byte[] response;
+
+            Usermessages.GetUsersRequest request = Usermessages.GetUsersRequest.newBuilder()
+                    .setOrganizationId(userOrganization.getOrganizationId())
+                    .build();
+
+            response = _asyncComm.transaction(request);
+            return Response.ok(response).build();
+        } catch (TimeoutException | InvalidProtocolBufferException e)
+        {
+            return ResponseErrorUtil.createErrorResponse(e.getMessage(),
+                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        }
+    }
+
+    @POST
     @Path("saveuser")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)

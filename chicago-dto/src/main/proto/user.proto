@@ -13,6 +13,11 @@ message UserPermissions
     repeated Permission extra_permissions = 3;
 }
 
+message UserOrganization
+{
+    string organization_id = 1;
+}
+
 message User
 {
     string user_id = 1;
