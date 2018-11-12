@@ -26,6 +26,7 @@ import AddressForm from '../../Forms/AddressForm/AddressForm';
 import PositionForm from '../../Forms/PositionForm/PositionForm';
 import PermissionForm from '../../Forms/PermissionForm/PermissionForm';
 import RegisterForm from '../../Forms/RegisterForm/RegisterForm';
+import {ToastContainer, toast} from 'react-toastify';
 
 const jspb = require('google-protobuf');
 const user_proto = require('models/user_pb');
@@ -225,6 +226,10 @@ class EditUser extends Component {
     let self = this;
     if (this.state.userId === 'new') {
       this.state.userApi.createUser(this.state.user, self);
+      toast.success('Success... ', {
+        position: toast.POSITION.BOTTOM_RIGHT
+      });    
+
     } else {// Working with existing profile
       let positionsArr = [];
       this.state.userPositions.forEach((l, v) => { positionsArr.push(l.value) });
@@ -234,6 +239,10 @@ class EditUser extends Component {
           self.props.appStore.userData = self.state.user;
           self.setUncheckedState(true);
         }
+        toast.success('Success... ', {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });    
+  
       });
     }
   }
@@ -242,6 +251,10 @@ class EditUser extends Component {
     let roleArr = [];
     this.props.appStore.userPermissions.forEach((l, v) => { roleArr.push(l.value) });
     this.state.permissionApi.saveUserRoles(this.state.user, roleArr, null).then(function () {
+      toast.success('Success... ', {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        autoClose: 1000 
+      });    
     })
 
   }

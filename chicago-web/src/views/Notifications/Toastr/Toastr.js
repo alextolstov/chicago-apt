@@ -27,7 +27,7 @@ class Toastr extends Component {
     // add type: 'success' to options
     // positioning: https://github.com/fkhadra/react-toastify#positioning-toast
     return toast.success('Success... ', {
-      position: toast.POSITION.BOTTOM_RIGHT
+      position: toast.POSITION.BOTTOM_RIGHT,
     });
   }
   info() {
