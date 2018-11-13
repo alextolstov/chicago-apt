@@ -8,6 +8,7 @@
   "menu.users.header": "Сотрудники",
   "menu.users.newuser": "Новый сотрудник",
   "menu.users.allusers": "Все сотрудники",
+  "menu.users.listusers": "Список сотрудников",
 
   "users.edit.wholename": "//",
   "users.edit.password_management": "Смена пароля",
