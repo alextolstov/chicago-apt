@@ -226,7 +226,7 @@ class EditUser extends Component {
     let self = this;
     if (this.state.userId === 'new') {
       this.state.userApi.createUser(this.state.user, self);
-      toast.success('Success... ', {
+      toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
         position: toast.POSITION.BOTTOM_RIGHT
       });    
 
@@ -239,7 +239,7 @@ class EditUser extends Component {
           self.props.appStore.userData = self.state.user;
           self.setUncheckedState(true);
         }
-        toast.success('Success... ', {
+        toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
           position: toast.POSITION.BOTTOM_RIGHT
         });    
   
@@ -251,7 +251,7 @@ class EditUser extends Component {
     let roleArr = [];
     this.props.appStore.userPermissions.forEach((l, v) => { roleArr.push(l.value) });
     this.state.permissionApi.saveUserRoles(this.state.user, roleArr, null).then(function () {
-      toast.success('Success... ', {
+      toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 1000 
       });    
