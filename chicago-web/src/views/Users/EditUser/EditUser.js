@@ -26,6 +26,7 @@ import AddressForm from '../../Forms/AddressForm/AddressForm';
 import PositionForm from '../../Forms/PositionForm/PositionForm';
 import PermissionForm from '../../Forms/PermissionForm/PermissionForm';
 import RegisterForm from '../../Forms/RegisterForm/RegisterForm';
+import {ToastContainer, toast} from 'react-toastify';
 
 const jspb = require('google-protobuf');
 const user_proto = require('models/user_pb');
@@ -122,10 +123,14 @@ class EditUser extends Component {
 
       readyPosition : false,
       readyPermission: false,
+      personal_info_enabled: false,
+      attributes_enabled: false,
+      permission_enabled: false
     
     };
     this.readyPosition = this.readyPosition.bind(this);
     this.readyPermission = this.readyPermission.bind(this);
+    this.handleFormEnableDisable = this.handleFormEnableDisable.bind(this);
 
     if (this.state.userId === 'new') {
       this.state.user = new user_proto.User();
@@ -189,7 +194,24 @@ class EditUser extends Component {
     }
     return null;
   }
+  
+  handleFormEnableDisable = (name) => {
+     const {personal_info_enabled, attributes_enabled, permission_enabled} = this.state;
+     if(name === 'personal_info_enabled') {
+       this.setState({personal_info_enabled : !personal_info_enabled});
+     }  
+     else if( name ===  'attributes_card') {
+       this.setState({attributes_enabled : !attributes_enabled});
+     }
+     else if( name ===  'permission_card') {
+      this.setState({permission_enabled : !permission_enabled});
+    }
 
+
+     
+
+  }
+  
   handleAddPosition = (id, event) => {
     let state = !document.getElementById(id).hidden;
     document.getElementById(id).hidden = state;
@@ -204,6 +226,10 @@ class EditUser extends Component {
     let self = this;
     if (this.state.userId === 'new') {
       this.state.userApi.createUser(this.state.user, self);
+      toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
+        position: toast.POSITION.BOTTOM_RIGHT
+      });    
+
     } else {// Working with existing profile
       let positionsArr = [];
       this.state.userPositions.forEach((l, v) => { positionsArr.push(l.value) });
@@ -213,6 +239,10 @@ class EditUser extends Component {
           self.props.appStore.userData = self.state.user;
           self.setUncheckedState(true);
         }
+        toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });    
+  
       });
     }
   }
@@ -221,6 +251,10 @@ class EditUser extends Component {
     let roleArr = [];
     this.props.appStore.userPermissions.forEach((l, v) => { roleArr.push(l.value) });
     this.state.permissionApi.saveUserRoles(this.state.user, roleArr, null).then(function () {
+      toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        autoClose: 1000 
+      });    
     })
 
   }
@@ -317,7 +351,8 @@ class EditUser extends Component {
   }
 
   render() {
-
+    const {personal_info_enabled, attributes_enabled, permission_enabled} = this.state;
+    
     return (
       <div className="animated fadeIn">
         <Row hidden={this.state.userId === 'new' ? false : true}>
@@ -441,7 +476,8 @@ class EditUser extends Component {
                 <strong><FormattedMessage id="users.edit.personal" defaultMessage="Personal Information"/></strong>
                 <div className="card-header-actions">
                   <AppSwitch id="personal_info_enabled"
-                             onClick={(e) => this.state.formApi.handleFormEnableDisable('personal_info_card', e)}
+                             onClick={(e) => { this.handleFormEnableDisable('personal_info_card');  
+                                               return this.state.formApi.handleFormEnableDisable('personal_info_card', e) }}
                              className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
@@ -624,7 +660,9 @@ class EditUser extends Component {
                 </button>
                 <strong><FormattedMessage id="users.edit.personal" defaultMessage="Attributes"/></strong>
                 <div className="card-header-actions">
-                  <AppSwitch id="attributes_enabled" onClick={(e) => this.state.formApi.handleFormEnableDisable('attributes_card', e)}
+                  <AppSwitch id="attributes_enabled" 
+                              onClick={(e) => { this.handleFormEnableDisable('attributes_card');  
+                                  return this.state.formApi.handleFormEnableDisable('attributes_card', e) }}
                              className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
@@ -795,9 +833,10 @@ class EditUser extends Component {
                         options={this.props.appStore.companyPositions}
                         onChange={this.handleSelectChangePosition}
                         multi
+                        disabled = {attributes_enabled}
                       />
                     </Col>
-                    <button onClick={(e) => this.handleAddPosition('add_position_card', e)}><i
+                    <button disabled = {attributes_enabled}  onClick={(e) => this.handleAddPosition('add_position_card', e)}><i
                       className="icon-plus"></i></button>
                   </InputGroup>
                 </FormGroup>
@@ -813,7 +852,9 @@ class EditUser extends Component {
                                           defaultMessage="Role management"/></strong>
                 <div className="card-header-actions">
                   <AppSwitch id="permission_management_enabled"
-                             onClick={(e) => this.state.formApi.handleFormEnableDisable('permission_card', e)}
+                             onClick={(e) => { this.handleFormEnableDisable('permission_card');  
+                                               return this.state.formApi.handleFormEnableDisable('permission_card', e) }}
+
                              className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
@@ -835,6 +876,7 @@ class EditUser extends Component {
                         options={this.props.appStore.companyPermissions}
                         onChange={this.handleSelectChangeRole}
                         multi
+                        disabled = {permission_enabled}
                       />
                     </Col>
                   </InputGroup>
