@@ -103,7 +103,7 @@ const messages = defineMessages({
 
 });
 
-class EditUser extends Component {
+class ListUser extends Component {
   constructor(props) {
     super(props);
 
@@ -894,4 +894,4 @@ class EditUser extends Component {
   }
 }
 
-export default inject("appStore")(observer(EditUser));
+export default inject("appStore")(observer(ListUser));

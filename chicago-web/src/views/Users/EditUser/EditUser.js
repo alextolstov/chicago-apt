@@ -266,7 +266,8 @@ class EditUser extends Component {
   }
 
   handleCreateUser = (event) => {
-    console.log("");
+    console.log("EditUser:handleCreateUser", this.state.user);
+    this.state.userApi.createUser(this.state.user, null);
   }
 
   handleSelectChangeRole = (value) => {
