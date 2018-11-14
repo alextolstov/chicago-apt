@@ -106,6 +106,8 @@ export default class UserApi {
     }
 
     createUser(user, errorHandler) {
+        console.log('UserApi-createUser:', user);
+        
         return this.userCrud(this.createUserUrl, user);
     }
 

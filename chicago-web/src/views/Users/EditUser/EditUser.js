@@ -131,6 +131,7 @@ class EditUser extends Component {
     this.readyPosition = this.readyPosition.bind(this);
     this.readyPermission = this.readyPermission.bind(this);
     this.handleFormEnableDisable = this.handleFormEnableDisable.bind(this);
+    this.handleChange = this.handleChange.bind(this);
 
     if (this.state.userId === 'new') {
       this.state.user = new user_proto.User();
@@ -279,6 +280,14 @@ class EditUser extends Component {
 
   handleChange = (event) => {
     switch (event.target.id) {
+      case "new_email":
+        console.log('handleChange : setEmail=', event);
+        
+        this.state.user.setEmail(event.target.value);
+        break;
+      case "password":
+        this.state.user.setPassword(event.target.value);
+      break;
       case "email":
         this.state.user.setEmail(event.target.value);
         break;
@@ -372,7 +381,7 @@ class EditUser extends Component {
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
               </CardHeader>
-              <RegisterForm/>
+              <RegisterForm handleChange = {this.handleChange}/>
             </Card>
           </Col>
         </Row>
