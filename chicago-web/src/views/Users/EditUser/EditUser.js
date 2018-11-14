@@ -291,6 +291,9 @@ class EditUser extends Component {
       case "email":
         this.state.user.setEmail(event.target.value);
         break;
+      case "whole_name":
+        this.state.user.setFirstName(event.target.value);
+        break;
       case "first_name":
         this.state.user.setFirstName(event.target.value);
         break;
