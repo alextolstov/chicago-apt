@@ -7,6 +7,7 @@ import com.chicago.ext.dal.OrganizationDal;
 import com.chicago.ext.dal.PermissionDal;
 import com.chicago.ext.dal.UserDal;
 import com.chicago.ext.dal.cassandra.PasswordNotMatchException;
+import com.chicago.ext.dal.cassandra.UserAlreadyExistsException;
 import javafx.util.Pair;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
@@ -118,7 +119,7 @@ public class UserBllImpl implements UserBll
     {
         if (_userDal.isUserExists(user.getEmail()))
         {
-            throw new Exception("User " + user.getEmail() + " already exists");
+            throw new UserAlreadyExistsException("User " + user.getEmail() + " already exists");
         }
 
         String password = user.getPassword();

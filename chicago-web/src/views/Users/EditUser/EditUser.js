@@ -266,7 +266,11 @@ class EditUser extends Component {
   }
 
   handleCreateUser = (event) => {
-    console.log("");
+    this.state.user.setEmail("test@gmail.com");
+    this.state.user.setFirstName("Aleksey");
+    this.state.user.setPassword("password");
+
+    this.state.userApi.createUser(this.state.user, null);
   }
 
   handleSelectChangeRole = (value) => {

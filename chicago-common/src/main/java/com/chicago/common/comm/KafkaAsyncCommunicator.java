@@ -51,7 +51,7 @@ public class KafkaAsyncCommunicator implements AsyncCommunicator
     {
         while (true)
         {
-            ConsumerRecords<byte[], byte[]> consumerRecords = _kafkaConsumer.poll(1000);
+            ConsumerRecords<byte[], byte[]> consumerRecords = _kafkaConsumer.poll(Integer.MAX_VALUE);
             for (ConsumerRecord<byte[], byte[]> record : consumerRecords.records(_kafkaConfig.getConsumerTopicList().get(0)))
             {
                 String transactionId = null;
