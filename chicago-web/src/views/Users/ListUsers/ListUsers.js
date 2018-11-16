@@ -7,6 +7,7 @@ import {inject, observer} from 'mobx-react/index';
 import data from './_data';
 import UserApi from '../../../api/UserApi';
 const jspb = require('google-protobuf');
+const user_proto = require('models/user_pb');
 
 class ListUsers extends Component {
     constructor(props) {
@@ -28,23 +29,44 @@ class ListUsers extends Component {
         this.state={
             data: null,
             userApi: new UserApi(),
+            optionsList: [],
         };
     }
 
     componentDidMount() {
-        console.log('ListUsers:componentDidMount appStore=', this.props.appStore);
+        console.log('usersList:componentDidMount appStore=', this.props.appStore);
         const userData=this.props.appStore.userData;
-        console.log('ListUsers:componentDidMount userData=', userData);
+        console.log('usersList:componentDidMount userData=', userData);
         const organizationId=userData.getOrganizationId();
-        console.log('ListUsers:componentDidMount organizationId=', organizationId);
-        const user = jspb.Message.cloneMessage(this.props.appStore.userData);
-        this.state.userApi.getUsers(user, (e) => {
+        console.log('usersList:componentDidMount organizationId=', organizationId);
+ //       const user = jspb.Message.cloneMessage(this.props.appStore.userData);
+ 
+        let userOrgs = new user_proto.UserOrganization();
+        const orgId=userData.getOrganizationId();
+        userOrgs.setOrganizationId(orgId);
+        let self = this;
+        this.state.userApi.getUsers(userOrgs, (e) => {
             console.log('Error load data ListUser:', e);
         }).
-        then(function (userMsg) {
-          console.log('ListUser userMsg=', userMsg);
+        then(function (usersMsg) {
+            const usersList=usersMsg.getUsersList();
+            console.log('usersList=', usersList);
+            let optionsList=[];
+            for(let i=0;i<usersList.length;i++) {
+                console.log(usersList[i].getFirstName(), usersList[i].getMiddleName(), usersList[i].getLastName());
+                optionsList.push({
+                    name: usersList[i].getFirstName()+' '+usersList[i].getMiddleName()
+                        +' '+usersList[i].getLastName(),
+                    email: usersList[i].getEmail(),
+                });
+              
+            }
+            self.setState({optionsList});
                 
-        })    
+        }).
+        catch( function (error) {
+          console.log('ListUser error:', error);
+        })   
     }
 
     render() {
@@ -62,11 +84,9 @@ class ListUsers extends Component {
                         </div>
                     </CardHeader>
                     <CardBody>
-                        <BootstrapTable data={this.table} version="4" striped hover pagination search options={this.options}>
+                        <BootstrapTable data={this.state.optionsList} version="4" striped hover pagination search options={this.options}>
                             <TableHeaderColumn dataField="name" dataSort>Name</TableHeaderColumn>
                             <TableHeaderColumn isKey dataField="email">Email</TableHeaderColumn>
-                            <TableHeaderColumn dataField="age" dataSort>Age</TableHeaderColumn>
-                            <TableHeaderColumn dataField="city" dataSort>City</TableHeaderColumn>
                         </BootstrapTable>
                     </CardBody>
                 </Card>

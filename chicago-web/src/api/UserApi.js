@@ -4,7 +4,6 @@ const user_proto = require('models/user_pb');
 const usermessages_proto = require('models/usermessages_pb.js');
 
 export default class UserApi {
-<<<<<<< HEAD
     constructor(){
         this.testAuthUrl = '/api/login/testauth';
         this.loginUrl = '/login';
@@ -15,19 +14,7 @@ export default class UserApi {
         this.getUsersUrl = '/api/users/getusers';
         this.fetchApi = new FetchApi();
     }
-=======
-  constructor(){
-    this.testAuthUrl = '/api/login/testauth';
-    this.loginUrl = '/login';
-    this.logoutUrl = '/logout';
-    this.getUserUrl = '/api/users/user';
-    this.getUsersUrl = '/api/users/getusers';
-    this.createUserUrl = '/api/users/create';
-    this.saveUserUrl = '/api/users/saveuser';
-    this.fetchApi = new FetchApi();
-  }
->>>>>>> bed08e8a812604053e9cb4d9ef4f8b04d73f7826
-
+  
     testAuth() {
         return fetch(this.testAuthUrl, {
             method: 'GET',
@@ -41,7 +28,7 @@ export default class UserApi {
             return user_id;
         });
     }
-
+    
     login(credentials, userName, errorHandler) {
         return fetch(this.loginUrl, {
             method: 'POST',
@@ -110,55 +97,29 @@ export default class UserApi {
         return this.getUser(user, errorHandler);
     }
 
+
+
     getUser(user, errorHandler) {
-        return this.userCrud(this.getUserUrl, user, errorHandler);
+        return this.userCrud(this.getUserUrl, user, usermessages_proto.UserResponse.deserializeBinary, errorHandler);
     }
 
-<<<<<<< HEAD
     getUsers(userOrganization, errorHandler) {
-        return this.userCrud(this.getUsersUrl, userOrganization, errorHandler);
+        return this.userCrud(this.getUsersUrl, userOrganization, usermessages_proto.GetUsersResponse.deserializeBinary, errorHandler);
     }
 
     createUser(user, errorHandler) {
-        console.log('UserApi-createUser:', user);
-        
-        return this.userCrud(this.createUserUrl, user);
+        return this.userCrud(this.createUserUrl, user, usermessages_proto.UserResponse.deserializeBinary, errorHandler);
     }
 
     saveUser(user, errorHandler) {
-        return this.userCrud(this.saveUserUrl, user, errorHandler);
+        return this.userCrud(this.saveUserUrl, user, usermessages_proto.UserResponse.deserializeBinary, errorHandler);
     }
 
-    userCrud(url, userObject, errorHandler) {
+    userCrud(url, userObject, deserializer, errorHandler) {
         let serialized_object = userObject.serializeBinary();
         return this.fetchApi.defaultFetch(url,
             serialized_object,
-            usermessages_proto.UserResponse.deserializeBinary,
+            deserializer,
             errorHandler);
     }
-=======
-  getUser(user, errorHandler) {
-     return this.userCrud(this.getUserUrl, user, usermessages_proto.UserResponse.deserializeBinary, errorHandler);
-  }
-
-  getUsers(userOrganization, errorHandler) {
-    return this.userCrud(this.getUsersUrl, userOrganization, usermessages_proto.GetUsersResponse.deserializeBinary, errorHandler);
-  }
-
-  createUser(user, errorHandler) {
-    return this.userCrud(this.createUserUrl, user, usermessages_proto.UserResponse.deserializeBinary, errorHandler);
-  }
-
-  saveUser(user, errorHandler) {
-    return this.userCrud(this.saveUserUrl, user, usermessages_proto.UserResponse.deserializeBinary, errorHandler);
-  }
-
-  userCrud(url, userObject, deserializer, errorHandler) {
-    let serialized_object = userObject.serializeBinary();
-    return this.fetchApi.defaultFetch(url,
-      serialized_object,
-      deserializer,
-      errorHandler);
-  }
->>>>>>> bed08e8a812604053e9cb4d9ef4f8b04d73f7826
 }

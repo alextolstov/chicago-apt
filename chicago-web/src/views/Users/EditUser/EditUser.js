@@ -269,27 +269,15 @@ class EditUser extends Component {
   }
 
   handleCreateUser = (event) => {
-<<<<<<< HEAD
+ /*
     console.log("EditUser:handleCreateUser", this.state.user);
     console.log("EditUser:handleCreateUser loginUser", this.state.loginUser);
     console.log("EditUser:handleCreateUser LastName/OrganizationId=", this.state.loginUser.getLastName(),
-                this.state.loginUser.getOrganizationId());
+     this.state.loginUser.getOrganizationId());
+ */    
     this.state.user.setOrganizationId(this.state.loginUser.getOrganizationId());
     this.state.userApi.createUser(this.state.user, (e) => { console.log('Error Create User:',e);
     });
-=======
-    // Создать нового
-    // this.state.user.setEmail("test@gmail.com");
-    // this.state.user.setFirstName("Aleksey");
-    // this.state.user.setPassword("password");
-    // this.state.userApi.createUser(this.state.user, null);
-
-    // получить список в организации
-    let userOrgs = new user_proto.UserOrganization();
-    let orgId = this.state.user.getOrganizationId();
-    userOrgs.setOrganizationId(orgId);
-    this.state.userApi.getUsers(userOrgs, null);
->>>>>>> bed08e8a812604053e9cb4d9ef4f8b04d73f7826
   }
 
   handleSelectChangeRole = (value) => {
