@@ -98,11 +98,11 @@ export default class UserApi {
     }
 
     getUser(user, errorHandler) {
-        return this.userCrud(this.getUserUrl, user);
+        return this.userCrud(this.getUserUrl, user, errorHandler);
     }
 
     getUsers(userOrganization, errorHandler) {
-        return this.userCrud(this.getUsersUrl, userOrganization);
+        return this.userCrud(this.getUsersUrl, userOrganization, errorHandler);
     }
 
     createUser(user, errorHandler) {

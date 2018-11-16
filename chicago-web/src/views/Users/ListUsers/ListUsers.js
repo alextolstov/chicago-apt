@@ -6,14 +6,14 @@ import {inject, observer} from 'mobx-react/index';
 
 import data from './_data';
 import UserApi from '../../../api/UserApi';
-
+const jspb = require('google-protobuf');
 
 class ListUsers extends Component {
     constructor(props) {
         super(props);
 
         this.table=data.rows;
-        this.userApi=new UserApi();
+  //      this.userApi=new UserApi();
  
         this.options={
             sortIndicator: true,
@@ -27,6 +27,7 @@ class ListUsers extends Component {
 
         this.state={
             data: null,
+            userApi: new UserApi(),
         };
     }
 
@@ -36,12 +37,14 @@ class ListUsers extends Component {
         console.log('ListUsers:componentDidMount userData=', userData);
         const organizationId=userData.getOrganizationId();
         console.log('ListUsers:componentDidMount organizationId=', organizationId);
-        /*   
-    this.UserApi.getUserById(this.state.userId, this.handleError).
-      then(function (userMsg) {
-      if (userMsg != null) {
-        self.state.user = userMsg.getUser();
-  */
+        const user = jspb.Message.cloneMessage(this.props.appStore.userData);
+        this.state.userApi.getUsers(user, (e) => {
+            console.log('Error load data ListUser:', e);
+        }).
+        then(function (userMsg) {
+          console.log('ListUser userMsg=', userMsg);
+                
+        })    
     }
 
     render() {

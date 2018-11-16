@@ -120,6 +120,7 @@ class EditUser extends Component {
 
       userId: props.match.params.id,
       user: "",
+      loginUser: null,
 
       readyPosition : false,
       readyPermission: false,
@@ -133,6 +134,7 @@ class EditUser extends Component {
     this.handleFormEnableDisable = this.handleFormEnableDisable.bind(this);
     this.handleChange = this.handleChange.bind(this);
 
+    this.state.loginUser = jspb.Message.cloneMessage(this.props.appStore.userData);
     if (this.state.userId === 'new') {
       this.state.user = new user_proto.User();
     }
@@ -268,7 +270,12 @@ class EditUser extends Component {
 
   handleCreateUser = (event) => {
     console.log("EditUser:handleCreateUser", this.state.user);
-    this.state.userApi.createUser(this.state.user, null);
+    console.log("EditUser:handleCreateUser loginUser", this.state.loginUser);
+    console.log("EditUser:handleCreateUser LastName/OrganizationId=", this.state.loginUser.getLastName(),
+                this.state.loginUser.getOrganizationId());
+    this.state.user.setOrganizationId(this.state.loginUser.getOrganizationId());
+    this.state.userApi.createUser(this.state.user, (e) => { console.log('Error Create User:',e);
+    });
   }
 
   handleSelectChangeRole = (value) => {
