@@ -72,7 +72,9 @@ class ListUsers extends Component {
     render() {
 
         return (
-            <div className="animated">
+            <div class="row">
+            <div class="col">
+                <div className="animated">
                 <Card>
                     <CardHeader>
                         <i className="icon-menu"></i>Data Table{' '}
@@ -90,6 +92,11 @@ class ListUsers extends Component {
                         </BootstrapTable>
                     </CardBody>
                 </Card>
+                </div>
+            </div>
+            <div class="col">
+              1/2
+            </div>
             </div>
         );
     }
