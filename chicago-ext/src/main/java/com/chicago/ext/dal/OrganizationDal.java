@@ -9,4 +9,6 @@ public interface OrganizationDal
     String createCompany(Organization.Company company);
 
     String createBranch(Organization.Branch branch);
+
+    void addUserToCompany(String userId, String organizationId);
 }

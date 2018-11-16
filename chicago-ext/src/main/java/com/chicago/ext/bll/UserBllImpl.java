@@ -29,6 +29,7 @@ public class UserBllImpl implements UserBll
     @Inject
     private OrganizationDal _organizationDal;
 
+    @Override
     public UserOuterClass.User createAdminUser(UserOuterClass.User user) throws Exception
     {
         if (_userDal.isUserExists(user.getEmail()))
@@ -48,7 +49,10 @@ public class UserBllImpl implements UserBll
                 .setOrganizationId(companyId)
                 .build();
         UserOuterClass.User newUser = createUser(user, false);
-        LOG.info("New user created userId {}", newUser.getUserId());
+        LOG.info("New admin user created userId {}", newUser.getUserId());
+
+        _organizationDal.addUserToCompany(newUser.getUserId(), companyId);
+        LOG.info("New admin user added to companyId {}", companyId);
 
         // Finally turn user to system admin and return with permissions
         Set<String> permissionNames = _permissionDal.setSystemAdminRole(newUser.getUserId());
@@ -57,9 +61,13 @@ public class UserBllImpl implements UserBll
                 .build();
     }
 
+    @Override
     public UserOuterClass.User createStandardUser(UserOuterClass.User newUser) throws Exception
     {
-        return createUser(newUser, true);
+        UserOuterClass.User updatedUser = createUser(newUser, true);
+        _organizationDal.addUserToCompany(updatedUser.getUserId(), updatedUser.getOrganizationId());
+        LOG.info("New standard user added to companyId {}", updatedUser.getOrganizationId());
+        return updatedUser;
     }
 
     @Override
@@ -69,6 +77,7 @@ public class UserBllImpl implements UserBll
         _userDal.setUserAvatar(avatar);
     }
 
+    @Override
     public UserOuterClass.User authUser(String email, String password) throws Exception
     {
         LOG.info("Called for user: {}", email);

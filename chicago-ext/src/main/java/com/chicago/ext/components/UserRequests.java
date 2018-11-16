@@ -37,6 +37,7 @@ public class UserRequests extends AbstractComponent
         // Response
         KafkaMessageProducer producer = cm.getResource(KafkaMessageProducer.class.getName());
         _ed.registerHandler(Usermessages.UserResponse.class, producer.new MessageEventHandler());
+        _ed.registerHandler(Usermessages.GetUsersResponse.class, producer.new MessageEventHandler());
     }
 
     public boolean init(ConfigAccessor ca)

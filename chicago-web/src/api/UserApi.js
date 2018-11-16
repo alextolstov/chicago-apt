@@ -9,6 +9,7 @@ export default class UserApi {
     this.loginUrl = '/login';
     this.logoutUrl = '/logout';
     this.getUserUrl = '/api/users/user';
+    this.getUsersUrl = '/api/users/getusers';
     this.createUserUrl = '/api/users/create';
     this.saveUserUrl = '/api/users/saveuser';
     this.fetchApi = new FetchApi();
@@ -97,22 +98,26 @@ export default class UserApi {
   }
 
   getUser(user, errorHandler) {
-     return this.userCrud(this.getUserUrl, user, errorHandler);
+     return this.userCrud(this.getUserUrl, user, usermessages_proto.UserResponse.deserializeBinary, errorHandler);
+  }
+
+  getUsers(userOrganization, errorHandler) {
+    return this.userCrud(this.getUsersUrl, userOrganization, usermessages_proto.GetUsersResponse.deserializeBinary, errorHandler);
   }
 
   createUser(user, errorHandler) {
-    return this.userCrud(this.createUserUrl, user, errorHandler);
+    return this.userCrud(this.createUserUrl, user, usermessages_proto.UserResponse.deserializeBinary, errorHandler);
   }
 
   saveUser(user, errorHandler) {
-    return this.userCrud(this.saveUserUrl, user, errorHandler);
+    return this.userCrud(this.saveUserUrl, user, usermessages_proto.UserResponse.deserializeBinary, errorHandler);
   }
 
-  userCrud(url, userObject, errorHandler) {
+  userCrud(url, userObject, deserializer, errorHandler) {
     let serialized_object = userObject.serializeBinary();
     return this.fetchApi.defaultFetch(url,
       serialized_object,
-      usermessages_proto.UserResponse.deserializeBinary,
+      deserializer,
       errorHandler);
   }
 }

@@ -266,11 +266,17 @@ class EditUser extends Component {
   }
 
   handleCreateUser = (event) => {
-    this.state.user.setEmail("test@gmail.com");
-    this.state.user.setFirstName("Aleksey");
-    this.state.user.setPassword("password");
+    // Создать нового
+    // this.state.user.setEmail("test@gmail.com");
+    // this.state.user.setFirstName("Aleksey");
+    // this.state.user.setPassword("password");
+    // this.state.userApi.createUser(this.state.user, null);
 
-    this.state.userApi.createUser(this.state.user, null);
+    // получить список в организации
+    let userOrgs = new user_proto.UserOrganization();
+    let orgId = this.state.user.getOrganizationId();
+    userOrgs.setOrganizationId(orgId);
+    this.state.userApi.getUsers(userOrgs, null);
   }
 
   handleSelectChangeRole = (value) => {
