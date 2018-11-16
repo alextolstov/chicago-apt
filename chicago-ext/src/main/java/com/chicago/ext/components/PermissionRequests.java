@@ -7,10 +7,9 @@ import com.chicago.common.core.ComponentManager;
 import com.chicago.common.core.ConfigAccessor;
 import com.chicago.common.core.EventBase;
 import com.chicago.common.core.EventHandler;
-import com.chicago.common.util.ResponseFactoryUtil;
+import com.chicago.ext.util.ResponseFactoryUtil;
 import com.chicago.dto.PermissionOuterClass;
 import com.chicago.dto.Permissionmessages;
-import com.chicago.dto.Positionmessages;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.ext.bll.PermissionBll;
 import com.google.protobuf.Message;
@@ -84,8 +83,7 @@ public class PermissionRequests extends AbstractComponent
 
             } catch (Exception ex)
             {
-                response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                        Permissionmessages.UserPermissionsResponse.class);
+                response = ResponseFactoryUtil.createErrorResponse(ex, Permissionmessages.UserPermissionsResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
             LOG.info("Published real-time response on request with transaction id: {}", transactionId);
@@ -109,8 +107,7 @@ public class PermissionRequests extends AbstractComponent
 
             } catch (Exception ex)
             {
-                response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                        Permissionmessages.SystemPermissionsResponse.class);
+                response = ResponseFactoryUtil.createErrorResponse(ex, Permissionmessages.SystemPermissionsResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
             LOG.info("Published real-time response on request with transaction id: {}", transactionId);

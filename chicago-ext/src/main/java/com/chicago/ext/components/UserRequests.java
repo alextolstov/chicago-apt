@@ -2,7 +2,7 @@ package com.chicago.ext.components;
 
 import com.chicago.common.components.kafka.KafkaMessageProducer;
 import com.chicago.common.core.*;
-import com.chicago.common.util.ResponseFactoryUtil;
+import com.chicago.ext.util.ResponseFactoryUtil;
 import com.chicago.dto.Common;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.dto.Usermessages;
@@ -37,6 +37,7 @@ public class UserRequests extends AbstractComponent
         // Response
         KafkaMessageProducer producer = cm.getResource(KafkaMessageProducer.class.getName());
         _ed.registerHandler(Usermessages.UserResponse.class, producer.new MessageEventHandler());
+        _ed.registerHandler(Usermessages.GetUsersResponse.class, producer.new MessageEventHandler());
     }
 
     public boolean init(ConfigAccessor ca)
@@ -66,10 +67,10 @@ public class UserRequests extends AbstractComponent
                 response = Common.VoidResponse
                         .newBuilder()
                         .build();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                        Common.VoidResponse.class);
+                response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
             LOG.info("Published real-time response on request with transaction id: {}", transactionId);
@@ -91,10 +92,10 @@ public class UserRequests extends AbstractComponent
                 response = Common.VoidResponse
                         .newBuilder()
                         .build();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                        Common.VoidResponse.class);
+                response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
             LOG.info("Published real-time response on request with transaction id: {}", transactionId);
@@ -152,10 +153,10 @@ public class UserRequests extends AbstractComponent
                         .newBuilder()
                         .setUser(user)
                         .build();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                        Usermessages.UserResponse.class);
+                response = ResponseFactoryUtil.createErrorResponse(ex, Usermessages.UserResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
             LOG.info("Published real-time response on request with transaction id: {}", transactionId);
@@ -177,10 +178,10 @@ public class UserRequests extends AbstractComponent
                         .newBuilder()
                         .addAllUsers(users)
                         .build();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                        Usermessages.UserResponse.class);
+                response = ResponseFactoryUtil.createErrorResponse(ex, Usermessages.UserResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
             LOG.info("Published real-time response on request with transaction id: {}", transactionId);
@@ -202,18 +203,10 @@ public class UserRequests extends AbstractComponent
                         .newBuilder()
                         .setUser(user)
                         .build();
-            } catch (UserNotFoundException ex)
+            }
+            catch (Exception ex)
             {
-                response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_NOT_FOUND,
-                        Usermessages.UserResponse.class);
-            } catch (PasswordNotMatchException ex)
-            {
-                response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_UNAUTHORIZED,
-                        Usermessages.UserResponse.class);
-            } catch (Exception ex)
-            {
-                response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                        Usermessages.UserResponse.class);
+                response = ResponseFactoryUtil.createErrorResponse(ex, Usermessages.UserResponse.class);
             }
 
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));

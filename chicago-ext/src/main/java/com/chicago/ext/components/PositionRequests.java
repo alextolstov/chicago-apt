@@ -2,7 +2,7 @@ package com.chicago.ext.components;
 
 import com.chicago.common.components.kafka.KafkaMessageProducer;
 import com.chicago.common.core.*;
-import com.chicago.common.util.ResponseFactoryUtil;
+import com.chicago.ext.util.ResponseFactoryUtil;
 import com.chicago.dto.Common;
 import com.chicago.dto.PositionOuterClass;
 import com.chicago.dto.Positionmessages;
@@ -98,8 +98,7 @@ public class PositionRequests extends AbstractComponent
                 }
             } catch (Exception ex)
             {
-                response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                        Usermessages.UserResponse.class);
+                response = ResponseFactoryUtil.createErrorResponse(ex, Usermessages.UserResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
             LOG.info("Published real-time response on request with transaction id: {}", transactionId);

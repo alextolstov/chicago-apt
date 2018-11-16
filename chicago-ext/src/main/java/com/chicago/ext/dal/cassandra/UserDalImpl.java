@@ -211,12 +211,12 @@ public class UserDalImpl implements UserDal
         return users;
     }
 
-    private List<UUID> getOrganizationUsers(String tableName, String organizationId)
+    private List<UUID> getOrganizationUsers(String organizationId, String tableName)
     {
         List<UUID> users = new ArrayList<>();
         Statement query = QueryBuilder.select("users")
                 .from(KEYSPACE, tableName)
-                .where(QueryBuilder.eq("holding_id", UUID.fromString(organizationId)));
+                .where(QueryBuilder.eq("organization_id", UUID.fromString(organizationId)));
         ResultSet result = _cassandraConnector.getSession().execute(query);
         Row row = result.one();
 

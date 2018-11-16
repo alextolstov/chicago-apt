@@ -113,7 +113,7 @@ public class UserController
     @POST
     @Path("create")
     @RequiresAuthentication
-    @RequiresPermissions("user:create")
+//    @RequiresPermissions("user:create")
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response createStandardUser(byte[] data)
     {

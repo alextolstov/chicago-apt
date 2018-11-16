@@ -7,7 +7,7 @@ import com.chicago.common.core.ComponentManager;
 import com.chicago.common.core.ConfigAccessor;
 import com.chicago.common.core.EventBase;
 import com.chicago.common.core.EventHandler;
-import com.chicago.common.util.ResponseFactoryUtil;
+import com.chicago.ext.util.ResponseFactoryUtil;
 import com.chicago.dto.AddressOuterClass;
 import com.chicago.dto.Addressmessages;
 import com.chicago.dto.Usermessages;
@@ -87,8 +87,7 @@ public class AddressRequests extends AbstractComponent
                         .build();
             } catch (Exception ex)
             {
-                response = ResponseFactoryUtil.createErrorResponse(ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                        Usermessages.UserResponse.class);
+                response = ResponseFactoryUtil.createErrorResponse(ex, Usermessages.UserResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
             LOG.info("Published real-time response on request with transaction id: {}", transactionId);

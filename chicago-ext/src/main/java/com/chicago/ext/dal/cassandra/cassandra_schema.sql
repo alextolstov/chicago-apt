@@ -1,7 +1,7 @@
 CREATE KEYSPACE ChicagoErp  WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Holdings (
-    holding_id uuid PRIMARY KEY,
+    organization_id uuid PRIMARY KEY,
     name varchar,
     description varchar,
     web_site varchar,
@@ -14,12 +14,12 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Holdings (
     create_datetime timestamp);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Companies(
-    company_id uuid PRIMARY KEY,
+    organization_id uuid PRIMARY KEY,
     name varchar,
     description varchar,
     web_site varchar,
     email_domain varchar,
-    holding_id uuid,
+    parent_organization_id uuid,
     phones set<varchar>,
     fax set<varchar>,
     users set<uuid>,
@@ -28,10 +28,10 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Companies(
     create_datetime timestamp);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Branches(
-    branch_id uuid PRIMARY KEY,
+    organization_id uuid PRIMARY KEY,
     name varchar,
     description varchar,
-    company_id uuid,
+    parent_organization_id uuid,
     phones set<varchar>,
     fax set<varchar>,
     users set<uuid>,
