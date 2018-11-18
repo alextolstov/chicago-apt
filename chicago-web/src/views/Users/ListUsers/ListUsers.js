@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {Card, CardHeader, CardBody} from 'reactstrap';
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-import 'react-bootstrap-table/dist//react-bootstrap-table-all.min.css';
+import BootstrapTable  from 'react-bootstrap-table-next';
+
 import {inject, observer} from 'mobx-react/index';
+
 
 import data from './_data';
 import UserApi from '../../../api/UserApi';
@@ -30,6 +31,14 @@ class ListUsers extends Component {
             data: null,
             userApi: new UserApi(),
             optionsList: [],
+              columns: [{
+                dataField: 'name',
+                text: 'Name'
+              },{
+                dataField: 'email',
+                text: 'Email',
+                sort: true
+              }],
         };
     }
 
@@ -68,16 +77,15 @@ class ListUsers extends Component {
           console.log('ListUser error:', error);
         })   
     }
-
     render() {
 
         return (
-            <div class="row">
-            <div class="col">
+            <div className="row">
+            <div className="col">
                 <div className="animated">
                 <Card>
                     <CardHeader>
-                        <i className="icon-menu"></i>Data Table{' '}
+                        <i className="icon-menu"></i>React-bootstrap-table2{' '}
                         <a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
                         <div className="card-header-actions">
                             <a href="https://github.com/AllenFang/react-bootstrap-table" rel="noopener noreferrer" target="_blank" className="card-header-action">
@@ -86,15 +94,18 @@ class ListUsers extends Component {
                         </div>
                     </CardHeader>
                     <CardBody>
-                        <BootstrapTable data={this.state.optionsList} version="4" striped hover pagination search options={this.options}>
-                            <TableHeaderColumn dataField="name" dataSort>Name</TableHeaderColumn>
-                            <TableHeaderColumn isKey dataField="email">Email</TableHeaderColumn>
-                        </BootstrapTable>
+                    <BootstrapTable
+                            striped
+                            hover
+                            keyField='email' 
+                            data={ this.state.optionsList } 
+                            columns={this.state.columns}
+                        />            
                     </CardBody>
                 </Card>
                 </div>
             </div>
-            <div class="col">
+            <div className="col">
               1/2
             </div>
             </div>
