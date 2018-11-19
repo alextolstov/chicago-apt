@@ -10,13 +10,25 @@ import UserApi from '../../../api/UserApi';
 const jspb = require('google-protobuf');
 const user_proto = require('models/user_pb');
 
+
+
 class ListUsers extends Component {
     constructor(props) {
         super(props);
 
         this.table=data.rows;
   //      this.userApi=new UserApi();
- 
+        this.rowEvents = {
+          onClick: (e, row, rowIndex) => {
+              console.log('clicked on row:', row);
+              console.log(`clicked on row  with index: ${rowIndex}`);
+              this.setState({selected: row.name});
+          },
+          onMouseEnter: (e, row, rowIndex) => {
+            // console.log(`enter on row with index: ${rowIndex}`);
+          }
+        };
+
         this.options={
             sortIndicator: true,
             hideSizePerPage: true,
@@ -30,6 +42,7 @@ class ListUsers extends Component {
         this.state={
             data: null,
             userApi: new UserApi(),
+            selected: null,
             optionsList: [],
               columns: [{
                 dataField: 'name',
@@ -41,16 +54,14 @@ class ListUsers extends Component {
               }],
         };
     }
-
     componentDidMount() {
         console.log('usersList:componentDidMount appStore=', this.props.appStore);
         const userData=this.props.appStore.userData;
         console.log('usersList:componentDidMount userData=', userData);
         const organizationId=userData.getOrganizationId();
         console.log('usersList:componentDidMount organizationId=', organizationId);
- //       const user = jspb.Message.cloneMessage(this.props.appStore.userData);
- 
-        let userOrgs = new user_proto.UserOrganization();
+
+        let userOrgs=new user_proto.UserOrganization();
         const orgId=userData.getOrganizationId();
         userOrgs.setOrganizationId(orgId);
         let self = this;
@@ -62,8 +73,10 @@ class ListUsers extends Component {
             console.log('usersList=', usersList);
             let optionsList=[];
             for(let i=0;i<usersList.length;i++) {
+                console.log(usersList[i]);
                 console.log(usersList[i].getFirstName(), usersList[i].getMiddleName(), usersList[i].getLastName());
                 optionsList.push({
+                    id:usersList[i].getUserId(),
                     name: usersList[i].getFirstName()+' '+usersList[i].getMiddleName()
                         +' '+usersList[i].getLastName(),
                     email: usersList[i].getEmail(),
@@ -81,7 +94,7 @@ class ListUsers extends Component {
 
         return (
             <div className="row">
-            <div className="col">
+            <div className="col-4">
                 <div className="animated">
                 <Card>
                     <CardHeader>
@@ -94,19 +107,20 @@ class ListUsers extends Component {
                         </div>
                     </CardHeader>
                     <CardBody>
-                    <BootstrapTable
+                        <BootstrapTable
                             striped
                             hover
                             keyField='email' 
                             data={ this.state.optionsList } 
                             columns={this.state.columns}
+                            rowEvents={ this.rowEvents }
                         />            
                     </CardBody>
                 </Card>
                 </div>
             </div>
-            <div className="col">
-              1/2
+            <div className="col-8">
+                    {this.state.selected}
             </div>
             </div>
         );
