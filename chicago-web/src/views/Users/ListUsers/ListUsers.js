@@ -7,6 +7,10 @@ import {inject, observer} from 'mobx-react/index';
 
 import data from './_data';
 import UserApi from '../../../api/UserApi';
+
+import EditUser from '../EditUser';
+
+
 const jspb = require('google-protobuf');
 const user_proto = require('models/user_pb');
 
@@ -22,7 +26,7 @@ class ListUsers extends Component {
           onClick: (e, row, rowIndex) => {
               console.log('clicked on row:', row);
               console.log(`clicked on row  with index: ${rowIndex}`);
-              this.setState({selected: row.name});
+              this.setState({selected: row});
           },
           onMouseEnter: (e, row, rowIndex) => {
             // console.log(`enter on row with index: ${rowIndex}`);
@@ -42,7 +46,9 @@ class ListUsers extends Component {
         this.state={
             data: null,
             userApi: new UserApi(),
-            selected: null,
+            selected: { id : 'current',
+                        name: '',
+                      },
             optionsList: [],
               columns: [{
                 dataField: 'name',
@@ -92,6 +98,7 @@ class ListUsers extends Component {
     }
     render() {
 
+
         return (
             <div className="row">
             <div className="col-4">
@@ -120,7 +127,8 @@ class ListUsers extends Component {
                 </div>
             </div>
             <div className="col-8">
-                    {this.state.selected}
+                {this.state.selected.name}
+                <EditUser userId={this.state.selected.id}/>
             </div>
             </div>
         );

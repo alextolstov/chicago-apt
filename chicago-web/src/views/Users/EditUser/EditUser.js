@@ -118,7 +118,7 @@ class EditUser extends Component {
       userPermissions: [],
       userRoles: [],
 
-      userId: props.match.params.id,
+      userId: (props.match && props.match.params) ? props.match.params.id : props.userId,
       user: "",
       loginUser: null,
 
@@ -183,6 +183,8 @@ class EditUser extends Component {
   }
 
   componentDidMount() {
+    console.log('!!!EditUser:componentDidMount');
+    
     if (this.state.userId === 'current') {
       this.setUncheckedState( true);
     }
@@ -190,11 +192,53 @@ class EditUser extends Component {
     if (this.state.userId === 'new') {
       this.setUncheckedState( false);
     }
+    // ge User
+    this.state.loginUser = jspb.Message.cloneMessage(this.props.appStore.userData);
+    if (this.state.userId === 'new') {
+      this.state.user = new user_proto.User();
+    }
+    else if (this.state.userId === 'current') {
+      this.state.user = jspb.Message.cloneMessage(this.props.appStore.userData);
+      this.state.userPositions = this.state.user.getPositionsList();
+    }
+    else {
+      let self = this;
+      new UserApi().getUserById(this.state.userId, this.handleError).then(function (userMsg) {
+        if (userMsg != null) {
+          self.state.user = userMsg.getUser();
+        }
+      })
+    }
   }
+
+  componentDidUpdate() {
+    console.log('!!!EditUser:componentDidUpdate');
+ }
+
   static getDerivedStateFromProps(nextProps, prevState) {
+    console.log('EditUser:getDerivedStateFromProps=', nextProps, prevState );
+    
+ /*
     if (nextProps.match.params.id !== prevState.userId) {
       return {userId: nextProps.match.params.id};
     }
+  */  
+    if (nextProps && nextProps.match && nextProps.match.params) {
+      if(nextProps.match.params.id !== prevState.userId)
+        return {userId: nextProps.match.params.id};
+    }
+    if( nextProps.userId !== 'current' ) {
+      console.log('EditUser:getDerivedStateFromProps userId=', nextProps.userId );
+
+      // ge User
+      let user = null;
+      new UserApi().getUserById( nextProps.userId, null).then(function (userMsg) {
+        if (userMsg != null) {
+          user = userMsg.getUser();
+        }
+      })
+      return {userId: nextProps.userId, user:user};
+    }    
     return null;
   }
   
@@ -374,8 +418,10 @@ class EditUser extends Component {
 
   render() {
     const {personal_info_enabled, attributes_enabled, permission_enabled} = this.state;
-    
+    const show = (this.state.user) ? true: false;
     return (
+      <div>
+      {show &&
       <div className="animated fadeIn">
         <Row hidden={this.state.userId === 'new' ? false : true}>
           <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
@@ -911,6 +957,8 @@ class EditUser extends Component {
                          addressId={this.state.user.getAddressId === undefined ? "" : this.state.user.getAddressId()}/>
           </Col>
         </Row>
+      </div>
+      }
       </div>
     );
   }
