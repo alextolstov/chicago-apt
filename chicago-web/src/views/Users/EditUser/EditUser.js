@@ -211,12 +211,25 @@ class EditUser extends Component {
     }
   }
 
-  componentDidUpdate() {
-    console.log('!!!EditUser:componentDidUpdate');
+  componentDidUpdate(prevProps, prevState, prevContext) {
+    console.log('!!!EditUser:componentDidUpdate=', prevProps, prevState, prevContext );
+//    console.log('!!!EditUser:componentDidUpdate state=', this.state );
+    let user = null;
+    let self = this;
+    new UserApi().getUserById( this.state.userId, null).then(function (userMsg) {
+      if (userMsg != null) {
+        user = userMsg.getUser();
+        self.state.user = user;
+        self.forceUpdate();  // ?
+     //   self.setState({user:user});
+      }
+    })
+
+
  }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log('EditUser:getDerivedStateFromProps=', nextProps, prevState );
+  //  console.log('EditUser:getDerivedStateFromProps=', nextProps, prevState );
     
  /*
     if (nextProps.match.params.id !== prevState.userId) {
@@ -227,17 +240,9 @@ class EditUser extends Component {
       if(nextProps.match.params.id !== prevState.userId)
         return {userId: nextProps.match.params.id};
     }
-    if( nextProps.userId !== 'current' ) {
-      console.log('EditUser:getDerivedStateFromProps userId=', nextProps.userId );
-
-      // ge User
-      let user = null;
-      new UserApi().getUserById( nextProps.userId, null).then(function (userMsg) {
-        if (userMsg != null) {
-          user = userMsg.getUser();
-        }
-      })
-      return {userId: nextProps.userId, user:user};
+    if( nextProps.userId !== 'current' &&  nextProps.userId !== prevState.userId) {
+      console.log('getDerivedStateFromProps userId=', nextProps.userId, prevState.userId );
+      return {userId: nextProps.userId};
     }    
     return null;
   }
