@@ -208,6 +208,7 @@ class EditUser extends Component {
       new UserApi().getUserById(this.state.userId, this.handleError).then(function (userMsg) {
         if (userMsg != null) {
           self.state.user = userMsg.getUser();
+          this.state.userPositions = self.state.user.getPositionsList();
         }
       })
     }
@@ -240,7 +241,7 @@ class EditUser extends Component {
       new UserApi().getUserById( this.state.userId, null).then(function (userMsg) {
       if (userMsg != null) {
         user = userMsg.getUser();
-        self.setState({user:user, need_show :false});
+        self.setState({user:user, userPositions:user.getPositionsList(), need_show :false});
   //     console.log('!!!EditUser:componentDidUpdate= user read success =', user );
   //     self.props.appStore.user = user;  // для ее исключения циклической перерисовки
       }
