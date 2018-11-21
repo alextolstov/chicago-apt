@@ -126,7 +126,9 @@ class EditUser extends Component {
       readyPermission: false,
       personal_info_enabled: false,
       attributes_enabled: false,
-      permission_enabled: false
+      permission_enabled: false,
+
+      need_show : false,
     
     };
     this.readyPosition = this.readyPosition.bind(this);
@@ -211,21 +213,40 @@ class EditUser extends Component {
     }
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    console.log('!!!EditUser:componentWillUpdate=',nextProps, nextState );
+    if( this.state.need_show) {
+      this.state.need_show = false;
+      let user = null;
+      let self = this;
+      new UserApi().getUserById( this.state.userId, null).then(function (userMsg) {
+        if (userMsg != null) {
+          user = userMsg.getUser();
+          self.state.user = user;
+          self.props.appStore.user = user;  // для ее исключения циклической перерисовки
+        }
+      })
+    }  
+ }
+
   componentDidUpdate(prevProps, prevState, prevContext) {
     console.log('!!!EditUser:componentDidUpdate=', prevProps, prevState, prevContext );
-//    console.log('!!!EditUser:componentDidUpdate state=', this.state );
-    let user = null;
-    let self = this;
-    new UserApi().getUserById( this.state.userId, null).then(function (userMsg) {
+    console.log('!!!EditUser:componentDidUpdate= this.state.need_show=', this.state.need_show );
+    if( this.state.need_show === true) {
+      this.state.need_show = false;
+      let user = null;
+      let self = this;
+      console.log('!!!EditUser:componentDidUpdate= this.state.userId=',this.state.userId );
+      new UserApi().getUserById( this.state.userId, null).then(function (userMsg) {
       if (userMsg != null) {
         user = userMsg.getUser();
-        self.state.user = user;
-        self.forceUpdate();  // ?
-     //   self.setState({user:user});
+        self.setState({user:user, need_show :false});
+  //     console.log('!!!EditUser:componentDidUpdate= user read success =', user );
+  //     self.props.appStore.user = user;  // для ее исключения циклической перерисовки
       }
-    })
-
-
+      })
+    }  
+  
  }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -240,9 +261,9 @@ class EditUser extends Component {
       if(nextProps.match.params.id !== prevState.userId)
         return {userId: nextProps.match.params.id};
     }
-    if( nextProps.userId !== 'current' &&  nextProps.userId !== prevState.userId) {
+    if( nextProps.userId !== 'current'  && nextProps.userId !== prevState.userId) {
       console.log('getDerivedStateFromProps userId=', nextProps.userId, prevState.userId );
-      return {userId: nextProps.userId};
+      return {userId: nextProps.userId, need_show: true };
     }    
     return null;
   }
