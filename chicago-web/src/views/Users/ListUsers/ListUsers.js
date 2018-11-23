@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {Card, CardHeader, CardBody} from 'reactstrap';
+import {Card, CardHeader, CardBody, Button} from 'reactstrap';
 import BootstrapTable  from 'react-bootstrap-table-next';
+import {defineMessages, FormattedMessage} from 'react-intl';
 
 import {inject, observer} from 'mobx-react/index';
 
@@ -21,7 +22,6 @@ class ListUsers extends Component {
         super(props);
 
         this.table=data.rows;
-  //      this.userApi=new UserApi();
         this.rowEvents = {
           onClick: (e, row, rowIndex) => {
               console.log('clicked on row:', row);
@@ -53,12 +53,13 @@ class ListUsers extends Component {
               columns: [{
                 dataField: 'name',
                 text: 'Name'
-              },{
+              },/*{
                 dataField: 'email',
                 text: 'Email',
                 sort: true
-              }],
+              }*/],
         };
+        this.addUser=this.addUser.bind(this);
     }
     componentDidMount() {
         console.log('usersList:componentDidMount appStore=', this.props.appStore);
@@ -76,11 +77,12 @@ class ListUsers extends Component {
         }).
         then(function (usersMsg) {
             const usersList=usersMsg.getUsersList();
-            console.log('usersList=', usersList);
+            console.log('2usersList=', usersList);
             let optionsList=[];
             for(let i=0;i<usersList.length;i++) {
                 console.log(usersList[i]);
                 console.log(usersList[i].getFirstName(), usersList[i].getMiddleName(), usersList[i].getLastName());
+                console.log(usersList[i].getPositionsList());
                 optionsList.push({
                     id:usersList[i].getUserId(),
                     name: usersList[i].getFirstName()+' '+usersList[i].getMiddleName()
@@ -96,22 +98,25 @@ class ListUsers extends Component {
           console.log('ListUser error:', error);
         })   
     }
+
+    addUser() {
+        console.log('Add User');
+        this.setState({selected : {id: "new"}});
+    }
+ 
     render() {
-
-
         return (
             <div className="row">
             <div className="col-4">
                 <div className="animated">
                 <Card>
                     <CardHeader>
-                        <i className="icon-menu"></i>React-bootstrap-table2{' '}
-                        <a href="https://coreui.io/pro/react/" className="badge badge-danger">CoreUI Pro Component</a>
-                        <div className="card-header-actions">
-                            <a href="https://github.com/AllenFang/react-bootstrap-table" rel="noopener noreferrer" target="_blank" className="card-header-action">
-                                <small className="text-muted">docs</small>
-                            </a>
-                        </div>
+                                <button  onClick={this.addUser}  
+                                >
+                                <strong><FormattedMessage id="users.edit.new_user"
+                                        defaultMessage="Create new user" />
+                                </strong>
+                                </button>
                     </CardHeader>
                     <CardBody>
                         <BootstrapTable
@@ -127,7 +132,6 @@ class ListUsers extends Component {
                 </div>
             </div>
             <div className="col-8">
-                {this.state.selected.name}
                 <EditUser userId={this.state.selected.id}/>
             </div>
             </div>
