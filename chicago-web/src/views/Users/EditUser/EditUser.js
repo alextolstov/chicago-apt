@@ -144,14 +144,6 @@ class EditUser extends Component {
       this.state.user = jspb.Message.cloneMessage(this.props.appStore.userData);
       this.state.userPositions = this.state.user.getPositionsList();
     }
-    else {
-      let self = this;
-      new UserApi().getUserById(this.state.userId, this.handleError).then(function (userMsg) {
-        if (userMsg != null) {
-          self.state.user = userMsg.getUser();
-        }
-      })
-    }
   }
 
   setUncheckedState = (mode) => {
@@ -194,7 +186,7 @@ class EditUser extends Component {
     if (this.state.userId === 'new') {
       this.setUncheckedState( false);
     }
-    // ge User
+    // get User
     this.state.loginUser = jspb.Message.cloneMessage(this.props.appStore.userData);
     if (this.state.userId === 'new') {
       this.state.user = new user_proto.User();
@@ -204,46 +196,32 @@ class EditUser extends Component {
       this.state.userPositions = this.state.user.getPositionsList();
     }
     else {
-      let self = this;
-      new UserApi().getUserById(this.state.userId, this.handleError).then(function (userMsg) {
-        if (userMsg != null) {
+      let self=this;
+      self.state.readyPermission=false;
+      this.state.userApi.getUserById( this.state.userId, null).then(function (userMsg) {
+      if (userMsg != null) {
           self.state.user = userMsg.getUser();
-          this.state.userPositions = self.state.user.getPositionsList();
+          self.state.userPositions=self.state.user.getPositionsList();
+          self.state.permissionApi.setPermissionsUser(self.props.appStore, self.state.user, self.readyPermission); 
+
         }
       })
     }
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    console.log('!!!EditUser:componentWillUpdate=',nextProps, nextState );
-    if( this.state.need_show) {
-      this.state.need_show = false;
-      let user = null;
-      let self = this;
-      new UserApi().getUserById( this.state.userId, null).then(function (userMsg) {
-        if (userMsg != null) {
-          user = userMsg.getUser();
-          self.state.user = user;
-          self.props.appStore.user = user;  // для ее исключения циклической перерисовки
-        }
-      })
-    }  
- }
-
+ 
   componentDidUpdate(prevProps, prevState, prevContext) {
-    console.log('!!!EditUser:componentDidUpdate=', prevProps, prevState, prevContext );
-    console.log('!!!EditUser:componentDidUpdate= this.state.need_show=', this.state.need_show );
     if( this.state.need_show === true) {
       this.state.need_show = false;
       let user = null;
       let self = this;
-      console.log('!!!EditUser:componentDidUpdate= this.state.userId=',this.state.userId );
-      new UserApi().getUserById( this.state.userId, null).then(function (userMsg) {
+      self.state.readyPermission=false;
+      this.state.userApi.getUserById( this.state.userId, null).then(function (userMsg) {
+
       if (userMsg != null) {
         user = userMsg.getUser();
+        self.state.permissionApi.setPermissionsUser(self.props.appStore, user, self.readyPermission); 
         self.setState({user:user, userPositions:user.getPositionsList(), need_show :false});
-  //     console.log('!!!EditUser:componentDidUpdate= user read success =', user );
-  //     self.props.appStore.user = user;  // для ее исключения циклической перерисовки
       }
       })
     }  
@@ -251,13 +229,6 @@ class EditUser extends Component {
  }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-  //  console.log('EditUser:getDerivedStateFromProps=', nextProps, prevState );
-    
- /*
-    if (nextProps.match.params.id !== prevState.userId) {
-      return {userId: nextProps.match.params.id};
-    }
-  */  
     if (nextProps && nextProps.match && nextProps.match.params) {
       if(nextProps.match.params.id !== prevState.userId)
         return {userId: nextProps.match.params.id};
@@ -340,12 +311,6 @@ class EditUser extends Component {
   }
 
   handleCreateUser = (event) => {
- /*
-    console.log("EditUser:handleCreateUser", this.state.user);
-    console.log("EditUser:handleCreateUser loginUser", this.state.loginUser);
-    console.log("EditUser:handleCreateUser LastName/OrganizationId=", this.state.loginUser.getLastName(),
-     this.state.loginUser.getOrganizationId());
- */    
     this.state.user.setOrganizationId(this.state.loginUser.getOrganizationId());
     this.state.userApi.createUser(this.state.user, (e) => { console.log('Error Create User:',e);
     });
@@ -377,7 +342,7 @@ class EditUser extends Component {
       case "first_name":
         this.state.user.setFirstName(event.target.value);
         break;
-      case "midle_name":
+      case "middle_name":
         this.state.user.setMiddleName(event.target.value);
         break;
       case "last_name":
