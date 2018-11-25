@@ -33,10 +33,6 @@ class PermissionForm extends Component {
     };
   }
 
-  componentDidMount = () => {
-    let self = this;
-    self.state.permissionApi.setPermissionsUser(self.props.appStore, self.props.user, ()=> self.props.readyPermission()); 
-  }
 
   handleKeyPress = (event) => {
     if (event.key === 'Enter') {

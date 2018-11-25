@@ -256,6 +256,11 @@ const EditUser = Loadable({
   loading: Loading,
 });
 
+const ListUsers = Loadable({
+  loader: () => import('./views/Users/ListUsers/ListUsers'),
+  loading: Loading,
+});
+
 const routes = [
   { path: '/', name: 'Home', component: DefaultLayout, exact: true },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
@@ -319,6 +324,7 @@ const routes = [
   { path: '/apps/invoicing', name: 'Invoice', component: Invoice, exact: true },
   { path: '/apps/invoicing/invoice', name: 'Invoice', component: Invoice },
   { path: '/users/edituser/:id', name: <FormattedMessage id="users.edit.user" defaultMessage="Edit profile"/>, component: EditUser, exact: true },
+  { path: '/users/listusers', name: <FormattedMessage id="menu.users.listusers" defaultMessage="List users"/>, component: ListUsers, exact: true },
 ];
 
 export default routes;

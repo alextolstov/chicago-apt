@@ -118,34 +118,31 @@ class EditUser extends Component {
       userPermissions: [],
       userRoles: [],
 
-      userId: props.match.params.id,
+      userId: (props.match && props.match.params) ? props.match.params.id : props.userId,
       user: "",
+      loginUser: null,
 
       readyPosition : false,
       readyPermission: false,
       personal_info_enabled: false,
       attributes_enabled: false,
-      permission_enabled: false
+      permission_enabled: false,
+
+      need_show : false,
     
     };
     this.readyPosition = this.readyPosition.bind(this);
     this.readyPermission = this.readyPermission.bind(this);
     this.handleFormEnableDisable = this.handleFormEnableDisable.bind(this);
+    this.handleChange = this.handleChange.bind(this);
 
+    this.state.loginUser = jspb.Message.cloneMessage(this.props.appStore.userData);
     if (this.state.userId === 'new') {
       this.state.user = new user_proto.User();
     }
     else if (this.state.userId === 'current') {
       this.state.user = jspb.Message.cloneMessage(this.props.appStore.userData);
       this.state.userPositions = this.state.user.getPositionsList();
-    }
-    else {
-      let self = this;
-      new UserApi().getUserById(this.state.userId, this.handleError).then(function (userMsg) {
-        if (userMsg != null) {
-          self.state.user = userMsg.getUser();
-        }
-      })
     }
   }
 
@@ -180,6 +177,8 @@ class EditUser extends Component {
   }
 
   componentDidMount() {
+    console.log('!!!EditUser:componentDidMount');
+    
     if (this.state.userId === 'current') {
       this.setUncheckedState( true);
     }
@@ -187,11 +186,57 @@ class EditUser extends Component {
     if (this.state.userId === 'new') {
       this.setUncheckedState( false);
     }
-  }
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.match.params.id !== prevState.userId) {
-      return {userId: nextProps.match.params.id};
+    // get User
+    this.state.loginUser = jspb.Message.cloneMessage(this.props.appStore.userData);
+    if (this.state.userId === 'new') {
+      this.state.user = new user_proto.User();
     }
+    else if (this.state.userId === 'current') {
+      this.state.user = jspb.Message.cloneMessage(this.props.appStore.userData);
+      this.state.userPositions = this.state.user.getPositionsList();
+    }
+    else {
+      let self=this;
+      self.state.readyPermission=false;
+      this.state.userApi.getUserById( this.state.userId, null).then(function (userMsg) {
+      if (userMsg != null) {
+          self.state.user = userMsg.getUser();
+          self.state.userPositions=self.state.user.getPositionsList();
+          self.state.permissionApi.setPermissionsUser(self.props.appStore, self.state.user, self.readyPermission); 
+
+        }
+      })
+    }
+  }
+
+ 
+  componentDidUpdate(prevProps, prevState, prevContext) {
+    if( this.state.need_show === true) {
+      this.state.need_show = false;
+      let user = null;
+      let self = this;
+      self.state.readyPermission=false;
+      this.state.userApi.getUserById( this.state.userId, null).then(function (userMsg) {
+
+      if (userMsg != null) {
+        user = userMsg.getUser();
+        self.state.permissionApi.setPermissionsUser(self.props.appStore, user, self.readyPermission); 
+        self.setState({user:user, userPositions:user.getPositionsList(), need_show :false});
+      }
+      })
+    }  
+  
+ }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps && nextProps.match && nextProps.match.params) {
+      if(nextProps.match.params.id !== prevState.userId)
+        return {userId: nextProps.match.params.id};
+    }
+    if( nextProps.userId !== 'current'  && nextProps.userId !== prevState.userId) {
+      console.log('getDerivedStateFromProps userId=', nextProps.userId, prevState.userId );
+      return {userId: nextProps.userId, need_show: true };
+    }    
     return null;
   }
   
@@ -266,18 +311,14 @@ class EditUser extends Component {
   }
 
   handleCreateUser = (event) => {
-    // Создать нового
-    // this.state.user.setEmail("test@gmail.com");
-    // this.state.user.setFirstName("Aleksey");
-    // this.state.user.setPassword("password");
-    // this.state.userApi.createUser(this.state.user, null);
-
-    // получить список в организации
-    let userOrgs = new user_proto.UserOrganization();
-    let orgId = this.state.user.getOrganizationId();
-    userOrgs.setOrganizationId(orgId);
-    this.state.userApi.getUsers(userOrgs, null);
-  }
+    this.state.user.setOrganizationId(this.state.loginUser.getOrganizationId());
+    this.state.userApi.createUser(this.state.user, (e) => { console.log('Error Create User:',e);
+  });
+  toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
+    position: toast.POSITION.BOTTOM_RIGHT,
+    autoClose: 1000 
+  });    
+}
 
   handleSelectChangeRole = (value) => {
     this.props.appStore.userPermissions = value;
@@ -288,13 +329,28 @@ class EditUser extends Component {
 
   handleChange = (event) => {
     switch (event.target.id) {
+      case "new_email":
+        this.state.user.setEmail(event.target.value);
+        break;
+      case "password":
+        this.state.user.setPassword(event.target.value);
+      break;
       case "email":
         this.state.user.setEmail(event.target.value);
+        break;
+      case "whole_name":
+        const fio=event.target.value.split(' ')
+        if( fio[2])
+          this.state.user.setMiddleName(fio[2]);
+        if( fio[1])
+          this.state.user.setFirstName(fio[1]);
+        if( fio[0])
+          this.state.user.setLastName(fio[0]);
         break;
       case "first_name":
         this.state.user.setFirstName(event.target.value);
         break;
-      case "midle_name":
+      case "middle_name":
         this.state.user.setMiddleName(event.target.value);
         break;
       case "last_name":
@@ -362,8 +418,10 @@ class EditUser extends Component {
 
   render() {
     const {personal_info_enabled, attributes_enabled, permission_enabled} = this.state;
-    
+    const show = (this.state.user) ? true: false;
     return (
+      <div>
+      {show &&
       <div className="animated fadeIn">
         <Row hidden={this.state.userId === 'new' ? false : true}>
           <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
@@ -381,7 +439,7 @@ class EditUser extends Component {
                              label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                 </div>
               </CardHeader>
-              <RegisterForm/>
+              <RegisterForm handleChange = {this.handleChange}/>
             </Card>
           </Col>
         </Row>
@@ -690,7 +748,12 @@ class EditUser extends Component {
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input type="date" id="employment_date" name="employment_date" placeholder="date"/>
-                    {/*Actual start date*/}
+                  </InputGroup>
+                </FormGroup>
+
+                      {/*Actual start date*/}
+                  <FormGroup row>
+                  <InputGroup>
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <i>
@@ -713,7 +776,11 @@ class EditUser extends Component {
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input type="date" id="dismissal_date" name="dismissal_date" placeholder="date"/>
+                  </InputGroup>
+                </FormGroup>
                     {/*Actual last date*/}
+                <FormGroup row>
+                  <InputGroup>
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <i>
@@ -899,6 +966,8 @@ class EditUser extends Component {
                          addressId={this.state.user.getAddressId === undefined ? "" : this.state.user.getAddressId()}/>
           </Col>
         </Row>
+      </div>
+      }
       </div>
     );
   }
