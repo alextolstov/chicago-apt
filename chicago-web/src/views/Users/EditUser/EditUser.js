@@ -313,8 +313,12 @@ class EditUser extends Component {
   handleCreateUser = (event) => {
     this.state.user.setOrganizationId(this.state.loginUser.getOrganizationId());
     this.state.userApi.createUser(this.state.user, (e) => { console.log('Error Create User:',e);
-    });
-  }
+  });
+  toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
+    position: toast.POSITION.BOTTOM_RIGHT,
+    autoClose: 1000 
+  });    
+}
 
   handleSelectChangeRole = (value) => {
     this.props.appStore.userPermissions = value;
@@ -326,8 +330,6 @@ class EditUser extends Component {
   handleChange = (event) => {
     switch (event.target.id) {
       case "new_email":
-        console.log('handleChange : setEmail=', event);
-        
         this.state.user.setEmail(event.target.value);
         break;
       case "password":
@@ -337,7 +339,13 @@ class EditUser extends Component {
         this.state.user.setEmail(event.target.value);
         break;
       case "whole_name":
-        this.state.user.setFirstName(event.target.value);
+        const fio=event.target.value.split(' ')
+        if( fio[2])
+          this.state.user.setMiddleName(fio[2]);
+        if( fio[1])
+          this.state.user.setFirstName(fio[1]);
+        if( fio[0])
+          this.state.user.setLastName(fio[0]);
         break;
       case "first_name":
         this.state.user.setFirstName(event.target.value);
@@ -740,7 +748,12 @@ class EditUser extends Component {
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input type="date" id="employment_date" name="employment_date" placeholder="date"/>
-                    {/*Actual start date*/}
+                  </InputGroup>
+                </FormGroup>
+
+                      {/*Actual start date*/}
+                  <FormGroup row>
+                  <InputGroup>
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <i>
@@ -763,7 +776,11 @@ class EditUser extends Component {
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input type="date" id="dismissal_date" name="dismissal_date" placeholder="date"/>
+                  </InputGroup>
+                </FormGroup>
                     {/*Actual last date*/}
+                <FormGroup row>
+                  <InputGroup>
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <i>

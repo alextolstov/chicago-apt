@@ -152,7 +152,7 @@ class AddressForm extends Component {
 
     return (
       <div className="animated">
-        <ToastContainer position="top-right" autoClose={5000} style={containerStyle}/>
+        <ToastContainer position="top-right" autoClose={1000} style={containerStyle}/>
         <Card id='address_card'>
           <CardHeader>
             <button onClick={this.handleSaveAddress}><i className="icon-cloud-upload" ></i></button>

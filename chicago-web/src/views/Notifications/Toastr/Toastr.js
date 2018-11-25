@@ -51,7 +51,7 @@ class Toastr extends Component {
 
     return (
       <div className="animated">
-        <ToastContainer position="top-right" autoClose={5000} style={containerStyle}/>
+        <ToastContainer position="top-right" autoClose={1000} style={containerStyle}/>
         <Card>
           <CardHeader>
             <i className="icon-info"></i> Toastr{' '}

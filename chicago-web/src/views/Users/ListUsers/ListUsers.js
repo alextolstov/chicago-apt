@@ -77,16 +77,12 @@ class ListUsers extends Component {
         }).
         then(function (usersMsg) {
             const usersList=usersMsg.getUsersList();
-            console.log('2usersList=', usersList);
             let optionsList=[];
             for(let i=0;i<usersList.length;i++) {
-                console.log(usersList[i]);
-                console.log(usersList[i].getFirstName(), usersList[i].getMiddleName(), usersList[i].getLastName());
-                console.log(usersList[i].getPositionsList());
                 optionsList.push({
                     id:usersList[i].getUserId(),
-                    name: usersList[i].getFirstName()+' '+usersList[i].getMiddleName()
-                        +' '+usersList[i].getLastName(),
+                    name: usersList[i].getLastName() +' '+  usersList[i].getFirstName()  +' ' + usersList[i].getMiddleName()
+                        ,
                     email: usersList[i].getEmail(),
                 });
               
@@ -111,12 +107,17 @@ class ListUsers extends Component {
                 <div className="animated">
                 <Card>
                     <CardHeader>
-                                <button  onClick={this.addUser}  
-                                >
-                                <strong><FormattedMessage id="users.edit.new_user"
-                                        defaultMessage="Create new user" />
-                                </strong>
-                                </button>
+                     <strong><FormattedMessage id="menu.users.listusers"
+                            defaultMessage="List user" />
+                     </strong>
+                    <div>           
+                    <button  onClick={this.addUser}  
+                    >
+                    <strong><FormattedMessage id="users.edit.new_user"
+                            defaultMessage="Create new user" />
+                    </strong>
+                    </button>
+                    </div>
                     </CardHeader>
                     <CardBody>
                         <BootstrapTable
