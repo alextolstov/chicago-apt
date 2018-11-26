@@ -19,15 +19,12 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.chicago.ext.dal.cassandra.CassandraConstants.BRANCHES_TABLE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.COMPANIES_TABLE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.HOLDINGS_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.KEYSPACE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.ORGANIZATIONS_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.USERS_BY_EMAIL_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.USERS_BY_ID_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.USER_PERMISSIONS_TABLE;
@@ -185,15 +182,7 @@ public class UserDalImpl implements UserDal
     // We dont care what organization type, just dig inside 3 levels. Cassandra give use very cheap read
     public List<UserOuterClass.User> getUsers(String organizationId)
     {
-        List<UUID> usersId = getOrganizationUsers(organizationId, HOLDINGS_TABLE);
-        if (usersId.size() == 0)
-        {
-            usersId = getOrganizationUsers(organizationId, COMPANIES_TABLE);
-        }
-        if (usersId.size() == 0)
-        {
-            usersId = getOrganizationUsers(organizationId, BRANCHES_TABLE);
-        }
+        List<UUID> usersId = getOrganizationUsers(organizationId);
 
         Statement query = QueryBuilder.select()
                 .from(KEYSPACE, USERS_BY_ID_TABLE)
@@ -202,7 +191,7 @@ public class UserDalImpl implements UserDal
         Row row;
         List<UserOuterClass.User> users = new ArrayList<>();
 
-        while((row = result.one()) != null)
+        while ((row = result.one()) != null)
         {
             users.add(buildUser(row));
         }
@@ -210,10 +199,10 @@ public class UserDalImpl implements UserDal
         return users;
     }
 
-    private List<UUID> getOrganizationUsers(String organizationId, String tableName)
+    private List<UUID> getOrganizationUsers(String organizationId)
     {
         Statement query = QueryBuilder.select("users")
-                .from(KEYSPACE, tableName)
+                .from(KEYSPACE, ORGANIZATIONS_TABLE)
                 .where(QueryBuilder.eq("organization_id", UUID.fromString(organizationId)));
         ResultSet result = _cassandraConnector.getSession().execute(query);
         Row row = result.one();
@@ -227,7 +216,7 @@ public class UserDalImpl implements UserDal
                 users = new ArrayList<>(usersSet);
             }
         }
-        LOG.info("Found {} users of organizationId {} in table {}", users.size(), organizationId, tableName);
+        LOG.info("Found {} users of organizationId {} ", users.size(), organizationId);
         return users;
     }
 
@@ -299,20 +288,31 @@ public class UserDalImpl implements UserDal
         if (row.getString("home_phone") != null) builder.setHomePhone(row.getString("home_phone"));
         if (row.getString("work_phone") != null) builder.setWorkPhone(row.getString("work_phone"));
         if (row.getString("passport_number") != null) builder.setPassportNumber(row.getString("passport_number"));
-        if (row.getTimestamp("date_of_birth") != null) builder.setDateOfBirth(row.getTimestamp("date_of_birth").getTime());
-        if (row.getTimestamp("employment_date") != null) builder.setDateOfBirth(row.getTimestamp("employment_date").getTime());
-        if (row.getTimestamp("actual_employment_date") != null) builder.setDateOfBirth(row.getTimestamp("actual_employment_date").getTime());
-        if (row.getTimestamp("dismissal_date") != null) builder.setDateOfBirth(row.getTimestamp("dismissal_date").getTime());
-        if (row.getTimestamp("actual_dismissal_date") != null) builder.setDateOfBirth(row.getTimestamp("actual_dismissal_date").getTime());
+        if (row.getTimestamp("date_of_birth") != null)
+            builder.setDateOfBirth(row.getTimestamp("date_of_birth").getTime());
+        if (row.getTimestamp("employment_date") != null)
+            builder.setDateOfBirth(row.getTimestamp("employment_date").getTime());
+        if (row.getTimestamp("actual_employment_date") != null)
+            builder.setDateOfBirth(row.getTimestamp("actual_employment_date").getTime());
+        if (row.getTimestamp("dismissal_date") != null)
+            builder.setDateOfBirth(row.getTimestamp("dismissal_date").getTime());
+        if (row.getTimestamp("actual_dismissal_date") != null)
+            builder.setDateOfBirth(row.getTimestamp("actual_dismissal_date").getTime());
         if (row.getString("tax_payer_id") != null) builder.setPassportNumber(row.getString("tax_payer_id"));
         if (row.getString("diploma_number") != null) builder.setPassportNumber(row.getString("diploma_number"));
-        if (row.getTimestamp("diploma_date") != null) builder.setDateOfBirth(row.getTimestamp("diploma_date").getTime());
-        if (row.getString("retirement_id_number") != null) builder.setPassportNumber(row.getString("retirement_id_number"));
-        if (row.getTimestamp("retirement_date") != null) builder.setDateOfBirth(row.getTimestamp("retirement_date").getTime());
+        if (row.getTimestamp("diploma_date") != null)
+            builder.setDateOfBirth(row.getTimestamp("diploma_date").getTime());
+        if (row.getString("retirement_id_number") != null)
+            builder.setPassportNumber(row.getString("retirement_id_number"));
+        if (row.getTimestamp("retirement_date") != null)
+            builder.setDateOfBirth(row.getTimestamp("retirement_date").getTime());
         if (row.getString("medical_book") != null) builder.setPassportNumber(row.getString("medical_book"));
-        if (row.getTimestamp("medical_book_date") != null) builder.setDateOfBirth(row.getTimestamp("medical_book_date").getTime());
-        if (row.getString("employment_book_number") != null) builder.setPassportNumber(row.getString("employment_book_number"));
-        if (row.getUUID("organization_id") != null) builder.setOrganizationId(row.getUUID("organization_id").toString());
+        if (row.getTimestamp("medical_book_date") != null)
+            builder.setDateOfBirth(row.getTimestamp("medical_book_date").getTime());
+        if (row.getString("employment_book_number") != null)
+            builder.setPassportNumber(row.getString("employment_book_number"));
+        if (row.getUUID("organization_id") != null)
+            builder.setOrganizationId(row.getUUID("organization_id").toString());
         if (row.getUUID("address_id") != null) builder.setAddressId(row.getUUID("address_id").toString());
         // Positions as sering set
         Set<UUID> positions;
