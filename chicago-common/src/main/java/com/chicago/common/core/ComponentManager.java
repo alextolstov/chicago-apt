@@ -3,6 +3,7 @@ package com.chicago.common.core;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import com.chicago.dto.Config;
@@ -20,13 +21,16 @@ public class ComponentManager
     {
         _config = config;
 
-        for (Config.Component c : _config.getComponentsList())
+        for (Config.Component component : _config.getComponentsList())
         {
-            String cn = c.getClassName();
-            Function creator = _factories.get(cn);
+            String className = component.getClassName();
+            Class<?> clazz = Class.forName(className);
+            Method method = clazz.getDeclaredMethod("registerComponentFactories");
+            method.invoke(null);
+            Function creator = _factories.get(className);
             if(creator != null)
             {
-                _componentsMap.put(cn, (AbstractComponent)creator.apply(this));
+                _componentsMap.put(className, (AbstractComponent)creator.apply(this));
             }
         }
         return true;
@@ -60,11 +64,11 @@ public class ComponentManager
         }
 
         Class<?> cl = Class.forName(cName);
-        for(AbstractComponent v : _componentsMap.values())
+        for(AbstractComponent component : _componentsMap.values())
         {
-            if (cl.isInstance(v))
+            if (cl.isInstance(component))
             {
-                res = (T) v;
+                res = (T) component;
                 break;
             }
         }
@@ -74,9 +78,9 @@ public class ComponentManager
     public void initComponents(Message config)
     {
         ConfigAccessor ca = new ConfigAccessor(config);
-        for(AbstractComponent v : _componentsMap.values())
+        for(AbstractComponent component : _componentsMap.values())
         {
-            v.init(ca);
+            component.init(ca);
         }
     }
 

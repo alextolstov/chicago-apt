@@ -1,12 +1,13 @@
 package com.chicago.services.controllers;
 
 import com.chicago.common.comm.AsyncCommunicator;
-import com.chicago.dto.AddressOuterClass;
-import com.chicago.dto.Addressmessages;
 import com.chicago.dto.Common;
+import com.chicago.dto.OrganizationOuterClass;
+import com.chicago.dto.Organizationmessages;
 import com.chicago.dto.Service;
 import com.chicago.services.internal.MediaTypeExt;
 import com.chicago.services.util.ResponseErrorUtil;
+import com.chicago.services.util.SecurityUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.subject.Subject;
@@ -17,8 +18,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-@Path("/address")
-public class AddressController
+@Path("/organization")
+public class OrganizationController
 {
     @Inject
     Service.RestServiceConfig _config;
@@ -30,7 +31,7 @@ public class AddressController
     @Path("create")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
-    public Response createAddress(byte[] data)
+    public Response createOrganization(byte[] data)
     {
         Subject currentUser = SecurityUtils.getSubject();
         //currentUser.hasRole("");
@@ -49,7 +50,7 @@ public class AddressController
     @Path("update")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
-    public Response updateAddress(byte[] data)
+    public Response updateOrganization(byte[] data)
     {
         Subject currentUser = SecurityUtils.getSubject();
         //currentUser.hasRole("");
@@ -68,7 +69,7 @@ public class AddressController
     @Path("get")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
-    public Response getAddress(byte[] data)
+    public Response getOrganization(byte[] data)
     {
         Subject currentUser = SecurityUtils.getSubject();
         //currentUser.hasRole("");
@@ -83,13 +84,38 @@ public class AddressController
         }
     }
 
-    private Addressmessages.AddressRequest prepareRequest(byte[] data, Common.CrudOperation operation) throws Exception
+    @POST
+    @Path("getstructure")
+    @RequiresAuthentication
+    @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
+    public Response getStructure(byte[] data)
     {
-        AddressOuterClass.Address address = AddressOuterClass.Address.parseFrom(data);
+        String userId = SecurityUtil.getSessionUserId();
+//        Subject currentUser = SecurityUtils.getSubject();
+        //currentUser.hasRole("");
+        try
+        {
+            Organizationmessages.OrganizationStructureRequest request = Organizationmessages.OrganizationStructureRequest.newBuilder()
+                    .setUserId(userId)
+                    .setOrganizationType(OrganizationOuterClass.OrganizationType.HOLDING)
+                    .build();
 
-        return Addressmessages.AddressRequest.newBuilder()
+            byte[] response = _asyncComm.transaction(request);
+            return Response.ok(response).build();
+        } catch (Exception e)
+        {
+            return ResponseErrorUtil.createErrorResponse(e.getMessage(),
+                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        }
+    }
+
+    private Organizationmessages.OrganizationRequest prepareRequest(byte[] data, Common.CrudOperation operation) throws Exception
+    {
+        OrganizationOuterClass.Organization organization = OrganizationOuterClass.Organization.parseFrom(data);
+
+        return Organizationmessages.OrganizationRequest.newBuilder()
                 .setCrudOperation(operation)
-                .setAddress(address)
+                .setOrganization(organization)
                 .build();
     }
 }

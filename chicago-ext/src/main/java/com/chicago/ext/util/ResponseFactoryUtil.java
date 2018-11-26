@@ -3,9 +3,9 @@ package com.chicago.ext.util;
 import com.chicago.common.util.ErrorResponseUtil;
 import com.chicago.dto.Common;
 import com.chicago.dto.Usermessages;
-import com.chicago.ext.dal.cassandra.PasswordNotMatchException;
-import com.chicago.ext.dal.cassandra.UserAlreadyExistsException;
-import com.chicago.ext.dal.cassandra.UserNotFoundException;
+import com.chicago.ext.dal.PasswordNotMatchException;
+import com.chicago.ext.dal.UserAlreadyExistsException;
+import com.chicago.ext.dal.UserNotFoundException;
 import com.google.protobuf.Message;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
@@ -36,13 +36,6 @@ public class ResponseFactoryUtil
         if (returnType.getCanonicalName().equals(Usermessages.UserResponse.class.getCanonicalName()))
         {
             return Usermessages.UserResponse
-                    .newBuilder()
-                    .setTransactionError(ErrorResponseUtil.createErrorResponse(errorCode, ex.getMessage()))
-                    .build();
-        }
-        if (returnType.getCanonicalName().equals(Common.VoidResponse.class.getCanonicalName()))
-        {
-            return Common.VoidResponse
                     .newBuilder()
                     .setTransactionError(ErrorResponseUtil.createErrorResponse(errorCode, ex.getMessage()))
                     .build();

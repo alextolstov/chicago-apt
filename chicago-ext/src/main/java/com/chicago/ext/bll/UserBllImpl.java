@@ -1,13 +1,13 @@
 package com.chicago.ext.bll;
 
 import com.chicago.common.util.PasswordUtil;
-import com.chicago.dto.Organization;
+import com.chicago.dto.OrganizationOuterClass;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.ext.dal.OrganizationDal;
 import com.chicago.ext.dal.PermissionDal;
 import com.chicago.ext.dal.UserDal;
-import com.chicago.ext.dal.cassandra.PasswordNotMatchException;
-import com.chicago.ext.dal.cassandra.UserAlreadyExistsException;
+import com.chicago.ext.dal.PasswordNotMatchException;
+import com.chicago.ext.dal.UserAlreadyExistsException;
 import javafx.util.Pair;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
@@ -36,12 +36,22 @@ public class UserBllImpl implements UserBll
         {
             throw new Exception("User " + user.getEmail() + " already exists");
         }
+        OrganizationOuterClass.Organization holding = OrganizationOuterClass.Organization.newBuilder()
+                .setType(OrganizationOuterClass.OrganizationType.HOLDING)
+                .setName("New holding")
+                .setDescription("New holding")
+                .build();
+        String holdingId = _organizationDal.createOrganization(holding);
+        LOG.info("New holding {} created for user {}", holdingId, user.getEmail());
+
         // Admin user is user #1, he needs company as well
-        Organization.Company company = Organization.Company.newBuilder()
+        OrganizationOuterClass.Organization company = OrganizationOuterClass.Organization.newBuilder()
+                .setType(OrganizationOuterClass.OrganizationType.COMPANY)
+                .setParentOrganizationId(holdingId)
                 .setName("New company")
                 .setDescription("New company")
                 .build();
-        String companyId = _organizationDal.createCompany(company);
+        String companyId = _organizationDal.createOrganization(company);
         LOG.info("New company {} created for user {}", companyId, user.getEmail());
 
         // Now set new company for user

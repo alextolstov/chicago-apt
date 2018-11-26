@@ -2,6 +2,7 @@ package com.chicago.ext.dal.cassandra;
 
 import com.chicago.dto.AddressOuterClass;
 import com.chicago.ext.dal.AddressDal;
+import com.chicago.ext.dal.AddressNotFoundException;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Statement;

@@ -22,8 +22,6 @@ public class PositionRequests extends AbstractComponent
     // Can not be injected, class created with new(). Will use ServiceLocator
     private PositionBll _positionBll;
 
-    private AbstractEventDispatcher _ed;
-
     public PositionRequests(ComponentManager cm) throws ClassNotFoundException
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
@@ -37,7 +35,6 @@ public class PositionRequests extends AbstractComponent
     public boolean init(ConfigAccessor ca)
     {
         _positionBll = ServiceLocatorFactory.getInstance().find("servicelocator").getService(PositionBll.class);
-        LOG.info("Service locator found PositionBll");
         return true;
     }
 

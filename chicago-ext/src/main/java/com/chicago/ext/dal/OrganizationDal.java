@@ -1,14 +1,16 @@
 package com.chicago.ext.dal;
 
-import com.chicago.dto.Organization;
+import com.chicago.dto.OrganizationOuterClass;
 
 public interface OrganizationDal
 {
-    String createHolding(Organization.Holding holding);
+    String createOrganization(OrganizationOuterClass.Organization holding) throws Exception;
 
-    String createCompany(Organization.Company company);
+    void updateOrganization(OrganizationOuterClass.Organization organization);
 
-    String createBranch(Organization.Branch branch);
+    OrganizationOuterClass.Organization getOrganization(String organizationId) throws Exception;
 
     void addUserToCompany(String userId, String organizationId);
+
+    OrganizationOuterClass.OrganizationInfo getOrganizationStructure(String organizationId, OrganizationOuterClass.OrganizationType returnLevel) throws Exception;
 }

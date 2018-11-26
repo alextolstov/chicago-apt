@@ -7,10 +7,7 @@ import com.chicago.dto.Common;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.dto.Usermessages;
 import com.chicago.ext.bll.UserBll;
-import com.chicago.ext.dal.cassandra.PasswordNotMatchException;
-import com.chicago.ext.dal.cassandra.UserNotFoundException;
 import com.google.protobuf.Message;
-import org.apache.http.HttpStatus;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +20,6 @@ public class UserRequests extends AbstractComponent
     private static final Logger LOG = LoggerFactory.getLogger(UserRequests.class);
     // Can not be injected, class created with new(). Will use ServiceLocator
     private UserBll _userBll;
-
-    private AbstractEventDispatcher _ed;
 
     public UserRequests(ComponentManager cm) throws ClassNotFoundException
     {

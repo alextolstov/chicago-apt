@@ -1,4 +1,4 @@
-package com.chicago.ext.dal.cassandra;
+package com.chicago.ext.dal;
 
 public class AddressNotFoundException extends Exception
 {

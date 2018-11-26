@@ -1,4 +1,4 @@
-import com.chicago.dto.Organization;
+import com.chicago.dto.OrganizationOuterClass;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
@@ -27,7 +27,7 @@ public class ProtobufTest extends JerseyTest
     {
         @GET
         @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-        public Organization.Company getCompany()
+        public OrganizationOuterClass.Organization getCompany()
         {
             return buildCompany();
         }
@@ -43,9 +43,9 @@ public class ProtobufTest extends JerseyTest
 //        assertEquals("john.doe@google.com", company.getEmail());
     }
 
-    private static Organization.Company buildCompany()
+    private static OrganizationOuterClass.Organization buildCompany()
     {
-        return Organization.Company.newBuilder()
+        return OrganizationOuterClass.Organization.newBuilder()
                 .build();
     }
 }

@@ -4,6 +4,8 @@ import com.chicago.common.util.TimeUtil;
 import com.chicago.dto.PermissionOuterClass;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.ext.dal.UserDal;
+import com.chicago.ext.dal.UserNotFoundException;
+import com.chicago.ext.dal.UserPermissionsNotFoundException;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Statement;
@@ -21,17 +23,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.chicago.ext.dal.cassandra.CassandraConstants.BRANCHES_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.COMPANIES_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.HOLDINGS_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.KEYSPACE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.PERMISSIONS_TABLE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.ROLES_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.USERS_BY_EMAIL_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.USERS_BY_ID_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.USER_PERMISSIONS_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraUtil.convertToUuidSet;
 
 public class UserDalImpl implements UserDal
 {
@@ -182,7 +182,6 @@ public class UserDalImpl implements UserDal
     }
 
     @Override
-
     // We dont care what organization type, just dig inside 3 levels. Cassandra give use very cheap read
     public List<UserOuterClass.User> getUsers(String organizationId)
     {
@@ -213,17 +212,17 @@ public class UserDalImpl implements UserDal
 
     private List<UUID> getOrganizationUsers(String organizationId, String tableName)
     {
-        List<UUID> users = new ArrayList<>();
         Statement query = QueryBuilder.select("users")
                 .from(KEYSPACE, tableName)
                 .where(QueryBuilder.eq("organization_id", UUID.fromString(organizationId)));
         ResultSet result = _cassandraConnector.getSession().execute(query);
         Row row = result.one();
+        List<UUID> users = new ArrayList<>();
 
         if (row != null)
         {
-            Set<UUID> usersSet = row.getSet("users", UUID.class);
-            if (usersSet != null)
+            Set<UUID> usersSet;
+            if ((usersSet = row.getSet("users", UUID.class)) != null)
             {
                 users = new ArrayList<>(usersSet);
             }
@@ -246,12 +245,6 @@ public class UserDalImpl implements UserDal
     @Override
     public void updateUser(UserOuterClass.User user)
     {
-        Set<UUID> positionsSet = new HashSet<>();
-        for (String position : user.getPositionsList())
-        {
-            positionsSet.add(UUID.fromString(position));
-        }
-
         Statement query = QueryBuilder.update(KEYSPACE, USERS_BY_ID_TABLE)
                 .with(QueryBuilder.set("first_name", user.getFirstName()))
                 .and(QueryBuilder.set("middle_name", user.getMiddleName()))
@@ -274,7 +267,7 @@ public class UserDalImpl implements UserDal
                 .and(QueryBuilder.set("medical_book", user.getMedicalBook()))
                 .and(QueryBuilder.set("medical_book_date", user.getMedicalBookDate()))
                 .and(QueryBuilder.set("employment_book_number", user.getEmploymentBookNumber()))
-                .and(QueryBuilder.set("positions", positionsSet))
+                .and(QueryBuilder.set("positions", convertToUuidSet(user.getPositionsList())))
                 .where(QueryBuilder.eq("user_id", UUID.fromString(user.getUserId())));
         _cassandraConnector.getSession().execute(query);
     }
@@ -322,13 +315,10 @@ public class UserDalImpl implements UserDal
         if (row.getUUID("organization_id") != null) builder.setOrganizationId(row.getUUID("organization_id").toString());
         if (row.getUUID("address_id") != null) builder.setAddressId(row.getUUID("address_id").toString());
         // Positions as sering set
-        if (row.getSet("positions", UUID.class) != null)
+        Set<UUID> positions;
+        if ((positions = row.getSet("positions", UUID.class)) != null)
         {
-            Set<UUID> positions = row.getSet("positions", UUID.class);
-            for (UUID position : positions )
-            {
-                builder.addPositions(position.toString());
-            }
+            positions.stream().map(UUID::toString).forEach(builder::addPositions);
         }
 
         return builder.build();

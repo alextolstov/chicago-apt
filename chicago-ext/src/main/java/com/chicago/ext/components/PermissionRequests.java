@@ -26,8 +26,6 @@ public class PermissionRequests extends AbstractComponent
     // Can not be injected, class created with new(). Will use ServiceLocator
     private PermissionBll _permissionBll;
 
-    private AbstractEventDispatcher _ed;
-
     public PermissionRequests(ComponentManager cm) throws ClassNotFoundException
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
@@ -42,7 +40,6 @@ public class PermissionRequests extends AbstractComponent
     public boolean init(ConfigAccessor ca)
     {
         _permissionBll = ServiceLocatorFactory.getInstance().find("servicelocator").getService(PermissionBll.class);
-        LOG.info("Service locator found PermissionBll");
         return true;
     }
 

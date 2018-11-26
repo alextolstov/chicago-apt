@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package com.chicago.dto;
+
+import "common.proto";
+import "organization.proto";
+
+message OrganizationRequest
+{
+    CrudOperation crud_operation = 1;
+    Organization organization = 2;
+}
+
+message OrganizationResponse
+{
+    Organization organization = 1;
+    TransactionError transaction_error = 2;
+}
+
+message OrganizationStructureRequest
+{
+    string user_id = 1;
+    OrganizationType organization_type = 2;
+}
+
+message OrganizationStructureResponse
+{
+    OrganizationInfo organization_info = 1;
+    TransactionError transaction_error = 2;
+}
+

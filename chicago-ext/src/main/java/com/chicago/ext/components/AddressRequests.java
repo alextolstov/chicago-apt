@@ -26,8 +26,6 @@ public class AddressRequests extends AbstractComponent
     // Can not be injected, class created with new(). Will use ServiceLocator
     private AddressBll _addressBll;
 
-    private AbstractEventDispatcher _ed;
-
     public AddressRequests(ComponentManager cm) throws ClassNotFoundException
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
@@ -40,7 +38,6 @@ public class AddressRequests extends AbstractComponent
     public boolean init(ConfigAccessor ca)
     {
         _addressBll = ServiceLocatorFactory.getInstance().find("servicelocator").getService(AddressBll.class);
-        LOG.info("Service locator found AddressBll");
         return true;
     }
 

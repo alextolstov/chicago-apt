@@ -1,7 +1,5 @@
 package com.chicago.app;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import com.chicago.dto.Service;
@@ -68,7 +66,7 @@ public class ServiceMain
 
     private static void setLogback(String confFile, String logPath) throws Exception
     {
-        String [] pathArr = confFile.split("//");
+        String[] pathArr = confFile.split("//");
         if (pathArr.length != 2)
         {
             throw new Exception("Path should start with schema file:// or zoo:// or res://");

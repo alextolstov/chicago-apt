@@ -55,6 +55,7 @@ public class ApplicationBinder extends AbstractBinder
         bind(PositionDalImpl.class).to(PositionDal.class).in(Singleton.class);
         bind(PositionBllImpl.class).to(PositionBll.class).in(Singleton.class);
         bind(OrganizationDalImpl.class).to(OrganizationDal.class).in(Singleton.class);
+        bind(OrganizationBllImpl.class).to(OrganizationBll.class).in(Singleton.class);
         bind(PermissionDalImpl.class).to(PermissionDal.class).in(Singleton.class);
         bind(PermissionBllImpl.class).to(PermissionBll.class).in(Singleton.class);
     }

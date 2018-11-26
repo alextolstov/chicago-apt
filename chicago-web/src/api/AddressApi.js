@@ -11,22 +11,22 @@ export default class AddressApi {
   }
 
   createAddress(address, errorHandler) {
-    return this.addressCrud(this.createAddressUrl, address, errorHandler);
+    return this.addressCrud(this.createAddressUrl, address, addressmessages_proto.AddressResponse.deserializeBinary, errorHandler);
   }
 
   updateAddress(address, errorHandler) {
-    return this.addressCrud(this.updateAddressUrl, address, errorHandler);
+    return this.addressCrud(this.updateAddressUrl, address, addressmessages_proto.AddressResponse.deserializeBinary, errorHandler);
   }
 
   getAddress(address, errorHandler) {
-    return this.addressCrud(this.getAddressUrl, address, errorHandler);
+    return this.addressCrud(this.getAddressUrl, address, addressmessages_proto.AddressResponse.deserializeBinary, errorHandler);
   }
 
-  addressCrud(url, address, errorHandler){
-    let serialized_address = address.serializeBinary();
+  addressCrud(url, address, deserializer, errorHandler){
+    let serialized_object = address.serializeBinary();
     return this.fetchApi.defaultFetch(url,
-      serialized_address,
-      addressmessages_proto.AddressResponse.deserializeBinary,
+      serialized_object,
+      deserializer,
       errorHandler);
   }
 }

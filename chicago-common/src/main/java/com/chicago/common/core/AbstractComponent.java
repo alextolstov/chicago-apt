@@ -2,6 +2,8 @@ package com.chicago.common.core;
 
 public abstract class AbstractComponent
 {
+    protected AbstractEventDispatcher _ed;
+
     private String _name;
 
     public boolean init(ConfigAccessor ca)

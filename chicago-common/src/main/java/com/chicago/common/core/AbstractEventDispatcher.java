@@ -20,6 +20,10 @@ public abstract class AbstractEventDispatcher extends AbstractComponent
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException
     {
         Class clazz = _typeToClass.get(typeId);
+        if (clazz == null)
+        {
+            throw new NoSuchMethodException("Type " + typeId + " not found in deserializer");
+        }
         return (Message) clazz.getMethod("parseFrom", byte[].class).invoke(clazz, serializedMessage);
     }
 

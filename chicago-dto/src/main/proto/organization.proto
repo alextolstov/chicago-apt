@@ -4,43 +4,33 @@ package com.chicago.dto;
 
 option java_package = "com.chicago.dto";
 
-message Holding
+enum OrganizationType
 {
-    string holding_id = 1;
+    HOLDING = 0;
+    COMPANY = 1;
+    BRANCH = 2;
+}
+
+message Organization
+{
+    OrganizationType type = 1;
+    string organization_id = 2;
     string name = 3;
     string description = 4;
     string web_site = 5;
     string email_domain = 6;
-    repeated string phones = 7;
-    repeated string fax = 8;
-    repeated string users = 9;
-    repeated string companies = 10;
-    string addres_id = 11;
+    string parent_organization_id = 7;
+    repeated string phones = 8;
+    repeated string fax = 9;
+    repeated string users = 10;
+    repeated string organizations = 11;
+    string address_id = 12;
 }
 
-message Company
+message OrganizationInfo
 {
-    string company_id = 1;
-    string name = 2;
-    string description = 3;
-    string web_site = 4;
-    string email_domain = 5;
-    string holding_id = 6;
-    repeated string phones = 7;
-    repeated string fax = 8;
-    repeated string users = 9;
-    repeated string branches = 10;
-    string addres_id = 11;
-}
-
-message Branch
-{
-    string branch_id = 1;
-    string name = 2;
-    string description = 3;
-    string company_id = 4;
-    repeated string phones = 5;
-    repeated string fax = 6;
-    repeated string users = 7;
-    string address_id = 8;
+    OrganizationType type = 1;
+    string organization_id = 2;
+    string name = 3;
+    repeated OrganizationInfo organizations = 4;
 }
