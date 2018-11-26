@@ -60,6 +60,7 @@ class ListUsers extends Component {
               }*/],
         };
         this.addUser=this.addUser.bind(this);
+        this.loadList=this.loadList.bind(this);
     }
     componentDidMount() {
         console.log('usersList:componentDidMount appStore=', this.props.appStore);
@@ -99,7 +100,12 @@ class ListUsers extends Component {
         console.log('Add User');
         this.setState({selected : {id: "new"}});
     }
- 
+
+    loadList() {
+        console.log('ListUsers loadList');
+        this.componentDidMount();
+    }
+
     render() {
         return (
             <div className="row">
@@ -133,7 +139,7 @@ class ListUsers extends Component {
                 </div>
             </div>
             <div className="col-8">
-                <EditUser userId={this.state.selected.id}/>
+                    <EditUser userId={this.state.selected.id} loadList={this.loadList}  />
             </div>
             </div>
         );

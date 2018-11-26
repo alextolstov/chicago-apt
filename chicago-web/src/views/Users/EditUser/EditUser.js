@@ -134,7 +134,8 @@ class EditUser extends Component {
     this.readyPosition = this.readyPosition.bind(this);
     this.readyPermission = this.readyPermission.bind(this);
     this.handleFormEnableDisable = this.handleFormEnableDisable.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.handleChange=this.handleChange.bind(this);
+    this.handleCreateUser=this.handleCreateUser.bind(this);
 
     this.state.loginUser = jspb.Message.cloneMessage(this.props.appStore.userData);
     if (this.state.userId === 'new') {
@@ -271,8 +272,9 @@ class EditUser extends Component {
     let self = this;
     if (this.state.userId === 'new') {
       this.state.userApi.createUser(this.state.user, self);
-      toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
-        position: toast.POSITION.BOTTOM_RIGHT
+      toast.success(<FormattedMessage id="users.edit.success" defaultMessage="SuccessNew..."/>, {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        autoClose: 5000 
       });    
 
     } else {// Working with existing profile
@@ -284,8 +286,12 @@ class EditUser extends Component {
           self.props.appStore.userData = self.state.user;
           self.setUncheckedState(true);
         }
+        if(self.props.loadList)
+           self.props.loadList();       // refresh list
+        console.log('Save toast');
         toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
-          position: toast.POSITION.BOTTOM_RIGHT
+          position: toast.POSITION.BOTTOM_RIGHT,
+          autoClose: 3000 
         });    
   
       });
@@ -310,14 +316,27 @@ class EditUser extends Component {
     // TODO finish the function if neded
   }
 
-  handleCreateUser = (event) => {
+  handleCreateUser=(event) => {
+    let self=this;
     this.state.user.setOrganizationId(this.state.loginUser.getOrganizationId());
-    this.state.userApi.createUser(this.state.user, (e) => { console.log('Error Create User:',e);
+  /*
+    this.state.userApi.createUser(this.state.user, (e) => {
+      console.log('Error Create User:', e);
+                                                   });
+ */                                                  
+    this.state.userApi.createUser(this.state.user,
+                                  (e) => { console.log('Error Create User:', e);
+    }).then(function () {
+    if(self.props.loadList)
+       self.props.loadList();       // refresh list
+      console.log('Save toast');
+      
+    toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
+      position: toast.POSITION.BOTTOM_RIGHT,
+      autoClose: 1000 
+    });    
+
   });
-  toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
-    position: toast.POSITION.BOTTOM_RIGHT,
-    autoClose: 1000 
-  });    
 }
 
   handleSelectChangeRole = (value) => {
