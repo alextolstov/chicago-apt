@@ -2,6 +2,9 @@ package com.chicago.ext.dal;
 
 import com.chicago.dto.PositionOuterClass;
 
+import java.util.Map;
+import java.util.UUID;
+
 public interface PositionDal {
     PositionOuterClass.Position createPosition(PositionOuterClass.Position position)
             throws Exception;
@@ -12,6 +15,6 @@ public interface PositionDal {
     void deletePosition(PositionOuterClass.Position position)
             throws Exception;
 
-    PositionOuterClass.Positions getPositions(String organizationId)
+    Map<UUID, String> getPositions(String organizationId)
             throws Exception;
 }

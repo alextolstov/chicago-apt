@@ -3,6 +3,7 @@ package com.chicago.ext.dal.cassandra;
 import com.chicago.common.util.TimeUtil;
 import com.chicago.dto.PermissionOuterClass;
 import com.chicago.dto.UserOuterClass;
+import com.chicago.ext.dal.PositionDal;
 import com.chicago.ext.dal.UserDal;
 import com.chicago.ext.dal.UserNotFoundException;
 import com.chicago.ext.dal.UserPermissionsNotFoundException;
@@ -20,6 +21,7 @@ import javax.inject.Inject;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -36,6 +38,8 @@ public class UserDalImpl implements UserDal
 
     @Inject
     private CassandraConnector _cassandraConnector;
+    @Inject
+    private PositionDal _positionDal;
 
     @Override
     public String createUser(UserOuterClass.User newUser, String passwordHash, byte[] passwordSalt)
@@ -180,7 +184,7 @@ public class UserDalImpl implements UserDal
 
     @Override
     // We dont care what organization type, just dig inside 3 levels. Cassandra give use very cheap read
-    public List<UserOuterClass.User> getUsers(String organizationId)
+    public List<UserOuterClass.User> getUsers(String organizationId) throws Exception
     {
         List<UUID> usersId = getOrganizationUsers(organizationId);
 
@@ -256,7 +260,8 @@ public class UserDalImpl implements UserDal
                 .and(QueryBuilder.set("medical_book", user.getMedicalBook()))
                 .and(QueryBuilder.set("medical_book_date", user.getMedicalBookDate()))
                 .and(QueryBuilder.set("employment_book_number", user.getEmploymentBookNumber()))
-                .and(QueryBuilder.set("positions", convertToUuidSet(user.getPositionsList())))
+                // Only keys are interesting
+                .and(QueryBuilder.set("positions", convertToUuidSet(user.getPositionsMap())))
                 .where(QueryBuilder.eq("user_id", UUID.fromString(user.getUserId())));
         _cassandraConnector.getSession().execute(query);
     }
@@ -271,7 +276,7 @@ public class UserDalImpl implements UserDal
         _cassandraConnector.getSession().execute(query);
     }
 
-    private UserOuterClass.User buildUser(Row row)
+    private UserOuterClass.User buildUser(Row row) throws Exception
     {
         UserOuterClass.User.Builder builder = UserOuterClass.User.newBuilder();
         // Always non empty
@@ -314,11 +319,20 @@ public class UserDalImpl implements UserDal
         if (row.getUUID("organization_id") != null)
             builder.setOrganizationId(row.getUUID("organization_id").toString());
         if (row.getUUID("address_id") != null) builder.setAddressId(row.getUUID("address_id").toString());
-        // Positions as sering set
+
+        // Positions as set and convert to map position to description
         Set<UUID> positions;
         if ((positions = row.getSet("positions", UUID.class)) != null)
         {
-            positions.stream().map(UUID::toString).forEach(builder::addPositions);
+            Map<UUID, String > positionMap = _positionDal.getPositions(row.getUUID("organization_id").toString());
+            for(UUID position : positions)
+            {
+                String description = positionMap.get(position);
+                if (description != null)
+                {
+                    builder.putPositions(position.toString(), description);
+                }
+            }
         }
 
         return builder.build();

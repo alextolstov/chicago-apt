@@ -11,9 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.chicago.ext.dal.cassandra.CassandraConstants.KEYSPACE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.POSITIONS_TABLE;
@@ -63,7 +63,7 @@ public class PositionDalImpl implements PositionDal
     }
 
     @Override
-    public PositionOuterClass.Positions getPositions(String organizationId)
+    public Map<UUID, String> getPositions(String organizationId)
     {
         Statement query = QueryBuilder.select()
                 .from(KEYSPACE, POSITIONS_TABLE)
@@ -72,15 +72,9 @@ public class PositionDalImpl implements PositionDal
         Row row = result.one();
         if (row == null)
         {
-            return PositionOuterClass.Positions.getDefaultInstance();
+            return new HashMap<>();
         }
 
-        Map<UUID, String> posMap = row.getMap("positions", UUID.class, String.class);
-        // Protobuf doesnt support UUID, need to convert to string
-        Map<String, String> newMap = posMap.entrySet().stream()
-                .collect(Collectors.toMap(entry -> entry.getKey().toString(), Map.Entry::getValue));
-        return PositionOuterClass.Positions.newBuilder()
-                .putAllPositions(newMap)
-                .build();
+        return row.getMap("positions", UUID.class, String.class);
     }
 }

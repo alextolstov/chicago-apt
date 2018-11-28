@@ -19,6 +19,16 @@ public class CassandraUtil
         return newSet;
     }
 
+    public static Set<UUID> convertToUuidSet(Map<String, String> stringMap)
+    {
+        final Set<UUID> newSet = new HashSet<>();
+        if (stringMap != null)
+        {
+            stringMap.entrySet().forEach(entry -> newSet.add(UUID.fromString(entry.getKey())));
+        }
+        return newSet;
+    }
+
     public static Map<UUID, String> convertToUuidMap(Map<String, String> stringMap)
     {
         final Map<UUID, String> newMap = new HashMap<>();
