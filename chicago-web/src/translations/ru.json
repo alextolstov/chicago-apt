@@ -1,7 +1,7 @@
 {
   "login.short.title": "Войти",
   "login.long.title": "Войти на сайт",
-  "login.email": "Электронная почта",
+  "login.emailOrPhone": "Телефон или E-mail",
   "login.password": "Пароль",
 
   "menu.header": "Панель",

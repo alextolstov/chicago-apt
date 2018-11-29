@@ -15,9 +15,9 @@ const messages = defineMessages({
         id: 'users.edit.wholename',
         defaultMessage: 'First/Middle/Last Name'
     },
-    emailPlace: {
-        id: 'login.email',
-        defaultMessage: 'Email'
+    emailOrPhone: {
+        id: 'login.emailOrPhone',
+        defaultMessage: 'Email or Phone'
     },
 });
 
@@ -39,7 +39,7 @@ class RegisterForm extends Component {
                                 <i className="fa fa-envelope-o"></i>
                             </InputGroupText>
                         </InputGroupAddon>
-                        <FormattedMessage {...messages.emailPlace}>
+                        <FormattedMessage {...messages.emailOrPhone}>
                             {
                                 pholder => <Input onChange={this.props.handleChange}
                                     type="text" id="new_email" name="new_email" placeholder={pholder} required/>

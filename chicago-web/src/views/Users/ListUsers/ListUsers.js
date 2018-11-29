@@ -52,7 +52,8 @@ class ListUsers extends Component {
             optionsList: [],
               columns: [{
                 dataField: 'name',
-                text: 'Name'
+                text: 'Name',
+                sort: true,
               },/*{
                 dataField: 'email',
                 text: 'Email',

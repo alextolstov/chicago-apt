@@ -18,22 +18,23 @@ import {defineMessages, FormattedMessage} from 'react-intl';
 import {inject} from 'mobx-react';
 import UserApi from '../../../api/UserApi';
 import PermissionApi from '../../../api/PermissionApi';
-
+import convertPhoneNumber from './convertPhoneNumber';
 
 // Localization for place holders
 const messages=defineMessages({
-  emailPlace: {
-    id: 'login.email.placeholder',
-    defaultMessage: 'Email',
+  emailOrPhone: {
+    id: 'login.emailOrPhone',
+    defaultMessage: 'Phone or Email',
   }
 });
+
 
 class Login extends Component {
   constructor(props) {
     super(props);
 
     this.state={
-      email: "",
+      emailOrPhone: "",
       password: "",
       error_text: "",
       show_error: false,
@@ -66,8 +67,8 @@ class Login extends Component {
     event.preventDefault();
     this.resetError();
 
-    if(this.state.email==="") {
-      this.handleError("Email can't be empty");
+    if(this.state.emailOrPhone==="") {
+      this.handleError("Phone or Email can't be empty");
       return;
     }
 
@@ -75,11 +76,17 @@ class Login extends Component {
       this.handleError("Password can't be empty");
       return;
     }
+    
+    // andrey's conversation PhoneNumber
+    console.log( '!!!!', this.state.emailOrPhone);
+    
+    this.state.emailOrPhone=convertPhoneNumber(this.state.emailOrPhone);
     // Username must be lower case
-    let form="username="+this.state.email.toLowerCase()+"&password="+this.state.password;
+    let form="username="+this.state.emailOrPhone.toLowerCase()+"&password="+this.state.password;
+
     let self=this;
 
-    this.state.userApi.login(form, this.state.email.toLowerCase(), this.handleError).then(function (data) {
+    this.state.userApi.login(form, this.state.emailOrPhone.toLowerCase(), this.handleError).then(function (data) {
       if(data!=null) {
         let user=data.getUser();
         self.props.appStore.userData=user;
@@ -109,11 +116,11 @@ class Login extends Component {
                             <i className="icon-user"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <FormattedMessage {...messages.emailPlace}>
+                        <FormattedMessage {...messages.emailOrPhone}>
                           {
                             pholder => <Input autoFocus
-                              value={this.state.email}
-                              id="email"
+                              value={this.state.emailOrPhone}
+                              id="emailOrPhone"
                               onChange={this.handleChange}
                               type="text" name="email" placeholder={pholder} />
                           }
