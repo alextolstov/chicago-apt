@@ -14,6 +14,7 @@ import {
   Row
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
+import convertPhoneNumber from '../Login/convertPhoneNumber';
 
 const user_proto = require('models/user_pb');
 const usermessages_proto = require('models/usermessages_pb.js');
@@ -23,7 +24,7 @@ class Register extends Component {
     super(props);
 
     this.state = {
-      email: "",
+      emailOrPhone: "",
       fullname: "",
       password: "",
       repeat_password: "",
@@ -53,7 +54,7 @@ class Register extends Component {
     event.preventDefault();
     this.resetError();
 
-    if (this.state.email === ""){
+    if (this.state.emailOrPhone === ""){
       this.handleError("Email can't be empty");
       return;
     }
@@ -73,9 +74,14 @@ class Register extends Component {
       return;
     }
 
-    let user = new user_proto.User();
+    let user=new user_proto.User();
+    // Andrey's conversation PhoneNumber
+    console.log( '!!!!', this.state.emailOrPhone);
+    
+    this.state.emailOrPhone=convertPhoneNumber(this.state.emailOrPhone);
+    
     // Username must be lower case
-    user.setEmail(this.state.email.toLowerCase());
+    user.setEmail(this.state.emailOrPhone.toLowerCase());
     // Parse full name
     let parts = this.state.fullname.split(" ");
     user.setFirstName(parts[0]);
@@ -138,10 +144,10 @@ class Register extends Component {
                         <InputGroupText>@</InputGroupText>
                       </InputGroupAddon>
                       <Input autoFocus
-                             id="email"
-                             value={this.state.email}
+                             id="emailOrPhone"
+                             value={this.state.emailOrPhone}
                              onChange={this.handleChange}
-                             type="text" placeholder="Email (as username)"/>
+                             type="text" placeholder="Phone or Email (as username)"/>
                     </InputGroup>
                     <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">

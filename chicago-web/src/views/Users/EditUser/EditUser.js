@@ -27,6 +27,7 @@ import PositionForm from '../../Forms/PositionForm/PositionForm';
 import PermissionForm from '../../Forms/PermissionForm/PermissionForm';
 import RegisterForm from '../../Forms/RegisterForm/RegisterForm';
 import {ToastContainer, toast} from 'react-toastify';
+import convertPhoneNumber from '../../Pages/Login/convertPhoneNumber';
 
 const jspb = require('google-protobuf');
 const user_proto = require('models/user_pb');
@@ -349,7 +350,10 @@ class EditUser extends Component {
   handleChange = (event) => {
     switch (event.target.id) {
       case "new_email":
-        this.state.user.setEmail(event.target.value);
+          // Andrey's conversation PhoneNumber
+        console.log( '!!!!', event.target.value);
+        const valToBase = convertPhoneNumber( event.target.value);
+        this.state.user.setEmail(valToBase);
         break;
       case "password":
         this.state.user.setPassword(event.target.value);

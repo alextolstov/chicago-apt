@@ -77,7 +77,7 @@ class Login extends Component {
       return;
     }
     
-    // andrey's conversation PhoneNumber
+    // Andrey's conversation PhoneNumber
     console.log( '!!!!', this.state.emailOrPhone);
     
     this.state.emailOrPhone=convertPhoneNumber(this.state.emailOrPhone);
