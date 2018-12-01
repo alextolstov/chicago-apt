@@ -42,7 +42,7 @@ export default class UserApi {
                 if (!response.ok) {
                     throw response;
                 }
-                return this.getUserByEmail(userName, errorHandler).then(function (data) {
+                return this.getUserByPhoneOrEmail(userName, errorHandler).then(function (data) {
                     return data;
                 });
             })
@@ -90,10 +90,10 @@ export default class UserApi {
         return this.getUser(user, errorHandler);
     }
 
-    getUserByEmail(email, errorHandler) {
-        let user = new user_proto.User();
+    getUserByPhoneOrEmail(phoneOrEmail, errorHandler) {
+        let user=new user_proto.User();
         // Username must be lower case
-        user.setEmail(email.toLowerCase());
+        user.setEmail(phoneOrEmail.toLowerCase());
         return this.getUser(user, errorHandler);
     }
 

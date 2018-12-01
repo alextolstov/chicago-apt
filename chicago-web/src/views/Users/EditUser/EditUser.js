@@ -104,6 +104,23 @@ const messages = defineMessages({
 
 });
 
+const isEmailAddress=(strEmailPhone) => {
+  if(strEmailPhone.indexOf('@')!==-1) {
+    console.log('isEmailAddress: ', strEmailPhone, ' is true');
+    return true;
+  }
+  console.log('isEmailAddress: ', strEmailPhone, ' is false');
+  return false;
+}
+
+const toPhoneFormat=(strEmailPhone) => {
+  if(strEmailPhone.length===10)
+    return '+7 ('+strEmailPhone.substr(0, 3)+')'+strEmailPhone.substr(3, 3)+
+      ' '+strEmailPhone.substr(6, 2)+' '+strEmailPhone.substr(8, 2);
+  else
+    return strEmailPhone;
+}
+
 class EditUser extends Component {
   constructor(props) {
     super(props);
@@ -132,6 +149,7 @@ class EditUser extends Component {
       need_show : false,
     
     };
+    this.phoneOrEmail='';
     this.readyPosition = this.readyPosition.bind(this);
     this.readyPermission = this.readyPermission.bind(this);
     this.handleFormEnableDisable = this.handleFormEnableDisable.bind(this);
@@ -320,11 +338,14 @@ class EditUser extends Component {
   handleCreateUser=(event) => {
     let self=this;
     this.state.user.setOrganizationId(this.state.loginUser.getOrganizationId());
-  /*
-    this.state.userApi.createUser(this.state.user, (e) => {
-      console.log('Error Create User:', e);
-                                                   });
- */                                                  
+
+    if( isEmailAddress(this.phoneOrEmail))
+       this.state.user.setEmail(this.phoneOrEmail);
+    else
+       this.state.user.setCellPhone(toPhoneFormat(this.phoneOrEmail));
+ /////////////Добавить/////////////////////////////////////////////////////////////////////
+    this.state.user.setUserLogin(this.phoneOrEmail);    
+ /////////////////////////////////////////////////////////////////////////////////////////   
     this.state.userApi.createUser(this.state.user,
                                   (e) => { console.log('Error Create User:', e);
     }).then(function () {
@@ -351,9 +372,8 @@ class EditUser extends Component {
     switch (event.target.id) {
       case "new_email":
           // Andrey's conversation PhoneNumber
-        console.log( '!!!!', event.target.value);
-        const valToBase = convertPhoneNumber( event.target.value);
-        this.state.user.setEmail(valToBase);
+        console.log( 'handle change!!!!', event.target.value);
+        this.phoneOrEmail=convertPhoneNumber(event.target.value);
         break;
       case "password":
         this.state.user.setPassword(event.target.value);
