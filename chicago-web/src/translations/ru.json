@@ -2,6 +2,7 @@
   "login.short.title": "Войти",
   "login.long.title": "Войти на сайт",
   "login.emailOrPhone": "Телефон или E-mail",
+  "login.email": "E-mail",
   "login.password": "Пароль",
 
   "menu.header": "Панель",

@@ -40,6 +40,7 @@ class PositionForm extends Component {
         if (data !== undefined && data !== null) {
           self.props.appStore.companyPositions = [];
           let positions = data.getPositions().getPositionsMap();
+console.log('PositionForm:getPositions() positions=', positions);
 
           positions.forEach((l, v) => {
             self.props.appStore.companyPositions.push({value:v, label:l});

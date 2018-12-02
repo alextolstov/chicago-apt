@@ -220,7 +220,9 @@ class EditUser extends Component {
       self.state.readyPermission=false;
       this.state.userApi.getUserById( this.state.userId, null).then(function (userMsg) {
       if (userMsg != null) {
-          self.state.user = userMsg.getUser();
+          self.state.user=userMsg.getUser();
+console.log('EditUser componentDidMount self.state.user ', self.state.user);
+        
           self.state.userPositions=self.state.user.getPositionsList();
           self.state.permissionApi.setPermissionsUser(self.props.appStore, self.state.user, self.readyPermission); 
 
@@ -239,7 +241,11 @@ class EditUser extends Component {
       this.state.userApi.getUserById( this.state.userId, null).then(function (userMsg) {
 
       if (userMsg != null) {
-        user = userMsg.getUser();
+        user=userMsg.getUser();
+console.log('EditUser componentDidUpdate self.state.user ', self.state.user);
+        const posList=user.getPositionsList();
+console.log('EditUser componentDidUpdate posList', posList);
+
         self.state.permissionApi.setPermissionsUser(self.props.appStore, user, self.readyPermission); 
         self.setState({user:user, userPositions:user.getPositionsList(), need_show :false});
       }
@@ -290,17 +296,20 @@ class EditUser extends Component {
   handleSaveUserInfo = (event) => {
     let self = this;
     if (this.state.userId === 'new') {
-      this.state.userApi.createUser(this.state.user, self);
+      this.state.userApi.createUser(this.state.user, this.handleError);
       toast.success(<FormattedMessage id="users.edit.success" defaultMessage="SuccessNew..."/>, {
         position: toast.POSITION.BOTTOM_RIGHT,
-        autoClose: 5000 
+        autoClose: 1000 
       });    
 
     } else {// Working with existing profile
       let positionsArr = [];
-      this.state.userPositions.forEach((l, v) => { positionsArr.push(l.value) });
+      this.state.userPositions.forEach((l, v) => {positionsArr.push(l.value)});
+console.log('save setPositionsList positionsArr=', positionsArr);
+console.log('save setPositionsList user=', this.state.user);
+      
       this.state.user.setPositionsList(positionsArr);
-      this.state.userApi.saveUser(this.state.user, self).then(function () {
+      this.state.userApi.saveUser(this.state.user, this.handleError).then(function () {
         if (self.state.userId === 'current') {
           self.props.appStore.userData = self.state.user;
           self.setUncheckedState(true);
@@ -310,7 +319,7 @@ class EditUser extends Component {
         console.log('Save toast');
         toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
           position: toast.POSITION.BOTTOM_RIGHT,
-          autoClose: 3000 
+          autoClose: 1000 
         });    
   
       });
@@ -333,6 +342,7 @@ class EditUser extends Component {
 
   handleError = (error) => {
     // TODO finish the function if neded
+    console.log('handleError: error=', error)
   }
 
   handleCreateUser=(event) => {
