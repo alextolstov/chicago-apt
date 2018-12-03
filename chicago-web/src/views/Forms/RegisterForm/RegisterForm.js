@@ -19,6 +19,10 @@ const messages = defineMessages({
         id: 'login.emailOrPhone',
         defaultMessage: 'Email or Phone'
     },
+    cellPhone: {
+        id: 'login.cellPhone',
+        defaultMessage: 'Cell Phone'
+    },
 });
 
 class RegisterForm extends Component {
@@ -31,6 +35,22 @@ class RegisterForm extends Component {
   render() {
         return (
             <CardBody>
+                {/*Cell Phone*/}
+                <FormGroup row>
+                    <InputGroup>
+                        <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                                <i className="fa fa-envelope-o"></i>
+                            </InputGroupText>
+                        </InputGroupAddon>
+                        <FormattedMessage {...messages.cellPhone}>
+                            {
+                                pholder => <Input onChange={this.props.handleChange}
+                                    type="text" id="new_cellPhone" name="new_cellPhone" placeholder={pholder} required/>
+                            }
+                        </FormattedMessage>
+                    </InputGroup>
+                </FormGroup>
                 {/*Email*/}
                 <FormGroup row>
                     <InputGroup>

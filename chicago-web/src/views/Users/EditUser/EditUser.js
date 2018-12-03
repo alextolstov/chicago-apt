@@ -347,15 +347,19 @@ console.log('save setPositionsList user=', this.state.user);
 
   handleCreateUser=(event) => {
     let self=this;
+    console.log('handleCreateUser ', this.state.loginUser.getOrganizationId(),this.state.user );
     this.state.user.setOrganizationId(this.state.loginUser.getOrganizationId());
-
+/*
     if( isEmailAddress(this.phoneOrEmail))
        this.state.user.setEmail(this.phoneOrEmail);
     else
        this.state.user.setCellPhone(toPhoneFormat(this.phoneOrEmail));
+*/       
  /////////////Добавить/////////////////////////////////////////////////////////////////////
-    this.state.user.setUserLogin(this.phoneOrEmail);    
- /////////////////////////////////////////////////////////////////////////////////////////   
+ //   this.state.user.setUserLogin(this.phoneOrEmail);    
+ ///////////////////////////////////////////////////////////////////////////////////////// 
+    console.log('Now will create user this.state.user=',this.state.user);
+       
     this.state.userApi.createUser(this.state.user,
                                   (e) => { console.log('Error Create User:', e);
     }).then(function () {
@@ -383,8 +387,14 @@ console.log('save setPositionsList user=', this.state.user);
       case "new_email":
           // Andrey's conversation PhoneNumber
         console.log( 'handle change!!!!', event.target.value);
-        this.phoneOrEmail=convertPhoneNumber(event.target.value);
+ //       this.phoneOrEmail=convertPhoneNumber(event.target.value);
+        this.state.user.setEmail(event.target.value);
         break;
+        case "new_cellPhone":
+        // Andrey's conversation PhoneNumber
+        console.log( 'handle cellPhone!!!!', event.target.value);
+        this.state.user.setCellPhone(event.target.value);
+      break;
       case "password":
         this.state.user.setPassword(event.target.value);
       break;
