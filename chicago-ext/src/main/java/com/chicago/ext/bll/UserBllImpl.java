@@ -4,10 +4,10 @@ import com.chicago.common.util.PasswordUtil;
 import com.chicago.dto.OrganizationOuterClass;
 import com.chicago.dto.UserOuterClass;
 import com.chicago.ext.dal.OrganizationDal;
+import com.chicago.ext.dal.PasswordNotMatchException;
 import com.chicago.ext.dal.PermissionDal;
 import com.chicago.ext.dal.UserDal;
-import com.chicago.ext.dal.PasswordNotMatchException;
-import com.chicago.ext.dal.UserAlreadyExistsException;
+import com.chicago.ext.dal.UserNotFoundException;
 import javafx.util.Pair;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
@@ -32,10 +32,15 @@ public class UserBllImpl implements UserBll
     @Override
     public UserOuterClass.User createAdminUser(UserOuterClass.User user) throws Exception
     {
-        if (_userDal.isUserExists(user.getEmail()))
+        if (_userDal.isCellPhoneExists(user.getCellPhone()))
         {
-            throw new Exception("User " + user.getEmail() + " already exists");
+            throw new Exception("User with cell phone " + user.getCellPhone() + " already exists");
         }
+        if (_userDal.isEmailExists(user.getEmail()))
+        {
+            throw new Exception("User with email " + user.getEmail() + " already exists");
+        }
+
         OrganizationOuterClass.Organization holding = OrganizationOuterClass.Organization.newBuilder()
                 .setType(OrganizationOuterClass.OrganizationType.HOLDING)
                 .setName("New holding")
@@ -52,7 +57,7 @@ public class UserBllImpl implements UserBll
                 .setDescription("New company")
                 .build();
         String companyId = _organizationDal.createOrganization(company);
-        LOG.info("New company {} created for user {}", companyId, user.getEmail());
+        LOG.info("New company {} created for user with email {} and cell phone {}", companyId, user.getEmail(), user.getCellPhone());
 
         // Now set new company for user
         user = UserOuterClass.User.newBuilder(user)
@@ -88,18 +93,29 @@ public class UserBllImpl implements UserBll
     }
 
     @Override
-    public UserOuterClass.User authUser(String email, String password) throws Exception
+    public UserOuterClass.User authUser(String cellPhone, String email, String password) throws Exception
     {
-        LOG.info("Called for user: {}", email);
-        Pair<String, byte[]> hashSalt = _userDal.getHashSalt(email);
+        LOG.info("Called for user with cell phone: {} and email {}", cellPhone, email);
+        Pair<String, Pair<String, byte[]>> result = null;
+        try
+        {
+            result = _userDal.getHashSaltByCell(cellPhone);
+        } catch (UserNotFoundException ex)
+        {
+            LOG.info("User with cell {} not found will try email {}", cellPhone, email);
+            result = _userDal.getHashSaltByEmail(email);
+        }
+
+        String userId = result.getKey();
+        Pair<String, byte[]> hashSalt = result.getValue();
         String hashPassword = PasswordUtil.getSecurePassword(password, hashSalt.getValue());
 
         if (!hashPassword.equals(hashSalt.getKey()))
         {
-            throw new PasswordNotMatchException("Wrong password for user " + email);
+            throw new PasswordNotMatchException("Wrong password for userId " + userId);
         }
 
-        return _userDal.getUserByEmail(email);
+        return _userDal.getUserById(userId);
     }
 
     @Override
@@ -136,9 +152,13 @@ public class UserBllImpl implements UserBll
 
     private UserOuterClass.User createUser(UserOuterClass.User user, boolean sendCredentials) throws Exception
     {
-        if (_userDal.isUserExists(user.getEmail()))
+        if (_userDal.isCellPhoneExists(user.getCellPhone()))
         {
-            throw new UserAlreadyExistsException("User " + user.getEmail() + " already exists");
+            throw new Exception("User with cell phone " + user.getCellPhone() + " already exists");
+        }
+        if (_userDal.isEmailExists(user.getEmail()))
+        {
+            throw new Exception("User with email " + user.getEmail() + " already exists");
         }
 
         String password = user.getPassword();

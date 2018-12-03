@@ -193,7 +193,7 @@ public class UserRequests extends AbstractComponent
             Message response;
             try
             {
-                UserOuterClass.User user = _userBll.authUser(event.getUser().getEmail(), event.getUser().getPassword());
+                UserOuterClass.User user = _userBll.authUser(event.getUser().getCellPhone(), event.getUser().getEmail(), event.getUser().getPassword());
                 response = Usermessages.UserResponse
                         .newBuilder()
                         .setUser(user)

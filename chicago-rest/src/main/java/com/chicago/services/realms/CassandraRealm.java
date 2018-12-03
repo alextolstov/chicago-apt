@@ -53,14 +53,19 @@ public class CassandraRealm extends AuthorizingRealm
 
         try
         {
-            UserOuterClass.User user = UserOuterClass.User
-                    .newBuilder()
-                    .setEmail(username)
-                    .setPassword(password)
-                    .build();
+            UserOuterClass.User.Builder userBuilder = UserOuterClass.User.newBuilder()
+                    .setPassword(password);
+            if (username.contains("@"))
+            {
+                userBuilder.setEmail(username);
+            } else
+            {
+                userBuilder.setCellPhone(username);
+            }
+
             Usermessages.LoginUserRequest loginUserRequest = Usermessages.LoginUserRequest
                     .newBuilder()
-                    .setUser(user)
+                    .setUser(userBuilder.build())
                     .build();
             AsyncCommunicator asyncComm = Application.getServiceLocator().getService(AsyncCommunicator.class);
             byte[] response = asyncComm.transaction(loginUserRequest);

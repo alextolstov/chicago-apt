@@ -50,39 +50,17 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Users (
 
 CREATE MATERIALIZED VIEW ChicagoErp.UsersByEmail AS SELECT
     user_id,
-    email,
-    password_hash,
-    password_salt,
-    avatar,
-    first_name,
-    middle_name,
-    last_name,
-    nick_name,
-    cell_phone,
-    home_phone,
-    work_phone,
-    passport_number,
-    date_of_birth,
-    employment_date,
-    actual_employment_date,
-    dismissal_date,
-    actual_dismissal_date,
-    tax_payer_id,
-    diploma_number,
-    diploma_date,
-    retirement_id_number,
-    retirement_date,
-    medical_book,
-    medical_book_date,
-    employment_book_number,
-    organization_id,
-    address_id,
-    positions,
-    permissions,
-    create_datetime
+    email
     FROM ChicagoErp.Users
     WHERE email IS NOT NULL
     PRIMARY KEY(email, user_id);
+
+CREATE MATERIALIZED VIEW ChicagoErp.UsersByCellPhone AS SELECT
+    user_id,
+    cell_phone
+    FROM ChicagoErp.Users
+    WHERE cell_phone IS NOT NULL
+    PRIMARY KEY(cell_phone, user_id);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Schedule (
     user_id uuid PRIMARY KEY,
