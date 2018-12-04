@@ -80,7 +80,7 @@ class Login extends Component {
     // Andrey's conversation PhoneNumber
     console.log( '!!!!', this.state.emailOrPhone);
     
-    this.state.emailOrPhone=convertPhoneNumber(this.state.emailOrPhone);
+ //   this.state.emailOrPhone=convertPhoneNumber(this.state.emailOrPhone);
     // Username must be lower case
     let form="username="+this.state.emailOrPhone.toLowerCase()+"&password="+this.state.password;
 
