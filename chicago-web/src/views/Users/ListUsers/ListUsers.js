@@ -1,6 +1,11 @@
 import React, {Component} from 'react';
 import {Card, CardHeader, CardBody, Button} from 'reactstrap';
-import BootstrapTable  from 'react-bootstrap-table-next';
+import BootstrapTable from 'react-bootstrap-table-next';
+//import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+//import './bootstrap.min.css';
+import filterFactory, {textFilter} from 'react-bootstrap-table2-filter';
+import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
+
 import {defineMessages, FormattedMessage} from 'react-intl';
 
 import {inject, observer} from 'mobx-react/index';
@@ -10,13 +15,24 @@ import data from './_data';
 import UserApi from '../../../api/UserApi';
 
 import EditUser from '../EditUser';
+require('react-bootstrap-table-next/dist/react-bootstrap-table2.min.css');
 
 
 const jspb = require('google-protobuf');
 const user_proto = require('models/user_pb');
 
 
-
+const selectRow = {
+    mode: 'radio',
+    clickToSelect: true
+  };
+ 
+  const selectRow1 = {
+    mode: 'checkbox',
+    clickToSelect: true,
+    style: { backgroundColor: '#c8e6c9' }
+  };
+  
 class ListUsers extends Component {
     constructor(props) {
         super(props);
@@ -53,7 +69,8 @@ class ListUsers extends Component {
               columns: [{
                 dataField: 'name',
                 text: 'Name',
-                sort: true,
+                  sort: true,
+                  filter: textFilter()
               },/*{
                 dataField: 'email',
                 text: 'Email',
@@ -114,9 +131,10 @@ class ListUsers extends Component {
                 <div className="animated">
                 <Card>
                     <CardHeader>
-                     <strong><FormattedMessage id="menu.users.listusers"
-                            defaultMessage="List user" />
+                     <h3><strong><FormattedMessage id="menu.users.listusers"
+                                    defaultMessage="List user" />
                      </strong>
+                     </h3>
                     <div>           
                     <button  onClick={this.addUser}  
                     >
@@ -128,12 +146,13 @@ class ListUsers extends Component {
                     </CardHeader>
                     <CardBody>
                         <BootstrapTable
-                            striped
-                            hover
-                            keyField='email' 
-                            data={ this.state.optionsList } 
-                            columns={this.state.columns}
-                            rowEvents={ this.rowEvents }
+                                    hover
+                                    keyField='name'
+                                    data={this.state.optionsList}
+                                    columns={this.state.columns}
+                                    rowEvents={this.rowEvents}
+                                    filter={filterFactory()}
+                                    selectRow={ selectRow1 }
                         />            
                     </CardBody>
                 </Card>
