@@ -190,7 +190,7 @@ public class UserDalImpl implements UserDal
     {
         if (email.length() == 0)
         {
-            throw new UserNotFoundException("Email filed is empty");
+            throw new UserNotFoundException("Email field is empty");
         }
         return getHashSaltByParameter(USERS_BY_EMAIL_TABLE, "email", email);
     }
@@ -200,7 +200,7 @@ public class UserDalImpl implements UserDal
     {
         if (cellPhone.length() == 0)
         {
-            throw new UserNotFoundException("Cell phone filed is empty");
+            throw new UserNotFoundException("Cell phone field is empty");
         }
         return getHashSaltByParameter(USERS_BY_CELL_PHONE_TABLE, "cell_phone", cellPhone);
     }
@@ -278,12 +278,21 @@ public class UserDalImpl implements UserDal
     @Override
     public boolean isEmailExists(String email)
     {
+        if (email.length() == 0)
+        {
+            return false;
+        }
         return checkParameter(USERS_BY_EMAIL_TABLE, "email", email);
     }
 
     @Override
     public boolean isCellPhoneExists(String cellPhone)
     {
+        if (cellPhone.length() == 0)
+        {
+            return false;
+        }
+
         return checkParameter(USERS_BY_CELL_PHONE_TABLE, "cell_phone", cellPhone);
     }
 
