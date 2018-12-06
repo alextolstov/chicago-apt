@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {Card, CardHeader, CardBody, Button} from 'reactstrap';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+
 import BootstrapTable from 'react-bootstrap-table-next';
-//import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-//import './bootstrap.min.css';
 import filterFactory, {textFilter} from 'react-bootstrap-table2-filter';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
@@ -10,16 +10,15 @@ import {defineMessages, FormattedMessage} from 'react-intl';
 
 import {inject, observer} from 'mobx-react/index';
 
-
+import EditOrganization from '../EditOrganization/EditOrganization';
 import data from './_data';
-import UserApi from '../../../api/UserApi';
+import OrganizationApi from '../../../api/OrganizationApi';
+const organization_proto = require('models/organization_pb');
 
-import EditUser from '../EditUser';
-require('react-bootstrap-table-next/dist/react-bootstrap-table2.min.css');
+
 
 
 const jspb = require('google-protobuf');
-const user_proto = require('models/user_pb');
 
 
 const selectRow = {
@@ -33,7 +32,7 @@ const selectRow = {
     style: { backgroundColor: '#c8e6c9' }
   };
   
-class ListUsers extends Component {
+class ListOrganizations extends Component {
     constructor(props) {
         super(props);
 
@@ -61,12 +60,18 @@ class ListUsers extends Component {
 
         this.state={
             data: null,
-            userApi: new UserApi(),
+            organizationApi: new OrganizationApi(),
             selected: { id : 'current',
                         name: '',
                       },
             optionsList: [],
-              columns: [{
+            columns: [
+                {
+                  dataField: 'organization_id',
+                  text: 'id',
+                  sort: true,
+                },
+                {
                 dataField: 'name',
                 text: 'Name',
                   sort: true,
@@ -77,16 +82,25 @@ class ListUsers extends Component {
                 sort: true
               }*/],
         };
-        this.addUser=this.addUser.bind(this);
-        this.loadList=this.loadList.bind(this);
+        this.organizationStructure = null;
+
+        this.addOrganization=this.addOrganization.bind(this);
+        this.loadOrganizations=this.loadOrganizations.bind(this);
     }
     componentDidMount() {
+/*
         console.log('usersList:componentDidMount appStore=', this.props.appStore);
         const userData=this.props.appStore.userData;
         console.log('usersList:componentDidMount userData=', userData);
         const organizationId=userData.getOrganizationId();
         console.log('usersList:componentDidMount organizationId=', organizationId);
-
+*/
+        let self = this;
+        this.state.organizationApi.getStructure(null).then(function (e) {
+            self.organizationStructure=e;
+            console.log(e);
+        })   
+/*
         let userOrgs=new user_proto.UserOrganization();
         const orgId=userData.getOrganizationId();
         userOrgs.setOrganizationId(orgId);
@@ -111,16 +125,17 @@ class ListUsers extends Component {
         }).
         catch( function (error) {
           console.log('ListUser error:', error);
-        })   
+        }) 
+*/        
     }
 
-    addUser() {
+    addOrganization() {
         console.log('Add User');
         this.setState({selected : {id: "new"}});
     }
 
-    loadList() {
-        console.log('ListUsers loadList');
+    loadOrganizations() {
+        console.log('List organization');
         this.componentDidMount();
     }
 
@@ -131,15 +146,15 @@ class ListUsers extends Component {
                 <div className="animated">
                 <Card>
                     <CardHeader>
-                     <h3><strong><FormattedMessage id="menu.users.listusers"
-                                    defaultMessage="List user" />
+                     <h3><strong><FormattedMessage id="menu.users.listorganizations"
+                                    defaultMessage="List organizations" />
                      </strong>
                      </h3>
                     <div>           
-                    <button  onClick={this.addUser}  
+                    <button  onClick={this.addOrganization}  
                     >
-                    <strong><FormattedMessage id="users.edit.new_user"
-                                              defaultMessage="Create new user"/>
+                    <strong><FormattedMessage id="menu.users.new_organization"
+                            defaultMessage="Create new organization" />
                     </strong>
                     </button>
                     </div>
@@ -159,7 +174,7 @@ class ListUsers extends Component {
                 </div>
             </div>
             <div className="col-8">
-                    <EditUser userId={this.state.selected.id} loadList={this.loadList}  />
+               <EditOrganization organizationId={this.state.selected.id} loadList={this.loadList}  />
             </div>
             </div>
         );
@@ -167,4 +182,4 @@ class ListUsers extends Component {
 }
 
 
-export default inject('appStore')(observer(ListUsers));
+export default inject('appStore')(observer(ListOrganizations));

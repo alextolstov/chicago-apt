@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class TestDal
@@ -123,7 +124,7 @@ public class TestDal
             ServiceLocator serviceLocator = ServiceLocatorFactory.getInstance().create("servicelocator");
             ServiceLocatorUtilities.bind(serviceLocator, new ApplicationBinder(confFile));
             PositionDal pd = serviceLocator.getService(PositionDal.class);
-            PositionOuterClass.Positions positions = pd.getPositions("2a328392-28b3-4f8e-a86b-a48d72819ef5");
+            Map<UUID, String> positions = pd.getPositions("2a328392-28b3-4f8e-a86b-a48d72819ef5");
         } catch (Exception e)
         {
             e.printStackTrace();

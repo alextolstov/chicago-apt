@@ -8,9 +8,11 @@
 
   "menu.header": "Панель",
   "menu.users.header": "Сотрудники",
-  "menu.users.newuser": "Новый сотрудник",
+  "menu.users.new_user": "Новый сотрудник",
+  "menu.users.new_organization": "Новая организация",
   "menu.users.allusers": "Все сотрудники",
   "menu.users.listusers": "Список сотрудников",
+  "menu.users.listorganizations": "Список организаций",
 
   "users.edit.wholename": "Фамилия Имя Отчество",
   "users.edit.password_management": "Смена пароля",

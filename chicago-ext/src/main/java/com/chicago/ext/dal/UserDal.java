@@ -11,7 +11,9 @@ public interface UserDal
     String createUser(UserOuterClass.User newUser, String passwordHash, byte[] passwordSalt)
             throws Exception;
 
-    boolean isUserExists(String email);
+    boolean isEmailExists(String email);
+
+    boolean isCellPhoneExists(String cellPhone);
 
     void updateUser(UserOuterClass.User user) throws Exception;
 
@@ -23,9 +25,13 @@ public interface UserDal
 
     UserOuterClass.UserPermissions getUserPermissions(String userId) throws Exception;
 
-    Pair<String, byte[]> getHashSalt(String email) throws Exception;
+    Pair<String, Pair<String, byte[]>> getHashSaltByEmail(String email) throws Exception;
+
+    Pair<String, Pair<String, byte[]>> getHashSaltByCell(String cell) throws Exception;
 
     UserOuterClass.User getUserByEmail(String email) throws Exception;
+
+    UserOuterClass.User getUserByCell(String cellPhone) throws Exception;
 
     UserOuterClass.User getUserById(String userId) throws Exception;
 

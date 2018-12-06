@@ -14,7 +14,7 @@ public interface UserBll
 
     void setUserAvatar(UserOuterClass.UserAvatar avatar) throws Exception;
 
-    UserOuterClass.User authUser(String userName, String password) throws Exception;
+    UserOuterClass.User authUser(String cellPhone, String email, String password) throws Exception;
 
     void setUserPassword(UserOuterClass.UserPassword userPassword) throws Exception;
 

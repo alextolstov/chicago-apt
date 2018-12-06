@@ -48,7 +48,7 @@ message User
     string organization_id = 26;
     string address_id = 27;
     repeated string permission_names = 28;
-    repeated string positions = 29;
+    map<string, string> positions = 29;
     int64 create_datetime = 30;
 }
 
