@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {defineMessages, FormattedMessage} from 'react-intl';
 import {CardBody, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText,} from 'reactstrap';
-
+import ReactPhoneInput from 'react-phone-input-2' 
+    
 const messages = defineMessages({
     passwordPlace: {
         id: 'users.edit.password',
@@ -29,9 +30,20 @@ class RegisterForm extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state={
+            phone:""
+        };
+        this.handleChangePhone=this.handleChangePhone.bind(this);
     }
-
+/*
+    pholder => <Input onChange={this.props.handleChange}
+    type="text" id="new_cellPhone" name="new_cellPhone" placeholder={pholder} required/>
+*/
+  handleChangePhone(value) {
+    console.log('handleChangePhone ', value);
+    this.props.handleChange({target:{ id:'new_cellPhone', value: value}})    
+    this.setState({phone: value});
+  }
   render() {
         return (
             <CardBody>
@@ -45,8 +57,9 @@ class RegisterForm extends Component {
                         </InputGroupAddon>
                         <FormattedMessage {...messages.cellPhone}>
                             {
-                                pholder => <Input onChange={this.props.handleChange}
-                                    type="text" id="new_cellPhone" name="new_cellPhone" placeholder={pholder} required/>
+                                pholder => <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
+                                    onChange={this.handleChangePhone} inputStyle={{width: '200px'}} /> 
+                              
                             }
                         </FormattedMessage>
                     </InputGroup>

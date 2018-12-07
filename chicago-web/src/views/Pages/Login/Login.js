@@ -19,6 +19,7 @@ import {inject} from 'mobx-react';
 import UserApi from '../../../api/UserApi';
 import PermissionApi from '../../../api/PermissionApi';
 import convertPhoneNumber from './convertPhoneNumber';
+import ReactPhoneInput from 'react-phone-input-2' 
 
 // Localization for place holders
 const messages=defineMessages({
@@ -42,8 +43,9 @@ class Login extends Component {
       permissionApi: new PermissionApi(),
       permissionsArr: [],
       permissionsUserArr: [],
-
+      phone: "",
     };
+    this.handleChangePhone=this.handleChangePhone.bind(this);
   }
 
   handleChange=event => {

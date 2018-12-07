@@ -28,6 +28,7 @@ import PermissionForm from '../../Forms/PermissionForm/PermissionForm';
 import RegisterForm from '../../Forms/RegisterForm/RegisterForm';
 import {ToastContainer, toast} from 'react-toastify';
 import convertPhoneNumber from '../../Pages/Login/convertPhoneNumber';
+import ReactPhoneInput from 'react-phone-input-2' 
 
 const jspb = require('google-protobuf');
 const user_proto = require('models/user_pb');
@@ -147,7 +148,7 @@ class EditUser extends Component {
       permission_enabled: false,
 
       need_show: false,
-
+      phone:'',
     };
     this.phoneOrEmail='';
     this.readyPosition = this.readyPosition.bind(this);
@@ -155,6 +156,7 @@ class EditUser extends Component {
     this.handleFormEnableDisable = this.handleFormEnableDisable.bind(this);
     this.handleChange=this.handleChange.bind(this);
     this.handleCreateUser=this.handleCreateUser.bind(this);
+    this.handleChangePhone=this.handleChangePhone.bind(this);
 
     this.state.loginUser = jspb.Message.cloneMessage(this.props.appStore.userData);
     if (this.state.userId === 'new') {
@@ -245,6 +247,7 @@ console.log('EditUser componentDidMount self.state.user ', self.state.user);
 console.log('EditUser componentDidUpdate self.state.user ', self.state.user);
         const posMap=user.getPositionsMap();
 console.log('EditUser componentDidUpdate posList', posMap);
+        self.state.phone=user.getCellPhone();
 
         self.state.permissionApi.setPermissionsUser(self.props.appStore, user, self.readyPermission); 
         self.setState({user:user, userPositions:user.getPositionsMap(), need_show :false});
@@ -299,11 +302,13 @@ console.log('EditUser componentDidUpdate posList', posMap);
 
     } else {// Working with existing profile
       let positionsArr = [];
+/* position
       this.state.userPositions.forEach((l, v) => {positionsArr.push(l.value)});
 console.log('save setPositionsList positionsArr=', positionsArr);
 console.log('save setPositionsList user=', this.state.user);
       
       this.state.user.setPositionsList(positionsArr);
+*/      
       this.state.userApi.saveUser(this.state.user, this.handleError).then(function () {
         if (self.state.userId === 'current') {
           self.props.appStore.userData = self.state.user;
@@ -377,7 +382,9 @@ console.log('save setPositionsList user=', this.state.user);
     this.setState({userPositions: event});
   }
 
-  handleChange = (event) => {
+  handleChange=(event) => {
+    console.log( 'EditUser handleChange', event);
+
     switch (event.target.id) {
       case "new_email":
           // Andrey's conversation PhoneNumber
@@ -472,6 +479,11 @@ console.log('save setPositionsList user=', this.state.user);
         break;
     }
     this.setState({[event.target.id]: event.target.value});
+  }
+ 
+  handleChangePhone(value) {
+    this.setState({phone: value});
+    this.handleChange({target:{ id:'cell_phone', value: value}})  
   }
 
   render() {
@@ -735,10 +747,8 @@ console.log('save setPositionsList user=', this.state.user);
                       </InputGroupAddon>
                       <FormattedMessage {...messages.cellPhonePlace}>
                         {
-                          pholder => <Input onChange={this.handleChange}
-                                            value={this.state.user.getCellPhone === undefined ? "" : this.state.user.getCellPhone()}
-                                            type="text" id="cell_phone" name="cell_phone" placeholder={pholder}
-                                            required/>
+                          pholder => <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
+                             onChange={this.handleChangePhone} inputStyle={{width: '200px'}} /> 
                         }
                       </FormattedMessage>
                     </InputGroup>
