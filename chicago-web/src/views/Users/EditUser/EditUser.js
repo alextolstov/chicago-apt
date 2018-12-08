@@ -308,7 +308,16 @@ console.log('save setPositionsList positionsArr=', positionsArr);
 console.log('save setPositionsList user=', this.state.user);
       
       this.state.user.setPositionsList(positionsArr);
-*/      
+*/    console.log('SAVE USER ', this.state.user);
+      let positionMap=this.state.user.getPositionsMap();
+      console.log('SAVE USER positionMap', positionMap,this.state.userPositions);
+      this.state.userPositions.forEach((l, v) => {
+        console.log('l=',l, l.value);
+        
+        positionMap.arr_.push({id: l.value, value: l.name})
+      }); 
+      console.log('SAVE USER ', this.state.user);
+
       this.state.userApi.saveUser(this.state.user, this.handleError).then(function () {
         if (self.state.userId === 'current') {
           self.props.appStore.userData = self.state.user;
@@ -378,7 +387,9 @@ console.log('save setPositionsList user=', this.state.user);
   handleSelectChangeRole = (value) => {
     this.props.appStore.userPermissions = value;
   }
-  handleSelectChangePosition = (event) => {
+  handleSelectChangePosition=(event) => {
+    console.log('change select event=', event);
+    
     this.setState({userPositions: event});
   }
 

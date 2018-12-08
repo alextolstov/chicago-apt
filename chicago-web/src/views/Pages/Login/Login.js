@@ -47,7 +47,9 @@ class Login extends Component {
     };
     this.handleChangePhone=this.handleChangePhone.bind(this);
   }
-
+  handleChangePhone() {
+    
+  }
   handleChange=event => {
     this.setState({
       [event.target.id]: event.target.value
