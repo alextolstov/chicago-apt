@@ -244,13 +244,18 @@ console.log('EditUser componentDidMount self.state.user ', self.state.user);
 
       if (userMsg != null) {
         user=userMsg.getUser();
-console.log('EditUser componentDidUpdate self.state.user ', self.state.user);
         const posMap=user.getPositionsMap();
-console.log('EditUser componentDidUpdate posList', posMap);
+        console.log('EditUser componentDidUpdate posMap', posMap);
+        const listPos=posMap.getEntryList();
+        console.log('EditUser componentDidUpdate listPos', listPos);
         self.state.phone=user.getCellPhone();
 
+        let pos=[];
+        for(let i=0;i<listPos.length;i++)
+          pos.push(listPos[i][0]);
+        
         self.state.permissionApi.setPermissionsUser(self.props.appStore, user, self.readyPermission); 
-        self.setState({user:user, userPositions:user.getPositionsMap(), need_show :false});
+        self.setState({user:user, userPositions:pos, need_show :false});
       }
       })
     }
@@ -308,14 +313,22 @@ console.log('save setPositionsList positionsArr=', positionsArr);
 console.log('save setPositionsList user=', this.state.user);
       
       this.state.user.setPositionsList(positionsArr);
-*/    console.log('SAVE USER ', this.state.user);
+*/
+
+/*
       let positionMap=this.state.user.getPositionsMap();
       console.log('SAVE USER positionMap', positionMap,this.state.userPositions);
       this.state.userPositions.forEach((l, v) => {
         console.log('l=',l, l.value);
-        
         positionMap.arr_.push({id: l.value, value: l.name})
       }); 
+*/
+      this.state.userPositions.forEach((v) => {
+        console.log('positionId = ', v);
+        // Send only position id
+        this.state.user.getPositionsMap().set(v.value, '');
+      });
+
       console.log('SAVE USER ', this.state.user);
 
       this.state.userApi.saveUser(this.state.user, this.handleError).then(function () {

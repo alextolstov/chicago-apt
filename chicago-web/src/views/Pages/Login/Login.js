@@ -4,6 +4,7 @@ import {
   Card,
   CardBody,
   CardGroup,
+  CardHeader,
   Col,
   Container,
   FormFeedback,
@@ -13,6 +14,8 @@ import {
   InputGroupText,
   Row
 } from 'reactstrap';
+import {AppSwitch} from '@coreui/react'
+
 import {Link} from 'react-router-dom'
 import {defineMessages, FormattedMessage} from 'react-intl';
 import {inject} from 'mobx-react';
@@ -44,12 +47,24 @@ class Login extends Component {
       permissionsArr: [],
       permissionsUserArr: [],
       phone: "",
+      modePhone: false
     };
     this.handleChangePhone=this.handleChangePhone.bind(this);
+    this.handleToogleMode=this.handleToogleMode.bind(this);
   }
-  handleChangePhone() {
+  
+  handleChangePhone(value) {
+    this.state.emailOrPhone=value;
+    this.setState({phone: value});
+  }
+
+  handleToogleMode() {
+    console.log('handleToogleMode this.state.modePhone= ', this.state.modePhone);
     
+    this.setState({modePhone: !this.state.modePhone});
   }
+
+
   handleChange=event => {
     this.setState({
       [event.target.id]: event.target.value
@@ -109,27 +124,41 @@ class Login extends Component {
             <Col md="8">
               <CardGroup>
                 <Card className="p-4">
+                  <CardHeader>
+                    <div className="phoneOrMail">
+                      <AppSwitch id="phoneOrMailId"
+                                onClick={this.handleToogleMode}
+                                className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
+                                label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
+                    </div>
+                  </CardHeader>
+
+                  
                   <CardBody>
                     <h1><FormattedMessage id="login.short.title" defaultMessage="Login" /></h1>
                     <p className="text-muted"><FormattedMessage id="login.long.title"
                       defaultMessage="Sign In to your account" /></p>
                     <form action="/login" method="post">
-                      <InputGroup className="mb-3">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="icon-user"></i>
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <FormattedMessage {...messages.emailOrPhone}>
-                          {
-                            pholder => <Input autoFocus
-                              value={this.state.emailOrPhone}
-                              id="emailOrPhone"
-                              onChange={this.handleChange}
-                              type="text" name="email" placeholder={pholder} />
-                          }
-                        </FormattedMessage>
-                      </InputGroup>
+                      {(this.state.modePhone) &&
+                        <InputGroup className="mb-3">
+                          <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
+                             onChange={this.handleChangePhone} inputStyle={{width: '200px'}} /> 
+                        </InputGroup>
+                      }
+                      {(!this.state.modePhone)&&
+                        <InputGroup className="mb-3">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="icon-user"></i>
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input autoFocus
+                            value={this.state.emailOrPhone}
+                            id="emailOrPhone"
+                            onChange={this.handleChange}
+                            type="text" name="email" placeholder='Email' />
+                        </InputGroup>
+                      }  
                       <InputGroup className="mb-4">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
