@@ -116,7 +116,7 @@ class Login extends Component {
     })
   }
 
-  render() {
+  render() { 
     return (
       <div className="app flex-row align-items-center">
         <Container>
@@ -124,41 +124,29 @@ class Login extends Component {
             <Col md="8">
               <CardGroup>
                 <Card className="p-4">
-                  <CardHeader>
-                    <div className="phoneOrMail">
-                      <AppSwitch id="phoneOrMailId"
-                                onClick={this.handleToogleMode}
-                                className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
-                                label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
-                    </div>
-                  </CardHeader>
-
-                  
                   <CardBody>
-                    <h1><FormattedMessage id="login.short.title" defaultMessage="Login" /></h1>
+                    <h1>
+                      <FormattedMessage id="login.short.title" defaultMessage="Login" />
+                    </h1>
                     <p className="text-muted"><FormattedMessage id="login.long.title"
-                      defaultMessage="Sign In to your account" /></p>
+                                                                defaultMessage="Sign In to your account" /></p>
                     <form action="/login" method="post">
-                      {(this.state.modePhone) &&
-                        <InputGroup className="mb-3">
-                          <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
-                             onChange={this.handleChangePhone} inputStyle={{width: '200px'}} /> 
-                        </InputGroup>
+                      <InputGroup className="mb-3">
+                      <AppSwitch id="phoneOrMailId"
+                                 onClick={this.handleToogleMode}
+                                 className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
+                                 label dataOn={'\u260E'} dataOff={'@'} size={'lg'}/>
+                      {(!this.state.modePhone) &&
+                      <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone} onChange={this.handleChangePhone}/>
                       }
-                      {(!this.state.modePhone)&&
-                        <InputGroup className="mb-3">
-                          <InputGroupAddon addonType="prepend">
-                            <InputGroupText>
-                              <i className="icon-user"></i>
-                            </InputGroupText>
-                          </InputGroupAddon>
-                          <Input autoFocus
-                            value={this.state.emailOrPhone}
-                            id="emailOrPhone"
-                            onChange={this.handleChange}
-                            type="text" name="email" placeholder='Email' />
-                        </InputGroup>
-                      }  
+                      {(this.state.modePhone)&&
+                        <Input autoFocus
+                               value={this.state.emailOrPhone}
+                               id="emailOrPhone"
+                               onChange={this.handleChange}
+                               type="text" name="email" placeholder='Email' />
+                      }
+                      </InputGroup>
                       <InputGroup className="mb-4">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
@@ -166,16 +154,16 @@ class Login extends Component {
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input value={this.state.password}
-                          id="password"
-                          onChange={this.handleChange}
-                          type="password" name="password" placeholder="Password" />
+                               id="password"
+                               onChange={this.handleChange}
+                               type="password" name="password" placeholder="Password" />
                         <Input hidden invalid />
                         <FormFeedback>{this.state.error_text}</FormFeedback>
                       </InputGroup>
                       <Row>
                         <Col xs="6">
                           <Button onClick={this.handleSubmit}
-                            color="primary" className="px-4" type="submit">Login</Button>
+                                  color="primary" className="px-4" type="submit">Login</Button>
                         </Col>
                         <Col xs="6" className="text-right">
                           <Button color="link" className="px-0">Forgot password?</Button>
@@ -203,5 +191,6 @@ class Login extends Component {
     );
   }
 }
+
 
 export default inject("appStore")(Login);

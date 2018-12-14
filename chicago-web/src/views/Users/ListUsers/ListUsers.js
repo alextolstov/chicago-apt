@@ -62,7 +62,7 @@ class ListUsers extends Component {
         this.state={
             data: null,
             userApi: new UserApi(),
-            selected: { id : 'current',
+            selected: { id : 0,
                         name: '',
                       },
             optionsList: [],
@@ -158,8 +158,10 @@ class ListUsers extends Component {
                 </Card>
                 </div>
             </div>
-            <div className="col-8">
-                    <EditUser userId={this.state.selected.id} loadList={this.loadList}  />
+                <div className="col-8">
+                    { this.state.selected.id  &&
+                        <EditUser userId={this.state.selected.id} loadList={this.loadList} />
+                    }    
             </div>
             </div>
         );

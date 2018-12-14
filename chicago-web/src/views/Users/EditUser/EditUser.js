@@ -105,23 +105,6 @@ const messages = defineMessages({
 
 });
 
-const isEmailAddress=(strEmailPhone) => {
-  if(strEmailPhone.indexOf('@')!==-1) {
-    console.log('isEmailAddress: ', strEmailPhone, ' is true');
-    return true;
-  }
-  console.log('isEmailAddress: ', strEmailPhone, ' is false');
-  return false;
-}
-
-const toPhoneFormat=(strEmailPhone) => {
-  if(strEmailPhone.length===10)
-    return '+7 ('+strEmailPhone.substr(0, 3)+')'+strEmailPhone.substr(3, 3)+
-      ' '+strEmailPhone.substr(6, 2)+' '+strEmailPhone.substr(8, 2);
-  else
-    return strEmailPhone;
-}
-
 class EditUser extends Component {
   constructor(props) {
     super(props);
@@ -151,12 +134,11 @@ class EditUser extends Component {
       phone:'',
     };
     this.phoneOrEmail='';
-    this.readyPosition = this.readyPosition.bind(this);
-    this.readyPermission = this.readyPermission.bind(this);
     this.handleFormEnableDisable = this.handleFormEnableDisable.bind(this);
     this.handleChange=this.handleChange.bind(this);
     this.handleCreateUser=this.handleCreateUser.bind(this);
     this.handleChangePhone=this.handleChangePhone.bind(this);
+    this.setPosition=this.setPosition.bind(this);
 
     this.state.loginUser = jspb.Message.cloneMessage(this.props.appStore.userData);
     if (this.state.userId === 'new') {
@@ -199,9 +181,22 @@ class EditUser extends Component {
     this.setState({readyPermission: true});
   }
 
-  componentDidMount() {
-    console.log('!!!EditUser:componentDidMount');
+  setPosition(user) {
+    
+    const entryList=user.getPositionsMap().getEntryList();
+    console.log('setPosition entryList=',entryList);
+    
+    let posUser=[];
+    for(let i=0;i<entryList.length;i++)
+      posUser.push(entryList[i][0]);
+    this.state.userPositions = posUser;
+    console.log('setPosition this.state.userPositions=',this.state.userPositions);
 
+  }
+
+  componentDidMount() {
+
+    console.log('START componentDidMount this.state.userId=', this.state.userId);
     if (this.state.userId === 'current') {
       this.setUncheckedState(true);
     }
@@ -220,13 +215,22 @@ class EditUser extends Component {
     else {
       let self=this;
       self.state.readyPermission=false;
+      console.log('componentDidMount this.state.userId=', this.state.userId);
       this.state.userApi.getUserById( this.state.userId, null).then(function (userMsg) {
-      if (userMsg != null) {
+        console.log('componentDidMount success this.state.userId=', self.state.userId);
+        if(userMsg!=null) {
+
+          console.log('componentDidMount userMSG != null', userMsg);
+
           self.state.user=userMsg.getUser();
-console.log('EditUser componentDidMount self.state.user ', self.state.user);
-        
-          self.state.userPositions=self.state.user.getPositionsList();
+          self.state.phone=self.state.user.getCellPhone();
+
+          self.setPosition(self.state.user);
+  
           self.state.permissionApi.setPermissionsUser(self.props.appStore, self.state.user, self.readyPermission); 
+          self.setState({need_show :false});
+          console.log('componentDidMount user =', self.state.user);
+
 
         }
       })
@@ -237,26 +241,18 @@ console.log('EditUser componentDidMount self.state.user ', self.state.user);
   componentDidUpdate(prevProps, prevState, prevContext) {
     if (this.state.need_show === true) {
       this.state.need_show = false;
-      let user = null;
       let self = this;
       self.state.readyPermission=false;
       this.state.userApi.getUserById( this.state.userId, null).then(function (userMsg) {
 
-      if (userMsg != null) {
-        user=userMsg.getUser();
-        const posMap=user.getPositionsMap();
-        console.log('EditUser componentDidUpdate posMap', posMap);
-        const listPos=posMap.getEntryList();
-        console.log('EditUser componentDidUpdate listPos', listPos);
-        self.state.phone=user.getCellPhone();
+        if (userMsg != null) {
+          self.state.user=userMsg.getUser();
+          self.state.phone=self.state.user.getCellPhone();
+          self.setPosition(self.state.user);
+          self.state.permissionApi.setPermissionsUser(self.props.appStore, self.state.user, self.readyPermission); 
+          self.setState({need_show :false});
 
-        let pos=[];
-        for(let i=0;i<listPos.length;i++)
-          pos.push(listPos[i][0]);
-        
-        self.state.permissionApi.setPermissionsUser(self.props.appStore, user, self.readyPermission); 
-        self.setState({user:user, userPositions:pos, need_show :false});
-      }
+        }
       })
     }
   }
@@ -267,7 +263,6 @@ console.log('EditUser componentDidMount self.state.user ', self.state.user);
         return {userId: nextProps.match.params.id};
     }
     if (nextProps.userId !== 'current' && nextProps.userId !== prevState.userId) {
-      console.log('getDerivedStateFromProps userId=', nextProps.userId, prevState.userId);
       return {userId: nextProps.userId, need_show: true};
     }
     return null;
@@ -306,45 +301,27 @@ console.log('EditUser componentDidMount self.state.user ', self.state.user);
       });    
 
     } else {// Working with existing profile
-      let positionsArr = [];
-/* position
-      this.state.userPositions.forEach((l, v) => {positionsArr.push(l.value)});
-console.log('save setPositionsList positionsArr=', positionsArr);
-console.log('save setPositionsList user=', this.state.user);
-      
-      this.state.user.setPositionsList(positionsArr);
-*/
-
-/*
-      let positionMap=this.state.user.getPositionsMap();
-      console.log('SAVE USER positionMap', positionMap,this.state.userPositions);
-      this.state.userPositions.forEach((l, v) => {
-        console.log('l=',l, l.value);
-        positionMap.arr_.push({id: l.value, value: l.name})
-      }); 
-*/
+      this.state.user.clearPositionsMap();
       this.state.userPositions.forEach((v) => {
-        console.log('positionId = ', v);
-        // Send only position id
+        console.log('SAVE USER POSITION=', v.value);
+        
         this.state.user.getPositionsMap().set(v.value, '');
-      });
+    });
+    console.log('user before SAVE=', this.state.user);
+    
+    this.state.userApi.saveUser(this.state.user, this.handleError).then(function () {
+      if (self.state.userId === 'current') {
+        self.props.appStore.userData = self.state.user;
+        self.setUncheckedState(true);
+      }
+      if(self.props.loadList)
+          self.props.loadList();       // refresh list users
+      toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        autoClose: 1000 
+      });    
 
-      console.log('SAVE USER ', this.state.user);
-
-      this.state.userApi.saveUser(this.state.user, this.handleError).then(function () {
-        if (self.state.userId === 'current') {
-          self.props.appStore.userData = self.state.user;
-          self.setUncheckedState(true);
-        }
-        if(self.props.loadList)
-           self.props.loadList();       // refresh list
-        console.log('Save toast');
-        toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
-          position: toast.POSITION.BOTTOM_RIGHT,
-          autoClose: 1000 
-        });    
-  
-      });
+    });
     }
   }
 
@@ -369,18 +346,7 @@ console.log('save setPositionsList user=', this.state.user);
 
   handleCreateUser=(event) => {
     let self=this;
-    console.log('handleCreateUser ', this.state.loginUser.getOrganizationId(),this.state.user );
     this.state.user.setOrganizationId(this.state.loginUser.getOrganizationId());
-/*
-    if( isEmailAddress(this.phoneOrEmail))
-       this.state.user.setEmail(this.phoneOrEmail);
-    else
-       this.state.user.setCellPhone(toPhoneFormat(this.phoneOrEmail));
-*/       
- /////////////Добавить/////////////////////////////////////////////////////////////////////
- //   this.state.user.setUserLogin(this.phoneOrEmail);    
- ///////////////////////////////////////////////////////////////////////////////////////// 
-    console.log('Now will create user this.state.user=',this.state.user);
        
     this.state.userApi.createUser(this.state.user,
                                   (e) => { console.log('Error Create User:', e);
@@ -401,24 +367,15 @@ console.log('save setPositionsList user=', this.state.user);
     this.props.appStore.userPermissions = value;
   }
   handleSelectChangePosition=(event) => {
-    console.log('change select event=', event);
-    
     this.setState({userPositions: event});
   }
 
   handleChange=(event) => {
-    console.log( 'EditUser handleChange', event);
-
     switch (event.target.id) {
       case "new_email":
-          // Andrey's conversation PhoneNumber
-        console.log( 'handle change!!!!', event.target.value);
- //       this.phoneOrEmail=convertPhoneNumber(event.target.value);
         this.state.user.setEmail(event.target.value);
         break;
         case "new_cellPhone":
-        // Andrey's conversation PhoneNumber
-        console.log( 'handle cellPhone!!!!', event.target.value);
         this.state.user.setCellPhone(event.target.value);
       break;
       case "password":
@@ -512,6 +469,7 @@ console.log('save setPositionsList user=', this.state.user);
 
   render() {
     const {personal_info_enabled, attributes_enabled, permission_enabled} = this.state;
+    console.log('RENDER');
     const show = (this.state.user) ? true : false;
     return (
       <div>
