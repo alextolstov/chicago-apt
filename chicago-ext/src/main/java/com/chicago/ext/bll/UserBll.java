@@ -22,6 +22,8 @@ public interface UserBll
 
     UserOuterClass.User getUserByEmail(String email) throws Exception;
 
+    UserOuterClass.User getUserByCell(String cellPhone) throws Exception;
+
     UserOuterClass.User getUserById(String userId) throws Exception;
 
     void updateUser(UserOuterClass.User user) throws Exception;
