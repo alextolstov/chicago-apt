@@ -124,10 +124,13 @@ public class UserRequests extends AbstractComponent
                     }
                     case READ:
                     {
-                        if (!event.getUser().getEmail().isEmpty())
+                        if (!event.getUser().getCellPhone().isEmpty())
+                        {
+                            user = _userBll.getUserByCell(event.getUser().getCellPhone());
+                        }else if (!event.getUser().getEmail().isEmpty())
                         {
                             user = _userBll.getUserByEmail(event.getUser().getEmail());
-                        } else if (!event.getUser().getUserId().isEmpty())
+                        }else if (!event.getUser().getUserId().isEmpty())
                         {
                             user = _userBll.getUserById(event.getUser().getUserId());
                         } else
