@@ -162,7 +162,7 @@ public class UserDalImpl implements UserDal
         Row row = result.one();
         if (row == null)
         {
-            throw new UserNotFoundException("No user with  " + column + " " + value + " found");
+            throw new UserNotFoundException("No user with " + column + " " + value + " found");
         }
 
         // Populate protobuf
@@ -178,7 +178,7 @@ public class UserDalImpl implements UserDal
         Row row = result.one();
         if (row == null)
         {
-            throw new UserNotFoundException("No user with  " + column + " " + value + " found");
+            throw new UserNotFoundException("No user with " + column + " " + value + " found");
         }
 
         // Populate protobuf
@@ -214,7 +214,7 @@ public class UserDalImpl implements UserDal
         Row row = result.one();
         if (row == null)
         {
-            throw new UserNotFoundException("No user with  " + column + " " + value + " found");
+            throw new UserNotFoundException("No user with " + column + " " + value + " found");
         }
 
         UUID userId = row.getUUID("user_id");

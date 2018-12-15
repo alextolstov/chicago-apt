@@ -139,6 +139,12 @@ public class UserBllImpl implements UserBll
     }
 
     @Override
+    public UserOuterClass.User getUserByCell(String cellPhone) throws Exception
+    {
+        return _userDal.getUserByCell(cellPhone);
+    }
+
+    @Override
     public UserOuterClass.User getUserById(String userId) throws Exception
     {
         return _userDal.getUserById(userId);
