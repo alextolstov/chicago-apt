@@ -4,7 +4,6 @@ import {
   Card,
   CardBody,
   CardGroup,
-  CardHeader,
   Col,
   Container,
   FormFeedback,
@@ -21,11 +20,10 @@ import {defineMessages, FormattedMessage} from 'react-intl';
 import {inject} from 'mobx-react';
 import UserApi from '../../../api/UserApi';
 import PermissionApi from '../../../api/PermissionApi';
-import convertPhoneNumber from './convertPhoneNumber';
-import ReactPhoneInput from 'react-phone-input-2' 
+import ReactPhoneInput from 'react-phone-input-2'
 
 // Localization for place holders
-const messages=defineMessages({
+const messages = defineMessages({
   emailOrPhone: {
     id: 'login.emailOrPhone',
     defaultMessage: 'Phone or Email',
@@ -37,7 +35,7 @@ class Login extends Component {
   constructor(props) {
     super(props);
 
-    this.state={
+    this.state = {
       emailOrPhone: "",
       password: "",
       error_text: "",
@@ -49,74 +47,74 @@ class Login extends Component {
       phone: "",
       modePhone: false
     };
-    this.handleChangePhone=this.handleChangePhone.bind(this);
-    this.handleToogleMode=this.handleToogleMode.bind(this);
+    this.handleChangePhone = this.handleChangePhone.bind(this);
+    this.handleToogleMode = this.handleToogleMode.bind(this);
   }
-  
+
   handleChangePhone(value) {
-    this.state.emailOrPhone=value;
+    this.state.emailOrPhone = value;
     this.setState({phone: value});
   }
 
   handleToogleMode() {
     console.log('handleToogleMode this.state.modePhone= ', this.state.modePhone);
-    
+
     this.setState({modePhone: !this.state.modePhone});
   }
 
 
-  handleChange=event => {
+  handleChange = event => {
     this.setState({
       [event.target.id]: event.target.value
     });
   }
 
-  handleError=error => {
+  handleError = error => {
     this.setState({show_error: true});
     this.setState({error_text: error});
   }
 
-  resetError=() => {
+  resetError = () => {
     this.setState({show_error: false});
     this.setState({error_text: ""});
   }
 
-  handleSubmit=event => {
+  handleSubmit = event => {
     event.stopPropagation();
     event.preventDefault();
     this.resetError();
 
-    if(this.state.emailOrPhone==="") {
+    if (this.state.emailOrPhone === "") {
       this.handleError("Phone or Email can't be empty");
       return;
     }
 
-    if(this.state.password==="") {
+    if (this.state.password === "") {
       this.handleError("Password can't be empty");
       return;
     }
-    
-    // Andrey's conversation PhoneNumber
-    console.log( '!!!!', this.state.emailOrPhone);
-    
- //   this.state.emailOrPhone=convertPhoneNumber(this.state.emailOrPhone);
-    // Username must be lower case
-    let form="username="+this.state.emailOrPhone.toLowerCase()+"&password="+this.state.password;
 
-    let self=this;
+    // Andrey's conversation PhoneNumber
+    console.log('!!!!', this.state.emailOrPhone);
+
+    //   this.state.emailOrPhone=convertPhoneNumber(this.state.emailOrPhone);
+    // Username must be lower case
+    let form = "username=" + this.state.emailOrPhone.toLowerCase().replace('+', '%2B') + "&password=" + this.state.password;
+
+    let self = this;
 
     this.state.userApi.login(form, this.state.emailOrPhone.toLowerCase(), this.handleError).then(function (data) {
-      if(data!=null) {
-        let user=data.getUser();
-        self.props.appStore.userData=user;
+      if (data != null) {
+        let user = data.getUser();
+        self.props.appStore.userData = user;
         window.sessionStorage.setItem("current_user", user.getUserId());
         // get Roles/Permission
-         self.state.permissionApi.setPermissionsUser(self.props.appStore,user, ()=> self.props.history.push("/dashbord")); 
+        self.state.permissionApi.setPermissionsUser(self.props.appStore, user, () => self.props.history.push("/dashbord"));
       }
     })
   }
 
-  render() { 
+  render() {
     return (
       <div className="app flex-row align-items-center">
         <Container>
@@ -126,26 +124,27 @@ class Login extends Component {
                 <Card className="p-4">
                   <CardBody>
                     <h1>
-                      <FormattedMessage id="login.short.title" defaultMessage="Login" />
+                      <FormattedMessage id="login.short.title" defaultMessage="Login"/>
                     </h1>
                     <p className="text-muted"><FormattedMessage id="login.long.title"
-                                                                defaultMessage="Sign In to your account" /></p>
+                                                                defaultMessage="Sign In to your account"/></p>
                     <form action="/login" method="post">
                       <InputGroup className="mb-3">
-                      <AppSwitch id="phoneOrMailId"
-                                 onClick={this.handleToogleMode}
-                                 className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
-                                 label dataOn={'\u260E'} dataOff={'@'} size={'lg'}/>
-                      {(!this.state.modePhone) &&
-                      <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone} onChange={this.handleChangePhone}/>
-                      }
-                      {(this.state.modePhone)&&
+                        <AppSwitch id="phoneOrMailId"
+                                   onClick={this.handleToogleMode}
+                                   className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
+                                   label dataOn={'\u260E'} dataOff={'@'} size={'lg'}/>
+                        {(!this.state.modePhone) &&
+                        <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
+                                         onChange={this.handleChangePhone}/>
+                        }
+                        {(this.state.modePhone) &&
                         <Input autoFocus
                                value={this.state.emailOrPhone}
                                id="emailOrPhone"
                                onChange={this.handleChange}
-                               type="text" name="email" placeholder='Email' />
-                      }
+                               type="text" name="email" placeholder='Email'/>
+                        }
                       </InputGroup>
                       <InputGroup className="mb-4">
                         <InputGroupAddon addonType="prepend">
@@ -156,8 +155,8 @@ class Login extends Component {
                         <Input value={this.state.password}
                                id="password"
                                onChange={this.handleChange}
-                               type="password" name="password" placeholder="Password" />
-                        <Input hidden invalid />
+                               type="password" name="password" placeholder="Password"/>
+                        <Input hidden invalid/>
                         <FormFeedback>{this.state.error_text}</FormFeedback>
                       </InputGroup>
                       <Row>
