@@ -24,9 +24,9 @@ import ReactPhoneInput from 'react-phone-input-2'
 
 // Localization for place holders
 const messages = defineMessages({
-  emailOrPhone: {
-    id: 'login.emailOrPhone',
-    defaultMessage: 'Phone or Email',
+  emailPlace: {
+    id: 'login.email',
+    defaultMessage: 'Email',
   }
 });
 
@@ -45,18 +45,16 @@ class Login extends Component {
       permissionsArr: [],
       permissionsUserArr: [],
       phone: "",
-      modePhone: false
+      modePhone: true
     };
-    this.handleChangePhone = this.handleChangePhone.bind(this);
-    this.handleToogleMode = this.handleToogleMode.bind(this);
   }
 
-  handleChangePhone(value) {
+  handleChangePhone = (value) => {
     this.state.emailOrPhone = value;
     this.setState({phone: value});
   }
 
-  handleToogleMode() {
+  handleToogleMode = () => {
     console.log('handleToogleMode this.state.modePhone= ', this.state.modePhone);
 
     this.setState({modePhone: !this.state.modePhone});
@@ -124,28 +122,39 @@ class Login extends Component {
                 <Card className="p-4">
                   <CardBody>
                     <h1>
+                      <AppSwitch id="phoneOrMailId"
+                                 onClick={this.handleToogleMode}
+                                 className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
+                                 label dataOn={'\u260E'} dataOff={'@'} size={'lg'}/>
                       <FormattedMessage id="login.short.title" defaultMessage="Login"/>
                     </h1>
                     <p className="text-muted"><FormattedMessage id="login.long.title"
                                                                 defaultMessage="Sign In to your account"/></p>
                     <form action="/login" method="post">
+                      {this.state.modePhone &&
                       <InputGroup className="mb-3">
-                        <AppSwitch id="phoneOrMailId"
-                                   onClick={this.handleToogleMode}
-                                   className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
-                                   label dataOn={'\u260E'} dataOff={'@'} size={'lg'}/>
-                        {(!this.state.modePhone) &&
                         <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
                                          onChange={this.handleChangePhone}/>
-                        }
-                        {(this.state.modePhone) &&
-                        <Input autoFocus
-                               value={this.state.emailOrPhone}
-                               id="emailOrPhone"
-                               onChange={this.handleChange}
-                               type="text" name="email" placeholder='Email'/>
-                        }
                       </InputGroup>
+                      }
+                      {!this.state.modePhone &&
+                      <InputGroup className="mb-3">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="icon-user"></i>
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <FormattedMessage {...messages.emailPlace}>
+                          {
+                            pholder => <Input autoFocus
+                                              value={this.state.emailOrPhone}
+                                              id="emailOrPhone"
+                                              onChange={this.handleChange}
+                                              type="text" name="email" placeholder={pholder}/>
+                          }
+                        </FormattedMessage>
+                      </InputGroup>
+                      }
                       <InputGroup className="mb-4">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
