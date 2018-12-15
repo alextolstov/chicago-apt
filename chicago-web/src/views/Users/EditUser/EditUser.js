@@ -151,6 +151,41 @@ class EditUser extends Component {
     }
   }
 
+  handleSaveUserInfo = (event) => {
+    let self = this;
+    if (this.state.userId === 'new') {
+      this.state.userApi.createUser(this.state.user, this.handleError);
+      toast.success(<FormattedMessage id="users.edit.success" defaultMessage="SuccessNew..."/>, {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        autoClose: 1000 
+      });    
+
+    } else {// Working with existing profile
+      this.state.user.clearPositionsMap();
+      this.state.userPositions.forEach((v) => {
+        console.log('SAVE USER POSITION=', v.value);
+        
+        this.state.user.getPositionsMap().set(v.value, '');
+      });
+ 
+    
+    this.state.userApi.saveUser(this.state.user, this.handleError).then(function () {
+      if (self.state.userId === 'current') {
+        self.props.appStore.userData = self.state.user;
+        self.setUncheckedState(true);
+      }
+      if(self.props.loadList)
+          self.props.loadList();       // refresh list users
+      toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        autoClose: 1000 
+      });    
+
+    });
+    }
+  }
+
+
   setUncheckedState = (mode) => {
     if (document.getElementById('email_management_enabled').checked === mode) {
       document.getElementById('email_management_enabled').click();
@@ -173,8 +208,8 @@ class EditUser extends Component {
 
   }
 
-  readyPosition = () => {
-    this.setState({readyPosition: true});
+  readyPosition = (value) => {
+    this.setState({readyPosition: value});
   }
 
   readyPermission = () => {
@@ -182,21 +217,15 @@ class EditUser extends Component {
   }
 
   setPosition(user) {
-    
     const entryList=user.getPositionsMap().getEntryList();
-    console.log('setPosition entryList=',entryList);
-    
     let posUser=[];
     for(let i=0;i<entryList.length;i++)
       posUser.push(entryList[i][0]);
     this.state.userPositions = posUser;
-    console.log('setPosition this.state.userPositions=',this.state.userPositions);
 
   }
 
   componentDidMount() {
-
-    console.log('START componentDidMount this.state.userId=', this.state.userId);
     if (this.state.userId === 'current') {
       this.setUncheckedState(true);
     }
@@ -215,23 +244,13 @@ class EditUser extends Component {
     else {
       let self=this;
       self.state.readyPermission=false;
-      console.log('componentDidMount this.state.userId=', this.state.userId);
       this.state.userApi.getUserById( this.state.userId, null).then(function (userMsg) {
-        console.log('componentDidMount success this.state.userId=', self.state.userId);
         if(userMsg!=null) {
-
-          console.log('componentDidMount userMSG != null', userMsg);
-
           self.state.user=userMsg.getUser();
           self.state.phone=self.state.user.getCellPhone();
-
           self.setPosition(self.state.user);
-  
           self.state.permissionApi.setPermissionsUser(self.props.appStore, self.state.user, self.readyPermission); 
           self.setState({need_show :false});
-          console.log('componentDidMount user =', self.state.user);
-
-
         }
       })
     }
@@ -291,40 +310,7 @@ class EditUser extends Component {
     document.getElementById(id).hidden = state;
   }
 
-  handleSaveUserInfo = (event) => {
-    let self = this;
-    if (this.state.userId === 'new') {
-      this.state.userApi.createUser(this.state.user, this.handleError);
-      toast.success(<FormattedMessage id="users.edit.success" defaultMessage="SuccessNew..."/>, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-        autoClose: 1000 
-      });    
-
-    } else {// Working with existing profile
-      this.state.user.clearPositionsMap();
-      this.state.userPositions.forEach((v) => {
-        console.log('SAVE USER POSITION=', v.value);
-        
-        this.state.user.getPositionsMap().set(v.value, '');
-    });
-    console.log('user before SAVE=', this.state.user);
-    
-    this.state.userApi.saveUser(this.state.user, this.handleError).then(function () {
-      if (self.state.userId === 'current') {
-        self.props.appStore.userData = self.state.user;
-        self.setUncheckedState(true);
-      }
-      if(self.props.loadList)
-          self.props.loadList();       // refresh list users
-      toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-        autoClose: 1000 
-      });    
-
-    });
-    }
-  }
-
+ 
   handleSaveRole = (event) => {
     let roleArr = [];
     this.props.appStore.userPermissions.forEach((l, v) => {
