@@ -1,17 +1,14 @@
 import React, {Component} from 'react';
 import {Card, CardHeader, CardBody, Button} from 'reactstrap';
-import BootstrapTable from 'react-bootstrap-table-next';
-//import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-//import './bootstrap.min.css';
-import filterFactory, {textFilter} from 'react-bootstrap-table2-filter';
-import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import 'react-bootstrap-table/dist//react-bootstrap-table-all.min.css';
 
 import {defineMessages, FormattedMessage} from 'react-intl';
 
 import {inject, observer} from 'mobx-react/index';
 
 
-import data from './_data';
+
 import UserApi from '../../../api/UserApi';
 
 import EditUser from '../EditUser';
@@ -36,7 +33,7 @@ const selectRow = {
 class ListUsers extends Component {
     constructor(props) {
         super(props);
-
+/*
         this.table=data.rows;
         this.rowEvents = {
           onClick: (e, row, rowIndex) => {
@@ -48,16 +45,28 @@ class ListUsers extends Component {
             // console.log(`enter on row with index: ${rowIndex}`);
           }
         };
-
-        this.options={
-            sortIndicator: true,
-            hideSizePerPage: true,
-            paginationSize: 3,
-            hidePageListOnlyOnePage: true,
-            clearSearch: true,
-            alwaysShowAllBtns: false,
-            withFirstAndLast: false
-        };
+*/
+        this.onRowSelect = (row, isSelected, e) => {
+            this.setState({selected: row});
+/*
+            let rowStr='';
+            for (const prop in row) {
+            rowStr += prop + ': "' + row[prop] + '"';
+            }
+            console.log(e);
+            alert(`is selected: ${isSelected}, ${rowStr}`);
+*/            
+        }
+        this.table = [];
+        this.options = {
+          sortIndicator: true,
+          hideSizePerPage: true,
+          paginationSize: 3,
+          hidePageListOnlyOnePage: true,
+          clearSearch: false,
+          alwaysShowAllBtns: false,
+          withFirstAndLast: false
+        }
 
         this.state={
             data: null,
@@ -66,16 +75,12 @@ class ListUsers extends Component {
                         name: '',
                       },
             optionsList: [],
-              columns: [{
-                dataField: 'name',
-                text: 'Name',
-                  sort: true,
-                  filter: textFilter()
-              },/*{
-                dataField: 'email',
-                text: 'Email',
-                sort: true
-              }*/],
+        };
+        this.selectRowProp = {
+            mode: 'radio',
+            clickToSelect: true,
+            bgColor: 'blue',
+            onSelect: this.onRowSelect,
         };
         this.addUser=this.addUser.bind(this);
         this.loadList=this.loadList.bind(this);
@@ -144,17 +149,13 @@ class ListUsers extends Component {
                     </button>
                     </div>
                     </CardHeader>
-                    <CardBody>
-                        <BootstrapTable
-                                    hover
-                                    keyField='name'
-                                    data={this.state.optionsList}
-                                    columns={this.state.columns}
-                                    rowEvents={this.rowEvents}
-                                    filter={filterFactory()}
-                                    selectRow={ selectRow1 }
-                        />            
-                    </CardBody>
+                     <CardBody>
+                                <BootstrapTable data={this.state.optionsList} version="4" hover pagination={false}
+                                        options={this.options} selectRow={this.selectRowProp }>
+                            <TableHeaderColumn isKey dataField="name" filter={ { type: 'TextFilter', placeholder:'Поиск...', delay: 1000 } } dataSort>Name</TableHeaderColumn>
+                        </BootstrapTable>
+
+                     </CardBody>
                 </Card>
                 </div>
             </div>
