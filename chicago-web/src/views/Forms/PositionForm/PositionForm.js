@@ -17,7 +17,7 @@ import {
 const messages = defineMessages({
   positionPlace: {
     id: 'users.edit.position',
-    defaultMessage: 'Введите новую позицию и нажмите Enter'
+    defaultMessage: 'Enter new position and press Enter'
   }
 });
 
