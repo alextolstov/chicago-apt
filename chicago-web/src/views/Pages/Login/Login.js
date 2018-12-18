@@ -121,15 +121,15 @@ class Login extends Component {
               <CardGroup>
                 <Card className="p-4">
                   <CardBody>
-                    <h1>
+                    <p className="text-muted"><FormattedMessage id="login.long.title"
+                                                                defaultMessage="Sign In to your account"/></p>
+                    <h5>
                       <AppSwitch id="phoneOrMailId"
                                  onClick={this.handleToogleMode}
                                  className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                                  label dataOn={'\u260E'} dataOff={'@'} size={'lg'}/>
                       <FormattedMessage id="login.short.title" defaultMessage="Login"/>
-                    </h1>
-                    <p className="text-muted"><FormattedMessage id="login.long.title"
-                                                                defaultMessage="Sign In to your account"/></p>
+                    </h5>
                     <form action="/login" method="post">
                       {this.state.modePhone &&
                       <InputGroup className="mb-3">

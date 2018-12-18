@@ -134,6 +134,14 @@ class EditUser extends Component {
       phone:'',
     };
     this.phoneOrEmail='';
+    this.DateOfBirth='';
+    this.EmploymentDate='';
+    this.ActualEmploymentDate='';
+    this.DismissalDate='';
+    this.ActualDismissalDate='';
+
+    
+
     this.handleFormEnableDisable = this.handleFormEnableDisable.bind(this);
     this.handleChange=this.handleChange.bind(this);
     this.handleCreateUser=this.handleCreateUser.bind(this);
@@ -162,13 +170,15 @@ class EditUser extends Component {
 
     } else {// Working with existing profile
       this.state.user.clearPositionsMap();
+      
       this.state.userPositions.forEach((v) => {
-        console.log('SAVE USER POSITION=', v.value);
+        console.log('SAVE USER POSITION=', v);
         
-        this.state.user.getPositionsMap().set(v.value, '');
+        this.state.user.getPositionsMap().set(v, '');
       });
  
-    
+    this.dateBeforeSave();
+    console.log('handleSaveUserInfo this.state.user/this.state.userPositions=', this.state.user,this.state.userPositions);
     this.state.userApi.saveUser(this.state.user, this.handleError).then(function () {
       if (self.state.userId === 'current') {
         self.props.appStore.userData = self.state.user;
@@ -247,16 +257,35 @@ class EditUser extends Component {
       this.state.userApi.getUserById( this.state.userId, null).then(function (userMsg) {
         if(userMsg!=null) {
           self.state.user=userMsg.getUser();
+          console.log('READ USER DATEBIRTH=', self.state.user.getDateOfBirth());
+          self.dateAfterLoad();
           self.state.phone=self.state.user.getCellPhone();
           self.setPosition(self.state.user);
           self.state.permissionApi.setPermissionsUser(self.props.appStore, self.state.user, self.readyPermission); 
-          self.setState({need_show :false});
+          self.setState({need_show :true});
         }
       })
     }
   }
+  
+  dateAfterLoad() {
+    this.DateOfBirth=new Date(this.state.user.getDateOfBirth()).toISOString().substr(0, 10);
+    this.EmploymentDate=new Date(this.state.user.getEmploymentDate()).toISOString().substr(0, 10);
+    this.ActualEmploymentDate=new Date(this.state.user.getActualEmploymentDate()).toISOString().substr(0, 10);
+    this.DismissalDate=new Date(this.state.user.getDismissalDate()).toISOString().substr(0, 10);
+    this.ActualDismissalDate==new Date(this.state.user.getActualDismissalDate()).toISOString().substr(0, 10);
+    
+  }
+  dateBeforeSave() {
+    this.state.user.setDateOfBirth(this.state.dateTimeApi.dateToUnixUTC(this.DateOfBirth));
+    this.state.user.setEmploymentDate(this.state.dateTimeApi.dateToUnixUTC(this.EmploymentDate));
+    this.state.user.setActualEmploymentDate(this.state.dateTimeApi.dateToUnixUTC(this.ActualEmploymentDate));
+    this.state.user.setDismissalDate(this.state.dateTimeApi.dateToUnixUTC(this.DismissalDate));
+    this.state.user.setActualDismissalDate(this.state.dateTimeApi.dateToUnixUTC(this.ActualDismissalDate));
+   
+  }
 
-
+ 
   componentDidUpdate(prevProps, prevState, prevContext) {
     if (this.state.need_show === true) {
       this.state.need_show = false;
@@ -264,8 +293,11 @@ class EditUser extends Component {
       self.state.readyPermission=false;
       this.state.userApi.getUserById( this.state.userId, null).then(function (userMsg) {
 
-        if (userMsg != null) {
+        if(userMsg!=null) {
           self.state.user=userMsg.getUser();
+          console.log('READ USER user=',self.state.user );
+          console.log('READ USER DATEBIRTH=', self.state.user.getDateOfBirth());
+          self.dateAfterLoad();
           self.state.phone=self.state.user.getCellPhone();
           self.setPosition(self.state.user);
           self.state.permissionApi.setPermissionsUser(self.props.appStore, self.state.user, self.readyPermission); 
@@ -404,19 +436,19 @@ class EditUser extends Component {
         this.state.user.setPassportNumber(event.target.value);
         break;
       case "date_of_birth":
-        this.state.user.setDateOfBirth(this.state.dateTimeApi.dateToUnixUTC(event.target.value));
-        break;
+        this.DateOfBirth = event.target.value;
+      break;
       case "employment_date":
-        this.state.user.setEmploymentDate(this.state.dateTimeApi.dateToUnixUTC(event.target.value));
+        this.EmploymentDate=event.target.value;
         break;
       case "actual_employment_date":
-        this.state.user.setActualEmploymentDate(this.state.dateTimeApi.dateToUnixUTC(event.target.value));
+        this.ActualEmploymentDate=event.target.value;
         break;
       case "dismissal_date":
-        this.state.user.setDismissalDate(this.state.dateTimeApi.dateToUnixUTC(event.target.value));
+        this.DismissalDate=event.target.value;
         break;
       case "actual_dismissal_date":
-        this.state.user.setActualDismissalDate(this.state.dateTimeApi.dateToUnixUTC(event.target.value));
+        this.ActualDismissalDate=event.target.value;
         break;
       case "tax_payer_id":
         this.state.user.setTaxPayerId(event.target.value);
@@ -680,7 +712,7 @@ class EditUser extends Component {
                       </InputGroupAddon>
                       <Input type="date"
                              onChange={this.handleChange}
-                             defaultValue={this.state.user.getDateOfBirth !== undefined ? "" : new Date(this.state.user.getDateOfBirth()).toISOString().substr(0, 10)}
+                             value={this.DateOfBirth}
                              id="date_of_birth" name="date_of_birth" placeholder="date"/>
                     </InputGroup>
                   </FormGroup>
@@ -793,8 +825,10 @@ class EditUser extends Component {
                           </i>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <Input type="date" id="employment_date" name="employment_date" placeholder="date"/>
-                    </InputGroup>
+                      <Input onChange={this.handleChange}
+                           type="date" id="employment_date" name="employment_date" placeholder="date"
+                           value={this.EmploymentDate}  />
+                      </InputGroup>
                   </FormGroup>
 
                   {/*Actual start date*/}
@@ -807,7 +841,9 @@ class EditUser extends Component {
                           </i>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <Input type="date" id="actual_employment_date" name="actual_employment_date" placeholder="date"/>
+                      <Input onChange={this.handleChange}
+                           type="date" id="actual_employment_date" name="actual_employment_date" placeholder="date"
+                           value={this.ActualEmploymentDate}  />
                     </InputGroup>
                   </FormGroup>
 
@@ -821,7 +857,9 @@ class EditUser extends Component {
                           </i>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <Input type="date" id="dismissal_date" name="dismissal_date" placeholder="date"/>
+                      <Input onChange={this.handleChange}
+                           type="date" id="dismissal_date" name="dismissal_date" placeholder="date"
+                           value={this.DismissalDate}  />
                     </InputGroup>
                   </FormGroup>
                   {/*Actual last date*/}
@@ -834,7 +872,9 @@ class EditUser extends Component {
                           </i>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <Input type="date" id="actual_dismissal_date" name="actual_dismissal_date" placeholder="date"/>
+                      <Input onChange={this.handleChange}
+                           type="date" id="actual_dismissal_date" name="actual_dismissal_date" placeholder="date"
+                           value={this.ActualDismissalDate}  />
                     </InputGroup>
                   </FormGroup>
 
