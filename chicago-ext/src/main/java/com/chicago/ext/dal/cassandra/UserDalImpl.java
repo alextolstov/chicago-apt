@@ -377,29 +377,29 @@ public class UserDalImpl implements UserDal
         if (row.getTimestamp("date_of_birth") != null)
             builder.setDateOfBirth(row.getTimestamp("date_of_birth").getTime());
         if (row.getTimestamp("employment_date") != null)
-            builder.setDateOfBirth(row.getTimestamp("employment_date").getTime());
+            builder.setEmploymentDate(row.getTimestamp("employment_date").getTime());
         if (row.getTimestamp("actual_employment_date") != null)
-            builder.setDateOfBirth(row.getTimestamp("actual_employment_date").getTime());
+            builder.setActualEmploymentDate(row.getTimestamp("actual_employment_date").getTime());
         if (row.getTimestamp("dismissal_date") != null)
-            builder.setDateOfBirth(row.getTimestamp("dismissal_date").getTime());
+            builder.setDismissalDate(row.getTimestamp("dismissal_date").getTime());
         if (row.getTimestamp("actual_dismissal_date") != null)
-            builder.setDateOfBirth(row.getTimestamp("actual_dismissal_date").getTime());
+            builder.setActualDismissalDate(row.getTimestamp("actual_dismissal_date").getTime());
         if (row.getString("tax_payer_id") != null)
-            builder.setPassportNumber(row.getString("tax_payer_id"));
+            builder.setTaxPayerId(row.getString("tax_payer_id"));
         if (row.getString("diploma_number") != null)
-            builder.setPassportNumber(row.getString("diploma_number"));
+            builder.setDiplomaNumber(row.getString("diploma_number"));
         if (row.getTimestamp("diploma_date") != null)
-            builder.setDateOfBirth(row.getTimestamp("diploma_date").getTime());
+            builder.setDiplomaDate(row.getTimestamp("diploma_date").getTime());
         if (row.getString("retirement_id_number") != null)
-            builder.setPassportNumber(row.getString("retirement_id_number"));
+            builder.setRetirementIdNumber(row.getString("retirement_id_number"));
         if (row.getTimestamp("retirement_date") != null)
-            builder.setDateOfBirth(row.getTimestamp("retirement_date").getTime());
+            builder.setRetirementDate(row.getTimestamp("retirement_date").getTime());
         if (row.getString("medical_book") != null)
-            builder.setPassportNumber(row.getString("medical_book"));
+            builder.setMedicalBook(row.getString("medical_book"));
         if (row.getTimestamp("medical_book_date") != null)
-            builder.setDateOfBirth(row.getTimestamp("medical_book_date").getTime());
+            builder.setMedicalBookDate(row.getTimestamp("medical_book_date").getTime());
         if (row.getString("employment_book_number") != null)
-            builder.setPassportNumber(row.getString("employment_book_number"));
+            builder.setEmploymentBookNumber(row.getString("employment_book_number"));
         if (row.getUUID("organization_id") != null)
             builder.setOrganizationId(row.getUUID("organization_id").toString());
         if (row.getUUID("address_id") != null)
