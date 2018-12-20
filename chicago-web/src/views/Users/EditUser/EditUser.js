@@ -138,8 +138,11 @@ class EditUser extends Component {
     this.EmploymentDate='';
     this.ActualEmploymentDate='';
     this.DismissalDate='';
-    this.ActualDismissalDate='';
-
+    this.diplomaDate='';
+    this.retirementDate='';
+    this.medicalBookDate='';
+    this.actualDismissalDate='';
+  
     
 
     this.handleFormEnableDisable = this.handleFormEnableDisable.bind(this);
@@ -273,7 +276,10 @@ class EditUser extends Component {
     this.EmploymentDate=new Date(this.state.user.getEmploymentDate()).toISOString().substr(0, 10);
     this.ActualEmploymentDate=new Date(this.state.user.getActualEmploymentDate()).toISOString().substr(0, 10);
     this.DismissalDate=new Date(this.state.user.getDismissalDate()).toISOString().substr(0, 10);
-    this.ActualDismissalDate==new Date(this.state.user.getActualDismissalDate()).toISOString().substr(0, 10);
+    this.diplomaDate=new Date(this.state.user.getDiplomaDate()).toISOString().substr(0, 10);
+    this.retirementDate=new Date(this.state.user.getRetirementDate()).toISOString().substr(0, 10);
+    this.medicalBookDate=new Date(this.state.user.getMedicalBookDate()).toISOString().substr(0, 10);
+    this.actualDismissalDate=new Date(this.state.user.getActualDismissalDate()).toISOString().substr(0, 10);
     
   }
   dateBeforeSave() {
@@ -281,7 +287,11 @@ class EditUser extends Component {
     this.state.user.setEmploymentDate(this.state.dateTimeApi.dateToUnixUTC(this.EmploymentDate));
     this.state.user.setActualEmploymentDate(this.state.dateTimeApi.dateToUnixUTC(this.ActualEmploymentDate));
     this.state.user.setDismissalDate(this.state.dateTimeApi.dateToUnixUTC(this.DismissalDate));
-    this.state.user.setActualDismissalDate(this.state.dateTimeApi.dateToUnixUTC(this.ActualDismissalDate));
+    this.state.user.setDiplomaDate(this.state.dateTimeApi.dateToUnixUTC(this.diplomaDate));
+    this.state.user.setRetirementDate(this.state.dateTimeApi.dateToUnixUTC(this.retirementDate));
+    this.state.user.setMedicalBookDate(this.state.dateTimeApi.dateToUnixUTC(this.medicalBookDate));
+    this.state.user.setActualDismissalDate(this.state.dateTimeApi.dateToUnixUTC(this.actualDismissalDate));
+
    
   }
 
@@ -295,8 +305,6 @@ class EditUser extends Component {
 
         if(userMsg!=null) {
           self.state.user=userMsg.getUser();
-          console.log('READ USER user=',self.state.user );
-          console.log('READ USER DATEBIRTH=', self.state.user.getDateOfBirth());
           self.dateAfterLoad();
           self.state.phone=self.state.user.getCellPhone();
           self.setPosition(self.state.user);
@@ -448,7 +456,7 @@ class EditUser extends Component {
         this.DismissalDate=event.target.value;
         break;
       case "actual_dismissal_date":
-        this.ActualDismissalDate=event.target.value;
+        this.actualDismissalDate=event.target.value;
         break;
       case "tax_payer_id":
         this.state.user.setTaxPayerId(event.target.value);
@@ -457,19 +465,19 @@ class EditUser extends Component {
         this.state.user.setDiplomaNumber(event.target.value);
         break;
       case "diploma_date":
-        this.state.user.setDiplomaDate(this.state.dateTimeApi.dateToUnixUTC(event.target.value));
+        this.diplomaDate=event.target.value;
         break;
       case "retirement_id_number":
         this.state.user.setRetirementIdNumber(event.target.value);
         break;
       case "retirement_date":
-        this.state.user.setRetirementDate(this.state.dateTimeApi.dateToUnixUTC(event.target.value));
+        this.retirementDate=event.target.value;
         break;
       case "medical_book":
         this.state.user.setMedicalBook(event.target.value);
         break;
       case "medical_book_date":
-        this.state.user.setMedicalBookDate(this.state.dateTimeApi.dateToUnixUTC(event.target.value));
+        this.medicalBookDate=event.target.value;
         break;
       case "employment_book_number":
         this.state.user.setEmploymentBookNumber(event.target.value);
@@ -874,7 +882,7 @@ class EditUser extends Component {
                       </InputGroupAddon>
                       <Input onChange={this.handleChange}
                            type="date" id="actual_dismissal_date" name="actual_dismissal_date" placeholder="date"
-                           value={this.ActualDismissalDate}  />
+                           value={this.actualDismissalDate}  />
                     </InputGroup>
                   </FormGroup>
 
@@ -914,7 +922,9 @@ class EditUser extends Component {
                         }
                       </FormattedMessage>
                       {/*Diploma date*/}
-                      <Input type="date" id="diploma_date" name="diploma_date" placeholder="date"/>
+                      <Input onChange={this.handleChange}
+                           type="date" id="diploma_date" name="diploma_date" placeholder="date"
+                           value={this.diplomaDate}  />
                     </InputGroup>
                   </FormGroup>
 
@@ -935,7 +945,9 @@ class EditUser extends Component {
                         }
                       </FormattedMessage>
                       {/*Diploma date*/}
-                      <Input type="date" id="retirement_date" name="retirement_date" placeholder="date"/>
+                      <Input onChange={this.handleChange}
+                           type="date" id="retirement_date" name="retirement_date" placeholder="date"
+                           value={this.retirementDate}  />
                     </InputGroup>
                   </FormGroup>
 
@@ -956,7 +968,9 @@ class EditUser extends Component {
                         }
                       </FormattedMessage>
                       {/*Medical book date*/}
-                      <Input type="date" id="medical_book_date" name="medical_book_date" placeholder="date"/>
+                      <Input onChange={this.handleChange}
+                           type="date" id="medical_book_date" name="medical_book_date" placeholder="date"
+                           value={this.medicalBookDate}  />
                     </InputGroup>
                   </FormGroup>
 
