@@ -131,7 +131,9 @@ class EditUser extends Component {
       permission_enabled: false,
 
       need_show: false,
-      phone:'',
+      mobilePhone :'',
+      homePhone :'',
+      workPhone :'',
     };
     this.phoneOrEmail='';
     this.DateOfBirth='';
@@ -142,13 +144,15 @@ class EditUser extends Component {
     this.retirementDate='';
     this.medicalBookDate='';
     this.actualDismissalDate='';
-  
+   
     
 
     this.handleFormEnableDisable = this.handleFormEnableDisable.bind(this);
     this.handleChange=this.handleChange.bind(this);
     this.handleCreateUser=this.handleCreateUser.bind(this);
-    this.handleChangePhone=this.handleChangePhone.bind(this);
+    this.handleChangeMobilePhone=this.handleChangeMobilePhone.bind(this);
+    this.handleChangeHomePhone=this.handleChangeHomePhone.bind(this);
+    this.handleChangeWorkPhone=this.handleChangeWorkPhone.bind(this);
     this.setPosition=this.setPosition.bind(this);
 
     this.state.loginUser = jspb.Message.cloneMessage(this.props.appStore.userData);
@@ -280,7 +284,9 @@ class EditUser extends Component {
     this.retirementDate=new Date(this.state.user.getRetirementDate()).toISOString().substr(0, 10);
     this.medicalBookDate=new Date(this.state.user.getMedicalBookDate()).toISOString().substr(0, 10);
     this.actualDismissalDate=new Date(this.state.user.getActualDismissalDate()).toISOString().substr(0, 10);
-    
+    this.state.mobilePhone = this.state.user.getCellPhone();
+    this.state.homePhone = this.state.user.getHomePhone();
+    this.state.workPhone = this.state.user.getWorkPhone();
   }
   dateBeforeSave() {
     this.state.user.setDateOfBirth(this.state.dateTimeApi.dateToUnixUTC(this.DateOfBirth));
@@ -488,9 +494,17 @@ class EditUser extends Component {
     this.setState({[event.target.id]: event.target.value});
   }
  
-  handleChangePhone(value) {
-    this.setState({phone: value});
+  handleChangeMobilePhone(value) {
+    this.setState({mobilePhone: value});
     this.handleChange({target:{ id:'cell_phone', value: value}})  
+  }
+  handleChangeHomePhone(value) {
+    this.setState({homePhone: value});
+    this.handleChange({target:{ id:'home_phone', value: value}})  
+  }
+  handleChangeWorkPhone(value) {
+    this.setState({workPhone: value});
+    this.handleChange({target:{ id:'work_phone', value: value}})  
   }
 
   render() {
@@ -755,8 +769,8 @@ class EditUser extends Component {
                       </InputGroupAddon>
                       <FormattedMessage {...messages.cellPhonePlace}>
                         {
-                          pholder => <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
-                             onChange={this.handleChangePhone} inputStyle={{width: '200px'}} /> 
+                          pholder =><span><ReactPhoneInput defaultCountry={'ru'} value={this.state.mobilePhone}
+                             onChange={this.handleChangeMobilePhone} inputStyle={{width: '200px'}} /></span>  
                         }
                       </FormattedMessage>
                     </InputGroup>
@@ -772,10 +786,8 @@ class EditUser extends Component {
                       </InputGroupAddon>
                       <FormattedMessage {...messages.homePhonePlace}>
                         {
-                          pholder => <Input onChange={this.handleChange}
-                                            value={this.state.user.getHomePhone === undefined ? "" : this.state.user.getHomePhone()}
-                                            type="text" id="home_phone" name="home_phone" placeholder={pholder}
-                                            required/>
+                          pholder =><span><ReactPhoneInput defaultCountry={'ru'} value={this.state.homePhone}
+                             onChange={this.handleChangeHomePhone} inputStyle={{width: '200px'}} /></span>  
                         }
                       </FormattedMessage>
                     </InputGroup>
@@ -790,12 +802,10 @@ class EditUser extends Component {
                         </InputGroupText>
                       </InputGroupAddon>
                       <FormattedMessage {...messages.workPhonePlace}>
-                        {
-                          pholder => <Input onChange={this.handleChange}
-                                            value={this.state.user.getWorkPhone === undefined ? "" : this.state.user.getWorkPhone()}
-                                            type="text" id="work_phone" name="work_phone" placeholder={pholder}
-                                            required/>
-                        }
+                       {
+                          pholder =><span><ReactPhoneInput defaultCountry={'ru'} value={this.state.workPhone}
+                             onChange={this.handleChangeWorkPhone} inputStyle={{width: '200px'}} /></span>  
+                       }
                       </FormattedMessage>
                     </InputGroup>
                   </FormGroup>
@@ -985,7 +995,7 @@ class EditUser extends Component {
                       <FormattedMessage {...messages.employmentPlace}>
                         {
                           pholder => <Input onChange={this.handleChange}
-                                            value={this.state.user.getMedicalBook === undefined ? "" : this.state.user.getMedicalBook()}
+                                            value={this.state.user.getEmploymentBookNumber === undefined ? "" : this.state.user.getEmploymentBookNumber()}
                                             type="text" id="employment_book_number" name="employment_book_number"
                                             placeholder={pholder}
                                             required/>

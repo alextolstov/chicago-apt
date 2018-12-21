@@ -79,7 +79,7 @@ class ListUsers extends Component {
         this.selectRowProp = {
             mode: 'radio',
             clickToSelect: true,
-            bgColor: 'blue',
+            bgColor:  '#f0f3f5',
             onSelect: this.onRowSelect,
         };
         this.addUser=this.addUser.bind(this);
