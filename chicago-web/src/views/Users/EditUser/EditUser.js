@@ -134,6 +134,9 @@ class EditUser extends Component {
       mobilePhone :'',
       homePhone :'',
       workPhone :'',
+      readMode: true,    // исходное состояние панелей
+      isLoading : true,
+
     };
     this.phoneOrEmail='';
     this.DateOfBirth='';
@@ -154,12 +157,15 @@ class EditUser extends Component {
     this.handleChangeHomePhone=this.handleChangeHomePhone.bind(this);
     this.handleChangeWorkPhone=this.handleChangeWorkPhone.bind(this);
     this.setPosition=this.setPosition.bind(this);
+    this.setUncheckedState=this.setUncheckedState.bind(this);
 
     this.state.loginUser = jspb.Message.cloneMessage(this.props.appStore.userData);
-    if (this.state.userId === 'new') {
+    if(this.state.userId==='new') {
+      this.state.readMode=true;    // исходное состояние панелей
       this.state.user = new user_proto.User();
     }
     else if (this.state.userId === 'current') {
+      this.state.readMode=true;    // исходное состояние панелей
       this.state.user = jspb.Message.cloneMessage(this.props.appStore.userData);
       this.state.userPositions = this.state.user.getPositionsMap();
       console.log(this.state.userPositions);
@@ -179,17 +185,13 @@ class EditUser extends Component {
       this.state.user.clearPositionsMap();
       
       this.state.userPositions.forEach((v) => {
-        console.log('SAVE USER POSITION=', v);
-        
         this.state.user.getPositionsMap().set(v, '');
       });
  
     this.dateBeforeSave();
-    console.log('handleSaveUserInfo this.state.user/this.state.userPositions=', this.state.user,this.state.userPositions);
     this.state.userApi.saveUser(this.state.user, this.handleError).then(function () {
       if (self.state.userId === 'current') {
         self.props.appStore.userData = self.state.user;
-        self.setUncheckedState(true);
       }
       if(self.props.loadList)
           self.props.loadList();       // refresh list users
@@ -203,26 +205,25 @@ class EditUser extends Component {
   }
 
 
-  setUncheckedState = (mode) => {
-    if (document.getElementById('email_management_enabled').checked === mode) {
-      document.getElementById('email_management_enabled').click();
-    }
-    if (document.getElementById('permission_management_enabled').checked === mode) {
-      document.getElementById('permission_management_enabled').click();
-    }
-    if (document.getElementById('password_management_enabled').checked === mode) {
-      document.getElementById('password_management_enabled').click();
-    }
-    if (document.getElementById('personal_info_enabled').checked === mode) {
-      document.getElementById('personal_info_enabled').click();
-    }
-    if (document.getElementById('attributes_enabled').checked === mode) {
-      document.getElementById('attributes_enabled').click();
-    }
-    if (document.getElementById('address_enabled').checked === mode) {
-      document.getElementById('address_enabled').click();
-    }
-
+  setUncheckedState=(mode) => {
+      if(document.getElementById('email_management_enabled').checked===mode) {
+        document.getElementById('email_management_enabled').click();
+      }
+      if(document.getElementById('permission_management_enabled').checked===mode) {
+        document.getElementById('permission_management_enabled').click();
+      }
+      if(document.getElementById('password_management_enabled').checked===mode) {
+        document.getElementById('password_management_enabled').click();
+      }
+      if(document.getElementById('personal_info_enabled').checked===mode) {
+        document.getElementById('personal_info_enabled').click();
+      }
+      if(document.getElementById('attributes_enabled').checked===mode) {
+        document.getElementById('attributes_enabled').click();
+      }
+      if(document.getElementById('address_enabled').checked===mode) {
+        document.getElementById('address_enabled').click();
+      }
   }
 
   readyPosition = (value) => {
@@ -243,20 +244,20 @@ class EditUser extends Component {
   }
 
   componentDidMount() {
-    if (this.state.userId === 'current') {
-      this.setUncheckedState(true);
-    }
-    else if (this.state.userId === 'new') {
-      this.setUncheckedState(false);
-    }
     // get User
     this.state.loginUser = jspb.Message.cloneMessage(this.props.appStore.userData);
     if (this.state.userId === 'new') {
-      this.state.user = new user_proto.User();
+      this.state.user=new user_proto.User();
+      this.state.readMode=true;
+      this.setUncheckedState(this.state.readMode);
+      this.setState({isLoading: false});
     }
     else if (this.state.userId === 'current') {
       this.state.user = jspb.Message.cloneMessage(this.props.appStore.userData);
       this.state.userPositions = this.state.user.getPositionsMap();
+      this.state.readMode=true;
+      this.setUncheckedState(this.state.readMode);
+      this.setState({isLoading: false});
     }
     else {
       let self=this;
@@ -269,10 +270,20 @@ class EditUser extends Component {
           self.state.phone=self.state.user.getCellPhone();
           self.setPosition(self.state.user);
           self.state.permissionApi.setPermissionsUser(self.props.appStore, self.state.user, self.readyPermission); 
-          self.setState({need_show :true});
+          self.setState({need_show :true,isLoading: false});
+          self.state.readMode=true;
+          self.setUncheckedState(self.state.readMode);
         }
+      }).
+      catch(function (error) {
+        console.log('Load user error:', error);
+        toast.error(error, {
+          position: toast.POSITION.TOP_LEFT
+        });
       })
     }
+
+
   }
   
   dateAfterLoad() {
@@ -303,7 +314,8 @@ class EditUser extends Component {
 
  
   componentDidUpdate(prevProps, prevState, prevContext) {
-    if (this.state.need_show === true) {
+    if(this.state.need_show===true) {
+     
       this.state.need_show = false;
       let self = this;
       self.state.readyPermission=false;
@@ -311,11 +323,15 @@ class EditUser extends Component {
 
         if(userMsg!=null) {
           self.state.user=userMsg.getUser();
+          console.log('Get User ADDRESS=', self.state.user.getAddressId());
+          
           self.dateAfterLoad();
           self.state.phone=self.state.user.getCellPhone();
           self.setPosition(self.state.user);
           self.state.permissionApi.setPermissionsUser(self.props.appStore, self.state.user, self.readyPermission); 
-          self.setState({need_show :false});
+          self.setState({need_show :false, isLoading: false});
+          self.state.readMode=true;
+          self.setUncheckedState(self.state.readMode);
 
         }
       })
@@ -325,10 +341,10 @@ class EditUser extends Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps && nextProps.match && nextProps.match.params) {
       if (nextProps.match.params.id !== prevState.userId)
-        return {userId: nextProps.match.params.id};
+        return {userId: nextProps.match.params.id, isLoading:true};
     }
-    if (nextProps.userId !== 'current' && nextProps.userId !== prevState.userId) {
-      return {userId: nextProps.userId, need_show: true};
+    if(nextProps.userId!=='current'&&nextProps.userId!==prevState.userId) {
+       return {userId: nextProps.userId, need_show: true, readMode: true, isLoading:true};
     }
     return null;
   }
@@ -374,7 +390,10 @@ class EditUser extends Component {
   handleError = (error) => {
     // TODO finish the function if neded
     console.log('handleError: error=', error)
-  }
+    toast.error(error, {
+      position: toast.POSITION.TOP_LEFT
+    });
+}
 
   handleCreateUser=(event) => {
     let self=this;
@@ -513,7 +532,7 @@ class EditUser extends Component {
     const show = (this.state.user) ? true : false;
     return (
       <div>
-        {show &&
+        {!this.state.isLoading&&
         <div className="animated fadeIn">
           <Row hidden={this.state.userId === 'new' ? false : true}>
             <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
@@ -770,7 +789,7 @@ class EditUser extends Component {
                       <FormattedMessage {...messages.cellPhonePlace}>
                         {
                           pholder =><span><ReactPhoneInput defaultCountry={'ru'} value={this.state.mobilePhone}
-                             onChange={this.handleChangeMobilePhone} inputStyle={{width: '200px'}} /></span>  
+                             onChange={this.handleChangeMobilePhone} inputStyle={{width: '100%'}} /></span>  
                         }
                       </FormattedMessage>
                     </InputGroup>
@@ -787,7 +806,7 @@ class EditUser extends Component {
                       <FormattedMessage {...messages.homePhonePlace}>
                         {
                           pholder =><span><ReactPhoneInput defaultCountry={'ru'} value={this.state.homePhone}
-                             onChange={this.handleChangeHomePhone} inputStyle={{width: '200px'}} /></span>  
+                             onChange={this.handleChangeHomePhone} inputStyle={{width: '100%'}} /></span>  
                         }
                       </FormattedMessage>
                     </InputGroup>
@@ -804,7 +823,7 @@ class EditUser extends Component {
                       <FormattedMessage {...messages.workPhonePlace}>
                        {
                           pholder =><span><ReactPhoneInput defaultCountry={'ru'} value={this.state.workPhone}
-                             onChange={this.handleChangeWorkPhone} inputStyle={{width: '200px'}} /></span>  
+                             onChange={this.handleChangeWorkPhone} inputStyle={{width: '100%'}} /></span>  
                        }
                       </FormattedMessage>
                     </InputGroup>
@@ -1081,6 +1100,22 @@ class EditUser extends Component {
             </Col>
           </Row>
         </div>
+        }
+        {this.state.isLoading&&
+          <div className="sk-circle">
+          <div className="sk-circle1 sk-child"></div>
+          <div className="sk-circle2 sk-child"></div>
+          <div className="sk-circle3 sk-child"></div>
+          <div className="sk-circle4 sk-child"></div>
+          <div className="sk-circle5 sk-child"></div>
+          <div className="sk-circle6 sk-child"></div>
+          <div className="sk-circle7 sk-child"></div>
+          <div className="sk-circle8 sk-child"></div>
+          <div className="sk-circle9 sk-child"></div>
+          <div className="sk-circle10 sk-child"></div>
+          <div className="sk-circle11 sk-child"></div>
+          <div className="sk-circle12 sk-child"></div>
+          </div>
         }
       </div>
     );

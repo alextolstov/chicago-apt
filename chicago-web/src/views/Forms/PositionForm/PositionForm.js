@@ -80,7 +80,7 @@ class PositionForm extends Component {
           <button onClick={this.saveNewPosition}>
             <i className="icon-cloud-upload"></i>
           </button>
-          <strong><FormattedMessage id="users.edit.positions" defaultMessage="Positions"/></strong>
+          <strong><FormattedMessage id="users.edit.position" defaultMessage="Positions"/></strong>
         </CardHeader>
         <CardBody>
           {/*Position*/}

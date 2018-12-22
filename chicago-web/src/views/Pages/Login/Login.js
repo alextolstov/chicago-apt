@@ -121,61 +121,87 @@ class Login extends Component {
               <CardGroup>
                 <Card className="p-4">
                   <CardBody>
-                    <p className="text-muted"><FormattedMessage id="login.long.title"
-                                                                defaultMessage="Sign In to your account"/></p>
                     <h1>
-                      <AppSwitch id="phoneOrMailId"
-                                 onClick={this.handleToogleMode}
-                                 className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
-                                 label dataOn={'\u260E'} dataOff={'@'} size={'lg'}/>
                       <FormattedMessage id="login.short.title" defaultMessage="Login"/>
                     </h1>
                     <form action="/login" method="post">
-                      {this.state.modePhone &&
-                      <InputGroup className="mb-3">
-                        <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
-                                         onChange={this.handleChangePhone}/>
-                      </InputGroup>
-                      }
-                      {!this.state.modePhone &&
-                      <InputGroup className="mb-3">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="icon-user"></i>
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <FormattedMessage {...messages.emailPlace}>
-                          {
-                            pholder => <Input autoFocus
-                                              value={this.state.emailOrPhone}
-                                              id="emailOrPhone"
-                                              onChange={this.handleChange}
-                                              type="text" name="email" placeholder={pholder}/>
-                          }
-                        </FormattedMessage>
-                      </InputGroup>
-                      }
-                      <InputGroup className="mb-4">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="icon-lock"></i>
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input value={this.state.password}
-                               id="password"
-                               onChange={this.handleChange}
-                               type="password" name="password" placeholder="Password"/>
-                        <Input hidden invalid/>
-                        <FormFeedback>{this.state.error_text}</FormFeedback>
-                      </InputGroup>
                       <Row>
-                        <Col xs="6">
+                          <Col xs="2">
+                            <AppSwitch id="phoneOrMailId"
+                                 onClick={this.handleToogleMode}
+                                 className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
+                                 label dataOn={'\u260E'} dataOff={'@'} size={'lg'}/>
+                          </Col>
+                          <Col xs="1">
+                          </Col>
+                          <Col xs="8">
+                             {this.state.modePhone&&
+                              <InputGroup className="mb-3">
+                                <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
+                                                onChange={this.handleChangePhone}  inputStyle={{width: '100%'}}/>
+                              </InputGroup>
+                             }
+                             {!this.state.modePhone &&
+                              <InputGroup className="mb-3">
+                                <InputGroupAddon addonType="prepend">
+                                  <InputGroupText>
+                                    <i className="icon-user"></i>
+                                  </InputGroupText>
+                                </InputGroupAddon>
+                                <FormattedMessage {...messages.emailPlace}>
+                                  {
+                                    pholder => <Input autoFocus
+                                                      value={this.state.emailOrPhone}
+                                                      id="emailOrPhone"
+                                                      onChange={this.handleChange}
+                                                      type="text" name="email" placeholder={pholder}/>
+                                  }
+                                </FormattedMessage>
+                              </InputGroup>
+                              }
+                        </Col>
+                        <Col xs="1">
+                        </Col>
+                        
+                        
+                      </Row>
+                      <Row>
+                          <Col xs="2">
+                          </Col>
+                          <Col xs="1">
+                          </Col>
+                          <Col xs="8">
+                            <InputGroup className="mb-4">
+                            <InputGroupAddon addonType="prepend">
+                              <InputGroupText>
+                                <i className="icon-lock"></i>
+                              </InputGroupText>
+                            </InputGroupAddon>
+                            <Input value={this.state.password}
+                                  id="password"
+                                  onChange={this.handleChange}
+                                  type="password" name="password" placeholder="Password"/>
+                            <Input hidden invalid/>
+                            <FormFeedback>{this.state.error_text}</FormFeedback>
+                            </InputGroup>
+                          </Col>
+                          <Col xs="1">
+                          </Col>
+                      </Row>
+                      <Row>
+                          <Col xs="5">
+                            <Button color="link" className="px-0">Forgot password?</Button>
+                          </Col>
+                          <Col xs="1">
+                          </Col>
+                          <Col xs="1">
+                          </Col>
+                        <Col xs="4">
                           <Button onClick={this.handleSubmit}
                                   color="primary" className="px-4" type="submit">Login</Button>
                         </Col>
-                        <Col xs="6" className="text-right">
-                          <Button color="link" className="px-0">Forgot password?</Button>
-                        </Col>
+                        <Col xs="1">
+                          </Col>
                       </Row>
                     </form>
                   </CardBody>

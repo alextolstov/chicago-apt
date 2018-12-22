@@ -43,7 +43,7 @@
   "users.edit.medical": "Мед. книжка",
   "users.edit.employment": "Трудовая. книжка",
   "users.edit.address": "Адрес",
-  "users.edit.positions":"Введите новую позицию и нажмите Enter",
+  "users.edit.position":"Введите новую позицию и нажмите Enter",
   "users.edit.newposition": "Новая должность",
   "users.edit.role_management": "Роли и права",
   "users.edit.newpermission": "Новые права",

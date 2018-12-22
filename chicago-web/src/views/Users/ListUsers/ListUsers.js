@@ -6,56 +6,23 @@ import 'react-bootstrap-table/dist//react-bootstrap-table-all.min.css';
 import {defineMessages, FormattedMessage} from 'react-intl';
 
 import {inject, observer} from 'mobx-react/index';
-
+import 'spinkit/css/spinkit.css';
 
 
 import UserApi from '../../../api/UserApi';
 
 import EditUser from '../EditUser';
-require('react-bootstrap-table-next/dist/react-bootstrap-table2.min.css');
+import {ToastContainer, toast} from 'react-toastify';
 
 
 const jspb = require('google-protobuf');
 const user_proto = require('models/user_pb');
 
-
-const selectRow = {
-    mode: 'radio',
-    clickToSelect: true
-  };
- 
-  const selectRow1 = {
-    mode: 'checkbox',
-    clickToSelect: true,
-    style: { backgroundColor: '#c8e6c9' }
-  };
-  
 class ListUsers extends Component {
     constructor(props) {
         super(props);
-/*
-        this.table=data.rows;
-        this.rowEvents = {
-          onClick: (e, row, rowIndex) => {
-              console.log('clicked on row:', row);
-              console.log(`clicked on row  with index: ${rowIndex}`);
-              this.setState({selected: row});
-          },
-          onMouseEnter: (e, row, rowIndex) => {
-            // console.log(`enter on row with index: ${rowIndex}`);
-          }
-        };
-*/
         this.onRowSelect = (row, isSelected, e) => {
             this.setState({selected: row});
-/*
-            let rowStr='';
-            for (const prop in row) {
-            rowStr += prop + ': "' + row[prop] + '"';
-            }
-            console.log(e);
-            alert(`is selected: ${isSelected}, ${rowStr}`);
-*/            
         }
         this.table = [];
         this.options = {
@@ -71,10 +38,11 @@ class ListUsers extends Component {
         this.state={
             data: null,
             userApi: new UserApi(),
-            selected: { id : 0,
+            selected: { id : '',
                         name: '',
                       },
             optionsList: [],
+            isLoading : true,
         };
         this.selectRowProp = {
             mode: 'radio',
@@ -86,11 +54,9 @@ class ListUsers extends Component {
         this.loadList=this.loadList.bind(this);
     }
     componentDidMount() {
-        console.log('usersList:componentDidMount appStore=', this.props.appStore);
         const userData=this.props.appStore.userData;
-        console.log('usersList:componentDidMount userData=', userData);
         const organizationId=userData.getOrganizationId();
-        console.log('usersList:componentDidMount organizationId=', organizationId);
+        this.state.isLoading=true;
 
         let userOrgs=new user_proto.UserOrganization();
         const orgId=userData.getOrganizationId();
@@ -111,21 +77,22 @@ class ListUsers extends Component {
                 });
               
             }
-            self.setState({optionsList});
+            self.setState({optionsList, isLoading: false});
                 
         }).
-        catch( function (error) {
+        catch(function (error) {
           console.log('ListUser error:', error);
+          toast.error(error, {
+            position: toast.POSITION.TOP_LEFT
+          });
         })   
     }
 
     addUser() {
-        console.log('Add User');
         this.setState({selected : {id: "new"}});
     }
 
     loadList() {
-        console.log('ListUsers loadList');
         this.componentDidMount();
     }
 
@@ -135,7 +102,8 @@ class ListUsers extends Component {
             <div className="col-4">
                 <div className="animated">
                 <Card>
-                    <CardHeader>
+                  <CardHeader>
+           
                      <h3><strong><FormattedMessage id="menu.users.listusers"
                                     defaultMessage="List user" />
                      </strong>
@@ -150,17 +118,35 @@ class ListUsers extends Component {
                     </div>
                     </CardHeader>
                      <CardBody>
-                                <BootstrapTable data={this.state.optionsList} version="4" hover pagination={false}
-                                        options={this.options} selectRow={this.selectRowProp }>
-                            <TableHeaderColumn isKey dataField="name" filter={ { type: 'TextFilter', placeholder:'Поиск...', delay: 1000 } } dataSort>Name</TableHeaderColumn>
-                        </BootstrapTable>
-
+                                {!this.state.isLoading&&
+                                    <BootstrapTable data={this.state.optionsList} version="4" hover pagination={false}
+                                        options={this.options} selectRow={this.selectRowProp}>
+                                        <TableHeaderColumn isKey dataField="name" filter={{type: 'TextFilter', placeholder: 'Поиск...', delay: 1000}} dataSort>Name</TableHeaderColumn>
+                                    </BootstrapTable>
+                                }
+                                {this.state.isLoading&&
+                                    <div className="sk-circle">
+                                    <div className="sk-circle1 sk-child"></div>
+                                    <div className="sk-circle2 sk-child"></div>
+                                    <div className="sk-circle3 sk-child"></div>
+                                    <div className="sk-circle4 sk-child"></div>
+                                    <div className="sk-circle5 sk-child"></div>
+                                    <div className="sk-circle6 sk-child"></div>
+                                    <div className="sk-circle7 sk-child"></div>
+                                    <div className="sk-circle8 sk-child"></div>
+                                    <div className="sk-circle9 sk-child"></div>
+                                    <div className="sk-circle10 sk-child"></div>
+                                    <div className="sk-circle11 sk-child"></div>
+                                    <div className="sk-circle12 sk-child"></div>
+                                    </div>
+                                }
+                                
                      </CardBody>
                 </Card>
                 </div>
             </div>
                 <div className="col-8">
-                    { this.state.selected.id  &&
+                    { (this.state.selected.id)  &&
                         <EditUser userId={this.state.selected.id} loadList={this.loadList} />
                     }    
             </div>
