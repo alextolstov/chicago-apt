@@ -126,15 +126,12 @@ class Login extends Component {
                     </h1>
                     <form action="/login" method="post">
                       <Row>
-                          <Col xs="2">
-                            <AppSwitch id="phoneOrMailId"
-                                 onClick={this.handleToogleMode}
+                        <div class="col-sm-3">
+                            <AppSwitch id="phoneOrMailId" onClick={this.handleToogleMode}
                                  className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                                  label dataOn={'\u260E'} dataOff={'@'} size={'lg'}/>
-                          </Col>
-                          <Col xs="1">
-                          </Col>
-                          <Col xs="8">
+                        </div>
+                        <div class="col-sm-9">
                              {this.state.modePhone&&
                               <InputGroup className="mb-3">
                                 <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
@@ -143,11 +140,6 @@ class Login extends Component {
                              }
                              {!this.state.modePhone &&
                               <InputGroup className="mb-3">
-                                <InputGroupAddon addonType="prepend">
-                                  <InputGroupText>
-                                    <i className="icon-user"></i>
-                                  </InputGroupText>
-                                </InputGroupAddon>
                                 <FormattedMessage {...messages.emailPlace}>
                                   {
                                     pholder => <Input autoFocus
@@ -159,19 +151,11 @@ class Login extends Component {
                                 </FormattedMessage>
                               </InputGroup>
                               }
-                        </Col>
-                        <Col xs="1">
-                        </Col>
-                        
-                        
+                        </div>
                       </Row>
                       <Row>
-                          <Col xs="2">
-                          </Col>
-                          <Col xs="1">
-                          </Col>
-                          <Col xs="8">
-                            <InputGroup className="mb-4">
+                        <div className="col">
+                        <InputGroup className="mb-4">
                             <InputGroupAddon addonType="prepend">
                               <InputGroupText>
                                 <i className="icon-lock"></i>
@@ -184,24 +168,16 @@ class Login extends Component {
                             <Input hidden invalid/>
                             <FormFeedback>{this.state.error_text}</FormFeedback>
                             </InputGroup>
-                          </Col>
-                          <Col xs="1">
-                          </Col>
+                        </div>
                       </Row>
                       <Row>
-                          <Col xs="5">
-                            <Button color="link" className="px-0">Forgot password?</Button>
-                          </Col>
-                          <Col xs="1">
-                          </Col>
-                          <Col xs="1">
-                          </Col>
-                        <Col xs="4">
+                        <Col xs="6">
                           <Button onClick={this.handleSubmit}
                                   color="primary" className="px-4" type="submit">Login</Button>
                         </Col>
-                        <Col xs="1">
-                          </Col>
+                        <Col xs="6" className="text-right">
+                          <Button color="link" className="px-0">Forgot password?</Button>
+                        </Col>
                       </Row>
                     </form>
                   </CardBody>
