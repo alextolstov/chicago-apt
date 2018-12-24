@@ -13,7 +13,7 @@ import UserApi from '../../../api/UserApi';
 
 import EditUser from '../EditUser';
 import {ToastContainer, toast} from 'react-toastify';
-
+import {language} from '../../../index';
 
 const jspb = require('google-protobuf');
 const user_proto = require('models/user_pb');
@@ -71,8 +71,8 @@ class ListUsers extends Component {
             for(let i=0;i<usersList.length;i++) {
                 optionsList.push({
                     id:usersList[i].getUserId(),
-                    name: usersList[i].getLastName() +' '+  usersList[i].getFirstName()  +' ' + usersList[i].getMiddleName()
-                        ,
+                    name: (language=='ru')? usersList[i].getLastName()+' '+usersList[i].getFirstName()+' '+usersList[i].getMiddleName():
+                                            usersList[i].getFirstName()+' '+usersList[i].getLastName(),
                     email: usersList[i].getEmail(),
                 });
               

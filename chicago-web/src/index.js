@@ -21,12 +21,15 @@ const messages = {
 };
 
 // language without region code
-const language = navigator.language.split(/[-_]/)[0];
+export const language = navigator.language.split(/[-_]/)[0];
 
 // Activate locales
 addLocaleData([...locale_en, ...locale_ru]);
 // Create global storage for future use
 config.set(configuration);
+
+
+
 
 ReactDOM.render(<IntlProvider locale={language} messages={messages[language]}><App /></IntlProvider>, document.getElementById('root'));
 // disable ServiceWorker
