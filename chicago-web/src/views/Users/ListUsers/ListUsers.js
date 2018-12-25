@@ -55,11 +55,32 @@ class ListUsers extends Component {
     }
     componentDidMount() {
         const userData=this.props.appStore.userData;
-        const organizationId=userData.getOrganizationId();
         this.state.isLoading=true;
-
+        const self=this;
+    
+        if(!userData.getOrganizationId()) {
+            const current_user=sessionStorage.getItem("current_user");
+            this.state.userApi.getUserById(current_user, null).then(function (userMsg) {
+                const user=userMsg.getUser();
+                const orgId=user.getOrganizationId();
+                self.loadListUsers(orgId);
+            }).
+            catch(function (error) {
+              console.log('ListUser Load User error:', error);
+              toast.error(error, {
+                position: toast.POSITION.TOP_LEFT
+              });
+            })
+        } else {
+          const orgId=userData.getOrganizationId();
+          self.loadListUsers(orgId);
+        }    
+    
+    }
+  
+    loadListUsers(orgId) {
         let userOrgs=new user_proto.UserOrganization();
-        const orgId=userData.getOrganizationId();
+   
         userOrgs.setOrganizationId(orgId);
         let self = this;
         this.state.userApi.getUsers(userOrgs, (e) => {
