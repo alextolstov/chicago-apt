@@ -58,7 +58,7 @@ class RegisterForm extends Component {
                         <FormattedMessage {...messages.cellPhone}>
                             {
                                 pholder => <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
-                                    onChange={this.handleChangePhone} inputStyle={{width: '200px'}} /> 
+                                    onChange={this.handleChangePhone} inputStyle={{width: '100%'}} /> 
                               
                             }
                         </FormattedMessage>

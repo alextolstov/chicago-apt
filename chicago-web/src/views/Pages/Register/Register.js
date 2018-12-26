@@ -15,6 +15,17 @@ import {
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
 import convertPhoneNumber from '../Login/convertPhoneNumber';
+import {defineMessages, FormattedMessage} from 'react-intl';
+import {AppSwitch} from '@coreui/react'
+import ReactPhoneInput from 'react-phone-input-2' 
+
+const messages = defineMessages({
+  emailPlace: {
+    id: 'login.email',
+    defaultMessage: 'Email',
+  }
+});
+
 
 const user_proto = require('models/user_pb');
 const usermessages_proto = require('models/usermessages_pb.js');
@@ -29,8 +40,19 @@ class Register extends Component {
       password: "",
       repeat_password: "",
       error_text: "",
-      show_error: false
+      show_error: false,
+      modePhone: true
     };
+  }
+
+  handleToogleMode=() => {
+    console.log('handleToogleMode this.state.modePhone= ', this.state.modePhone);
+
+    this.setState({modePhone: !this.state.modePhone});
+  }
+  handleChangePhone = (value) => {
+    this.state.emailOrPhone = value;
+    this.setState({phone: value});
   }
 
   handleChange = event => {
@@ -75,13 +97,10 @@ class Register extends Component {
     }
 
     let user=new user_proto.User();
-    // Andrey's conversation PhoneNumber
-    console.log( '!!!!', this.state.emailOrPhone);
-    
-    this.state.emailOrPhone=convertPhoneNumber(this.state.emailOrPhone);
     
     // Username must be lower case
     user.setEmail(this.state.emailOrPhone.toLowerCase());
+    user.setCellPhone(this.state.phone);
     // Parse full name
     let parts = this.state.fullname.split(" ");
     user.setFirstName(parts[0]);
@@ -139,16 +158,34 @@ class Register extends Component {
                   <h1>Register</h1>
                   <p className="text-muted">Create your account</p>
                   <form action="/user/create" method="post">
-                    <InputGroup className="mb-3">
-                      <InputGroupAddon addonType="prepend">
-                        <InputGroupText>@</InputGroupText>
-                      </InputGroupAddon>
-                      <Input autoFocus
-                             id="emailOrPhone"
-                             value={this.state.emailOrPhone}
-                             onChange={this.handleChange}
-                             type="text" placeholder="Phone or Email (as username)"/>
-                    </InputGroup>
+                      <Row>
+                        <div class="col-sm-3">
+                            <AppSwitch id="phoneOrMailId" onClick={this.handleToogleMode}
+                                 className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
+                                 label dataOn={'\u260E'} dataOff={'@'} size={'lg'}/>
+                        </div>
+                        <div class="col-sm-9">
+                             {this.state.modePhone&&
+                              <InputGroup className="mb-3">
+                                <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
+                                                onChange={this.handleChangePhone}  inputStyle={{width: '100%'}}/>
+                              </InputGroup>
+                             }
+                             {!this.state.modePhone &&
+                              <InputGroup className="mb-3">
+                                <FormattedMessage {...messages.emailPlace}>
+                                  {
+                                    pholder => <Input autoFocus
+                                                      value={this.state.emailOrPhone}
+                                                      id="emailOrPhone"
+                                                      onChange={this.handleChange}
+                                                      type="text" name="email" placeholder={pholder}/>
+                                  }
+                                </FormattedMessage>
+                              </InputGroup>
+                              }
+                        </div>
+                      </Row>
                     <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
