@@ -93,7 +93,7 @@ class ListUsers extends Component {
                 optionsList.push({
                     id:usersList[i].getUserId(),
                     name: (language=='ru')? usersList[i].getLastName()+' '+usersList[i].getFirstName()+' '+usersList[i].getMiddleName():
-                                            usersList[i].getFirstName()+' '+usersList[i].getLastName(),
+                                            usersList[i].getFirstName()+'  '+usersList[i].getMiddleName()+ ' '+usersList[i].getLastName(),
                     email: usersList[i].getEmail(),
                 });
               
