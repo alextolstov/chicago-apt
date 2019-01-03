@@ -261,6 +261,11 @@ const ListUsers = Loadable({
   loading: Loading,
 });
 
+const ListOrganizations = Loadable({
+  loader: () => import('./views/Users/ListOrganizations/ListOrganizations'),
+  loading: Loading,
+});
+
 const routes = [
   { path: '/', name: 'Home', component: DefaultLayout, exact: true },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
@@ -324,7 +329,8 @@ const routes = [
   { path: '/apps/invoicing', name: 'Invoice', component: Invoice, exact: true },
   { path: '/apps/invoicing/invoice', name: 'Invoice', component: Invoice },
   { path: '/users/edituser/:id', name: <FormattedMessage id="users.edit.user" defaultMessage="Edit profile"/>, component: EditUser, exact: true },
-  { path: '/users/listusers', name: <FormattedMessage id="menu.users.listusers" defaultMessage="List users"/>, component: ListUsers, exact: true },
+  { path: '/users/listusers', name: <FormattedMessage id="menu.users.list" defaultMessage="Employees list"/>, component: ListUsers, exact: true },
+  { path: '/users/listorganizations', name: <FormattedMessage id="menu.organizations.list" defaultMessage="Organizations list"/>, component: ListOrganizations, exact: true },
 ];
 
 export default routes;

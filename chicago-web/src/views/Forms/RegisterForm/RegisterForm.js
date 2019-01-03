@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {defineMessages, FormattedMessage} from 'react-intl';
 import {CardBody, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText,} from 'reactstrap';
-
+import ReactPhoneInput from 'react-phone-input-2' 
+    
 const messages = defineMessages({
     passwordPlace: {
         id: 'users.edit.password',
@@ -15,9 +16,13 @@ const messages = defineMessages({
         id: 'users.edit.wholename',
         defaultMessage: 'First/Middle/Last Name'
     },
-    emailPlace: {
-        id: 'login.email',
-        defaultMessage: 'Email'
+    emailOrPhone: {
+        id: 'login.emailOrPhone',
+        defaultMessage: 'Email or Phone'
+    },
+    cellPhone: {
+        id: 'login.cellPhone',
+        defaultMessage: 'Cell Phone'
     },
 });
 
@@ -25,12 +30,40 @@ class RegisterForm extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state={
+            phone:""
+        };
+        this.handleChangePhone=this.handleChangePhone.bind(this);
     }
-
+/*
+    pholder => <Input onChange={this.props.handleChange}
+    type="text" id="new_cellPhone" name="new_cellPhone" placeholder={pholder} required/>
+*/
+  handleChangePhone(value) {
+    console.log('handleChangePhone ', value);
+    this.props.handleChange({target:{ id:'new_cellPhone', value: value}})    
+    this.setState({phone: value});
+  }
   render() {
         return (
             <CardBody>
+                {/*Cell Phone*/}
+                <FormGroup row>
+                    <InputGroup>
+                        <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                                <i className="fa fa-envelope-o"></i>
+                            </InputGroupText>
+                        </InputGroupAddon>
+                        <FormattedMessage {...messages.cellPhone}>
+                            {
+                                pholder => <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
+                                    onChange={this.handleChangePhone} inputStyle={{width: '100%'}} /> 
+                              
+                            }
+                        </FormattedMessage>
+                    </InputGroup>
+                </FormGroup>
                 {/*Email*/}
                 <FormGroup row>
                     <InputGroup>
@@ -39,7 +72,7 @@ class RegisterForm extends Component {
                                 <i className="fa fa-envelope-o"></i>
                             </InputGroupText>
                         </InputGroupAddon>
-                        <FormattedMessage {...messages.emailPlace}>
+                        <FormattedMessage {...messages.emailOrPhone}>
                             {
                                 pholder => <Input onChange={this.props.handleChange}
                                     type="text" id="new_email" name="new_email" placeholder={pholder} required/>

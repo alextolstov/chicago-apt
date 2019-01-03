@@ -1,75 +1,84 @@
 import React, {Component} from 'react';
 import {Card, CardBody, CardHeader} from 'reactstrap';
-import BootstrapTable from 'react-bootstrap-table-next';
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
+
 import {FormattedMessage} from 'react-intl';
 
 import {inject, observer} from 'mobx-react/index';
+import 'spinkit/css/spinkit.css';
 
-
-import data from './_data';
 import UserApi from '../../../api/UserApi';
 
 import EditUser from '../EditUser';
+import {toast} from 'react-toastify';
+import PersonNameLocalizeApi from '../../../api/PersonNameLocalizeApi'
 
-
-const jspb = require('google-protobuf');
 const user_proto = require('models/user_pb');
-
 
 class ListUsers extends Component {
   constructor(props) {
     super(props);
-
-    this.table = data.rows;
-    this.rowEvents = {
-      onClick: (e, row, rowIndex) => {
-        console.log('clicked on row:', row);
-        console.log(`clicked on row  with index: ${rowIndex}`);
-        this.setState({selected: row});
-      },
-      onMouseEnter: (e, row, rowIndex) => {
-        // console.log(`enter on row with index: ${rowIndex}`);
-      }
-    };
-
+    this.onRowSelect = (row, isSelected, e) => {
+      this.setState({selected: row});
+    }
+    this.table = [];
     this.options = {
       sortIndicator: true,
       hideSizePerPage: true,
       paginationSize: 3,
       hidePageListOnlyOnePage: true,
-      clearSearch: true,
+      clearSearch: false,
       alwaysShowAllBtns: false,
       withFirstAndLast: false
-    };
+    }
 
     this.state = {
       data: null,
       userApi: new UserApi(),
+      personNameLocalizer: new PersonNameLocalizeApi(),
       selected: {
-        id: 'current',
+        id: '',
         name: '',
       },
       optionsList: [],
-      columns: [{
-        dataField: 'name',
-        text: 'Name'
-      }, /*{
-                dataField: 'email',
-                text: 'Email',
-                sort: true
-              }*/],
+      isLoading: true,
+    };
+
+    this.selectRowProp = {
+      mode: 'radio',
+      clickToSelect: true,
+      bgColor: '#f0f3f5',
+      onSelect: this.onRowSelect,
     };
   }
 
   componentDidMount() {
-    console.log('usersList:componentDidMount appStore=', this.props.appStore);
     const userData = this.props.appStore.userData;
-    console.log('usersList:componentDidMount userData=', userData);
-    const organizationId = userData.getOrganizationId();
-    console.log('usersList:componentDidMount organizationId=', organizationId);
+    this.state.isLoading = true;
+    const self = this;
 
+    if (!userData.getOrganizationId()) {
+      const current_user = sessionStorage.getItem("current_user");
+      this.state.userApi.getUserById(current_user, null).then(function (userMsg) {
+        const user = userMsg.getUser();
+        const orgId = user.getOrganizationId();
+        self.loadListUsers(orgId);
+      }).catch(function (error) {
+        console.log('ListUser Load User error:', error);
+        toast.error(error, {
+          position: toast.POSITION.TOP_LEFT
+        });
+      })
+    } else {
+      const orgId = userData.getOrganizationId();
+      self.loadListUsers(orgId);
+    }
+  }
+
+  loadListUsers = (orgId) => {
     let userOrgs = new user_proto.UserOrganization();
-    const orgId = userData.getOrganizationId();
+
     userOrgs.setOrganizationId(orgId);
     let self = this;
     this.state.userApi.getUsers(userOrgs, (e) => {
@@ -80,22 +89,25 @@ class ListUsers extends Component {
       for (let i = 0; i < usersList.length; i++) {
         optionsList.push({
           id: usersList[i].getUserId(),
-          name: usersList[i].getLastName() + ' ' + usersList[i].getFirstName() + ' ' + usersList[i].getMiddleName()
-          ,
+          name: self.state.personNameLocalizer.toPersonName(usersList[i].getFirstName(), usersList[i].getMiddleName(), usersList[i].getLastName()),
           email: usersList[i].getEmail(),
         });
-
       }
-      self.setState({optionsList});
-
+      self.setState({optionsList, isLoading: false});
     }).catch(function (error) {
       console.log('ListUser error:', error);
+      toast.error(error, {
+        position: toast.POSITION.TOP_LEFT
+      });
     })
   }
 
   addUser = () => {
-    console.log('Add User');
     this.setState({selected: {id: "new"}});
+  }
+
+  loadList = () => {
+    this.componentDidMount();
   }
 
   render() {
@@ -105,41 +117,58 @@ class ListUsers extends Component {
           <div className="animated">
             <Card>
               <CardHeader>
-                <strong><FormattedMessage id="menu.users.listusers"
-                                          defaultMessage="List user"/>
+
+                <h3><strong><FormattedMessage id="menu.users.list"
+                                              defaultMessage="Employees list"/>
                 </strong>
+                </h3>
                 <div>
                   <button onClick={this.addUser}
                   >
                     <strong><FormattedMessage id="users.edit.new_user"
-                                              defaultMessage="Create new user"/>
+                                              defaultMessage="Create new employee"/>
                     </strong>
-                  </button>
-                  <button onClick={this.testOrganizations}>
-                    <strong>Test Organizations</strong>
                   </button>
                 </div>
               </CardHeader>
               <CardBody>
-                <BootstrapTable
-                  striped
-                  hover
-                  keyField='email'
-                  data={this.state.optionsList}
-                  columns={this.state.columns}
-                  rowEvents={this.rowEvents}
-                />
+                {!this.state.isLoading &&
+                <BootstrapTable data={this.state.optionsList} version="4" hover pagination={false}
+                                options={this.options} selectRow={this.selectRowProp}>
+                  <TableHeaderColumn isKey dataField="name"
+                                     filter={{type: 'TextFilter', placeholder: 'Поиск...', delay: 1000}}
+                                     dataSort>Name</TableHeaderColumn>
+                </BootstrapTable>
+                }
+                {this.state.isLoading &&
+                <div className="sk-circle">
+                  <div className="sk-circle1 sk-child"></div>
+                  <div className="sk-circle2 sk-child"></div>
+                  <div className="sk-circle3 sk-child"></div>
+                  <div className="sk-circle4 sk-child"></div>
+                  <div className="sk-circle5 sk-child"></div>
+                  <div className="sk-circle6 sk-child"></div>
+                  <div className="sk-circle7 sk-child"></div>
+                  <div className="sk-circle8 sk-child"></div>
+                  <div className="sk-circle9 sk-child"></div>
+                  <div className="sk-circle10 sk-child"></div>
+                  <div className="sk-circle11 sk-child"></div>
+                  <div className="sk-circle12 sk-child"></div>
+                </div>
+                }
+
               </CardBody>
             </Card>
           </div>
         </div>
         <div className="col-8">
-          <EditUser userId={this.state.selected.id}/>
+          {(this.state.selected.id) &&
+          <EditUser userId={this.state.selected.id} loadList={this.loadList}/>
+          }
         </div>
       </div>
     );
   }
 }
-
 
 export default inject('appStore')(observer(ListUsers));

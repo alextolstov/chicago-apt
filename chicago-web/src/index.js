@@ -12,16 +12,13 @@ import locale_ru from 'react-intl/locale-data/ru';
 //import messages_en from "./translations/en.json";
 import messages_ru from "./translations/ru.json";
 
-// disable ServiceWorker
-// import registerServiceWorker from './registerServiceWorker';
-
 const messages = {
   'ru': messages_ru,
 //  'en': messages_en
 };
 
 // language without region code
-const language = navigator.language.split(/[-_]/)[0];
+export const language = navigator.language.split(/[-_]/)[0];
 
 // Activate locales
 addLocaleData([...locale_en, ...locale_ru]);

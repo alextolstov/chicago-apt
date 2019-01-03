@@ -18,18 +18,13 @@ export default {
             icon: 'icon-people',
             children: [
                 {
-                    name: <FormattedMessage id="menu.users.newuser" defaultMessage="New employee"/>,
-                    url: '/users/edituser/new',
-                    icon: 'icon-user-follow',
-                },
-                {
-                    name: <FormattedMessage id="menu.users.allusers" defaultMessage="All employees"/>,
-                    url: '/users/manageusers',
+                    name: <FormattedMessage id="menu.users.list" defaultMessage="Employees list"/>,
+                    url: '/users/listusers',
                     icon: 'icon-people',
                 },
                 {
-                    name: <FormattedMessage id="menu.users.listusers" defaultMessage="List users"/>,
-                    url: '/users/listusers',
+                    name: <FormattedMessage id="menu.organizations.list" defaultMessage="Organizations list"/>,
+                    url: '/users/listorganizations',
                     icon: 'icon-people',
                 }
 

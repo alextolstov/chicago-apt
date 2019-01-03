@@ -16,8 +16,8 @@ import {
 
 const messages = defineMessages({
   positionPlace: {
-    id: 'users.edit.newposition',
-    defaultMessage: 'New position'
+    id: 'users.edit.position',
+    defaultMessage: 'Enter new position and press Enter'
   }
 });
 
@@ -28,8 +28,6 @@ class PositionForm extends Component {
     this.state = {
       positionApi: props.positionApiParent,
       organizationId: this.props.appStore.userData.getOrganizationId(),
-      positionsArr: [],
-      positionsMap: new Map()
     };
   }
 
@@ -43,9 +41,8 @@ class PositionForm extends Component {
 
           positions.forEach((l, v) => {
             self.props.appStore.companyPositions.push({value:v, label:l});
-            self.state.positionsArr.push([v, l]);
           });
-          self.props.readyPosition();           
+          self.props.readyPosition(true);           
         }
       });
   }
@@ -55,24 +52,20 @@ class PositionForm extends Component {
       let self = this;
       let val = event.target.value;
       event.target.value = "";
+      self.props.readyPosition(false);           
 
       this.state.positionApi.createPosition(this.state.organizationId, val, null)
-        .then(function (data) {
-          if (data !== undefined && data !== null) {
-            let newPos = data.getPosition();
-            self.props.appStore.companyPositions.push({value:newPos.getPositionId(), label:newPos.getDescription()});
-            self.state.positionsArr.push([newPos.getPositionId(), newPos.getDescription()]);
-            self.setState({positionsArr: self.state.positionsArr});
-          }
+        .then( (data)=> {
+          this.componentDidMount();
         });
     }
   }
 
   render() {
-    let table = this.state.positionsArr.map((r) => {
-      return <tr key={r[0]}>
+    let table = this.props.appStore.companyPositions.map((position) => {
+      return <tr key={position.value}>
         <td>
-          <Input id={r[0]} onChange={this.handleChange} bsSize="sm" className="input-sm" defaultValue={r[1]}
+          <Input id={position.value} onChange={this.handleChange} bsSize="sm" className="input-sm" defaultValue={position.label}
                  type="text"/>
         </td>
         <td>
@@ -87,7 +80,7 @@ class PositionForm extends Component {
           <button onClick={this.saveNewPosition}>
             <i className="icon-cloud-upload"></i>
           </button>
-          <strong><FormattedMessage id="users.edit.newposition" defaultMessage="Type new position and press Enter"/></strong>
+          <strong><FormattedMessage id="users.edit.position" defaultMessage="Positions"/></strong>
         </CardHeader>
         <CardBody>
           {/*Position*/}
