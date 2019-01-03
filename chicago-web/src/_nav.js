@@ -18,12 +18,12 @@ export default {
             icon: 'icon-people',
             children: [
                 {
-                    name: <FormattedMessage id="menu.users.listusers" defaultMessage="List users"/>,
+                    name: <FormattedMessage id="menu.users.list" defaultMessage="Employees list"/>,
                     url: '/users/listusers',
                     icon: 'icon-people',
                 },
                 {
-                    name: <FormattedMessage id="menu.users.listorganizations" defaultMessage="List organizations"/>,
+                    name: <FormattedMessage id="menu.organizations.list" defaultMessage="Organizations list"/>,
                     url: '/users/listorganizations',
                     icon: 'icon-people',
                 }

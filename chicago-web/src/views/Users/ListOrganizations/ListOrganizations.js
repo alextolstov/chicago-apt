@@ -146,8 +146,8 @@ class ListOrganizations extends Component {
                 <div className="animated">
                 <Card>
                     <CardHeader>
-                     <h3><strong><FormattedMessage id="menu.users.listorganizations"
-                                    defaultMessage="List organizations" />
+                     <h3><strong><FormattedMessage id="menu.organizations.list"
+                                    defaultMessage="Organizations list" />
                      </strong>
                      </h3>
                     <div>           

@@ -30,7 +30,6 @@ const messages = defineMessages({
   }
 });
 
-
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -56,10 +55,8 @@ class Login extends Component {
 
   handleToogleMode = () => {
     console.log('handleToogleMode this.state.modePhone= ', this.state.modePhone);
-
     this.setState({modePhone: !this.state.modePhone});
   }
-
 
   handleChange = event => {
     this.setState({
@@ -92,13 +89,9 @@ class Login extends Component {
       return;
     }
 
-    // Andrey's conversation PhoneNumber
-    console.log('!!!!', this.state.emailOrPhone);
-
-    //   this.state.emailOrPhone=convertPhoneNumber(this.state.emailOrPhone);
+    console.log('Email or phone: ', this.state.emailOrPhone);
     // Username must be lower case
     let form = "username=" + this.state.emailOrPhone.toLowerCase().replace('+', '%2B') + "&password=" + this.state.password;
-
     let self = this;
 
     this.state.userApi.login(form, this.state.emailOrPhone.toLowerCase(), this.handleError).then(function (data) {
@@ -201,6 +194,5 @@ class Login extends Component {
     );
   }
 }
-
 
 export default inject("appStore")(Login);
