@@ -1,15 +1,11 @@
 import React, {Component} from 'react';
-import {Card, CardBody, CardHeader} from 'reactstrap';
+import {Card, CardBody, CardHeader, Modal, ModalBody, ModalHeader} from 'reactstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
-
 import {FormattedMessage} from 'react-intl';
-
 import {inject, observer} from 'mobx-react/index';
 import 'spinkit/css/spinkit.css';
-
 import UserApi from '../../../api/UserApi';
-
 import EditUser from '../EditUser';
 import {toast} from 'react-toastify';
 import PersonNameLocalizeApi from '../../../api/PersonNameLocalizeApi'
@@ -19,9 +15,6 @@ const user_proto = require('models/user_pb');
 class ListUsers extends Component {
   constructor(props) {
     super(props);
-    this.onRowSelect = (row, isSelected, e) => {
-      this.setState({selected: row});
-    }
     this.table = [];
     this.options = {
       sortIndicator: true,
@@ -30,8 +23,15 @@ class ListUsers extends Component {
       hidePageListOnlyOnePage: true,
       clearSearch: false,
       alwaysShowAllBtns: false,
-      withFirstAndLast: false
+      withFirstAndLast: false,
+      onRowClick: this.onRowSelect
     }
+
+    this.selectRowProp = {
+      clickToSelect: true,
+      bgColor: '#f0f3f5',
+      onSelect: this.onRowSelect,
+    };
 
     this.state = {
       data: null,
@@ -43,13 +43,7 @@ class ListUsers extends Component {
       },
       optionsList: [],
       isLoading: true,
-    };
-
-    this.selectRowProp = {
-      mode: 'radio',
-      clickToSelect: true,
-      bgColor: '#f0f3f5',
-      onSelect: this.onRowSelect,
+      openedDetails: false,
     };
   }
 
@@ -74,6 +68,17 @@ class ListUsers extends Component {
       const orgId = userData.getOrganizationId();
       self.loadListUsers(orgId);
     }
+  }
+
+  onRowSelect = (row) => {
+    this.state.openedDetails = true;
+    this.setState({selected: row});
+  }
+
+  toggleDetails = () => {
+    this.setState({
+      openedDetails: !this.state.openedDetails,
+    });
   }
 
   loadListUsers = (orgId) => {
@@ -113,7 +118,7 @@ class ListUsers extends Component {
   render() {
     return (
       <div className="row">
-        <div className="col-4">
+        <div>
           <div className="animated">
             <Card>
               <CardHeader>
@@ -161,11 +166,14 @@ class ListUsers extends Component {
             </Card>
           </div>
         </div>
-        <div className="col-8">
-          {(this.state.selected.id) &&
-          <EditUser userId={this.state.selected.id} loadList={this.loadList}/>
-          }
-        </div>
+        {(this.state.selected.id) &&
+        <Modal isOpen={this.state.openedDetails} toggle={this.toggleDetails} className={'modal-max'}>
+          <ModalHeader toggle={this.toggleDetails}>{this.state.selected.name}</ModalHeader>
+          <ModalBody>
+            <EditUser userId={this.state.selected.id} loadList={this.loadList}/>
+          </ModalBody>
+        </Modal>
+        }
       </div>
     );
   }

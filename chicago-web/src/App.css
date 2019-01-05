@@ -1,1 +1,3 @@
-
+@media (min-width: 992px) {
+  .modal-max {
+    max-width: 1600px; } }

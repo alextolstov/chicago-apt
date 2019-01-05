@@ -6,7 +6,8 @@ export default class PersonNameLocalizeApi {
   }
 
   toPersonName = (first, middle, last) => {
-    return ((this.fio.indexOf(language) === 0) ? last + ' ' + first + ' ' + middle : first + ' ' + middle + ' ' + last).trim();
+    return ((this.fio.indexOf(language) === 0) ? last + ' ' + first + ' ' + middle :
+      first + ' ' + middle + (middle.length > 0 ? ' ' : "") + last).trim();
   }
 
   fromPersonName(fillName) {

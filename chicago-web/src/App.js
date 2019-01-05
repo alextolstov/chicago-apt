@@ -2,8 +2,6 @@ import React, {Component} from 'react';
 import {HashRouter, Route, Switch} from 'react-router-dom';
 import {Provider} from 'mobx-react';
 import {AppStore, PrivateRoute} from './components';
-// Styles
-import './App.css';
 // CoreUI Icons Set
 import '@coreui/icons/css/coreui-icons.min.css';
 // Import Flag Icons Set
@@ -14,6 +12,8 @@ import 'font-awesome/css/font-awesome.min.css';
 import 'simple-line-icons/css/simple-line-icons.css';
 // Import Main styles for this application
 import './scss/style.css'
+// Custom Styles
+import './App.css';
 // Containers
 import {DefaultLayout} from './containers';
 // Pages
