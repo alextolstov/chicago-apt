@@ -107,7 +107,8 @@ class ListUsers extends Component {
     })
   }
 
-  addUser = () => {
+  addUser=() => {
+    this.state.openedDetails = true;
     this.setState({selected: {id: "new"}});
   }
 

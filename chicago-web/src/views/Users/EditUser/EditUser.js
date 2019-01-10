@@ -180,12 +180,13 @@ class EditUser extends Component {
         if (self.state.userId === 'current') {
           self.props.appStore.userData = self.state.user;
         }
-        if (self.props.loadList)
-          self.props.loadList();       // refresh list users
-        toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
+        console.log('Save user data');
+        toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..." />, {
           position: toast.POSITION.BOTTOM_RIGHT,
           autoClose: 1000
         });
+        if (self.props.loadList)
+          self.props.loadList();       // refresh list users
 
       });
     }
@@ -234,7 +235,6 @@ class EditUser extends Component {
     if (this.state.userId === 'new') {
       this.state.user = new user_proto.User();
       this.state.readMode = true;
-      this.setUncheckedState(this.state.readMode);
       this.setState({isLoading: false});
     }
     else if (this.state.userId === 'current') {
