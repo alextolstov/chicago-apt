@@ -16,9 +16,9 @@ const messages = defineMessages({
         id: 'users.edit.wholename',
         defaultMessage: 'First/Middle/Last Name'
     },
-    emailOrPhone: {
-        id: 'login.emailOrPhone',
-        defaultMessage: 'Email or Phone'
+    email: {
+        id: 'login.email',
+        defaultMessage: 'Email'
     },
     cellPhone: {
         id: 'login.cellPhone',
@@ -50,11 +50,6 @@ class RegisterForm extends Component {
                 {/*Cell Phone*/}
                 <FormGroup row>
                     <InputGroup>
-                        <InputGroupAddon addonType="prepend">
-                            <InputGroupText>
-                                <i className="fa fa-envelope-o"></i>
-                            </InputGroupText>
-                        </InputGroupAddon>
                         <FormattedMessage {...messages.cellPhone}>
                             {
                                 pholder => <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
@@ -72,7 +67,7 @@ class RegisterForm extends Component {
                                 <i className="fa fa-envelope-o"></i>
                             </InputGroupText>
                         </InputGroupAddon>
-                        <FormattedMessage {...messages.emailOrPhone}>
+                        <FormattedMessage {...messages.email}>
                             {
                                 pholder => <Input onChange={this.props.handleChange}
                                     type="text" id="new_email" name="new_email" placeholder={pholder} required/>
