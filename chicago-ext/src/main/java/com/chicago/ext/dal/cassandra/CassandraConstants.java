@@ -13,4 +13,5 @@ public class CassandraConstants
     public static final String ROLES_TABLE = "Roles";
     public static final String PERMISSIONS_TABLE = "Permissions";
     public static final String POSITIONS_TABLE = "Positions";
+    public static final String INVENTORIES_TABLE = "Inventories";
 }

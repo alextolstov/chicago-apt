@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package com.chicago.dto;
+
+option java_package = "com.chicago.dto";
+
+enum OperationType
+{
+    INCOMING = 0;
+    OUTGOING = 1;
+}
+
+enum TransferState
+{
+    PENDING = 0;
+    ACCEPTED = 1;
+    REJECTED = 2;
+}
+
+message InventoryOperation
+{
+    string inventory_id = 1;
+    OperationType operation_id = 2;
+    string location_from_id = 3;
+    string location_to_id = 4;
+    string item_id = 5;
+    int32 quantity = 6;
+    float amount_per_item = 7;
+}
+
+message InventoryItem
+{
+    string item_id = 1;
+    string item_name = 2;
+    bytes item_image = 3;
+    string description = 4;
+}
+
