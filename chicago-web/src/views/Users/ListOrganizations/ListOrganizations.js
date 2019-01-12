@@ -130,7 +130,7 @@ class ListOrganizations extends Component {
     }
 
     addOrganization() {
-        console.log('Add User');
+        console.log('Add Organization');
         this.setState({selected : {id: "new"}});
     }
 

@@ -156,7 +156,6 @@ class EditUser extends Component {
       this.state.readMode = true;    // исходное состояние панелей
       this.state.user = jspb.Message.cloneMessage(this.props.appStore.userData);
       this.state.userPositions = this.state.user.getPositionsMap();
-      console.log(this.state.userPositions);
     }
   }
 
@@ -180,35 +179,38 @@ class EditUser extends Component {
         if (self.state.userId === 'current') {
           self.props.appStore.userData = self.state.user;
         }
-        if (self.props.loadList)
-          self.props.loadList();       // refresh list users
-        toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
+        console.log('Save user data');
+        toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..." />, {
           position: toast.POSITION.BOTTOM_RIGHT,
           autoClose: 1000
         });
+        if (self.props.loadList)
+          self.props.loadList();       // refresh list users
 
       });
     }
   }
 
-  setUncheckedState = (mode) => {
-    if (document.getElementById('email_management_enabled').checked === mode) {
-      document.getElementById('email_management_enabled').click();
-    }
-    if (document.getElementById('permission_management_enabled').checked === mode) {
-      document.getElementById('permission_management_enabled').click();
-    }
-    if (document.getElementById('password_management_enabled').checked === mode) {
-      document.getElementById('password_management_enabled').click();
-    }
-    if (document.getElementById('personal_info_enabled').checked === mode) {
-      document.getElementById('personal_info_enabled').click();
-    }
-    if (document.getElementById('attributes_enabled').checked === mode) {
-      document.getElementById('attributes_enabled').click();
-    }
-    if (document.getElementById('address_enabled').checked === mode) {
-      document.getElementById('address_enabled').click();
+  setUncheckedState=(mode) => {
+    if(document.getElementById('email_management_enabled')) {
+      if(document.getElementById('email_management_enabled').checked===mode) {
+        document.getElementById('email_management_enabled').click();
+      }
+      if(document.getElementById('permission_management_enabled').checked===mode) {
+        document.getElementById('permission_management_enabled').click();
+      }
+      if(document.getElementById('password_management_enabled').checked===mode) {
+        document.getElementById('password_management_enabled').click();
+      }
+      if(document.getElementById('personal_info_enabled').checked===mode) {
+        document.getElementById('personal_info_enabled').click();
+      }
+      if(document.getElementById('attributes_enabled').checked===mode) {
+        document.getElementById('attributes_enabled').click();
+      }
+      if(document.getElementById('address_enabled').checked===mode) {
+        document.getElementById('address_enabled').click();
+      }
     }
   }
 
@@ -234,15 +236,31 @@ class EditUser extends Component {
     if (this.state.userId === 'new') {
       this.state.user = new user_proto.User();
       this.state.readMode = true;
-      this.setUncheckedState(this.state.readMode);
       this.setState({isLoading: false});
     }
     else if (this.state.userId === 'current') {
-      this.state.user = jspb.Message.cloneMessage(this.props.appStore.userData);
-      this.state.userPositions = this.state.user.getPositionsMap();
-      this.state.readMode = true;
-      this.setUncheckedState(this.state.readMode);
-      this.setState({isLoading: false});
+      this.state.user=jspb.Message.cloneMessage(this.props.appStore.userData);
+      const userId=this.state.user.getUserId();
+      let self = this;
+      self.state.readyPermission = false;
+      this.state.userApi.getUserById(userId, null).then(function (userMsg) {
+        if (userMsg != null) {
+          self.state.user = userMsg.getUser();
+          self.dateAfterLoad();
+          self.state.phone = self.state.user.getCellPhone();
+          self.setPosition(self.state.user);
+          self.state.permissionApi.setPermissionsUser(self.props.appStore, self.state.user, self.readyPermission);
+          self.setState({need_show: true, isLoading: false});
+          self.state.readMode = true;
+          self.setUncheckedState(self.state.readMode);
+        }
+      }).catch(function (error) {
+        console.log('Load user error:', error);
+        toast.error(error, {
+          position: toast.POSITION.TOP_LEFT
+        });
+      })
+
     }
     else {
       let self = this;
@@ -250,7 +268,6 @@ class EditUser extends Component {
       this.state.userApi.getUserById(this.state.userId, null).then(function (userMsg) {
         if (userMsg != null) {
           self.state.user = userMsg.getUser();
-          console.log('READ USER DATEBIRTH=', self.state.user.getDateOfBirth());
           self.dateAfterLoad();
           self.state.phone = self.state.user.getCellPhone();
           self.setPosition(self.state.user);
@@ -302,7 +319,6 @@ class EditUser extends Component {
 
         if (userMsg != null) {
           self.state.user = userMsg.getUser();
-          console.log('Get User ADDRESS=', self.state.user.getAddressId());
 
           self.dateAfterLoad();
           self.state.phone = self.state.user.getCellPhone();
@@ -317,13 +333,17 @@ class EditUser extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps && nextProps.match && nextProps.match.params) {
-      if (nextProps.match.params.id !== prevState.userId)
+    if(nextProps&&nextProps.match&&nextProps.match.params) {
+      if(nextProps.match.params.id!==prevState.userId&&nextProps.match.params.id!=='current') {
         return {userId: nextProps.match.params.id, isLoading: true};
-    }
-    if (nextProps.userId !== 'current' && nextProps.userId !== prevState.userId) {
-      return {userId: nextProps.userId, need_show: true, readMode: true, isLoading: true};
-    }
+      }
+      if(nextProps.match.params.id!=='current'&&nextProps.match.params.id!==prevState.userId) {
+        return {userId: nextProps.match.params.id, need_show: true, readMode: true, isLoading: true};
+      }
+      if(nextProps.match.params.id==='current') {
+        return {userId: nextProps.match.params.id, isLoading: false};
+      }
+   }
     return null;
   }
 
@@ -505,7 +525,6 @@ class EditUser extends Component {
 
   render() {
     const {personal_info_enabled, attributes_enabled, permission_enabled} = this.state;
-    console.log('RENDER');
     const show = (this.state.user) ? true : false;
     return (
       <div>
