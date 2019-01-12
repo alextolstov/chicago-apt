@@ -97,7 +97,7 @@ public class OrganizationRequests extends AbstractComponent
             Message response;
             try
             {
-                OrganizationOuterClass.OrganizationInfo organizationInfo = _organizationBll.getOrganizationStructure(event.getUserId(), event.getOrganizationType());
+                OrganizationOuterClass.OrganizationInfo organizationInfo = _organizationBll.getOrganizationStructure(event.getUserId());
                 response = Organizationmessages.OrganizationStructureResponse.newBuilder()
                         .setOrganizationInfo(organizationInfo)
                         .build();
