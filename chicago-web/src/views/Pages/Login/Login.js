@@ -21,6 +21,7 @@ import {inject} from 'mobx-react';
 import UserApi from '../../../api/UserApi';
 import PermissionApi from '../../../api/PermissionApi';
 import ReactPhoneInput from 'react-phone-input-2'
+import {country} from "../../../index";
 
 // Localization for place holders
 const messages = defineMessages({
@@ -127,7 +128,7 @@ class Login extends Component {
                         <div class="col-sm-9">
                              {this.state.modePhone&&
                               <InputGroup className="mb-3">
-                                <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
+                                <ReactPhoneInput defaultCountry={country} value={this.state.phone}
                                                 onChange={this.handleChangePhone}  inputStyle={{width: '100%'}}/>
                               </InputGroup>
                              }
