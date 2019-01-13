@@ -9,6 +9,7 @@ import UserApi from '../../../api/UserApi';
 import EditUser from '../EditUser';
 import {toast} from 'react-toastify';
 import PersonNameLocalizeApi from '../../../api/PersonNameLocalizeApi'
+import Spinner from "../../Spinner/Spinner";
 
 const user_proto = require('models/user_pb');
 
@@ -147,20 +148,7 @@ class ListUsers extends Component {
                 </BootstrapTable>
                 }
                 {this.state.isLoading &&
-                <div className="sk-circle">
-                  <div className="sk-circle1 sk-child"></div>
-                  <div className="sk-circle2 sk-child"></div>
-                  <div className="sk-circle3 sk-child"></div>
-                  <div className="sk-circle4 sk-child"></div>
-                  <div className="sk-circle5 sk-child"></div>
-                  <div className="sk-circle6 sk-child"></div>
-                  <div className="sk-circle7 sk-child"></div>
-                  <div className="sk-circle8 sk-child"></div>
-                  <div className="sk-circle9 sk-child"></div>
-                  <div className="sk-circle10 sk-child"></div>
-                  <div className="sk-circle11 sk-child"></div>
-                  <div className="sk-circle12 sk-child"></div>
-                </div>
+                  <Spinner/>
                 }
 
               </CardBody>
