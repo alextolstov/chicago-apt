@@ -76,11 +76,7 @@ class ListOrganizations extends Component {
                 text: 'Name',
                   sort: true,
                   filter: textFilter()
-              },/*{
-                dataField: 'email',
-                text: 'Email',
-                sort: true
-              }*/],
+                }],
         };
         this.organizationStructure = null;
 
@@ -96,9 +92,13 @@ class ListOrganizations extends Component {
         console.log('usersList:componentDidMount organizationId=', organizationId);
 */
         let self = this;
-        this.state.organizationApi.getStructure(null).then(function (e) {
-            self.organizationStructure=e;
-            console.log(e);
+        this.state.organizationApi.getStructure(null).then(function (orgStruct) {
+            self.organizationStructure=orgStruct;
+            console.log('listOrganization:componentDidMount self.organizationStructure=', self.organizationStructure);
+            const info=self.organizationStructure.getOrganizationInfo();
+            console.log('listOrganization:componentDidMount info=', info);
+
+
         })   
 /*
         let userOrgs=new user_proto.UserOrganization();

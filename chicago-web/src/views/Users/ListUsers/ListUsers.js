@@ -90,13 +90,21 @@ class ListUsers extends Component {
     this.state.userApi.getUsers(userOrgs, (e) => {
       console.log('Error load data ListUser:', e);
     }).then(function (usersMsg) {
-      const usersList = usersMsg.getUsersList();
+      const usersList=usersMsg.getUsersList();
+      
       let optionsList = [];
-      for (let i = 0; i < usersList.length; i++) {
+      for(let i=0; i<usersList.length; i++) {
+        const mapPositions=usersList[i].getPositionsMap().getEntryList();
+        let strPositions = "";
+        for(let j=0; j<mapPositions.length; j++) {
+          if(j>0) strPositions += ",";
+          strPositions +=  mapPositions[j][1];
+        }
+          
         optionsList.push({
           id: usersList[i].getUserId(),
           name: self.state.personNameLocalizer.toPersonName(usersList[i].getFirstName(), usersList[i].getMiddleName(), usersList[i].getLastName()),
-          email: usersList[i].getEmail(),
+          positions: strPositions,
         });
       }
       self.setState({optionsList, isLoading: false});
@@ -144,7 +152,8 @@ class ListUsers extends Component {
                                 options={this.options} selectRow={this.selectRowProp}>
                   <TableHeaderColumn isKey dataField="name"
                                      filter={{type: 'TextFilter', placeholder: 'Поиск...', delay: 1000}}
-                                     dataSort>Name</TableHeaderColumn>
+                                     dataSort>Сотрудник</TableHeaderColumn>
+                  <TableHeaderColumn dataField="positions">Позиция</TableHeaderColumn>
                 </BootstrapTable>
                 }
                 {this.state.isLoading &&
