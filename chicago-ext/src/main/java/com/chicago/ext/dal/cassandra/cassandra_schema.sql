@@ -226,7 +226,7 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryOperations (
     operation_type int, -- 0 = in, 1 = out
     item_id uuid,
     quantity int,
-    amount_per_item float,
+    amount float,
     create_datetime timestamp);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryTransfer (
@@ -234,22 +234,45 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryTransfer (
     inventory_to_id uuid,
     item_id uuid,
     quantity int,
-    amount_per_item float,
-    transfer_state int,
+    amount float,
+    transfer_state int, -- 0 - pending, 1 - accepted, 2 - rejected
     create_datetime timestamp,
     complete_datetime timestamp);
 
-CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryMonthlySnapshot (
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryCurrentPositions (
     inventory_id uuid PRIMARY KEY,
-    location_id uuid,
     item_id uuid,
     quantity int,
-    amount_per_item float,
+    amount float);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryMonthlyPositions (
+    inventory_id uuid PRIMARY KEY,
+    item_id uuid,
+    quantity int,
+    amount float,
     create_datetime timestamp);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItems (
-    item_id uuid PRIMARY KEY,
+    entity_id uuid PRIMARY KEY,
+    item_id uuid,
     location_id uuid,
+    item_quantity int,
+    item_amount float,
     item_name string,
     item_image blob,
+    description string);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemsCatalog (
+    item_id uuid PRIMARY KEY,
+    location_id uuid,
+    item_quantity int,
+    item_amount float,
+    item_name string,
+    item_image blob,
+    description string);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.ProcessCards (
+    entity_id uuid PRIMARY KEY,
+    card_id uuid,
+    items map<uuid, float>,
     description string);

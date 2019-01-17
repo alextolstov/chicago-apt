@@ -20,19 +20,42 @@ enum TransferState
 message InventoryOperation
 {
     string inventory_id = 1;
-    OperationType operation_id = 2;
-    string location_from_id = 3;
-    string location_to_id = 4;
-    string item_id = 5;
-    int32 quantity = 6;
-    float amount_per_item = 7;
+    OperationType operation_type = 2;
+    string item_id = 3;
+    int32 quantity = 4;
+    float amount = 5;
+}
+
+message InventoryTransfer
+{
+    string inventory_from_id = 1;
+    string inventory_to_id = 2;
+    string item_id = 3;
+    int32 quantity = 4;
+    float amount = 5;
+    TransferState transfer_state = 6;
+}
+
+message InventoryPosition
+{
+    string inventory_id = 1;
+    string item_id = 2;
+    int32 quantity = 3;
+    float amount = 4;
+    string item_name = 5;
+    bytes item_image = 6;
+    string description = 7;
 }
 
 message InventoryItem
 {
-    string item_id = 1;
-    string item_name = 2;
-    bytes item_image = 3;
-    string description = 4;
+    string entity_id = 1;
+    string item_id = 2;
+    string location_id = 3;
+    int32 item_quantity = 4;
+    float item_amount = 5;
+    string item_name = 6;
+    bytes item_image = 7;
+    string description = 8;
 }
 
