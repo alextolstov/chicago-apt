@@ -18,7 +18,6 @@ class RegisterForm extends Component {
         this.state={
             phone:""
         };
-        this.handleChangePhone=this.handleChangePhone.bind(this);
     }
 
 
