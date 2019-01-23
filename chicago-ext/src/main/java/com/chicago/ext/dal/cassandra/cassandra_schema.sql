@@ -211,15 +211,15 @@ INSERT INTO ChicagoErp.Roles (role_id, role_name, permission_ids, description) V
 CREATE TABLE IF NOT EXISTS ChicagoErp.Inventory (
     organization_id uuid PRIMARY KEY,
     inventory_id uuid,
-    inventory_name string,
-    description string);
+    inventory_name varchar,
+    description varchar);
 
 -- locations per whole entity
 CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryLocations (
     entity_id uuid PRIMARY KEY,
     location_id uuid,
-    inventory_name string,
-    description string);
+    inventory_name varchar,
+    description varchar);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryOperations (
     inventory_id uuid PRIMARY KEY,
@@ -255,24 +255,44 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryMonthlyPositions (
 CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItems (
     entity_id uuid PRIMARY KEY,
     item_id uuid,
+    item_category_id uuid,
+    item_brand_id uuid,
     location_id uuid,
     item_quantity int,
     item_amount float,
-    item_name string,
+    item_name varchar,
     item_image blob,
-    description string);
+    description varchar);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemCategory (
+    entity_id uuid,
+    category_name varchar,
+    item_category_id uuid,
+    PRIMARY KEY (entity_id, category_name));
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemBrand (
+    entity_id uuid,
+    brand_name varchar,
+    item_brand_id uuid,
+    PRIMARY KEY (entity_id, brand_name));
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemMeasurement (
+    entity_id uuid,
+    measurement_name varchar,
+    item_measurement_id uuid,
+    PRIMARY KEY (entity_id, measurement_name));
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemsCatalog (
     item_id uuid PRIMARY KEY,
     location_id uuid,
     item_quantity int,
     item_amount float,
-    item_name string,
+    item_name varchar,
     item_image blob,
-    description string);
+    description varchar);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.ProcessCards (
     entity_id uuid PRIMARY KEY,
     card_id uuid,
     items map<uuid, float>,
-    description string);
+    description varchar);
