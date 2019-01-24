@@ -63,19 +63,37 @@ message InventoryItemCategory
 {
     string entity_id = 1;
     string category_name = 2;
-    string item_category_id = 3;
+    string category_id = 3;
+}
+
+message InventoryItemCategories
+{
+    string entity_id = 1;
+    map<string, string> categories = 2;
 }
 
 message InventoryItemBrand
 {
     string entity_id = 1;
     string brand_name = 2;
-    string item_brand_id = 3;
+    string brand_id = 3;
+}
+
+message InventoryItemBrands
+{
+    string entity_id = 1;
+    map<string, string> brands = 2;
 }
 
 message InventoryItemMeasurement
 {
     string entity_id = 1;
     string measurement_name = 2;
-    string item_measurement_id = 3;
+    string measurement_id = 3;
+}
+
+message InventoryItemMeasurements
+{
+    string entity_id = 1;
+    map<string, string> measurements = 2;
 }

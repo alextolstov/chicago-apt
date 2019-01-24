@@ -40,11 +40,11 @@ public class PositionBllImpl implements PositionBll
     public PositionOuterClass.Positions getPositions(String organizationId) throws Exception
     {
         // Protobuf doesnt support UUID, need to convert to string
-        Map<UUID, String> positionMap = _positionDal.getPositions(organizationId);
-        Map<String, String> newMap = positionMap.entrySet().stream()
+        Map<UUID, String> result = _positionDal.getPositions(organizationId);
+        Map<String, String> newResult = result.entrySet().stream()
                 .collect(Collectors.toMap(entry -> entry.getKey().toString(), Map.Entry::getValue));
         return PositionOuterClass.Positions.newBuilder()
-                .putAllPositions(newMap)
+                .putAllPositions(newResult)
                 .build();
     }
 }

@@ -264,23 +264,17 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItems (
     item_image blob,
     description varchar);
 
-CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemCategory (
-    entity_id uuid,
-    category_name varchar,
-    item_category_id uuid,
-    PRIMARY KEY (entity_id, category_name));
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemCategories (
+    entity_id uuid PRIMARY KEY,
+    categories map<uuid, varchar>); -- category_id - category name
 
-CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemBrand (
-    entity_id uuid,
-    brand_name varchar,
-    item_brand_id uuid,
-    PRIMARY KEY (entity_id, brand_name));
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemBrands (
+    entity_id uuid PRIMARY KEY,
+    brands map<uuid, varchar>); -- brand_id - brand name
 
-CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemMeasurement (
-    entity_id uuid,
-    measurement_name varchar,
-    item_measurement_id uuid,
-    PRIMARY KEY (entity_id, measurement_name));
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemMeasurements (
+    entity_id uuid PRIMARY KEY,
+    measurement map<uuid, varchar>); -- measurement_id - measurement name
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemsCatalog (
     item_id uuid PRIMARY KEY,
