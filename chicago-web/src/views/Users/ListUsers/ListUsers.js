@@ -9,6 +9,7 @@ import UserApi from '../../../api/UserApi';
 import EditUser from '../EditUser';
 import {toast} from 'react-toastify';
 import PersonNameLocalizeApi from '../../../api/PersonNameLocalizeApi'
+import Spinner from "../../Spinner/Spinner";
 
 const user_proto = require('models/user_pb');
 
@@ -89,13 +90,21 @@ class ListUsers extends Component {
     this.state.userApi.getUsers(userOrgs, (e) => {
       console.log('Error load data ListUser:', e);
     }).then(function (usersMsg) {
-      const usersList = usersMsg.getUsersList();
+      const usersList=usersMsg.getUsersList();
+      
       let optionsList = [];
-      for (let i = 0; i < usersList.length; i++) {
+      for(let i=0; i<usersList.length; i++) {
+        const mapPositions=usersList[i].getPositionsMap().getEntryList();
+        let strPositions = "";
+        for(let j=0; j<mapPositions.length; j++) {
+          if(j>0) strPositions += ",";
+          strPositions +=  mapPositions[j][1];
+        }
+          
         optionsList.push({
           id: usersList[i].getUserId(),
           name: self.state.personNameLocalizer.toPersonName(usersList[i].getFirstName(), usersList[i].getMiddleName(), usersList[i].getLastName()),
-          email: usersList[i].getEmail(),
+          positions: strPositions,
         });
       }
       self.setState({optionsList, isLoading: false});
@@ -143,24 +152,12 @@ class ListUsers extends Component {
                                 options={this.options} selectRow={this.selectRowProp}>
                   <TableHeaderColumn isKey dataField="name"
                                      filter={{type: 'TextFilter', placeholder: 'Поиск...', delay: 1000}}
-                                     dataSort>Name</TableHeaderColumn>
+                                     dataSort>Сотрудник</TableHeaderColumn>
+                  <TableHeaderColumn dataField="positions">Позиция</TableHeaderColumn>
                 </BootstrapTable>
                 }
                 {this.state.isLoading &&
-                <div className="sk-circle">
-                  <div className="sk-circle1 sk-child"></div>
-                  <div className="sk-circle2 sk-child"></div>
-                  <div className="sk-circle3 sk-child"></div>
-                  <div className="sk-circle4 sk-child"></div>
-                  <div className="sk-circle5 sk-child"></div>
-                  <div className="sk-circle6 sk-child"></div>
-                  <div className="sk-circle7 sk-child"></div>
-                  <div className="sk-circle8 sk-child"></div>
-                  <div className="sk-circle9 sk-child"></div>
-                  <div className="sk-circle10 sk-child"></div>
-                  <div className="sk-circle11 sk-child"></div>
-                  <div className="sk-circle12 sk-child"></div>
-                </div>
+                  <Spinner/>
                 }
 
               </CardBody>

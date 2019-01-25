@@ -29,6 +29,7 @@ import RegisterForm from '../../Forms/RegisterForm/RegisterForm';
 import {toast} from 'react-toastify';
 import ReactPhoneInput from 'react-phone-input-2'
 import {country} from "../../../index";
+import Spinner from '../../Spinner/Spinner';
 
 const jspb = require('google-protobuf');
 const user_proto = require('models/user_pb');
@@ -1088,21 +1089,8 @@ class EditUser extends Component {
           </Row>
         </div>
         }
-        {this.state.isLoading &&
-        <div className="sk-circle">
-          <div className="sk-circle1 sk-child"></div>
-          <div className="sk-circle2 sk-child"></div>
-          <div className="sk-circle3 sk-child"></div>
-          <div className="sk-circle4 sk-child"></div>
-          <div className="sk-circle5 sk-child"></div>
-          <div className="sk-circle6 sk-child"></div>
-          <div className="sk-circle7 sk-child"></div>
-          <div className="sk-circle8 sk-child"></div>
-          <div className="sk-circle9 sk-child"></div>
-          <div className="sk-circle10 sk-child"></div>
-          <div className="sk-circle11 sk-child"></div>
-          <div className="sk-circle12 sk-child"></div>
-        </div>
+        {this.state.isLoading&&
+          <Spinner/>
         }
       </div>
     );

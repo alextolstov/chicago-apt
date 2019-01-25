@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
 import {Card, CardHeader, CardBody, Button} from 'reactstrap';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
-import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory, {textFilter} from 'react-bootstrap-table2-filter';
-import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 
 import {defineMessages, FormattedMessage} from 'react-intl';
 
@@ -13,9 +11,10 @@ import {inject, observer} from 'mobx-react/index';
 import EditOrganization from '../EditOrganization/EditOrganization';
 import data from './_data';
 import OrganizationApi from '../../../api/OrganizationApi';
+import Spinner from "../../Spinner/Spinner";
+
+
 const organization_proto = require('models/organization_pb');
-
-
 
 
 const jspb = require('google-protobuf');
@@ -35,100 +34,76 @@ const selectRow = {
 class ListOrganizations extends Component {
     constructor(props) {
         super(props);
-
-        this.table=data.rows;
-        this.rowEvents = {
-          onClick: (e, row, rowIndex) => {
-              console.log('clicked on row:', row);
-              console.log(`clicked on row  with index: ${rowIndex}`);
-              this.setState({selected: row});
-          },
-          onMouseEnter: (e, row, rowIndex) => {
-            // console.log(`enter on row with index: ${rowIndex}`);
-          }
+        this.table = [];
+        this.options = {
+          sortIndicator: true,
+          hideSizePerPage: true,
+          paginationSize: 3,
+          hidePageListOnlyOnePage: true,
+          clearSearch: false,
+          alwaysShowAllBtns: false,
+          withFirstAndLast: false,
+          onRowClick: this.onRowSelect
+        }
+    
+        this.selectRowProp = {
+          clickToSelect: true,
+          bgColor: '#f0f3f5',
+          onSelect: this.onRowSelect,
         };
-
-        this.options={
-            sortIndicator: true,
-            hideSizePerPage: true,
-            paginationSize: 3,
-            hidePageListOnlyOnePage: true,
-            clearSearch: true,
-            alwaysShowAllBtns: false,
-            withFirstAndLast: false
-        };
+    
 
         this.state={
             data: null,
             organizationApi: new OrganizationApi(),
-            selected: { id : 'current',
-                        name: '',
-                      },
+            selected: {
+                id: '',
+                name: '',
+            },
             optionsList: [],
-            columns: [
-                {
-                  dataField: 'organization_id',
-                  text: 'id',
-                  sort: true,
-                },
-                {
-                dataField: 'name',
-                text: 'Name',
-                  sort: true,
-                  filter: textFilter()
-              },/*{
-                dataField: 'email',
-                text: 'Email',
-                sort: true
-              }*/],
-        };
+            isLoading: true,
+            openedDetails: false,
+        }    
+  
         this.organizationStructure = null;
 
         this.addOrganization=this.addOrganization.bind(this);
         this.loadOrganizations=this.loadOrganizations.bind(this);
     }
     componentDidMount() {
-/*
-        console.log('usersList:componentDidMount appStore=', this.props.appStore);
-        const userData=this.props.appStore.userData;
-        console.log('usersList:componentDidMount userData=', userData);
-        const organizationId=userData.getOrganizationId();
-        console.log('usersList:componentDidMount organizationId=', organizationId);
-*/
+        this.state.isLoading = true;
         let self = this;
-        this.state.organizationApi.getStructure(null).then(function (e) {
-            self.organizationStructure=e;
-            console.log(e);
-        })   
-/*
-        let userOrgs=new user_proto.UserOrganization();
-        const orgId=userData.getOrganizationId();
-        userOrgs.setOrganizationId(orgId);
-        let self = this;
-        this.state.userApi.getUsers(userOrgs, (e) => {
-            console.log('Error load data ListUser:', e);
-        }).
-        then(function (usersMsg) {
-            const usersList=usersMsg.getUsersList();
-            let optionsList=[];
-            for(let i=0;i<usersList.length;i++) {
+        this.state.organizationApi.getStructure(null).then(function (orgStruct) {
+            self.organizationStructure=orgStruct;
+            console.log('listOrganization:componentDidMount self.organizationStructure=', self.organizationStructure);
+            const info=self.organizationStructure.getOrganizationInfo();
+            console.log('listOrganization:componentDidMount info=', info);
+            const list=info.getOrganizationsList()
+            console.log('listOrganization:componentDidMount list=', list);
+            let optionsList = [];
+            for(let i=0;i<list.length;i++) {
+                console.log('Element = ', list[i].getOrganizationId(), list[i].getName() );
                 optionsList.push({
-                    id:usersList[i].getUserId(),
-                    name: usersList[i].getLastName() +' '+  usersList[i].getFirstName()  +' ' + usersList[i].getMiddleName()
-                        ,
-                    email: usersList[i].getEmail(),
+                    id: list[i].getOrganizationId(),
+                    name: list[i].getName(),
                 });
-              
+                          
             }
-            self.setState({optionsList});
-                
-        }).
-        catch( function (error) {
-          console.log('ListUser error:', error);
-        }) 
-*/        
-    }
+            self.setState({optionsList, isLoading: false});
 
+        })   
+    }
+    onRowSelect = (row) => {
+        this.state.openedDetails = true;
+        this.setState({selected: row});
+    }
+    
+    toggleDetails = () => {
+        this.setState({
+          openedDetails: !this.state.openedDetails,
+        });
+    }
+    
     addOrganization() {
         console.log('Add Organization');
         this.setState({selected : {id: "new"}});
@@ -160,15 +135,18 @@ class ListOrganizations extends Component {
                     </div>
                     </CardHeader>
                     <CardBody>
-                        <BootstrapTable
-                                    hover
-                                    keyField='name'
-                                    data={this.state.optionsList}
-                                    columns={this.state.columns}
-                                    rowEvents={this.rowEvents}
-                                    filter={filterFactory()}
-                                    selectRow={ selectRow1 }
-                        />            
+                    {!this.state.isLoading &&
+                        <BootstrapTable data={this.state.optionsList} version="4" hover pagination={false}
+                                        options={this.options} selectRow={this.selectRowProp}>
+                        <TableHeaderColumn isKey dataField="name"
+                                            filter={{type: 'TextFilter', placeholder: 'Поиск...', delay: 1000}}
+                                            dataSort>Организация</TableHeaderColumn>
+                        </BootstrapTable>
+                    }
+                    {this.state.isLoading &&
+                        <Spinner/>
+                    }
+
                     </CardBody>
                 </Card>
                 </div>
