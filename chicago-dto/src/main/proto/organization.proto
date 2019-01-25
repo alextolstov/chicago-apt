@@ -20,11 +20,12 @@ message Organization
     string web_site = 5;
     string email_domain = 6;
     string parent_organization_id = 7;
-    repeated string phones = 8;
-    repeated string fax = 9;
-    repeated string users = 10;
-    repeated string organizations = 11;
-    string address_id = 12;
+    string entity_id = 8;
+    repeated string phones = 9;
+    repeated string fax = 10;
+    repeated string users = 11;
+    repeated string organizations = 12;
+    string address_id = 13;
 }
 
 message OrganizationInfo

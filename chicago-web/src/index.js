@@ -18,7 +18,9 @@ const messages = {
 };
 
 // language without region code
-export const language = navigator.language.split(/[-_]/)[0];
+let locale = navigator.language.split(/[-_]/);
+export const language = locale[0];
+export const country = (locale[1] === undefined ? language : locale[1].toLowerCase());
 
 // Activate locales
 addLocaleData([...locale_en, ...locale_ru]);

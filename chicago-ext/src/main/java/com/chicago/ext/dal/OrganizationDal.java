@@ -12,5 +12,5 @@ public interface OrganizationDal
 
     void addUserToCompany(String userId, String organizationId);
 
-    OrganizationOuterClass.OrganizationInfo getOrganizationStructure(String organizationId, OrganizationOuterClass.OrganizationType returnLevel) throws Exception;
+    OrganizationOuterClass.OrganizationInfo getOrganizationStructure(String organizationId) throws Exception;
 }

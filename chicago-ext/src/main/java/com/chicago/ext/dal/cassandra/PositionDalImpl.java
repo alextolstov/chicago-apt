@@ -34,10 +34,8 @@ public class PositionDalImpl implements PositionDal
                 .with(QueryBuilder.put("positions", newPositionId, position.getDescription()));
         _cassandraConnector.getSession().execute(query);
 
-        return PositionOuterClass.Position.newBuilder()
-                .setOrganizationId(position.getOrganizationId())
+        return PositionOuterClass.Position.newBuilder(position)
                 .setPositionId(newPositionId.toString())
-                .setDescription(position.getDescription())
                 .build();
     }
 

@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import {defineMessages, FormattedMessage} from 'react-intl';
 import {CardBody, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText,} from 'reactstrap';
-import ReactPhoneInput from 'react-phone-input-2' 
+import ReactPhoneInput from 'react-phone-input-2'
+import {country} from "../../../index";
+
     
 const messages = defineMessages({
     passwordPlace: {
@@ -52,7 +54,7 @@ class RegisterForm extends Component {
                     <InputGroup>
                         <FormattedMessage {...messages.cellPhone}>
                             {
-                                pholder => <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
+                                pholder => <ReactPhoneInput defaultCountry={country} value={this.state.phone}
                                     onChange={this.handleChangePhone} inputStyle={{width: '100%'}} /> 
                               
                             }

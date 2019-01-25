@@ -27,7 +27,8 @@ import PositionForm from '../../Forms/PositionForm/PositionForm';
 import PermissionForm from '../../Forms/PermissionForm/PermissionForm';
 import RegisterForm from '../../Forms/RegisterForm/RegisterForm';
 import {toast} from 'react-toastify';
-import ReactPhoneInput from 'react-phone-input-2';
+import ReactPhoneInput from 'react-phone-input-2'
+import {country} from "../../../index";
 import Spinner from '../../Spinner/Spinner';
 
 const jspb = require('google-protobuf');
@@ -138,7 +139,6 @@ class EditUser extends Component {
       isLoading: true,
     };
 
-    this.phoneOrEmail = '';
     this.DateOfBirth = '';
     this.EmploymentDate = '';
     this.ActualEmploymentDate = '';
@@ -181,7 +181,7 @@ class EditUser extends Component {
           self.props.appStore.userData = self.state.user;
         }
         console.log('Save user data');
-        toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..." />, {
+        toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
           position: toast.POSITION.BOTTOM_RIGHT,
           autoClose: 1000
         });
@@ -192,24 +192,24 @@ class EditUser extends Component {
     }
   }
 
-  setUncheckedState=(mode) => {
-    if(document.getElementById('email_management_enabled')) {
-      if(document.getElementById('email_management_enabled').checked===mode) {
+  setUncheckedState = (mode) => {
+    if (document.getElementById('email_management_enabled')) {
+      if (document.getElementById('email_management_enabled').checked === mode) {
         document.getElementById('email_management_enabled').click();
       }
-      if(document.getElementById('permission_management_enabled').checked===mode) {
+      if (document.getElementById('permission_management_enabled').checked === mode) {
         document.getElementById('permission_management_enabled').click();
       }
-      if(document.getElementById('password_management_enabled').checked===mode) {
+      if (document.getElementById('password_management_enabled').checked === mode) {
         document.getElementById('password_management_enabled').click();
       }
-      if(document.getElementById('personal_info_enabled').checked===mode) {
+      if (document.getElementById('personal_info_enabled').checked === mode) {
         document.getElementById('personal_info_enabled').click();
       }
-      if(document.getElementById('attributes_enabled').checked===mode) {
+      if (document.getElementById('attributes_enabled').checked === mode) {
         document.getElementById('attributes_enabled').click();
       }
-      if(document.getElementById('address_enabled').checked===mode) {
+      if (document.getElementById('address_enabled').checked === mode) {
         document.getElementById('address_enabled').click();
       }
     }
@@ -240,8 +240,8 @@ class EditUser extends Component {
       this.setState({isLoading: false});
     }
     else if (this.state.userId === 'current') {
-      this.state.user=jspb.Message.cloneMessage(this.props.appStore.userData);
-      const userId=this.state.user.getUserId();
+      this.state.user = jspb.Message.cloneMessage(this.props.appStore.userData);
+      const userId = this.state.user.getUserId();
       let self = this;
       self.state.readyPermission = false;
       this.state.userApi.getUserById(userId, null).then(function (userMsg) {
@@ -334,17 +334,17 @@ class EditUser extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if(nextProps&&nextProps.match&&nextProps.match.params) {
-      if(nextProps.match.params.id!==prevState.userId&&nextProps.match.params.id!=='current') {
+    if (nextProps && nextProps.match && nextProps.match.params) {
+      if (nextProps.match.params.id !== prevState.userId && nextProps.match.params.id !== 'current') {
         return {userId: nextProps.match.params.id, isLoading: true};
       }
-      if(nextProps.match.params.id!=='current'&&nextProps.match.params.id!==prevState.userId) {
+      if (nextProps.match.params.id !== 'current' && nextProps.match.params.id !== prevState.userId) {
         return {userId: nextProps.match.params.id, need_show: true, readMode: true, isLoading: true};
       }
-      if(nextProps.match.params.id==='current') {
+      if (nextProps.match.params.id === 'current') {
         return {userId: nextProps.match.params.id, isLoading: false};
       }
-   }
+    }
     return null;
   }
 
@@ -780,16 +780,12 @@ class EditUser extends Component {
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
-                          <i className="fa fa-phone"></i>
+                          <FormattedMessage id="users.edit.cellphoneshort" defaultMessage="Cell"/>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <FormattedMessage {...messages.cellPhonePlace}>
-                        {
-                          pholder => <span><ReactPhoneInput defaultCountry={'ru'} value={this.state.mobilePhone}
-                                                            onChange={this.handleChangeMobilePhone}
-                                                            inputStyle={{width: '100%'}}/></span>
-                        }
-                      </FormattedMessage>
+                      <span><ReactPhoneInput defaultCountry={country} value={this.state.mobilePhone}
+                                             onChange={this.handleChangeMobilePhone}
+                                             inputStyle={{width: '100%'}}/></span>
                     </InputGroup>
                   </FormGroup>
 
@@ -798,16 +794,12 @@ class EditUser extends Component {
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
-                          <i className="fa fa-phone"></i>
+                          <FormattedMessage id="users.edit.homephoneshort" defaultMessage="Home"/>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <FormattedMessage {...messages.homePhonePlace}>
-                        {
-                          pholder => <span><ReactPhoneInput defaultCountry={'ru'} value={this.state.homePhone}
-                                                            onChange={this.handleChangeHomePhone}
-                                                            inputStyle={{width: '100%'}}/></span>
-                        }
-                      </FormattedMessage>
+                      <span><ReactPhoneInput defaultCountry={country} value={this.state.homePhone}
+                                             onChange={this.handleChangeHomePhone}
+                                             inputStyle={{width: '100%'}}/></span>
                     </InputGroup>
                   </FormGroup>
 
@@ -816,16 +808,12 @@ class EditUser extends Component {
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
-                          <i className="fa fa-phone"></i>
+                          <FormattedMessage id="users.edit.homephoneshort" defaultMessage="Work"/>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <FormattedMessage {...messages.workPhonePlace}>
-                        {
-                          pholder => <span><ReactPhoneInput defaultCountry={'ru'} value={this.state.workPhone}
-                                                            onChange={this.handleChangeWorkPhone}
-                                                            inputStyle={{width: '100%'}}/></span>
-                        }
-                      </FormattedMessage>
+                      <span><ReactPhoneInput defaultCountry={country} value={this.state.workPhone}
+                                             onChange={this.handleChangeWorkPhone}
+                                             inputStyle={{width: '100%'}}/></span>
                     </InputGroup>
                   </FormGroup>
 

@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Organizations (
     organization_type int,
     name varchar,
     description varchar,
+    entity_id uuid, -- unique Id for global data for specific business (holding/company/branch share the same entity id)
     web_site varchar,
     email_domain varchar,
     parent_organization_id uuid,
@@ -205,3 +206,87 @@ INSERT INTO ChicagoErp.Roles (role_id, role_name, permission_ids, description) V
 5,  --customer:edit
 6   --customer:delete
 }, 'Branch level admin');
+
+-- Inventory
+CREATE TABLE IF NOT EXISTS ChicagoErp.Inventory (
+    organization_id uuid PRIMARY KEY,
+    inventory_id uuid,
+    inventory_name varchar,
+    description varchar);
+
+-- locations per whole entity
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryLocations (
+    entity_id uuid PRIMARY KEY,
+    location_id uuid,
+    inventory_name varchar,
+    description varchar);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryOperations (
+    inventory_id uuid PRIMARY KEY,
+    operation_type int, -- 0 = in, 1 = out
+    item_id uuid,
+    quantity int,
+    amount float,
+    create_datetime timestamp);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryTransfer (
+    inventory_from_id uuid PRIMARY KEY,
+    inventory_to_id uuid,
+    item_id uuid,
+    quantity int,
+    amount float,
+    transfer_state int, -- 0 - pending, 1 - accepted, 2 - rejected
+    create_datetime timestamp,
+    complete_datetime timestamp);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryCurrentPositions (
+    inventory_id uuid PRIMARY KEY,
+    item_id uuid,
+    quantity int,
+    amount float);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryMonthlyPositions (
+    inventory_id uuid PRIMARY KEY,
+    item_id uuid,
+    quantity int,
+    amount float,
+    create_datetime timestamp);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItems (
+    entity_id uuid PRIMARY KEY,
+    item_id uuid,
+    item_category_id uuid,
+    item_brand_id uuid,
+    location_id uuid,
+    item_quantity int,
+    item_amount float,
+    item_name varchar,
+    item_image blob,
+    description varchar);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemCategories (
+    entity_id uuid PRIMARY KEY,
+    categories map<uuid, varchar>); -- category_id - category name
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemBrands (
+    entity_id uuid PRIMARY KEY,
+    brands map<uuid, varchar>); -- brand_id - brand name
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemMeasurements (
+    entity_id uuid PRIMARY KEY,
+    measurement map<uuid, varchar>); -- measurement_id - measurement name
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemsCatalog (
+    item_id uuid PRIMARY KEY,
+    location_id uuid,
+    item_quantity int,
+    item_amount float,
+    item_name varchar,
+    item_image blob,
+    description varchar);
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.ProcessCards (
+    entity_id uuid PRIMARY KEY,
+    card_id uuid,
+    items map<uuid, float>,
+    description varchar);

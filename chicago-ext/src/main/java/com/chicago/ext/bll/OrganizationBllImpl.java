@@ -38,11 +38,11 @@ public class OrganizationBllImpl implements OrganizationBll
     }
 
     @Override
-    public OrganizationOuterClass.OrganizationInfo getOrganizationStructure(String userId, OrganizationOuterClass.OrganizationType returnLevel) throws Exception
+    public OrganizationOuterClass.OrganizationInfo getOrganizationStructure(String userId) throws Exception
     {
         UserOuterClass.User user = _userDal.getUserById(userId);
         user.getOrganizationId();
-        return _organizationDal.getOrganizationStructure(user.getOrganizationId(), returnLevel);
+        return _organizationDal.getOrganizationStructure(user.getOrganizationId());
     }
 }
 

@@ -12,7 +12,7 @@ public interface OrganizationBll
 
     OrganizationOuterClass.Organization getOrganization(OrganizationOuterClass.Organization organization) throws Exception;
 
-    OrganizationOuterClass.OrganizationInfo getOrganizationStructure(String userId, OrganizationOuterClass.OrganizationType returnLevel) throws Exception;
+    OrganizationOuterClass.OrganizationInfo getOrganizationStructure(String userId) throws Exception;
 }
 
 

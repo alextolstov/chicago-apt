@@ -14,10 +14,10 @@ import {
   Row
 } from 'reactstrap';
 import {Link} from 'react-router-dom'
-import convertPhoneNumber from '../Login/convertPhoneNumber';
 import {defineMessages, FormattedMessage} from 'react-intl';
 import {AppSwitch} from '@coreui/react'
-import ReactPhoneInput from 'react-phone-input-2' 
+import ReactPhoneInput from 'react-phone-input-2'
+import {country} from "../../../index";
 
 const messages = defineMessages({
   emailPlace: {
@@ -167,7 +167,7 @@ class Register extends Component {
                         <div class="col-sm-9">
                              {this.state.modePhone&&
                               <InputGroup className="mb-3">
-                                <ReactPhoneInput defaultCountry={'ru'} value={this.state.phone}
+                                <ReactPhoneInput defaultCountry={country} value={this.state.phone}
                                                 onChange={this.handleChangePhone}  inputStyle={{width: '100%'}}/>
                               </InputGroup>
                              }

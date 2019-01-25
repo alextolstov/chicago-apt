@@ -31,17 +31,30 @@ public class OrganizationDalImpl implements OrganizationDal
     {
         UUID organizationId = UUIDs.random();
         UUID parentId = null;
-        if (organization.getType() != OrganizationOuterClass.OrganizationType.HOLDING)
+        UUID entityId = null;
+
+        if (organization.getType() == OrganizationOuterClass.OrganizationType.HOLDING)
         {
+            entityId = organizationId;
+        } else
+        {
+            if (organization.getType() == OrganizationOuterClass.OrganizationType.COMPANY)
+            {
+                entityId = UUID.fromString(organization.getParentOrganizationId());
+            } else if (organization.getType() == OrganizationOuterClass.OrganizationType.BRANCH)
+            {
+                entityId = getTopLevelOrganizationId(organization.getParentOrganizationId());
+            }
             parentId = UUID.fromString(organization.getParentOrganizationId());
         }
 
         Statement query = QueryBuilder.insertInto(KEYSPACE, ORGANIZATIONS_TABLE)
                 .value("organization_id", organizationId) // Already UUID
-                .value("organization_type", organization.getType().getNumber()) // Already UUID
+                .value("organization_type", organization.getType().getNumber()) // Enum
                 .value("name", organization.getName())
                 .value("description", organization.getDescription())
                 .value("parent_organization_id", parentId)
+                .value("entity_id", entityId)
                 .value("web_site", organization.getWebSite())
                 .value("email_domain", organization.getEmailDomain())
                 .value("phones", organization.getPhonesList())
@@ -101,7 +114,17 @@ public class OrganizationDalImpl implements OrganizationDal
     }
 
     @Override
-    public OrganizationOuterClass.OrganizationInfo getOrganizationStructure(String organizationId, OrganizationOuterClass.OrganizationType returnLevel) throws Exception
+    public OrganizationOuterClass.OrganizationInfo getOrganizationStructure(String organizationId) throws Exception
+    {
+        UUID topLevelOrganizationId = getTopLevelOrganizationId(organizationId);
+
+        OrganizationOuterClass.OrganizationInfo.Builder organizationInfoBuilder = OrganizationOuterClass.OrganizationInfo.newBuilder();
+        traverseOrganizations(organizationInfoBuilder, topLevelOrganizationId);
+
+        return organizationInfoBuilder.build();
+    }
+
+    private UUID getTopLevelOrganizationId(String organizationId)
     {
         UUID topLevelOrganizationId;
         UUID uuidOrganizationId = UUID.fromString(organizationId);
@@ -121,11 +144,7 @@ public class OrganizationDalImpl implements OrganizationDal
             }
             uuidOrganizationId = tempOrganizationId;
         }
-
-        OrganizationOuterClass.OrganizationInfo.Builder organizationInfoBuilder = OrganizationOuterClass.OrganizationInfo.newBuilder();
-        traverseOrganizations(organizationInfoBuilder, topLevelOrganizationId);
-
-        return organizationInfoBuilder.build();
+        return topLevelOrganizationId;
     }
 
     private void traverseOrganizations(OrganizationOuterClass.OrganizationInfo.Builder builder, UUID organizationId) throws Exception
