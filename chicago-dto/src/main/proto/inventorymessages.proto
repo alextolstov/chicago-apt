@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package com.chicago.dto;
+
+import "common.proto";
+import "inventory.proto";
+
+option java_package = "com.chicago.dto";
+
+message InventoryItemBrandRequest
+{
+    CrudOperation crud_operation = 1;
+    InventoryItemBrand item_brand = 2;
+}
+
+message InventoryItemBrandResponse
+{
+    InventoryItemBrand item_brand = 1;
+    TransactionError transaction_error = 2;
+}
+
+message InventoryItemBrandsResponse
+{
+    InventoryItemBrands item_brands = 1;
+    TransactionError transaction_error = 2;
+}

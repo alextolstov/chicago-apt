@@ -3,12 +3,14 @@ package com.chicago.app;
 import com.chicago.ext.bll.*;
 import com.chicago.common.core.ConfigParser;
 import com.chicago.ext.dal.AddressDal;
+import com.chicago.ext.dal.InventoryDal;
 import com.chicago.ext.dal.OrganizationDal;
 import com.chicago.ext.dal.PermissionDal;
 import com.chicago.ext.dal.PositionDal;
 import com.chicago.ext.dal.UserDal;
 import com.chicago.ext.dal.cassandra.AddressDalImpl;
 import com.chicago.ext.dal.cassandra.CassandraConnector;
+import com.chicago.ext.dal.cassandra.InventoryDalImpl;
 import com.chicago.ext.dal.cassandra.OrganizationDalImpl;
 import com.chicago.ext.dal.cassandra.PermissionDalImpl;
 import com.chicago.ext.dal.cassandra.PositionDalImpl;
@@ -58,5 +60,7 @@ public class ApplicationBinder extends AbstractBinder
         bind(OrganizationBllImpl.class).to(OrganizationBll.class).in(Singleton.class);
         bind(PermissionDalImpl.class).to(PermissionDal.class).in(Singleton.class);
         bind(PermissionBllImpl.class).to(PermissionBll.class).in(Singleton.class);
+        bind(InventoryDalImpl.class).to(InventoryDal.class).in(Singleton.class);
+        bind(InventoryBllImpl.class).to(InventoryBll.class).in(Singleton.class);
     }
 }
