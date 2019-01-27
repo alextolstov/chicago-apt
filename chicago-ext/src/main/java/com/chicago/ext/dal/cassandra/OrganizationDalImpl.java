@@ -195,7 +195,7 @@ public class OrganizationDalImpl implements OrganizationDal
 
         OrganizationOuterClass.Organization.Builder builder = OrganizationOuterClass.Organization.newBuilder();
         builder.setOrganizationId(organizationId);
-        builder.setType(toTypeEnum(row.getInt("type")));
+        builder.setType(toTypeEnum(row.getInt("organization_type")));
 
         String tempField;
         if ((tempField = row.getString("name")) != null)
