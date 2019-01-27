@@ -1,4 +1,4 @@
-CREATE KEYSPACE ChicagoErp  WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };
+CREATE KEYSPACE ChicagoErp WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.Organizations (
     organization_id uuid PRIMARY KEY,
