@@ -37,7 +37,7 @@ public class TestUserDal
             new ClassPathCQLDataSet("cassandra_schema.cql", true, true));
 
     @Test
-    public void should_have_started_and_execute_cql_script() 
+    public void should_have_started_and_execute_cql_script()
     {
         cassandraCQLUnit.session.execute("insert into ChicagoErp.Organizations (organization_id) values(6ab09bec-e68e-48d9-a5f8-97e6fb4c9b47)");
         ResultSet result = cassandraCQLUnit.session.execute("select * from ChicagoErp.Organizations");
