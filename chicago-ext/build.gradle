@@ -17,11 +17,11 @@ dependencies {
     implementation "com.google.protobuf:protobuf-java-util:${protobufVer}"
     implementation "org.apache.httpcomponents:httpcore:${httpcoreVer}"
     implementation "com.datastax.cassandra:cassandra-driver-core:${cassandraDriverVer}"
-    implementation "org.cassandraunit:cassandra-unit:${cassandraUnitVer}"
 
     implementation project(":chicago-common")
     implementation project(":chicago-dto")
 
+    testImplementation("org.cassandraunit:cassandra-unit:${cassandraUnitVer}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVer}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVer}")
 }
