@@ -87,7 +87,6 @@ public class OrganizationDalImpl implements OrganizationDal
                 .and(QueryBuilder.set("email_domain", organization.getEmailDomain()))
                 .and(QueryBuilder.set("phones", organization.getPhonesList()))
                 .and(QueryBuilder.set("fax", organization.getFaxList()))
-                .and(QueryBuilder.set("users", usersSet))
                 .and(QueryBuilder.set("child_organizations", childOrganizationsSet))
                 .and(QueryBuilder.set("address_id", organization.getAddressId().length() == 0 ? null : UUID.fromString(organization.getAddressId())))
                 .where(QueryBuilder.eq("organization_id", UUID.fromString(organization.getOrganizationId())));
