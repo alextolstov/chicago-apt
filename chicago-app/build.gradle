@@ -24,6 +24,8 @@ dependencies {
     implementation project(":chicago-ext")
     implementation project(":chicago-dto")
 
+    testImplementation("org.cassandraunit:cassandra-unit:${cassandraUnitVer}")
+    testImplementation "com.datastax.cassandra:cassandra-driver-core:${cassandraDriverVer}"
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVer}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVer}")
 }

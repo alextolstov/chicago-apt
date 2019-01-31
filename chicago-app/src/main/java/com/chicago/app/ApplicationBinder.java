@@ -1,8 +1,22 @@
 package com.chicago.app;
 
-import com.chicago.ext.bll.*;
 import com.chicago.common.core.ConfigParser;
+import com.chicago.dto.Config;
+import com.chicago.dto.Service;
+import com.chicago.ext.bll.AddressBll;
+import com.chicago.ext.bll.AddressBllImpl;
+import com.chicago.ext.bll.InventoryBll;
+import com.chicago.ext.bll.InventoryBllImpl;
+import com.chicago.ext.bll.OrganizationBll;
+import com.chicago.ext.bll.OrganizationBllImpl;
+import com.chicago.ext.bll.PermissionBll;
+import com.chicago.ext.bll.PermissionBllImpl;
+import com.chicago.ext.bll.PositionBll;
+import com.chicago.ext.bll.PositionBllImpl;
+import com.chicago.ext.bll.UserBll;
+import com.chicago.ext.bll.UserBllImpl;
 import com.chicago.ext.dal.AddressDal;
+import com.chicago.ext.dal.DbConnector;
 import com.chicago.ext.dal.InventoryDal;
 import com.chicago.ext.dal.OrganizationDal;
 import com.chicago.ext.dal.PermissionDal;
@@ -15,11 +29,8 @@ import com.chicago.ext.dal.cassandra.OrganizationDalImpl;
 import com.chicago.ext.dal.cassandra.PermissionDalImpl;
 import com.chicago.ext.dal.cassandra.PositionDalImpl;
 import com.chicago.ext.dal.cassandra.UserDalImpl;
-import com.chicago.dto.Config;
-import com.chicago.dto.Service;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
-import javax.inject.Scope;
 import javax.inject.Singleton;
 
 public class ApplicationBinder extends AbstractBinder
@@ -49,7 +60,7 @@ public class ApplicationBinder extends AbstractBinder
         }
 //        addActiveDescriptor(CassandraConnector.class);
 //        addActiveDescriptor(UserDalImpl.class);
-        bind(CassandraConnector.class).to(CassandraConnector.class).in(Singleton.class);
+        bind(CassandraConnector.class).to(DbConnector.class).in(Singleton.class);
         bind(UserDalImpl.class).to(UserDal.class).in(Singleton.class);
         bind(UserBllImpl.class).to(UserBll.class).in(Singleton.class);
         bind(AddressDalImpl.class).to(AddressDal.class).in(Singleton.class);

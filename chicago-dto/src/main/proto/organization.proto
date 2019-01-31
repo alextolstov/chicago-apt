@@ -21,8 +21,8 @@ message Organization
     string email_domain = 6;
     string parent_organization_id = 7;
     string entity_id = 8;
-    repeated string phones = 9;
-    repeated string fax = 10;
+    string phone = 9;
+    string fax = 10;
     repeated string users = 11;
     repeated string organizations = 12;
     string address_id = 13;

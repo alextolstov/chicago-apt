@@ -1,6 +1,7 @@
 package com.chicago.ext.dal.cassandra;
 
 import com.chicago.dto.PositionOuterClass;
+import com.chicago.ext.dal.DbConnector;
 import com.chicago.ext.dal.PositionDal;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
@@ -23,7 +24,7 @@ public class PositionDalImpl implements PositionDal
     private static final Logger LOG = LoggerFactory.getLogger(PositionDalImpl.class);
 
     @Inject
-    private CassandraConnector _cassandraConnector;
+    private DbConnector _cassandraConnector;
 
     @Override
     public PositionOuterClass.Position createPosition(PositionOuterClass.Position position)

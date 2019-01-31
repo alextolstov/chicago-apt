@@ -2,6 +2,7 @@ package com.chicago.ext.dal.cassandra;
 
 import com.chicago.common.util.TimeUtil;
 import com.chicago.dto.OrganizationOuterClass;
+import com.chicago.ext.dal.DbConnector;
 import com.chicago.ext.dal.OrganizationDal;
 import com.chicago.ext.dal.OrganizationNotFoundException;
 import com.datastax.driver.core.ResultSet;
@@ -24,7 +25,7 @@ public class OrganizationDalImpl implements OrganizationDal
 {
     private static final Logger LOG = LoggerFactory.getLogger(UserDalImpl.class);
     @Inject
-    private CassandraConnector _cassandraConnector;
+    private DbConnector _cassandraConnector;
 
     @Override
     public String createOrganization(OrganizationOuterClass.Organization organization) throws Exception
@@ -57,8 +58,8 @@ public class OrganizationDalImpl implements OrganizationDal
                 .value("entity_id", entityId)
                 .value("web_site", organization.getWebSite())
                 .value("email_domain", organization.getEmailDomain())
-                .value("phones", organization.getPhonesList())
-                .value("fax", organization.getFaxList())
+                .value("phone", organization.getPhone())
+                .value("fax", organization.getFax())
                 // Address already created as first step when holding saved
                 .value("address_id", organization.getAddressId().length() == 0 ? null : UUID.fromString(organization.getAddressId()))
                 .value("create_datetime", TimeUtil.getUtcNowInMilliseconds());
@@ -85,8 +86,8 @@ public class OrganizationDalImpl implements OrganizationDal
                 .and(QueryBuilder.set("description", organization.getDescription()))
                 .and(QueryBuilder.set("web_site", organization.getWebSite()))
                 .and(QueryBuilder.set("email_domain", organization.getEmailDomain()))
-                .and(QueryBuilder.set("phones", organization.getPhonesList()))
-                .and(QueryBuilder.set("fax", organization.getFaxList()))
+                .and(QueryBuilder.set("phone", organization.getPhone()))
+                .and(QueryBuilder.set("fax", organization.getFax()))
                 .and(QueryBuilder.set("child_organizations", childOrganizationsSet))
                 .and(QueryBuilder.set("address_id", organization.getAddressId().length() == 0 ? null : UUID.fromString(organization.getAddressId())))
                 .where(QueryBuilder.eq("organization_id", UUID.fromString(organization.getOrganizationId())));
@@ -212,16 +213,16 @@ public class OrganizationDalImpl implements OrganizationDal
             builder.setAddressId(addressId.toString());
         }
 
-        Set<String> phones = row.getSet("phones", String.class);
-        if (phones != null)
+        String phone = row.getString("phone");
+        if (phone != null)
         {
-            phones.forEach(builder::addPhones);
+            builder.setPhone(phone);
         }
 
-        Set<String> faxes = row.getSet("fax", String.class);
-        if (faxes != null)
+        String fax = row.getString("fax");
+        if (fax != null)
         {
-            faxes.forEach(builder::addFax);
+            builder.setFax(fax);
         }
 
         Set<UUID> users = row.getSet("users", UUID.class);

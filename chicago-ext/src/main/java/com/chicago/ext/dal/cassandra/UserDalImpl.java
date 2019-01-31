@@ -3,6 +3,7 @@ package com.chicago.ext.dal.cassandra;
 import com.chicago.common.util.TimeUtil;
 import com.chicago.dto.PermissionOuterClass;
 import com.chicago.dto.UserOuterClass;
+import com.chicago.ext.dal.DbConnector;
 import com.chicago.ext.dal.PositionDal;
 import com.chicago.ext.dal.UserDal;
 import com.chicago.ext.dal.UserNotFoundException;
@@ -38,7 +39,7 @@ public class UserDalImpl implements UserDal
     private static final Logger LOG = LoggerFactory.getLogger(UserDalImpl.class);
 
     @Inject
-    private CassandraConnector _cassandraConnector;
+    private DbConnector _cassandraConnector;
     @Inject
     private PositionDal _positionDal;
 

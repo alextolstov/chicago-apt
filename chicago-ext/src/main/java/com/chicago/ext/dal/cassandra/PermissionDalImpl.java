@@ -2,6 +2,7 @@ package com.chicago.ext.dal.cassandra;
 
 import com.chicago.dto.PermissionOuterClass;
 import com.chicago.dto.UserOuterClass;
+import com.chicago.ext.dal.DbConnector;
 import com.chicago.ext.dal.PermissionDal;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
@@ -20,7 +21,7 @@ public class PermissionDalImpl implements PermissionDal
     private static final Logger LOG = LoggerFactory.getLogger(PermissionDalImpl.class);
 
     @Inject
-    private CassandraConnector _cassandraConnector;
+    private DbConnector _cassandraConnector;
 
     @Override
     public Set<String> setSystemAdminRole(String userId) throws Exception

@@ -3,6 +3,7 @@ package com.chicago.ext.dal.cassandra;
 import com.chicago.dto.AddressOuterClass;
 import com.chicago.ext.dal.AddressDal;
 import com.chicago.ext.dal.AddressNotFoundException;
+import com.chicago.ext.dal.DbConnector;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Statement;
@@ -22,7 +23,7 @@ public class AddressDalImpl implements AddressDal
     private static final Logger LOG = LoggerFactory.getLogger(AddressDalImpl.class);
 
     @Inject
-    private CassandraConnector _cassandraConnector;
+    private DbConnector _cassandraConnector;
 
     @Override
     public String createAddress(AddressOuterClass.Address address) throws Exception

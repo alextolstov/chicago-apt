@@ -1,6 +1,7 @@
 package com.chicago.ext.dal.cassandra;
 
 import com.chicago.dto.Config;
+import com.chicago.ext.dal.DbConnector;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import org.slf4j.Logger;
@@ -9,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-public class CassandraConnector
+public class CassandraConnector implements DbConnector
 {
     private static final Logger LOG = LoggerFactory.getLogger(CassandraConnector.class);
     private Cluster _cluster;

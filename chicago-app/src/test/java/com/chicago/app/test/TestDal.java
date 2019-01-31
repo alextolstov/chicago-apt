@@ -1,16 +1,23 @@
 package com.chicago.app.test;
 
 import com.chicago.app.ApplicationBinder;
+import com.chicago.dto.OrganizationOuterClass;
 import com.chicago.dto.PermissionOuterClass;
 import com.chicago.dto.PositionOuterClass;
 import com.chicago.dto.UserOuterClass;
+import com.chicago.ext.bll.OrganizationBll;
+import com.chicago.ext.bll.UserBll;
+import com.chicago.ext.dal.DbConnector;
 import com.chicago.ext.dal.PermissionDal;
 import com.chicago.ext.dal.PositionDal;
 import com.chicago.ext.dal.UserDal;
+import org.cassandraunit.CassandraCQLUnit;
+import org.cassandraunit.dataset.cql.ClassPathCQLDataSet;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
-import org.junit.jupiter.api.Test;
+import org.junit.Rule;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,14 +26,40 @@ import java.util.UUID;
 
 public class TestDal
 {
+    @Rule
+    public CassandraCQLUnit cassandraCQLUnit = new CassandraCQLUnit(
+            new ClassPathCQLDataSet("cassandra_schema.cql", true, true));
+
     @Test
     public void getPermissions()
     {
         try
         {
-            String confFile = "file://d:\\dev\\chicago-erp\\chicago-app\\src\\main\\resources\\config\\userservice.cfg";
             ServiceLocator serviceLocator = ServiceLocatorFactory.getInstance().create("servicelocator");
-            ServiceLocatorUtilities.bind(serviceLocator, new ApplicationBinder(confFile));
+            TestCassandraConnector ts = new TestCassandraConnector(cassandraCQLUnit);
+            ServiceLocatorUtilities.bind(serviceLocator, new TestApplicationBinder(ts));
+            UserBll ub = serviceLocator.getService(UserBll.class);
+            UserOuterClass.User user = UserOuterClass.User.newBuilder()
+                    .setEmail("test@gmail.com")
+                    .setFirstName("John")
+                    .setLastName("Smith")
+                    .build();
+            UserOuterClass.User newuser = ub.createAdminUser(user);
+            OrganizationBll ob = serviceLocator.getService(OrganizationBll.class);
+            OrganizationOuterClass.OrganizationInfo oi = ob.getOrganizationStructure(newuser.getUserId());
+            OrganizationOuterClass.OrganizationInfo oinfo = oi.getOrganizationsList().get(0);
+            List<UserOuterClass.User> users = ub.getUsers(oinfo.getOrganizationId());
+            OrganizationOuterClass.Organization org = OrganizationOuterClass.Organization.newBuilder()
+                    .setOrganizationId(oinfo.getOrganizationId())
+                    .build();
+            org = ob.getOrganization(org);
+            OrganizationOuterClass.Organization newOrg = OrganizationOuterClass.Organization.newBuilder()
+                    .mergeFrom(org)
+                    .setName("Test org")
+                    .build();
+            ob.updateOrganization(newOrg);
+            users = ub.getUsers(newOrg.getOrganizationId());
+
             PermissionDal pd = serviceLocator.getService(PermissionDal.class);
             PermissionOuterClass.Roles roles = pd.getSystemPermissions();
 

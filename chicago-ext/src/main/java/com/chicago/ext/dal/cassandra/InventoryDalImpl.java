@@ -2,6 +2,7 @@ package com.chicago.ext.dal.cassandra;
 
 import com.chicago.dto.Inventory;
 import com.chicago.dto.OrganizationOuterClass;
+import com.chicago.ext.dal.DbConnector;
 import com.chicago.ext.dal.InventoryDal;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
@@ -20,14 +21,13 @@ import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_BR
 import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_CATEGORIES_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_MEASUREMENTS_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.KEYSPACE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.POSITIONS_TABLE;
 
 public class InventoryDalImpl implements InventoryDal
 {
     private static final Logger LOG = LoggerFactory.getLogger(InventoryDalImpl.class);
 
     @Inject
-    private CassandraConnector _cassandraConnector;
+    private DbConnector _cassandraConnector;
 
     @Override
     public String createInventory(String organizationId) throws Exception
