@@ -1,10 +1,12 @@
 package com.chicago.app.test;
 
 import com.chicago.app.ApplicationBinder;
+import com.chicago.dto.Inventory;
 import com.chicago.dto.OrganizationOuterClass;
 import com.chicago.dto.PermissionOuterClass;
 import com.chicago.dto.PositionOuterClass;
 import com.chicago.dto.UserOuterClass;
+import com.chicago.ext.bll.InventoryBll;
 import com.chicago.ext.bll.OrganizationBll;
 import com.chicago.ext.bll.UserBll;
 import com.chicago.ext.dal.DbConnector;
@@ -29,6 +31,45 @@ public class TestDal
     @Rule
     public CassandraCQLUnit cassandraCQLUnit = new CassandraCQLUnit(
             new ClassPathCQLDataSet("cassandra_schema.cql", true, true));
+
+    @Test
+    public void setItem()
+    {
+        ServiceLocator serviceLocator = ServiceLocatorFactory.getInstance().create("servicelocator");
+        TestCassandraConnector ts = new TestCassandraConnector(cassandraCQLUnit);
+        ServiceLocatorUtilities.bind(serviceLocator, new TestApplicationBinder(ts));
+        InventoryBll inventory = serviceLocator.getService(InventoryBll.class);
+
+        Inventory.InventoryItemBrand brand = Inventory.InventoryItemBrand.newBuilder()
+                .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
+                .setBrandName("Nivea")
+                .build();
+        Inventory.InventoryItemBrand createdBrand = inventory.createItemBrand(brand);
+
+        Inventory.InventoryItemBrand updatedBrand = Inventory.InventoryItemBrand.newBuilder(createdBrand)
+                .setBrandName("Gillet")
+                .build();
+        inventory.updateItemBrand(updatedBrand);
+        Inventory.InventoryItemBrands brands = inventory.getItemBrands("9df37802-95a9-425e-be0f-00f45b2a6c4a");
+
+        Inventory.InventoryItemCategory category = Inventory.InventoryItemCategory.newBuilder()
+                .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
+                .setCategoryName("Shampoo")
+                .build();
+        Inventory.InventoryItemCategory createdCategory = inventory.createItemCategory(category);
+
+        category = Inventory.InventoryItemCategory.newBuilder()
+                .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
+                .setCategoryName("Paint")
+                .build();
+        createdCategory = inventory.createItemCategory(category);
+
+        Inventory.InventoryItemCategory updatedCategory = Inventory.InventoryItemCategory.newBuilder(createdCategory)
+                .setCategoryName("Soap")
+                .build();
+        inventory.updateItemCategory(updatedCategory);
+        Inventory.InventoryItemCategories categories = inventory.getItemCategories("9df37802-95a9-425e-be0f-00f45b2a6c4a");
+    }
 
     @Test
     public void getPermissions()
