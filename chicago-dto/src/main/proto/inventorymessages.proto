@@ -24,3 +24,39 @@ message InventoryItemBrandsResponse
     InventoryItemBrands item_brands = 1;
     TransactionError transaction_error = 2;
 }
+
+message InventoryItemCategoryRequest
+{
+    CrudOperation crud_operation = 1;
+    InventoryItemCategory item_category = 2;
+}
+
+message InventoryItemCategoryResponse
+{
+    InventoryItemCategory item_category = 1;
+    TransactionError transaction_error = 2;
+}
+
+message InventoryItemCategoriesResponse
+{
+    InventoryItemCategories item_categories = 1;
+    TransactionError transaction_error = 2;
+}
+
+message InventoryItemMeasurementRequest
+{
+    CrudOperation crud_operation = 1;
+    InventoryItemMeasurement item_measurement = 2;
+}
+
+message InventoryItemMeasurementResponse
+{
+    InventoryItemMeasurement item_measurement = 1;
+    TransactionError transaction_error = 2;
+}
+
+message InventoryItemMeasurementsResponse
+{
+    InventoryItemMeasurements item_measurements = 1;
+    TransactionError transaction_error = 2;
+}

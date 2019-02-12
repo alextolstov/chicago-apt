@@ -32,6 +32,7 @@ public class InventoryRequests extends AbstractComponent
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
         _ed.registerHandler(Inventorymessages.InventoryItemBrandRequest.class, new InventoryItemBrandEventHandler());
+        _ed.registerHandler(Inventorymessages.InventoryItemCategoryRequest.class, new InventoryItemCategoryEventHandler());
         // Response
         KafkaMessageProducer producer = cm.getResource(KafkaMessageProducer.class.getName());
         _ed.registerHandler(Inventorymessages.InventoryItemBrandResponse.class, producer.new MessageEventHandler());
@@ -95,6 +96,58 @@ public class InventoryRequests extends AbstractComponent
             } catch (Exception ex)
             {
                 response = ResponseFactoryUtil.createErrorResponse(ex, Usermessages.UserResponse.class);
+            }
+            _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
+            LOG.info("Published real-time response on request with transaction id: {}", transactionId);
+        }
+    }
+
+    class InventoryItemCategoryEventHandler implements EventHandler<Inventorymessages.InventoryItemCategoryRequest>
+    {
+        @Override
+        public void handleEvent(Inventorymessages.InventoryItemCategoryRequest event, String transactionId)
+        {
+            Message response;
+            try
+            {
+                Message dataMsg = null;
+
+                switch (event.getCrudOperation())
+                {
+                    case CREATE:
+                    {
+                        dataMsg = _inventoryBll.createItemCategory(event.getItemCategory());
+                        break;
+                    }
+                    case UPDATE:
+                    {
+                        _inventoryBll.updateItemCategory(event.getItemCategory());
+                        dataMsg = PositionOuterClass.Position.getDefaultInstance();
+                        break;
+                    }
+                    case READ: // On read return all brands
+                    {
+                        dataMsg = _inventoryBll.getItemCategories(event.getItemCategory().getEntityId());
+                        break;
+                    }
+                }
+
+                if (event.getCrudOperation() == Common.CrudOperation.READ)
+                {
+                    response = Inventorymessages.InventoryItemCategoriesResponse
+                            .newBuilder()
+                            .setItemCategories((Inventory.InventoryItemCategories) dataMsg)
+                            .build();
+                } else
+                {
+                    response = Inventorymessages.InventoryItemCategoryResponse
+                            .newBuilder()
+                            .setItemCategory((Inventory.InventoryItemCategory) dataMsg)
+                            .build();
+                }
+            } catch (Exception ex)
+            {
+                response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
             LOG.info("Published real-time response on request with transaction id: {}", transactionId);
