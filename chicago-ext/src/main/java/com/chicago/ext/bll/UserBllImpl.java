@@ -56,18 +56,18 @@ public class UserBllImpl implements UserBll
                 .setName("New company")
                 .setDescription("New company")
                 .build();
-        String companyId = _organizationDal.createOrganization(company);
-        LOG.info("New company {} created for user with email {} and cell phone {}", companyId, user.getEmail(), user.getCellPhone());
+        String organizationId = _organizationDal.createOrganization(company);
+        LOG.info("New company {} created for user with email {} and cell phone {}", organizationId, user.getEmail(), user.getCellPhone());
 
         // Now set new company for user
         user = UserOuterClass.User.newBuilder(user)
-                .setOrganizationId(companyId)
+                .setOrganizationId(organizationId)
                 .build();
         UserOuterClass.User newUser = createUser(user, false);
         LOG.info("New admin user created userId {}", newUser.getUserId());
 
-        _organizationDal.addUserToCompany(newUser.getUserId(), companyId);
-        LOG.info("New admin user added to companyId {}", companyId);
+        _organizationDal.addUserToOrganization(newUser.getUserId(), organizationId );
+        LOG.info("New admin user added to organizationId {}", organizationId );
 
         // Finally turn user to system admin and return with permissions
         Set<String> permissionNames = _permissionDal.setSystemAdminRole(newUser.getUserId());
@@ -80,8 +80,8 @@ public class UserBllImpl implements UserBll
     public UserOuterClass.User createStandardUser(UserOuterClass.User newUser) throws Exception
     {
         UserOuterClass.User updatedUser = createUser(newUser, true);
-        _organizationDal.addUserToCompany(updatedUser.getUserId(), updatedUser.getOrganizationId());
-        LOG.info("New standard user added to companyId {}", updatedUser.getOrganizationId());
+        _organizationDal.addUserToOrganization(updatedUser.getUserId(), updatedUser.getOrganizationId());
+        LOG.info("New standard user added to orgnizationId {}", updatedUser.getOrganizationId());
         return updatedUser;
     }
 

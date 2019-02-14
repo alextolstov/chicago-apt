@@ -39,14 +39,12 @@ public class OrganizationDalImpl implements OrganizationDal
             entityId = organizationId;
         } else
         {
-            if (organization.getType() == OrganizationOuterClass.OrganizationType.COMPANY)
+            if (organization.getParentOrganizationId() == null)
             {
-                entityId = UUID.fromString(organization.getParentOrganizationId());
-            } else if (organization.getType() == OrganizationOuterClass.OrganizationType.BRANCH)
-            {
-                entityId = getTopLevelOrganizationId(organization.getParentOrganizationId());
+                throw new Exception("Parent Id can not be null");
             }
             parentId = UUID.fromString(organization.getParentOrganizationId());
+            entityId = getTopLevelOrganizationId(organization.getParentOrganizationId());
         }
 
         Statement query = QueryBuilder.insertInto(KEYSPACE, ORGANIZATIONS_TABLE)
@@ -105,7 +103,7 @@ public class OrganizationDalImpl implements OrganizationDal
     }
 
     @Override
-    public void addUserToCompany(String userId, String organizationId)
+    public void addUserToOrganization(String userId, String organizationId)
     {
         Statement query = QueryBuilder.update(KEYSPACE, ORGANIZATIONS_TABLE)
                 .with(QueryBuilder.add("users", UUID.fromString(userId)))

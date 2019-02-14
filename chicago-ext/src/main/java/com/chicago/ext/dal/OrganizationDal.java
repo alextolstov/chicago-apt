@@ -10,7 +10,7 @@ public interface OrganizationDal
 
     OrganizationOuterClass.Organization getOrganization(String organizationId) throws Exception;
 
-    void addUserToCompany(String userId, String organizationId);
+    void addUserToOrganization(String userId, String organizationId);
 
     OrganizationOuterClass.OrganizationInfo getOrganizationStructure(String organizationId) throws Exception;
 }
