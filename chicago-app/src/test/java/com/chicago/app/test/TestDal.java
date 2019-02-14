@@ -33,6 +33,51 @@ public class TestDal
             new ClassPathCQLDataSet("cassandra_schema.cql", true, true));
 
     @Test
+    public void setCompany()
+    {
+        ServiceLocator serviceLocator = ServiceLocatorFactory.getInstance().create("servicelocator");
+        TestCassandraConnector ts = new TestCassandraConnector(cassandraCQLUnit);
+        ServiceLocatorUtilities.bind(serviceLocator, new TestApplicationBinder(ts));
+        UserBll userbll = serviceLocator.getService(UserBll.class);
+        UserOuterClass.User newuser = UserOuterClass.User.newBuilder()
+                .setFirstName("Aleksey")
+                .setLastName("Telyshev")
+                .setEmail("atelyshev@gmail.com")
+                .setPassword("12345678")
+                .setCellPhone("+19089061234")
+                .build();
+        try
+        {
+            newuser = userbll.createAdminUser(newuser);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        OrganizationBll organizationbll = serviceLocator.getService(OrganizationBll.class);
+        try
+        {
+            OrganizationOuterClass.OrganizationInfo orgInfo = organizationbll.getOrganizationStructure(newuser.getUserId());
+            OrganizationOuterClass.Organization org = OrganizationOuterClass.Organization.newBuilder()
+                    .setParentOrganizationId(newuser.getOrganizationId())
+                    .setName("Aleksey branch")
+                    .build();
+            org = organizationbll.createOrganization(org);
+
+            org = OrganizationOuterClass.Organization.newBuilder()
+                    .setParentOrganizationId(orgInfo.getOrganizationId())
+                    .setName("Aleksey company")
+                    .build();
+            org = organizationbll.createOrganization(org);
+
+            orgInfo = organizationbll.getOrganizationStructure(newuser.getUserId());
+            System.out.print("!");
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void setItem()
     {
         ServiceLocator serviceLocator = ServiceLocatorFactory.getInstance().create("servicelocator");

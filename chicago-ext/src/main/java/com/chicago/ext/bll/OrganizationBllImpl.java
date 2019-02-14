@@ -19,16 +19,28 @@ public class OrganizationBllImpl implements OrganizationBll
     @Override
     public OrganizationOuterClass.Organization createOrganization(OrganizationOuterClass.Organization organization) throws Exception
     {
-        // Holding always created at account creation
-        // Should not be created second time
-        if (organization.getType() == OrganizationOuterClass.OrganizationType.HOLDING)
-        {
-            throw new Exception("Holding already exists.");
-        }
         if (organization.getParentOrganizationId() == null)
         {
             throw new Exception("Parent organization should be provided.");
         }
+        OrganizationOuterClass.Organization org = _organizationDal.getOrganization(organization.getParentOrganizationId());
+        OrganizationOuterClass.OrganizationType orgType = OrganizationOuterClass.OrganizationType.HOLDING;
+
+        switch (org.getType())
+        {
+            case HOLDING:
+                orgType = OrganizationOuterClass.OrganizationType.COMPANY;
+                break;
+            case COMPANY:
+                orgType = OrganizationOuterClass.OrganizationType.BRANCH;
+                break;
+            case BRANCH:
+                throw new Exception("Can not add child into branch");
+        }
+        organization = OrganizationOuterClass.Organization.newBuilder(organization)
+                .setType(orgType)
+                .build();
+
         String organizationId = _organizationDal.createOrganization(organization);
         return OrganizationOuterClass.Organization.newBuilder(organization)
                 .setOrganizationId(organizationId)
