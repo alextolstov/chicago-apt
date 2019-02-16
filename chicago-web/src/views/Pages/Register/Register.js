@@ -27,8 +27,8 @@ const messages = defineMessages({
 });
 
 
-const user_proto = require('models/user_pb');
-const usermessages_proto = require('models/usermessages_pb.js');
+const user_proto = require('dto/user_pb');
+const usermessages_proto = require('dto/usermessages_pb.js');
 
 class Register extends Component {
   constructor(props) {

@@ -10,7 +10,7 @@ import FormApi from '../../../api/FormApi';
 import DateTimeApi from "../../../api/DateTimeApi";
 import AddressApi from "../../../api/AddressApi";
 
-const address_proto = require('models/address_pb');
+const address_proto = require('dto/address_pb');
 
 const messages = defineMessages({
   streetPlace: {

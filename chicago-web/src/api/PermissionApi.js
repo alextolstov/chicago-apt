@@ -1,10 +1,10 @@
 import FetchApi from './FetchApi'
 import _ from 'lodash';
 
-const permission_proto = require('models/permission_pb.js');
-const permissionmessages_proto = require('models/permissionmessages_pb.js');
-const user_proto = require('models/user_pb');
-const usermessages_proto = require('models/usermessages_pb.js');
+const permission_proto = require('dto/permission_pb.js');
+const permissionmessages_proto = require('dto/permissionmessages_pb.js');
+const user_proto = require('dto/user_pb');
+const usermessages_proto = require('dto/usermessages_pb.js');
 
 export default class PermissionApi {
   constructor(){

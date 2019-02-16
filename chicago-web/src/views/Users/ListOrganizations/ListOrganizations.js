@@ -14,7 +14,7 @@ import OrganizationApi from '../../../api/OrganizationApi';
 import Spinner from "../../Spinner/Spinner";
 
 
-const organization_proto = require('models/organization_pb');
+const organization_proto = require('dto/organization_pb');
 
 
 const jspb = require('google-protobuf');

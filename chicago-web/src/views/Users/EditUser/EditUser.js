@@ -32,7 +32,7 @@ import {country} from "../../../index";
 import Spinner from '../../Spinner/Spinner';
 
 const jspb = require('google-protobuf');
-const user_proto = require('models/user_pb');
+const user_proto = require('dto/user_pb');
 
 const messages = defineMessages({
   passwordPlace: {

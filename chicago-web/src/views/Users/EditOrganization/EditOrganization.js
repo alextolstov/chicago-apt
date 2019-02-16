@@ -28,7 +28,7 @@ import PermissionForm from '../../Forms/PermissionForm/PermissionForm';
 import OrganizationForm from '../../Forms/OrganizationForm/OrganizationForm';
 import {ToastContainer, toast} from 'react-toastify';
 const jspb=require('google-protobuf');
-const organization_proto = require('models/organization_pb');
+const organization_proto = require('dto/organization_pb');
 
 
 

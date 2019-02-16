@@ -1,7 +1,7 @@
 import FetchApi from './FetchApi'
 
-const position_proto = require('models/position_pb.js');
-const positionmessages_proto = require('models/positionmessages_pb.js');
+const position_proto = require('dto/position_pb.js');
+const positionmessages_proto = require('dto/positionmessages_pb.js');
 
 export default class PositionApi {
   constructor(){

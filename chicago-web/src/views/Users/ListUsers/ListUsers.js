@@ -11,7 +11,7 @@ import {toast} from 'react-toastify';
 import PersonNameLocalizeApi from '../../../api/PersonNameLocalizeApi'
 import Spinner from "../../Spinner/Spinner";
 
-const user_proto = require('models/user_pb');
+const user_proto = require('dto/user_pb');
 
 class ListUsers extends Component {
   constructor(props) {

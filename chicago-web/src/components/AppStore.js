@@ -1,5 +1,5 @@
 import {extendObservable} from 'mobx'
-const user_proto = require('models/user_pb');
+const user_proto = require('dto/user_pb');
 
 class AppStore {
   constructor() {

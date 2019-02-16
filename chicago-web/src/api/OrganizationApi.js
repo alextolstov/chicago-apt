@@ -1,7 +1,7 @@
 import FetchApi from './FetchApi'
 
-const organization_proto = require('models/organization_pb.js');
-const organizationmessages_proto = require('models/organizationmessages_pb.js');
+const organization_proto = require('dto/organization_pb.js');
+const organizationmessages_proto = require('dto/organizationmessages_pb.js');
 
 export default class OrganizationApi {
   constructor(){
