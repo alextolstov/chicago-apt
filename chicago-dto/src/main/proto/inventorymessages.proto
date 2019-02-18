@@ -43,20 +43,38 @@ message InventoryItemCategoriesResponse
     TransactionError transaction_error = 2;
 }
 
-message InventoryItemMeasurementRequest
+message InventoryItemUnitRequest
 {
     CrudOperation crud_operation = 1;
-    InventoryItemMeasurement item_measurement = 2;
+    InventoryItemUnit item_unit = 2;
 }
 
-message InventoryItemMeasurementResponse
+message InventoryItemUnitResponse
 {
-    InventoryItemMeasurement item_measurement = 1;
+    InventoryItemUnit item_unit = 1;
     TransactionError transaction_error = 2;
 }
 
-message InventoryItemMeasurementsResponse
+message InventoryItemUnitsResponse
 {
-    InventoryItemMeasurements item_measurements = 1;
+    InventoryItemUnits item_units = 1;
+    TransactionError transaction_error = 2;
+}
+
+message InventoryItemSupplierRequest
+{
+    CrudOperation crud_operation = 1;
+    InventoryItemSupplier item_supplier = 2;
+}
+
+message InventoryItemSupplierResponse
+{
+    InventoryItemSupplier item_supplier = 1;
+    TransactionError transaction_error = 2;
+}
+
+message InventoryItemSuppliersResponse
+{
+    InventoryItemSuppliers item_suppliers = 1;
     TransactionError transaction_error = 2;
 }

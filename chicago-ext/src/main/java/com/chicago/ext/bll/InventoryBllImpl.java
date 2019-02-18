@@ -63,24 +63,48 @@ public class InventoryBllImpl implements InventoryBll
     }
 
     // Measurements
-    public Inventory.InventoryItemMeasurement createItemMeasurement(Inventory.InventoryItemMeasurement measurement)
+    public Inventory.InventoryItemUnit createItemUnit(Inventory.InventoryItemUnit unit)
     {
-        return _inventoryDal.createItemMeasurement(measurement);
+        return _inventoryDal.createItemUnit(unit);
     }
 
-    public void updateItemMeasurement(Inventory.InventoryItemMeasurement measurement)
+    public void updateItemUnit(Inventory.InventoryItemUnit unit)
     {
-        _inventoryDal.updateItemMeasurement(measurement);
+        _inventoryDal.updateItemUnit(unit);
     }
 
-    public Inventory.InventoryItemMeasurements getItemMeasurements(String entityId)
+    public Inventory.InventoryItemUnits getItemUnits(String entityId)
     {
-        Map<UUID, String> result = _inventoryDal.getItemMeasurements(entityId);
+        Map<UUID, String> result = _inventoryDal.getItemUnits(entityId);
         Map<String, String> newResult = result.entrySet().stream()
                 .collect(Collectors.toMap(entry -> entry.getKey().toString(), Map.Entry::getValue));
-        return Inventory.InventoryItemMeasurements.newBuilder()
+        return Inventory.InventoryItemUnits.newBuilder()
                 .setEntityId(entityId)
-                .putAllMeasurements(newResult)
+                .putAllUnits(newResult)
+                .build();
+    }
+
+    @Override
+    public Inventory.InventoryItemSupplier createItemUnitSupplier(Inventory.InventoryItemSupplier supplier)
+    {
+        return _inventoryDal.createItemUnitSupplier(supplier);
+    }
+
+    @Override
+    public void updateItemSupplier(Inventory.InventoryItemSupplier supplier)
+    {
+        _inventoryDal.updateItemSupplier(supplier);
+    }
+
+    @Override
+    public Inventory.InventoryItemSuppliers getItemSuppliers(String entityId)
+    {
+        Map<UUID, String> result = _inventoryDal.getItemSuppliers(entityId);
+        Map<String, String> newResult = result.entrySet().stream()
+                .collect(Collectors.toMap(entry -> entry.getKey().toString(), Map.Entry::getValue));
+        return Inventory.InventoryItemSuppliers.newBuilder()
+                .setEntityId(entityId)
+                .putAllSuppliers(newResult)
                 .build();
     }
 }

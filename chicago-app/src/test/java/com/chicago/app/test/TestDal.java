@@ -78,7 +78,7 @@ public class TestDal
     }
 
     @Test
-    public void setItem()
+    public void testInventoryItems()
     {
         ServiceLocator serviceLocator = ServiceLocatorFactory.getInstance().create("servicelocator");
         TestCassandraConnector ts = new TestCassandraConnector(cassandraCQLUnit);

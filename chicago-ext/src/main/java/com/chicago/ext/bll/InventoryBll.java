@@ -20,12 +20,20 @@ public interface InventoryBll
 
     Inventory.InventoryItemCategories getItemCategories(String entityId);
 
-    // Measurements
-    Inventory.InventoryItemMeasurement createItemMeasurement(Inventory.InventoryItemMeasurement measurement);
+    // Units
+    Inventory.InventoryItemUnit createItemUnit(Inventory.InventoryItemUnit unit);
 
-    void updateItemMeasurement(Inventory.InventoryItemMeasurement measurement);
+    void updateItemUnit(Inventory.InventoryItemUnit unit);
 
-    Inventory.InventoryItemMeasurements getItemMeasurements(String entityId);
+    Inventory.InventoryItemUnits getItemUnits(String entityId);
+
+    // Suppliers
+    Inventory.InventoryItemSupplier createItemUnitSupplier(Inventory.InventoryItemSupplier supplier);
+
+    void updateItemSupplier(Inventory.InventoryItemSupplier supplier);
+
+    Inventory.InventoryItemSuppliers getItemSuppliers(String entityId);
+
 }
 
 

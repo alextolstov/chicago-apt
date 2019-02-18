@@ -51,12 +51,31 @@ message InventoryItem
 {
     string entity_id = 1;
     string item_id = 2;
-    string location_id = 3;
-    int32 item_quantity = 4;
-    float item_amount = 5;
-    string item_name = 6;
-    bytes item_image = 7;
-    string description = 8;
+    string item_category_id = 3;
+    string item_brand_id = 4;
+    string item_unit_id = 5;
+    string item_supplier_id = 6;
+    string description = 7;
+    float weight_net = 8;
+    float weight_gross = 9;
+    float package_weight = 10;
+    int32 quantity_per_pack = 11;
+    int32 inbound_quantity = 12;
+    string inbound_unit_id = 13;
+    int32 outbound_quantity = 14;
+    string outbound_unit_id = 15;
+    string location_id = 16;
+
+    string ean13 = 17;
+    string vendor_code = 18;
+    bool discontinued = 19;
+    bytes image = 20;
+    string certificate = 21;
+    string notes = 22;
+    float vendor_price = 23;
+    float special_price = 24;
+    float retail_price = 25;
+    int64 create_datetime = 26;
 }
 
 message InventoryItemCategory
@@ -85,15 +104,28 @@ message InventoryItemBrands
     map<string, string> brands = 2;
 }
 
-message InventoryItemMeasurement
+message InventoryItemUnit
 {
     string entity_id = 1;
-    string measurement_name = 2;
-    string measurement_id = 3;
+    string unit_name = 2;
+    string unit_id = 3;
 }
 
-message InventoryItemMeasurements
+message InventoryItemUnits
 {
     string entity_id = 1;
-    map<string, string> measurements = 2;
+    map<string, string> units = 2;
+}
+
+message InventoryItemSupplier
+{
+    string entity_id = 1;
+    string supplier_name = 2;
+    string supplier_id = 3;
+}
+
+message InventoryItemSuppliers
+{
+    string entity_id = 1;
+    map<string, string> suppliers = 2;
 }

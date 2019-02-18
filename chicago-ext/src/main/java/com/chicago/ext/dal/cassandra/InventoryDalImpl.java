@@ -19,7 +19,7 @@ import java.util.UUID;
 
 import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_BRANDS_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_CATEGORIES_TABLE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_MEASUREMENTS_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_UNITS_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.KEYSPACE;
 
 public class InventoryDalImpl implements InventoryDal
@@ -138,33 +138,33 @@ public class InventoryDalImpl implements InventoryDal
     }
 
     @Override
-    public Inventory.InventoryItemMeasurement createItemMeasurement(Inventory.InventoryItemMeasurement measurement)
+    public Inventory.InventoryItemUnit createItemUnit(Inventory.InventoryItemUnit unit)
     {
         UUID newId = UUIDs.random();
-        Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_ITEM_MEASUREMENTS_TABLE)
-                .where(QueryBuilder.eq("entity_id", UUID.fromString(measurement.getEntityId())))
-                .with(QueryBuilder.put("measurements", newId, measurement.getMeasurementName()));
+        Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_ITEM_UNITS_TABLE)
+                .where(QueryBuilder.eq("entity_id", UUID.fromString(unit.getEntityId())))
+                .with(QueryBuilder.put("measurements", newId, unit.getUnitName()));
         _cassandraConnector.getSession().execute(query);
 
-        return Inventory.InventoryItemMeasurement.newBuilder(measurement)
-                .setMeasurementId(newId.toString())
+        return Inventory.InventoryItemUnit.newBuilder(unit)
+                .setUnitId(newId.toString())
                 .build();
     }
 
     @Override
-    public void updateItemMeasurement(Inventory.InventoryItemMeasurement measurement)
+    public void updateItemUnit(Inventory.InventoryItemUnit unit)
     {
-        Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_ITEM_MEASUREMENTS_TABLE)
-                .where(QueryBuilder.eq("entity_id", UUID.fromString(measurement.getEntityId())))
-                .with(QueryBuilder.put("measurements", UUID.fromString(measurement.getMeasurementId()), measurement.getMeasurementName()));
+        Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_ITEM_UNITS_TABLE)
+                .where(QueryBuilder.eq("entity_id", UUID.fromString(unit.getEntityId())))
+                .with(QueryBuilder.put("unit", UUID.fromString(unit.getUnitId()), unit.getUnitName()));
 
         _cassandraConnector.getSession().execute(query);
     }
 
     @Override
-    public Map<UUID, String> getItemMeasurements(String entityId)
+    public Map<UUID, String> getItemUnits(String entityId)
     {
-        return getItems(entityId, INVENTORY_ITEM_MEASUREMENTS_TABLE, "measurements");
+        return getItems(entityId, INVENTORY_ITEM_UNITS_TABLE, "units");
     }
 
     private Map<UUID, String> getItems(String entityId, String tableName, String columnName)
@@ -180,5 +180,23 @@ public class InventoryDalImpl implements InventoryDal
         }
 
         return row.getMap(columnName, UUID.class, String.class);
+    }
+
+    @Override
+    public Inventory.InventoryItemSupplier createItemUnitSupplier(Inventory.InventoryItemSupplier supplier)
+    {
+        return null;
+    }
+
+    @Override
+    public void updateItemSupplier(Inventory.InventoryItemSupplier supplier)
+    {
+
+    }
+
+    @Override
+    public Map<UUID, String> getItemSuppliers(String entityId)
+    {
+        return null;
     }
 }

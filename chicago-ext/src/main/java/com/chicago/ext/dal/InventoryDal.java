@@ -38,10 +38,17 @@ public interface InventoryDal
 
     Map<UUID, String> getItemCategories(String entityId);
 
-    // Measurements
-    Inventory.InventoryItemMeasurement createItemMeasurement(Inventory.InventoryItemMeasurement measurement);
+    // Units
+    Inventory.InventoryItemUnit createItemUnit(Inventory.InventoryItemUnit unit);
 
-    void updateItemMeasurement(Inventory.InventoryItemMeasurement measurement);
+    void updateItemUnit(Inventory.InventoryItemUnit unit);
 
-    Map<UUID, String> getItemMeasurements(String entityId);
+    Map<UUID, String> getItemUnits(String entityId);
+
+    // Suppliers
+    Inventory.InventoryItemSupplier createItemUnitSupplier(Inventory.InventoryItemSupplier supplier);
+
+    void updateItemSupplier(Inventory.InventoryItemSupplier supplier);
+
+    Map<UUID, String> getItemSuppliers(String entityId);
 }

@@ -16,5 +16,6 @@ public class CassandraConstants
     public static final String INVENTORIES_TABLE = "Inventories";
     public static final String INVENTORY_ITEM_CATEGORIES_TABLE = "InventoryItemCategories";
     public static final String INVENTORY_ITEM_BRANDS_TABLE = "InventoryItemBrands";
-    public static final String INVENTORY_ITEM_MEASUREMENTS_TABLE = "InventoryItemCategories";
+    public static final String INVENTORY_ITEM_UNITS_TABLE = "InventoryItemUnits";
+    public static final String INVENTORY_ITEM_SUPPLIERS_TABLE = "InventoryItemSuppliers";
 }
