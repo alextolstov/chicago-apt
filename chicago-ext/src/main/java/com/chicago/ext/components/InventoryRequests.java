@@ -11,7 +11,6 @@ import com.chicago.dto.Common;
 import com.chicago.dto.Inventory;
 import com.chicago.dto.Inventorymessages;
 import com.chicago.dto.PositionOuterClass;
-import com.chicago.dto.Positionmessages;
 import com.chicago.dto.Usermessages;
 import com.chicago.ext.bll.InventoryBll;
 import com.chicago.ext.util.ResponseFactoryUtil;
@@ -21,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class InventoryRequests extends AbstractComponent
 {
@@ -33,10 +33,15 @@ public class InventoryRequests extends AbstractComponent
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
         _ed.registerHandler(Inventorymessages.InventoryItemBrandRequest.class, new InventoryItemBrandEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemCategoryRequest.class, new InventoryItemCategoryEventHandler());
+        _ed.registerHandler(Inventorymessages.InventoryItemSupplierRequest.class, new InventoryItemSupplierEventHandler());
         // Response
         KafkaMessageProducer producer = cm.getResource(KafkaMessageProducer.class.getName());
         _ed.registerHandler(Inventorymessages.InventoryItemBrandResponse.class, producer.new MessageEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemBrandsResponse.class, producer.new MessageEventHandler());
+        _ed.registerHandler(Inventorymessages.InventoryItemUnitResponse.class, producer.new MessageEventHandler());
+        _ed.registerHandler(Inventorymessages.InventoryItemUnitsResponse.class, producer.new MessageEventHandler());
+        _ed.registerHandler(Inventorymessages.InventoryItemSupplierResponse.class, producer.new MessageEventHandler());
+        _ed.registerHandler(Inventorymessages.InventoryItemSuppliersResponse.class, producer.new MessageEventHandler());
     }
 
     public boolean init(ConfigAccessor ca)
@@ -59,6 +64,7 @@ public class InventoryRequests extends AbstractComponent
             try
             {
                 Message dataMsg = null;
+                List<Inventory.InventoryItemBrand> brands = null;
 
                 switch (event.getCrudOperation())
                 {
@@ -75,7 +81,7 @@ public class InventoryRequests extends AbstractComponent
                     }
                     case READ: // On read return all brands
                     {
-                        dataMsg = _inventoryBll.getItemBrands(event.getItemBrand().getEntityId());
+                        brands = _inventoryBll.getItemBrands(event.getItemBrand().getEntityId());
                         break;
                     }
                 }
@@ -84,7 +90,7 @@ public class InventoryRequests extends AbstractComponent
                 {
                     response = Inventorymessages.InventoryItemBrandsResponse
                             .newBuilder()
-                            .setItemBrands((Inventory.InventoryItemBrands) dataMsg)
+                            .addAllItemBrands(brands)
                             .build();
                 } else
                 {
@@ -111,6 +117,7 @@ public class InventoryRequests extends AbstractComponent
             try
             {
                 Message dataMsg = null;
+                List<Inventory.InventoryItemCategory> categories = null;
 
                 switch (event.getCrudOperation())
                 {
@@ -127,7 +134,7 @@ public class InventoryRequests extends AbstractComponent
                     }
                     case READ: // On read return all brands
                     {
-                        dataMsg = _inventoryBll.getItemCategories(event.getItemCategory().getEntityId());
+                        categories = _inventoryBll.getItemCategories(event.getItemCategory().getEntityId());
                         break;
                     }
                 }
@@ -136,7 +143,7 @@ public class InventoryRequests extends AbstractComponent
                 {
                     response = Inventorymessages.InventoryItemCategoriesResponse
                             .newBuilder()
-                            .setItemCategories((Inventory.InventoryItemCategories) dataMsg)
+                            .addAllItemCategories(categories)
                             .build();
                 } else
                 {
@@ -148,6 +155,59 @@ public class InventoryRequests extends AbstractComponent
             } catch (Exception ex)
             {
                 response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
+            }
+            _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
+            LOG.info("Published real-time response on request with transaction id: {}", transactionId);
+        }
+    }
+
+    class InventoryItemSupplierEventHandler implements EventHandler<Inventorymessages.InventoryItemSupplierRequest>
+    {
+        @Override
+        public void handleEvent(Inventorymessages.InventoryItemSupplierRequest event, String transactionId)
+        {
+            Message response;
+            try
+            {
+                Message dataMsg = null;
+                List<Inventory.InventoryItemSupplier> suppliers = null;
+
+                switch (event.getCrudOperation())
+                {
+                    case CREATE:
+                    {
+                        dataMsg = _inventoryBll.createItemSupplier(event.getItemSupplier());
+                        break;
+                    }
+                    case UPDATE:
+                    {
+                        _inventoryBll.updateItemSupplier(event.getItemSupplier());
+                        dataMsg = PositionOuterClass.Position.getDefaultInstance();
+                        break;
+                    }
+                    case READ: // On read return all brands
+                    {
+                        suppliers = _inventoryBll.getItemSuppliers(event.getItemSupplier().getEntityId());
+                        break;
+                    }
+                }
+
+                if (event.getCrudOperation() == Common.CrudOperation.READ)
+                {
+                    response = Inventorymessages.InventoryItemSuppliersResponse
+                            .newBuilder()
+                            .addAllItemSuppliers(suppliers)
+                            .build();
+                } else
+                {
+                    response = Inventorymessages.InventoryItemBrandResponse
+                            .newBuilder()
+                            .setItemBrand((Inventory.InventoryItemBrand) dataMsg)
+                            .build();
+                }
+            } catch (Exception ex)
+            {
+                response = ResponseFactoryUtil.createErrorResponse(ex, Usermessages.UserResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
             LOG.info("Published real-time response on request with transaction id: {}", transactionId);

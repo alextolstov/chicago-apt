@@ -3,19 +3,27 @@ package com.chicago.ext.dal;
 import com.chicago.dto.Inventory;
 import com.chicago.dto.OrganizationOuterClass;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public interface InventoryDal
 {
+    // Inventory
     String createInventory(String organizationId) throws Exception;
 
     void updateInventory(OrganizationOuterClass.Organization organization);
 
-    Inventory.InventoryItem createInventoryItem(Inventory.InventoryItem inventoryItem);
+    // Item
+    String createInventoryItem(Inventory.InventoryItem inventoryItem);
 
     void updateInventoryItem(Inventory.InventoryItem inventoryItem);
 
+    Inventory.InventoryItem getInventoryItem(String itemId) throws Exception;
+
+    List<Inventory.InventoryItem> getInventoryItems(String entityId) throws Exception;
+
+    // Operations
     void applyInventoryOperation(Inventory.InventoryOperation inventoryOperation);
 
     void startInventoryTransfer(Inventory.InventoryTransfer inventoryTransfer);
@@ -46,7 +54,7 @@ public interface InventoryDal
     Map<UUID, String> getItemUnits(String entityId);
 
     // Suppliers
-    Inventory.InventoryItemSupplier createItemUnitSupplier(Inventory.InventoryItemSupplier supplier);
+    Inventory.InventoryItemSupplier createItemSupplier(Inventory.InventoryItemSupplier supplier);
 
     void updateItemSupplier(Inventory.InventoryItemSupplier supplier);
 

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -19,75 +20,76 @@ public class InventoryBllImpl implements InventoryBll
     InventoryDal _inventoryDal;
 
     // Brands
+    @Override
     public Inventory.InventoryItemBrand createItemBrand(Inventory.InventoryItemBrand brand)
     {
         return _inventoryDal.createItemBrand(brand);
     }
 
+    @Override
     public void updateItemBrand(Inventory.InventoryItemBrand brand)
     {
         _inventoryDal.updateItemBrand(brand);
     }
 
-    public Inventory.InventoryItemBrands getItemBrands(String entityId)
+    @Override
+    public List<Inventory.InventoryItemBrand> getItemBrands(String entityId)
     {
         Map<UUID, String> result = _inventoryDal.getItemBrands(entityId);
-        Map<String, String> newResult = result.entrySet().stream()
-                .collect(Collectors.toMap(entry -> entry.getKey().toString(), Map.Entry::getValue));
-        return Inventory.InventoryItemBrands.newBuilder()
-                .setEntityId(entityId)
-                .putAllBrands(newResult)
-                .build();
+
+        List<Inventory.InventoryItemBrand> newResult = result.entrySet().stream().map(e -> Inventory.InventoryItemBrand.newBuilder()
+                .setBrandId(e.getKey().toString()).setBrandName(e.getValue()).build()).collect(Collectors.toList());
+        return newResult;
     }
 
     // Categories
+    @Override
     public Inventory.InventoryItemCategory createItemCategory(Inventory.InventoryItemCategory category)
     {
         return _inventoryDal.createItemCategory(category);
     }
 
+    @Override
     public void updateItemCategory(Inventory.InventoryItemCategory category)
     {
         _inventoryDal.updateItemCategory(category);
     }
 
-    public Inventory.InventoryItemCategories getItemCategories(String entityId)
+    @Override
+    public List<Inventory.InventoryItemCategory> getItemCategories(String entityId)
     {
         Map<UUID, String> result = _inventoryDal.getItemCategories(entityId);
-        Map<String, String> newResult = result.entrySet().stream()
-                .collect(Collectors.toMap(entry -> entry.getKey().toString(), Map.Entry::getValue));
-        return Inventory.InventoryItemCategories.newBuilder()
-                .setEntityId(entityId)
-                .putAllCategories(newResult)
-                .build();
+        List<Inventory.InventoryItemCategory> newResult = result.entrySet().stream().map(e -> Inventory.InventoryItemCategory.newBuilder()
+                .setCategoryId(e.getKey().toString()).setCategoryName(e.getValue()).build()).collect(Collectors.toList());
+        return newResult;
     }
 
-    // Measurements
+    // Units
+    @Override
     public Inventory.InventoryItemUnit createItemUnit(Inventory.InventoryItemUnit unit)
     {
         return _inventoryDal.createItemUnit(unit);
     }
 
+    @Override
     public void updateItemUnit(Inventory.InventoryItemUnit unit)
     {
         _inventoryDal.updateItemUnit(unit);
     }
 
-    public Inventory.InventoryItemUnits getItemUnits(String entityId)
+    @Override
+    public List<Inventory.InventoryItemUnit> getItemUnits(String entityId)
     {
         Map<UUID, String> result = _inventoryDal.getItemUnits(entityId);
-        Map<String, String> newResult = result.entrySet().stream()
-                .collect(Collectors.toMap(entry -> entry.getKey().toString(), Map.Entry::getValue));
-        return Inventory.InventoryItemUnits.newBuilder()
-                .setEntityId(entityId)
-                .putAllUnits(newResult)
-                .build();
+        List<Inventory.InventoryItemUnit> newResult = result.entrySet().stream().map(e -> Inventory.InventoryItemUnit.newBuilder()
+                .setUnitId(e.getKey().toString()).setUnitName(e.getValue()).build()).collect(Collectors.toList());
+        return newResult;
     }
 
     @Override
-    public Inventory.InventoryItemSupplier createItemUnitSupplier(Inventory.InventoryItemSupplier supplier)
+    public Inventory.InventoryItemSupplier createItemSupplier(Inventory.InventoryItemSupplier supplier)
     {
-        return _inventoryDal.createItemUnitSupplier(supplier);
+        return _inventoryDal.createItemSupplier(supplier);
     }
 
     @Override
@@ -97,15 +99,36 @@ public class InventoryBllImpl implements InventoryBll
     }
 
     @Override
-    public Inventory.InventoryItemSuppliers getItemSuppliers(String entityId)
+    public List<Inventory.InventoryItemSupplier> getItemSuppliers(String entityId)
     {
         Map<UUID, String> result = _inventoryDal.getItemSuppliers(entityId);
-        Map<String, String> newResult = result.entrySet().stream()
-                .collect(Collectors.toMap(entry -> entry.getKey().toString(), Map.Entry::getValue));
-        return Inventory.InventoryItemSuppliers.newBuilder()
-                .setEntityId(entityId)
-                .putAllSuppliers(newResult)
-                .build();
+        List<Inventory.InventoryItemSupplier> newResult = result.entrySet().stream().map(e -> Inventory.InventoryItemSupplier.newBuilder()
+                .setSupplierId(e.getKey().toString()).setSupplierName(e.getValue()).build()).collect(Collectors.toList());
+        return newResult;
+    }
+
+    @Override
+    public Inventory.InventoryItem createInventoryItem(Inventory.InventoryItem item)
+    {
+        return null;
+    }
+
+    @Override
+    public void updateInventoryItem(Inventory.InventoryItem item)
+    {
+
+    }
+
+    @Override
+    public Inventory.InventoryItem getInventoryItem(String itemId)
+    {
+        return null;
+    }
+
+    @Override
+    public List<Inventory.InventoryItem> getInventoryItems(String entityId)
+    {
+        return null;
     }
 }
 

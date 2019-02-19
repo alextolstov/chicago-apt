@@ -291,11 +291,11 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemBrands (
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemUnits (
     entity_id uuid PRIMARY KEY,
-    unit map<uuid, varchar>); -- unit_id - measurement name
+    units map<uuid, varchar>); -- unit_id - measurement name
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemSupplier(
     entity_id uuid PRIMARY KEY,
-    supplier map<uuid, varchar>); -- unit_id - measurement name
+    suppliers map<uuid, varchar>); -- unit_id - measurement name
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemsCatalog (
     item_id uuid PRIMARY KEY,

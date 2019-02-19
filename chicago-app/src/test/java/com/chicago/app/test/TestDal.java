@@ -95,7 +95,7 @@ public class TestDal
                 .setBrandName("Gillet")
                 .build();
         inventory.updateItemBrand(updatedBrand);
-        Inventory.InventoryItemBrands brands = inventory.getItemBrands("9df37802-95a9-425e-be0f-00f45b2a6c4a");
+        List<Inventory.InventoryItemBrand> brands = inventory.getItemBrands("9df37802-95a9-425e-be0f-00f45b2a6c4a");
 
         Inventory.InventoryItemCategory category = Inventory.InventoryItemCategory.newBuilder()
                 .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
@@ -113,7 +113,7 @@ public class TestDal
                 .setCategoryName("Soap")
                 .build();
         inventory.updateItemCategory(updatedCategory);
-        Inventory.InventoryItemCategories categories = inventory.getItemCategories("9df37802-95a9-425e-be0f-00f45b2a6c4a");
+        List<Inventory.InventoryItemCategory> categories = inventory.getItemCategories("9df37802-95a9-425e-be0f-00f45b2a6c4a");
     }
 
     @Test
