@@ -41,7 +41,7 @@ public interface InventoryBll
 
     void updateInventoryItem(Inventory.InventoryItem item);
 
-    Inventory.InventoryItem getInventoryItem(String itemId);
+    Inventory.InventoryItem getInventoryItem(String itemId) throws Exception;
 
-    List<Inventory.InventoryItem> getInventoryItems(String entityId);
+    List<Inventory.InventoryItem> getInventoryItems(String entityId) throws Exception;
 }

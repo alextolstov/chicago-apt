@@ -110,25 +110,28 @@ public class InventoryBllImpl implements InventoryBll
     @Override
     public Inventory.InventoryItem createInventoryItem(Inventory.InventoryItem item)
     {
-        return null;
+        String itemId = _inventoryDal.createInventoryItem(item);
+        Inventory.InventoryItem newItem = Inventory.InventoryItem.newBuilder(item)
+                .setItemId(itemId).build();
+        return newItem;
     }
 
     @Override
     public void updateInventoryItem(Inventory.InventoryItem item)
     {
-
+        _inventoryDal.updateInventoryItem(item);
     }
 
     @Override
-    public Inventory.InventoryItem getInventoryItem(String itemId)
+    public Inventory.InventoryItem getInventoryItem(String itemId) throws Exception
     {
-        return null;
+        return _inventoryDal.getInventoryItem(itemId);
     }
 
     @Override
-    public List<Inventory.InventoryItem> getInventoryItems(String entityId)
+    public List<Inventory.InventoryItem> getInventoryItems(String entityId) throws Exception
     {
-        return null;
+        return _inventoryDal.getInventoryItems(entityId);
     }
 }
 

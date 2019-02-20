@@ -10,7 +10,6 @@ import com.chicago.common.core.EventHandler;
 import com.chicago.dto.Common;
 import com.chicago.dto.Inventory;
 import com.chicago.dto.Inventorymessages;
-import com.chicago.dto.Usermessages;
 import com.chicago.ext.bll.InventoryBll;
 import com.chicago.ext.util.ResponseFactoryUtil;
 import com.google.protobuf.Message;
@@ -30,12 +29,15 @@ public class InventoryRequests extends AbstractComponent
     public InventoryRequests(ComponentManager cm) throws ClassNotFoundException
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
+        _ed.registerHandler(Inventorymessages.InventoryItemRequest.class, new InventoryItemEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemCategoryRequest.class, new InventoryItemCategoryEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemBrandRequest.class, new InventoryItemBrandEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemUnitRequest.class, new InventoryItemUnitEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemSupplierRequest.class, new InventoryItemSupplierEventHandler());
         // Response
         KafkaMessageProducer producer = cm.getResource(KafkaMessageProducer.class.getName());
+        _ed.registerHandler(Inventorymessages.InventoryItemResponse.class, producer.new MessageEventHandler());
+        _ed.registerHandler(Inventorymessages.InventoryItemsResponse.class, producer.new MessageEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemCategoryResponse.class, producer.new MessageEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemCategoriesResponse.class, producer.new MessageEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemBrandResponse.class, producer.new MessageEventHandler());
@@ -55,6 +57,59 @@ public class InventoryRequests extends AbstractComponent
     public static void registerComponentFactories()
     {
         ComponentManager.registerComponentFactory(new Exception().getStackTrace()[0].getClassName());
+    }
+
+    class InventoryItemEventHandler implements EventHandler<Inventorymessages.InventoryItemRequest>
+    {
+        @Override
+        public void handleEvent(Inventorymessages.InventoryItemRequest event, String transactionId)
+        {
+            Message response;
+            try
+            {
+                Message dataMsg = null;
+                List<Inventory.InventoryItem> items = null;
+
+                switch (event.getCrudOperation())
+                {
+                    case CREATE:
+                    {
+                        dataMsg = _inventoryBll.createInventoryItem(event.getInventoryItem());
+                        break;
+                    }
+                    case UPDATE:
+                    {
+                        _inventoryBll.updateInventoryItem(event.getInventoryItem());
+                        dataMsg = Inventory.InventoryItem.getDefaultInstance();
+                        break;
+                    }
+                    case READ: // On read return all brands
+                    {
+                        items = _inventoryBll.getInventoryItems(event.getInventoryItem().getEntityId());
+                        break;
+                    }
+                }
+
+                if (event.getCrudOperation() == Common.CrudOperation.READ)
+                {
+                    response = Inventorymessages.InventoryItemsResponse
+                            .newBuilder()
+                            .addAllInventoryItems(items)
+                            .build();
+                } else
+                {
+                    response = Inventorymessages.InventoryItemResponse
+                            .newBuilder()
+                            .setInventoryItem((Inventory.InventoryItem) dataMsg)
+                            .build();
+                }
+            } catch (Exception ex)
+            {
+                response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
+            }
+            _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
+            LOG.info("Published real-time response on request with transaction id: {}", transactionId);
+        }
     }
 
     class InventoryItemCategoryEventHandler implements EventHandler<Inventorymessages.InventoryItemCategoryRequest>
