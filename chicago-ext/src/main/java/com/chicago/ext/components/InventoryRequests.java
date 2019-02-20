@@ -10,7 +10,6 @@ import com.chicago.common.core.EventHandler;
 import com.chicago.dto.Common;
 import com.chicago.dto.Inventory;
 import com.chicago.dto.Inventorymessages;
-import com.chicago.dto.PositionOuterClass;
 import com.chicago.dto.Usermessages;
 import com.chicago.ext.bll.InventoryBll;
 import com.chicago.ext.util.ResponseFactoryUtil;
@@ -31,11 +30,14 @@ public class InventoryRequests extends AbstractComponent
     public InventoryRequests(ComponentManager cm) throws ClassNotFoundException
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
-        _ed.registerHandler(Inventorymessages.InventoryItemBrandRequest.class, new InventoryItemBrandEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemCategoryRequest.class, new InventoryItemCategoryEventHandler());
+        _ed.registerHandler(Inventorymessages.InventoryItemBrandRequest.class, new InventoryItemBrandEventHandler());
+        _ed.registerHandler(Inventorymessages.InventoryItemUnitRequest.class, new InventoryItemUnitEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemSupplierRequest.class, new InventoryItemSupplierEventHandler());
         // Response
         KafkaMessageProducer producer = cm.getResource(KafkaMessageProducer.class.getName());
+        _ed.registerHandler(Inventorymessages.InventoryItemCategoryResponse.class, producer.new MessageEventHandler());
+        _ed.registerHandler(Inventorymessages.InventoryItemCategoriesResponse.class, producer.new MessageEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemBrandResponse.class, producer.new MessageEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemBrandsResponse.class, producer.new MessageEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemUnitResponse.class, producer.new MessageEventHandler());
@@ -53,6 +55,59 @@ public class InventoryRequests extends AbstractComponent
     public static void registerComponentFactories()
     {
         ComponentManager.registerComponentFactory(new Exception().getStackTrace()[0].getClassName());
+    }
+
+    class InventoryItemCategoryEventHandler implements EventHandler<Inventorymessages.InventoryItemCategoryRequest>
+    {
+        @Override
+        public void handleEvent(Inventorymessages.InventoryItemCategoryRequest event, String transactionId)
+        {
+            Message response;
+            try
+            {
+                Message dataMsg = null;
+                List<Inventory.InventoryItemCategory> categories = null;
+
+                switch (event.getCrudOperation())
+                {
+                    case CREATE:
+                    {
+                        dataMsg = _inventoryBll.createItemCategory(event.getItemCategory());
+                        break;
+                    }
+                    case UPDATE:
+                    {
+                        _inventoryBll.updateItemCategory(event.getItemCategory());
+                        dataMsg = Inventory.InventoryItemCategory.getDefaultInstance();
+                        break;
+                    }
+                    case READ: // On read return all brands
+                    {
+                        categories = _inventoryBll.getItemCategories(event.getItemCategory().getEntityId());
+                        break;
+                    }
+                }
+
+                if (event.getCrudOperation() == Common.CrudOperation.READ)
+                {
+                    response = Inventorymessages.InventoryItemCategoriesResponse
+                            .newBuilder()
+                            .addAllItemCategories(categories)
+                            .build();
+                } else
+                {
+                    response = Inventorymessages.InventoryItemCategoryResponse
+                            .newBuilder()
+                            .setItemCategory((Inventory.InventoryItemCategory) dataMsg)
+                            .build();
+                }
+            } catch (Exception ex)
+            {
+                response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
+            }
+            _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
+            LOG.info("Published real-time response on request with transaction id: {}", transactionId);
+        }
     }
 
     class InventoryItemBrandEventHandler implements EventHandler<Inventorymessages.InventoryItemBrandRequest>
@@ -76,7 +131,7 @@ public class InventoryRequests extends AbstractComponent
                     case UPDATE:
                     {
                         _inventoryBll.updateItemBrand(event.getItemBrand());
-                        dataMsg = PositionOuterClass.Position.getDefaultInstance();
+                        dataMsg = Inventory.InventoryItemBrand.getDefaultInstance();
                         break;
                     }
                     case READ: // On read return all brands
@@ -101,55 +156,55 @@ public class InventoryRequests extends AbstractComponent
                 }
             } catch (Exception ex)
             {
-                response = ResponseFactoryUtil.createErrorResponse(ex, Usermessages.UserResponse.class);
+                response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
             LOG.info("Published real-time response on request with transaction id: {}", transactionId);
         }
     }
 
-    class InventoryItemCategoryEventHandler implements EventHandler<Inventorymessages.InventoryItemCategoryRequest>
+    class InventoryItemUnitEventHandler implements EventHandler<Inventorymessages.InventoryItemUnitRequest>
     {
         @Override
-        public void handleEvent(Inventorymessages.InventoryItemCategoryRequest event, String transactionId)
+        public void handleEvent(Inventorymessages.InventoryItemUnitRequest event, String transactionId)
         {
             Message response;
             try
             {
                 Message dataMsg = null;
-                List<Inventory.InventoryItemCategory> categories = null;
+                List<Inventory.InventoryItemUnit> units = null;
 
                 switch (event.getCrudOperation())
                 {
                     case CREATE:
                     {
-                        dataMsg = _inventoryBll.createItemCategory(event.getItemCategory());
+                        dataMsg = _inventoryBll.createItemUnit(event.getItemUnit());
                         break;
                     }
                     case UPDATE:
                     {
-                        _inventoryBll.updateItemCategory(event.getItemCategory());
-                        dataMsg = PositionOuterClass.Position.getDefaultInstance();
+                        _inventoryBll.updateItemUnit(event.getItemUnit());
+                        dataMsg = Inventory.InventoryItemUnit.getDefaultInstance();
                         break;
                     }
                     case READ: // On read return all brands
                     {
-                        categories = _inventoryBll.getItemCategories(event.getItemCategory().getEntityId());
+                        units = _inventoryBll.getItemUnits(event.getItemUnit().getEntityId());
                         break;
                     }
                 }
 
                 if (event.getCrudOperation() == Common.CrudOperation.READ)
                 {
-                    response = Inventorymessages.InventoryItemCategoriesResponse
+                    response = Inventorymessages.InventoryItemUnitsResponse
                             .newBuilder()
-                            .addAllItemCategories(categories)
+                            .addAllItemUnits(units)
                             .build();
                 } else
                 {
-                    response = Inventorymessages.InventoryItemCategoryResponse
+                    response = Inventorymessages.InventoryItemUnitResponse
                             .newBuilder()
-                            .setItemCategory((Inventory.InventoryItemCategory) dataMsg)
+                            .setItemUnit((Inventory.InventoryItemUnit) dataMsg)
                             .build();
                 }
             } catch (Exception ex)
@@ -182,7 +237,7 @@ public class InventoryRequests extends AbstractComponent
                     case UPDATE:
                     {
                         _inventoryBll.updateItemSupplier(event.getItemSupplier());
-                        dataMsg = PositionOuterClass.Position.getDefaultInstance();
+                        dataMsg = Inventory.InventoryItemSupplier.getDefaultInstance();
                         break;
                     }
                     case READ: // On read return all brands
@@ -207,7 +262,7 @@ public class InventoryRequests extends AbstractComponent
                 }
             } catch (Exception ex)
             {
-                response = ResponseFactoryUtil.createErrorResponse(ex, Usermessages.UserResponse.class);
+                response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
             LOG.info("Published real-time response on request with transaction id: {}", transactionId);
