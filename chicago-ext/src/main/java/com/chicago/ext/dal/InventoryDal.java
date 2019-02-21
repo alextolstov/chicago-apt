@@ -59,4 +59,11 @@ public interface InventoryDal
     void updateItemSupplier(Inventory.InventoryItemSupplier supplier);
 
     Map<UUID, String> getItemSuppliers(String entityId);
+
+    // Locations
+    Inventory.InventoryLocation createInventoryLocation(Inventory.InventoryLocation location);
+
+    void updateInventoryLocation(Inventory.InventoryLocation location);
+
+    Map<UUID, String> getInventoryLocations(String entityId);
 }

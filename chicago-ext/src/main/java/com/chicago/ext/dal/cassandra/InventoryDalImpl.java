@@ -25,6 +25,7 @@ import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_BR
 import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_CATEGORIES_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_UNITS_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_SUPPLIERS_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_LOCATIONS_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.KEYSPACE;
 
 public class InventoryDalImpl implements InventoryDal
@@ -51,26 +52,26 @@ public class InventoryDalImpl implements InventoryDal
     {
         UUID newItemId = UUIDs.random();
         Statement query = QueryBuilder.insertInto(KEYSPACE, INVENTORY_ITEMS_TABLE)
-                .value("entity_id", inventoryItem.getEntityId())
+                .value("entity_id", UUID.fromString(inventoryItem.getEntityId()))
                 .value("item_id", newItemId)
-                .value("item_category_id", inventoryItem.getItemCategoryId())
-                .value("item_brand_id", inventoryItem.getItemBrandId())
-                .value("item_unit_id", inventoryItem.getItemUnitId())
-                .value("item_supplier_id", inventoryItem.getItemSupplierId())
+                .value("item_category_id", UUID.fromString(inventoryItem.getItemCategoryId()))
+                .value("item_brand_id", UUID.fromString(inventoryItem.getItemBrandId()))
+                .value("item_unit_id", UUID.fromString(inventoryItem.getItemUnitId()))
+                .value("item_supplier_id", UUID.fromString(inventoryItem.getItemSupplierId()))
                 .value("description", inventoryItem.getDescription())
                 .value("weight_net", inventoryItem.getWeightNet())
                 .value("weight_gross", inventoryItem.getWeightGross())
                 .value("package_weight", inventoryItem.getPackageWeight())
                 .value("quantity_per_pack", inventoryItem.getQuantityPerPack())
                 .value("inbound_quantity", inventoryItem.getInboundQuantity())
-                .value("inbound_unit_id", inventoryItem.getInboundUnitId())
+                .value("inbound_unit_id", UUID.fromString(inventoryItem.getInboundUnitId()))
                 .value("outbound_quantity", inventoryItem.getOutboundQuantity())
-                .value("outbound_unit_id", inventoryItem.getInboundUnitId())
-                .value("location_id", inventoryItem.getLocationId())
+                .value("outbound_unit_id", UUID.fromString(inventoryItem.getInboundUnitId()))
+                .value("location_id", UUID.fromString(inventoryItem.getLocationId()))
                 .value("ean13", inventoryItem.getEan13())
                 .value("vendor_code", inventoryItem.getVendorCode())
                 .value("discontinued", inventoryItem.getDiscontinued())
-                .value("image", inventoryItem.getImage())
+//                .value("image", inventoryItem.getImage())
                 .value("certificate", inventoryItem.getCertificate())
                 .value("notes", inventoryItem.getNotes())
                 .value("vendor_price", inventoryItem.getVendorPrice())
@@ -348,5 +349,36 @@ public class InventoryDalImpl implements InventoryDal
         builder.setRetailPrice(row.getFloat("retail_price"));
 
         return builder.build();
+    }
+
+    @Override
+    public Inventory.InventoryLocation createInventoryLocation(Inventory.InventoryLocation location)
+    {
+        UUID newId = UUIDs.random();
+
+        Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_LOCATIONS_TABLE)
+                .where(QueryBuilder.eq("entity_id", UUID.fromString(location.getEntityId())))
+                .with(QueryBuilder.put("locations", newId, location.getLocationName()));
+        _cassandraConnector.getSession().execute(query);
+
+        return Inventory.InventoryLocation.newBuilder(location)
+                .setLocationId(newId.toString())
+                .build();
+    }
+
+    @Override
+    public void updateInventoryLocation(Inventory.InventoryLocation location)
+    {
+        Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_LOCATIONS_TABLE)
+                .where(QueryBuilder.eq("entity_id", UUID.fromString(location.getEntityId())))
+                .with(QueryBuilder.put("locations", UUID.fromString(location.getLocationName()), location.getLocationName()));
+
+        _cassandraConnector.getSession().execute(query);
+    }
+
+    @Override
+    public Map<UUID, String> getInventoryLocations(String entityId)
+    {
+        return getItems(entityId, INVENTORY_LOCATIONS_TABLE, "locations");
     }
 }

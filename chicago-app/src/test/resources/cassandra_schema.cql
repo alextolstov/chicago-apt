@@ -214,13 +214,6 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.Inventory (
     inventory_name varchar,
     description varchar);
 
--- locations per whole entity
-CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryLocations (
-    entity_id uuid PRIMARY KEY,
-    location_id uuid,
-    inventory_name varchar,
-    description varchar);
-
 CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryOperations (
     inventory_id uuid PRIMARY KEY,
     operation_type int, -- 0 = in, 1 = out
@@ -257,12 +250,29 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItems (
     item_id uuid,
     item_category_id uuid,
     item_brand_id uuid,
+    item_unit_id uuid,
+    item_supplier_id uuid,
+    description varchar,
+    weight_net float,
+    weight_gross float,
+    package_weight float,
+    quantity_per_pack int,
+    inbound_quantity int,
+    inbound_unit_id uuid,
+    outbound_quantity int,
+    outbound_unit_id uuid,
     location_id uuid,
-    item_quantity int,
-    item_amount float,
-    item_name varchar,
-    item_image blob,
-    description varchar);
+-- Additional
+    ean13 varchar,
+    vendor_code varchar,
+    discontinued boolean,
+    image blob,
+    certificate varchar,
+    notes varchar,
+    vendor_price float,
+    special_price float,
+    retail_price float,
+    create_datetime timestamp);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemCategories (
     entity_id uuid PRIMARY KEY,
@@ -272,9 +282,18 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemBrands (
     entity_id uuid PRIMARY KEY,
     brands map<uuid, varchar>); -- brand_id - brand name
 
-CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemMeasurements (
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemUnits (
     entity_id uuid PRIMARY KEY,
-    measurement map<uuid, varchar>); -- measurement_id - measurement name
+    units map<uuid, varchar>); -- unit_id - unit name
+
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemSuppliers (
+    entity_id uuid PRIMARY KEY,
+    suppliers map<uuid, varchar>); -- unit_id - supplier name
+
+-- locations per whole entity
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryLocations (
+    entity_id uuid PRIMARY KEY,
+    locations map<uuid, varchar>);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemsCatalog (
     item_id uuid PRIMARY KEY,

@@ -36,6 +36,13 @@ public interface InventoryBll
 
     List<Inventory.InventoryItemSupplier> getItemSuppliers(String entityId);
 
+    // Locations
+    Inventory.InventoryLocation createInventoryLocation(Inventory.InventoryLocation location);
+
+    void updateInventoryLocation(Inventory.InventoryLocation location);
+
+    List<Inventory.InventoryLocation> getInventoryLocations(String entityId);
+
     // Items
     Inventory.InventoryItem createInventoryItem(Inventory.InventoryItem item);
 

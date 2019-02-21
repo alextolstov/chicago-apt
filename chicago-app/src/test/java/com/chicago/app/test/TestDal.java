@@ -31,7 +31,7 @@ public class TestDal
             new ClassPathCQLDataSet("cassandra_schema.cql", true, true));
 
     @Test
-    public void setCompany()
+    public void testSetCompany()
     {
         ServiceLocator serviceLocator = ServiceLocatorFactory.getInstance().create("servicelocator");
         TestCassandraConnector ts = new TestCassandraConnector(cassandraCQLUnit);
@@ -112,6 +112,37 @@ public class TestDal
                 .build();
         inventory.updateItemCategory(updatedCategory);
         List<Inventory.InventoryItemCategory> categories = inventory.getItemCategories("9df37802-95a9-425e-be0f-00f45b2a6c4a");
+
+        Inventory.InventoryItemUnit unit = Inventory.InventoryItemUnit.newBuilder()
+                .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
+                .setUnitName("gr")
+                .build();
+        Inventory.InventoryItemUnit createdUnit = inventory.createItemUnit(unit);
+
+        Inventory.InventoryItemSupplier supplier = Inventory.InventoryItemSupplier.newBuilder()
+                .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
+                .setSupplierName("OOO Romashka")
+                .build();
+        Inventory.InventoryItemSupplier createdSupplier = inventory.createItemSupplier(supplier);
+
+        Inventory.InventoryLocation location = Inventory.InventoryLocation.newBuilder()
+                .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
+                .setLocationName("Shelf #1")
+                .build();
+        Inventory.InventoryLocation createdLocation = inventory.createInventoryLocation(location);
+
+        Inventory.InventoryItem item = Inventory.InventoryItem.newBuilder()
+                .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
+                .setItemCategoryId(createdCategory.getCategoryId())
+                .setItemBrandId(createdBrand.getBrandId())
+                .setItemUnitId(createdUnit.getUnitId())
+                .setItemSupplierId(createdSupplier.getSupplierId())
+                .setLocationId(createdLocation.getLocationId())
+                .setDescription("Strange thing")
+                .setInboundUnitId(createdUnit.getUnitId())
+                .setOutboundUnitId(createdUnit.getUnitId())
+                .build();
+        Inventory.InventoryItem newItem = inventory.createInventoryItem(item);
     }
 
     @Test

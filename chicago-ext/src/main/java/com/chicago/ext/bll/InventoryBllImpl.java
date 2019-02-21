@@ -86,6 +86,7 @@ public class InventoryBllImpl implements InventoryBll
         return newResult;
     }
 
+    // Suppliers
     @Override
     public Inventory.InventoryItemSupplier createItemSupplier(Inventory.InventoryItemSupplier supplier)
     {
@@ -106,6 +107,29 @@ public class InventoryBllImpl implements InventoryBll
                 .setSupplierId(e.getKey().toString()).setSupplierName(e.getValue()).build()).collect(Collectors.toList());
         return newResult;
     }
+
+    // Locations
+    @Override
+    public Inventory.InventoryLocation createInventoryLocation(Inventory.InventoryLocation location)
+    {
+        return _inventoryDal.createInventoryLocation(location);
+    }
+
+    @Override
+    public void updateInventoryLocation(Inventory.InventoryLocation location)
+    {
+        _inventoryDal.updateInventoryLocation(location);
+    }
+
+    @Override
+    public List<Inventory.InventoryLocation> getInventoryLocations(String entityId)
+    {
+        Map<UUID, String> result = _inventoryDal.getInventoryLocations(entityId);
+        List<Inventory.InventoryLocation> newResult = result.entrySet().stream().map(e -> Inventory.InventoryLocation.newBuilder()
+                .setLocationId(e.getKey().toString()).setLocationName(e.getValue()).build()).collect(Collectors.toList());
+        return newResult;
+    }
+
 
     @Override
     public Inventory.InventoryItem createInventoryItem(Inventory.InventoryItem item)
@@ -132,7 +156,7 @@ public class InventoryBllImpl implements InventoryBll
     public List<Inventory.InventoryItem> getInventoryItems(String entityId) throws Exception
     {
         return _inventoryDal.getInventoryItems(entityId);
-    }
+     }
 }
 
 

@@ -105,3 +105,10 @@ message InventoryItemSupplier
     string supplier_name = 2;
     string supplier_id = 3;
 }
+
+message InventoryLocation
+{
+    string entity_id = 1;
+    string location_name = 2;
+    string location_id = 3;
+}
