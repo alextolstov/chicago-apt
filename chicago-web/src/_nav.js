@@ -21,15 +21,21 @@ export default {
                     name: <FormattedMessage id="menu.users.list" defaultMessage="Employees list"/>,
                     url: '/users/listusers',
                     icon: 'icon-people',
-                },
-                {
-                    name: <FormattedMessage id="menu.organizations.list" defaultMessage="Organizations list"/>,
-                    url: '/users/listorganizations',
-                    icon: 'icon-people',
                 }
-
             ]
         },
+      {
+        name: <FormattedMessage id="menu.organizations.header" defaultMessage="Organizations"/>,
+        url: '/organizations',
+        icon: 'icon-people',
+        children: [
+          {
+            name: <FormattedMessage id="menu.organizations.list" defaultMessage="Organizations list"/>,
+            url: '/organizations/listorganizations',
+            icon: 'icon-people',
+          }
+        ]
+      },
         {
             title: true,
             name: 'Theme',

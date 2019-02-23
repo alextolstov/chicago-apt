@@ -9,7 +9,7 @@ import {defineMessages, FormattedMessage} from 'react-intl';
 import {inject, observer} from 'mobx-react/index';
 
 import EditOrganization from '../EditOrganization/EditOrganization';
-import data from './_data';
+//import data from './_data';
 import OrganizationApi from '../../../api/OrganizationApi';
 import Spinner from "../../Spinner/Spinner";
 

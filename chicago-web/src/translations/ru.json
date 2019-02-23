@@ -12,6 +12,7 @@
   "menu.users.new_organization": "Новая организация",
   "menu.users.allusers": "Все сотрудники",
   "menu.users.list": "Список сотрудников",
+  "menu.organizations.header": "Организации",
   "menu.organizations.list": "Список организаций",
 
   "users.edit.wholename": "Фамилия Имя Отчество",
