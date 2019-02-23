@@ -155,7 +155,8 @@ class AddressForm extends Component {
         <ToastContainer position="top-right" autoClose={1000} style={containerStyle}/>
         <Card id='address_card'>
           <CardHeader>
-            <button onClick={this.handleSaveAddress}><i className="icon-cloud-upload" ></i></button>
+            <i><button onClick={this.handleSaveAddress}><i className="icon-cloud-upload" ></i>
+            </button></i>
             <strong><FormattedMessage id="users.edit.address" defaultMessage="Address"/></strong>
             <div className="card-header-actions">
               <AppSwitch id="address_enabled" onClick={(e) => this.state.formApi.handleFormEnableDisable('address_card', e)}

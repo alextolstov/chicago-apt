@@ -555,9 +555,9 @@ class EditUser extends Component {
             <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
               <Card id="email_card">
                 <CardHeader>
-                  <button id="save_email" onClick={this.handleSaveEmail}>
+                  <i><button id="save_email" onClick={this.handleSaveEmail}>
                     <i className="icon-cloud-upload"></i>
-                  </button>
+                  </button></i>
                   <strong><FormattedMessage id="users.edit.email_management"
                                             defaultMessage="Email management"/></strong>
                   <div className="card-header-actions">
@@ -590,9 +590,9 @@ class EditUser extends Component {
 
               <Card id="password_card">
                 <CardHeader>
-                  <button id="save_personal_info" onClick={this.handleSavePassword}>
+                  <i><button id="save_personal_info" onClick={this.handleSavePassword}>
                     <i className="icon-cloud-upload"></i>
-                  </button>
+                  </button></i>
                   <strong><FormattedMessage id="users.edit.password_management"
                                             defaultMessage="Password management"/></strong>
                   <div className="card-header-actions">
@@ -647,9 +647,9 @@ class EditUser extends Component {
 
               <Card id="personal_info_card">
                 <CardHeader>
-                  <button id="save_personal_info" onClick={this.handleSaveUserInfo}>
+                  <i><button id="save_personal_info" onClick={this.handleSaveUserInfo}>
                     <i className="icon-cloud-upload"></i>
-                  </button>
+                  </button></i>
                   <strong><FormattedMessage id="users.edit.personal" defaultMessage="Personal Information"/></strong>
                   <div className="card-header-actions">
                     <AppSwitch id="personal_info_enabled"
@@ -824,9 +824,9 @@ class EditUser extends Component {
             <Col sm={12} md={6} style={{flexBasis: 'auto'}}>
               <Card id='attributes_card'>
                 <CardHeader>
-                  <button onClick={this.handleSaveUserInfo}>
+                  <i><button onClick={this.handleSaveUserInfo}>
                     <i className="icon-cloud-upload"></i>
-                  </button>
+                  </button></i>
                   <strong><FormattedMessage id="users.edit.personal" defaultMessage="Attributes"/></strong>
                   <div className="card-header-actions">
                     <AppSwitch id="attributes_enabled"
@@ -1040,9 +1040,9 @@ class EditUser extends Component {
               <PositionForm positionApiParent={this.state.positionApi} readyPosition={this.readyPosition}/>
               <Card id="permission_card">
                 <CardHeader>
-                  <button id="save_permission" onClick={this.handleSaveRole}>
+                  <i><button id="save_permission" onClick={this.handleSaveRole}>
                     <i className="icon-cloud-upload"></i>
-                  </button>
+                  </button></i>
                   <strong><FormattedMessage id="users.edit.role_management"
                                             defaultMessage="Role management"/></strong>
                   <div className="card-header-actions">
