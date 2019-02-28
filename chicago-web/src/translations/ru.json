@@ -65,5 +65,8 @@
   "address.edit.zip": "Индекс",
   "address.edit.country": "Страна",
   "address.edit.officeapt":"Номер офиса",
-  "address.edit.administrative_division":"Административное подразделение"
+  "address.edit.administrative_division":"Административное подразделение",
+
+  "org.edit.name": "Организация",
+  "org.edit.type": "Тип"
 }
