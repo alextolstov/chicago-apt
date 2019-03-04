@@ -1,5 +1,3 @@
-import ManageUsers from "../views/Users/ManageUsers";
-
 class UiOrganizationInfo {
   constructor() {
     this.type = "";
@@ -7,7 +5,6 @@ class UiOrganizationInfo {
     this.name = "";
     this.children = null;
   }
-
 }
 
 class UiOrganization {

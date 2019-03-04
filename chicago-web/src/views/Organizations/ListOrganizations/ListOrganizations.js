@@ -1,13 +1,11 @@
 import React, {Component} from 'react';
-import {Card, CardBody, CardHeader, Col} from 'reactstrap';
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
+import { Card, CardHeader, CardBody, Button, Modal, ModalBody, ModalHeader, Row, Col } from 'reactstrap';
+//import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import {FormattedMessage} from 'react-intl';
 import {inject, observer} from 'mobx-react/index';
 import Spinner from "../../Spinner/Spinner";
 import EditOrganization from '../EditOrganization/EditOrganization';
 import GridTree from "react-gridtree";
-//import data from './_data';
 import OrganizationApi from '../../../api/OrganizationApi';
 import {UiOrganizationInfo} from "../../../models/UiOrganizationInfo";
 import OrganizationInfoConvertor from "../../../convertors/OrganizationInfoConvertor";
@@ -19,12 +17,6 @@ const jspb = require('google-protobuf');
 const selectRow = {
   mode: 'radio',
   clickToSelect: true
-};
-
-const selectRow1 = {
-  mode: 'checkbox',
-  clickToSelect: true,
-  style: {backgroundColor: '#c8e6c9'}
 };
 
 class ListOrganizations extends Component {
@@ -42,14 +34,8 @@ class ListOrganizations extends Component {
       clearSearch: false,
       alwaysShowAllBtns: false,
       withFirstAndLast: false,
-      onRowClick: this.onRowSelect,
+//      onRowClick: this.onRowSelect,
     }
-
-    this.selectRowProp = {
-      clickToSelect: true,
-      bgColor: '#f0f3f5',
-      onSelect: this.onRowSelect,
-    };
 
     this.state = {
       data: null,
@@ -62,9 +48,6 @@ class ListOrganizations extends Component {
       openedDetails: false,
       organizationStructure: []
     }
-
-    this.addOrganization = this.addOrganization.bind(this);
-    this.loadOrganizations = this.loadOrganizations.bind(this);
   }
 
   componentDidMount() {
@@ -74,19 +57,13 @@ class ListOrganizations extends Component {
       let orgStructure = new UiOrganizationInfo();
       self.convertor.fromDto(orgStruct.getOrganizationInfo(), orgStructure);
       self.state.organizationStructure.push(orgStructure);
-//      console.log(JSON.stringify(self.state.organizationStructure));
-//      let organizationStructure = self.state.organizationStructure;
-      self.setState({organizationStructure:self.state.organizationStructure, isLoading: false});
+      self.setState({organizationStructure: self.state.organizationStructure, isLoading: false});
     })
   }
 
   onRowClick = (data) => {
-    alert(data);
-  }
-
-  onRowSelect = (row) => {
     this.state.openedDetails = true;
-    this.setState({selected: row});
+    this.setState({selected: {id: data}});
   }
 
   toggleDetails = () => {
@@ -95,12 +72,14 @@ class ListOrganizations extends Component {
     });
   }
 
-  addOrganization() {
+  addOrganization = (event) => {
     console.log('Add Organization');
+    alert(this.props.data);
     this.setState({selected: {id: "new"}});
+    event.stopPropagation();
   }
 
-  loadOrganizations() {
+  loadOrganizations = () => {
     console.log('List organization');
     this.componentDidMount();
   }
@@ -110,7 +89,7 @@ class ListOrganizations extends Component {
       <div className="row">
         <div className="col-lg-12">
           <div className="animated">
-              <Card>
+            <Card>
               <CardHeader>
                 <h3><strong><FormattedMessage id="menu.organizations.list"
                                               defaultMessage="Organizations list"/>
@@ -140,30 +119,34 @@ class ListOrganizations extends Component {
                       {
                         property: 'type',
                         displayName: <FormattedMessage id="org.edit.type" defaultMessage="Type"/>
+                      },
+                      {
+                        html: <Button block color='primary' onClick={this.callback}>
+                          <FormattedMessage id="org.edit.type" defaultMessage="Add suborg"/>
+                        </Button>,
+                        displayName: <FormattedMessage id="org.edit.type" defaultMessage="Action"/>,
+                        width: '5%'
                       }
                     ]
                   }}
                 />
                 }
-                {/*{!this.state.isLoading &&*/}
-                {/*<BootstrapTable data={this.state.optionsList} version="4" hover pagination={false}*/}
-                                {/*options={this.options} selectRow={this.selectRowProp}>*/}
-                  {/*<TableHeaderColumn isKey dataField="name"*/}
-                                     {/*filter={{type: 'TextFilter', placeholder: 'Поиск...', delay: 1000}}*/}
-                                     {/*dataSort>Организация</TableHeaderColumn>*/}
-                {/*</BootstrapTable>*/}
-                {/*}*/}
                 {this.state.isLoading &&
                 <Spinner/>
                 }
-
               </CardBody>
             </Card>
           </div>
         </div>
-        <div className="col-8">
-          <EditOrganization organizationId={this.state.selected.id} loadList={this.loadList}/>
-        </div>
+        {(this.state.selected.id) &&
+        <Modal isOpen={this.state.openedDetails} toggle={this.toggleDetails} centered={true}>
+          <ModalHeader toggle={this.toggleDetails}>{this.state.selected.name}</ModalHeader>
+          <ModalBody>
+            <EditOrganization organizationId={this.state.selected.id}
+                              toggle={this.toggleDetails} loadList={this.loadList} company={this.company}/>
+          </ModalBody>
+        </Modal>
+        }
       </div>
     );
   }
