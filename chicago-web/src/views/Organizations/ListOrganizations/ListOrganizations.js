@@ -5,7 +5,7 @@ import {FormattedMessage} from 'react-intl';
 import {inject, observer} from 'mobx-react/index';
 import Spinner from "../../Spinner/Spinner";
 import EditOrganization from '../EditOrganization/EditOrganization';
-import GridTree from "react-gridtree";
+import TreeGrid from "react-treegrid-2";
 import OrganizationApi from '../../../api/OrganizationApi';
 import {UiOrganizationInfo} from "../../../models/UiOrganizationInfo";
 import OrganizationInfoConvertor from "../../../convertors/OrganizationInfoConvertor";
@@ -76,7 +76,7 @@ class ListOrganizations extends Component {
     console.log('Add Organization');
     alert(this.props.data);
     this.setState({selected: {id: "new"}});
-    event.stopPropagation();
+//    event.stopPropagation();
   }
 
   loadOrganizations = () => {
@@ -106,25 +106,25 @@ class ListOrganizations extends Component {
               </CardHeader>
               <CardBody>
                 {!this.state.isLoading &&
-                <GridTree
+                <TreeGrid
                   callback={this.onRowClick}
                   data={this.state.organizationStructure}
                   options={{
                     fields: [
                       {
                         property: 'name',
-                        displayName: <FormattedMessage id="org.edit.name" defaultMessage="Organizations"/>,
+                        colHeader: <FormattedMessage id="org.edit.name" defaultMessage="Organizations"/>,
                         width: '70%'
                       },
                       {
                         property: 'type',
-                        displayName: <FormattedMessage id="org.edit.type" defaultMessage="Type"/>
+                        colHeader: <FormattedMessage id="org.edit.type" defaultMessage="Type"/>
                       },
                       {
-                        html: <Button block color='primary' onClick={this.callback}>
-                          <FormattedMessage id="org.edit.type" defaultMessage="Add suborg"/>
-                        </Button>,
-                        displayName: <FormattedMessage id="org.edit.type" defaultMessage="Action"/>,
+                        type: 'button',
+                        callback: this.addOrganization,
+                        colHeader: <FormattedMessage id="org.edit.action" defaultMessage="Action"/>,
+                        caption: <FormattedMessage id="org.edit.addbutton" defaultMessage="Add"/>,
                         width: '5%'
                       }
                     ]

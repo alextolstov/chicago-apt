@@ -68,5 +68,7 @@
   "address.edit.administrative_division":"Административное подразделение",
 
   "org.edit.name": "Организация",
-  "org.edit.type": "Тип"
+  "org.edit.type": "Тип",
+  "org.edit.action": "Действие",
+  "org.edit.addbutton": "Добавить"
 }
