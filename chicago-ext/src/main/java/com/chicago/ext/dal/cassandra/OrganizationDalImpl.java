@@ -48,7 +48,7 @@ public class OrganizationDalImpl implements OrganizationDal
         }
 
         Statement query = QueryBuilder.insertInto(KEYSPACE, ORGANIZATIONS_TABLE)
-                .value("organization_id", organizationId) // Already UUID
+                .value("organ   ization_id", organizationId) // Already UUID
                 .value("organization_type", organization.getType().getNumber()) // Enum
                 .value("name", organization.getName())
                 .value("description", organization.getDescription())
@@ -86,7 +86,6 @@ public class OrganizationDalImpl implements OrganizationDal
                 .and(QueryBuilder.set("email_domain", organization.getEmailDomain()))
                 .and(QueryBuilder.set("phone", organization.getPhone()))
                 .and(QueryBuilder.set("fax", organization.getFax()))
-                .and(QueryBuilder.set("child_organizations", childOrganizationsSet))
                 .and(QueryBuilder.set("address_id", organization.getAddressId().length() == 0 ? null : UUID.fromString(organization.getAddressId())))
                 .where(QueryBuilder.eq("organization_id", UUID.fromString(organization.getOrganizationId())));
         _cassandraConnector.getSession().execute(query);

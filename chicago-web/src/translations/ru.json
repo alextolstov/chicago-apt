@@ -67,8 +67,18 @@
   "address.edit.officeapt":"Номер офиса",
   "address.edit.administrative_division":"Административное подразделение",
 
-  "org.edit.name": "Организация",
-  "org.edit.type": "Тип",
-  "org.edit.action": "Действие",
-  "org.edit.addbutton": "Добавить"
+  "org.edit": "Изменить организацию",
+  "org.holding": "Холдинг",
+  "org.company": "Компания",
+  "org.branch": "Отделение",
+  "org.list.name": "Организация",
+  "org.list.type": "Тип",
+  "org.list.action": "Действие",
+  "org.list.add": "Добавить",
+  "org.edit.name": "Имя",
+  "org.edit.description": "Описание",
+  "org.edit.website": "Веб сайт",
+  "org.edit.emaildomain": "Домен",
+  "org.edit.phone": "Телефон",
+  "org.edit.fax": "Факс"
 }

@@ -7,7 +7,7 @@ import Spinner from "../../Spinner/Spinner";
 import EditOrganization from '../EditOrganization/EditOrganization';
 import TreeGrid from "react-treegrid-2";
 import OrganizationApi from '../../../api/OrganizationApi';
-import {UiOrganizationInfo} from "../../../models/UiOrganizationInfo";
+import UiOrganizationInfo from "../../../models/UiOrganizationInfo";
 import OrganizationInfoConvertor from "../../../convertors/OrganizationInfoConvertor";
 
 const organization_proto = require('dto/organization_pb');
@@ -25,6 +25,7 @@ class ListOrganizations extends Component {
     this.table = [];
     this.convertor = new OrganizationInfoConvertor();
     this.organizationApi = new OrganizationApi();
+    this.wordsSeparator = " ";
 
     this.options = {
       sortIndicator: true,
@@ -34,19 +35,18 @@ class ListOrganizations extends Component {
       clearSearch: false,
       alwaysShowAllBtns: false,
       withFirstAndLast: false,
-//      onRowClick: this.onRowSelect,
     }
 
     this.state = {
       data: null,
-      selected: {
-        id: '',
-        name: '',
-      },
+      selectedOrg: null,
+      isNew: false,
       optionsList: [],
       isLoading: true,
       openedDetails: false,
-      organizationStructure: []
+      organizationStructure: [],
+      dialogHeaderAction: "",
+      dialogHeaderSubject: ""
     }
   }
 
@@ -62,21 +62,30 @@ class ListOrganizations extends Component {
   }
 
   onRowClick = (data) => {
+    this.state.dialogHeaderAction = <FormattedMessage id="org.edit" defaultMessage="Edit"/>;
+    this.state.dialogHeaderSubject = data.name;
     this.state.openedDetails = true;
-    this.setState({selected: {id: data}});
+    this.setState({selectedOrg: data, isNew: false});
+  }
+
+  addOrganization = (data) => {
+    this.state.dialogHeaderAction = <FormattedMessage id="org.list.add" defaultMessage="Add"/>;
+    switch (data.type) {
+      case 0:
+        this.state.dialogHeaderSubject = <FormattedMessage id="org.company" defaultMessage="Company"/>;
+        break;
+      case 1:
+        this.state.dialogHeaderSubject = <FormattedMessage id="org.branch" defaultMessage="Branch"/>;
+        break;
+    }
+    this.state.openedDetails = true;
+    this.setState({selectedOrg: data, isNew: true});
   }
 
   toggleDetails = () => {
     this.setState({
       openedDetails: !this.state.openedDetails,
     });
-  }
-
-  addOrganization = (event) => {
-    console.log('Add Organization');
-    alert(this.props.data);
-    this.setState({selected: {id: "new"}});
-//    event.stopPropagation();
   }
 
   loadOrganizations = () => {
@@ -95,14 +104,6 @@ class ListOrganizations extends Component {
                                               defaultMessage="Organizations list"/>
                 </strong>
                 </h3>
-                <div>
-                  <button onClick={this.addOrganization}
-                  >
-                    <strong><FormattedMessage id="menu.users.new_organization"
-                                              defaultMessage="Create new organization"/>
-                    </strong>
-                  </button>
-                </div>
               </CardHeader>
               <CardBody>
                 {!this.state.isLoading &&
@@ -113,18 +114,18 @@ class ListOrganizations extends Component {
                     fields: [
                       {
                         property: 'name',
-                        colHeader: <FormattedMessage id="org.edit.name" defaultMessage="Organizations"/>,
+                        colHeader: <FormattedMessage id="org.list.name" defaultMessage="Organizations"/>,
                         width: '70%'
                       },
                       {
                         property: 'type',
-                        colHeader: <FormattedMessage id="org.edit.type" defaultMessage="Type"/>
+                        colHeader: <FormattedMessage id="org.list.type" defaultMessage="Type"/>
                       },
                       {
                         type: 'button',
                         callback: this.addOrganization,
-                        colHeader: <FormattedMessage id="org.edit.action" defaultMessage="Action"/>,
-                        caption: <FormattedMessage id="org.edit.addbutton" defaultMessage="Add"/>,
+                        colHeader: <FormattedMessage id="org.list.action" defaultMessage="Action"/>,
+                        caption: <FormattedMessage id="org.list.add" defaultMessage="Add"/>,
                         width: '5%'
                       }
                     ]
@@ -138,12 +139,16 @@ class ListOrganizations extends Component {
             </Card>
           </div>
         </div>
-        {(this.state.selected.id) &&
+        {(this.state.selectedOrg) &&
         <Modal isOpen={this.state.openedDetails} toggle={this.toggleDetails} centered={true}>
-          <ModalHeader toggle={this.toggleDetails}>{this.state.selected.name}</ModalHeader>
+          <ModalHeader toggle={this.toggleDetails}>
+            {this.state.dialogHeaderAction}
+            {this.wordsSeparator}
+            {this.state.dialogHeaderSubject}
+          </ModalHeader>
           <ModalBody>
-            <EditOrganization organizationId={this.state.selected.id}
-                              toggle={this.toggleDetails} loadList={this.loadList} company={this.company}/>
+            <EditOrganization organization={this.state.selectedOrg} isNew={this.state.isNew}
+                              toggle={this.toggleDetails} />
           </ModalBody>
         </Modal>
         }

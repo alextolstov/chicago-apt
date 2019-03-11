@@ -1,6 +1,4 @@
-import {UiOrganizationInfo, UiOrganization} from "../models/UiOrganizationInfo";
-const organization_proto = require('dto/organization_pb');
-
+import UiOrganizationInfo from "../models/UiOrganizationInfo";
 
 class OrganizationInfoConvertor{
   fromDto = (dtoObj, uiObj) => {
@@ -23,10 +21,9 @@ class OrganizationInfoConvertor{
     }
   }
 
-  toDto = () =>{
+  toDto = (uiObj, dtoObj) =>{
 
   }
-
 }
 
 export default OrganizationInfoConvertor;
