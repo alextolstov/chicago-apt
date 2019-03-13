@@ -22,22 +22,22 @@ class EditOrganization extends Component {
       isLoading: true,
     },
 
-    this.formApi = new FormApi(),
-    this.organizationApi = new OrganizationApi(),
-    this.convertor = new OrganizationConvertor()
+      this.formApi = new FormApi(),
+      this.organizationApi = new OrganizationApi(),
+      this.convertor = new OrganizationConvertor()
   };
 
   componentDidMount() {
     let self = this;
     if (!this.props.isNew) {
-        this.organizationApi.getOrganization(self.props.organization.organization_id, (e) => {
-            console.log('Error load:', e)
-          }
-        ).then(function (obj) {
-          let dto = obj.getOrganization();
-          self.convertor.fromDto(dto, self.state.organization);
-          self.setState({isLoading: false})
-        });
+      this.organizationApi.getOrganization(self.props.organization.organization_id, (e) => {
+          console.log('Error load:', e)
+        }
+      ).then(function (obj) {
+        let dto = obj.getOrganization();
+        self.convertor.fromDto(dto, self.state.organization);
+        self.setState({isLoading: false})
+      });
     } else {
       // In case new organization we pass parent organization, but need only organization id as parent
       this.state.organization.parent_organization_id = self.props.organization.organization_id;
@@ -62,26 +62,22 @@ class EditOrganization extends Component {
 
   createOrUpdateOrganization = () => {
     let self = this;
-    if (!this.props.isNew) {
-      this.organizationApi.updateOrganization(this.state.organization, (e) => {
-          console.log('Update load:', e)
+    if (self.props.isNew) {
+      self.organizationApi.createOrganization(self.state.organization, (e) => {
+          console.log('Failed to create:', e)
         }
-      ).then(function (sobj) {
-        console.log('createOrUpdateOrganization update organization ', sobj);
+      ).then((sobj) => {
+        console.log('Organization created: ', sobj);
+        self.props.toggle(sobj.getOrganization());
       });
     } else {
-      this.organizationApi.createOrganization(this.state.organization, (e) => {
-          console.log('Create load:', e)
+      self.organizationApi.updateOrganization(self.state.organization, (e) => {
+          console.log('Failed to modify:', e)
         }
-      ).then(function (sobj) {
-        console.log('createOrUpdateOrganization create organizationMsg ', sobj);
-        // let newOrg = sobj.getOrganization();
-        // self.testSetIdOrganization(newOrg, 1)
-        // console.log('createOrUpdateOrganization create organizationObj', newOrg);
-        //
-        // if (self.props.loadList)
-        //   self.props.loadList();       // refresh list users
-        // self.props.toggle();
+      ).then((sobj) => {
+        console.log('Updated organization: ', sobj);
+        self.props.organization.name = self.state.organization.name;
+        self.props.toggle(self.props.organization);
       });
     }
   }
@@ -119,9 +115,11 @@ class EditOrganization extends Component {
           <Col sm={12} md={12} style={{flexBasis: 'auto'}}>
             <Card id="org_card">
               <CardHeader>
-                <i><button id="save_org" onClick={this.createOrUpdateOrganization}>
-                  <i className="icon-cloud-upload"></i>
-                </button></i>
+                <i>
+                  <button id="save_org" onClick={this.createOrUpdateOrganization}>
+                    <i className="icon-cloud-upload"></i>
+                  </button>
+                </i>
                 <strong><FormattedMessage id="org.edit"
                                           defaultMessage="Edit organization"/></strong>
                 <div className="card-header-actions">

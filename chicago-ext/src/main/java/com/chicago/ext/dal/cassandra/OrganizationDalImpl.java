@@ -48,7 +48,7 @@ public class OrganizationDalImpl implements OrganizationDal
         }
 
         Statement query = QueryBuilder.insertInto(KEYSPACE, ORGANIZATIONS_TABLE)
-                .value("organ   ization_id", organizationId) // Already UUID
+                .value("organization_id", organizationId) // Already UUID
                 .value("organization_type", organization.getType().getNumber()) // Enum
                 .value("name", organization.getName())
                 .value("description", organization.getDescription())

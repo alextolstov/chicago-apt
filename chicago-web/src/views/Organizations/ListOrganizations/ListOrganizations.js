@@ -27,21 +27,10 @@ class ListOrganizations extends Component {
     this.organizationApi = new OrganizationApi();
     this.wordsSeparator = " ";
 
-    this.options = {
-      sortIndicator: true,
-      hideSizePerPage: true,
-      paginationSize: 3,
-      hidePageListOnlyOnePage: true,
-      clearSearch: false,
-      alwaysShowAllBtns: false,
-      withFirstAndLast: false,
-    }
-
     this.state = {
       data: null,
-      selectedOrg: null,
       isNew: false,
-      optionsList: [],
+      selectedOrg: null,
       isLoading: true,
       openedDetails: false,
       organizationStructure: [],
@@ -51,6 +40,7 @@ class ListOrganizations extends Component {
   }
 
   componentDidMount() {
+    window.MyVars = this;
     this.state.isLoading = true;
     let self = this;
     this.organizationApi.getStructure(null).then(function (orgStruct) {
@@ -82,10 +72,19 @@ class ListOrganizations extends Component {
     this.setState({selectedOrg: data, isNew: true});
   }
 
-  toggleDetails = () => {
-    this.setState({
-      openedDetails: !this.state.openedDetails,
-    });
+  toggleDetails = (data) => {
+    this.setState({openedDetails: !this.state.openedDetails});
+
+    if (data.currentTarget === undefined) {
+      let self = this;
+      this.organizationApi.getStructure(null).then((orgStruct) => {
+        let orgStructure = new UiOrganizationInfo();
+        self.convertor.fromDto(orgStruct.getOrganizationInfo(), orgStructure);
+        self.state.organizationStructure = [];
+        self.state.organizationStructure.push(orgStructure);
+        self.setState({organizationStructure: self.state.organizationStructure, isLoading: false});
+      })
+    }
   }
 
   loadOrganizations = () => {
