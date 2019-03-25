@@ -1,5 +1,6 @@
 import FetchApi from './FetchApi'
 
+const address_proto = require('dto/address_pb.js');
 const addressmessages_proto = require('dto/addressmessages_pb.js');
 
 export default class AddressApi {
@@ -18,7 +19,9 @@ export default class AddressApi {
     return this.addressCrud(this.updateAddressUrl, address, addressmessages_proto.AddressResponse.deserializeBinary, errorHandler);
   }
 
-  getAddress(address, errorHandler) {
+  getAddress(addressId, errorHandler) {
+    let address = new address_proto.Address();
+    address.setAddressId(addressId);
     return this.addressCrud(this.getAddressUrl, address, addressmessages_proto.AddressResponse.deserializeBinary, errorHandler);
   }
 

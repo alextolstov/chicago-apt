@@ -68,8 +68,7 @@ class AddressForm extends Component {
 
     if (props.addressId !== "") {
       let self = this;
-      this.state.address.setAddressId(props.addressId);
-      this.state.addressApi.getAddress(this.state.address).then(function (addressMsg) {
+      this.state.addressApi.getAddress(props.addressId).then(function (addressMsg) {
         let savedAddress = addressMsg.getAddress();
         if (savedAddress != null) {
           self.setState({address: savedAddress});
