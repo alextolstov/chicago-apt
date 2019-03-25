@@ -9,7 +9,7 @@ class OrganizationConvertor{
     uiObj.description = dtoObj.getDescription != undefined ? dtoObj.getDescription() : "";
     uiObj.web_site = dtoObj.getWebSite != undefined ? dtoObj.getWebSite() : "";
     uiObj.email_domain = dtoObj.getEmailDomain != undefined ? dtoObj.getEmailDomain() : "";
-    uiObj.parent_organization_id = dtoObj.getParentrOrganizationId != undefined ? dtoObj.getParentrOrganizationId() : "";
+    uiObj.parent_organization_id = dtoObj.getParentOrganizationId != undefined ? dtoObj.getParentOrganizationId() : "";
     uiObj.entity_id = dtoObj.getEntityId != undefined ? dtoObj.getEntityId() : "";
     uiObj.phone = dtoObj.getPhone != undefined ? dtoObj.getPhone() : "";
     uiObj.fax = dtoObj.getFax != undefined ? dtoObj.getFax() : "";

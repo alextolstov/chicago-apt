@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { Card, CardHeader, CardBody, Button, Modal, ModalBody, ModalHeader, Row, Col } from 'reactstrap';
-//import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import {FormattedMessage} from 'react-intl';
 import {inject, observer} from 'mobx-react/index';
 import Spinner from "../../Spinner/Spinner";
@@ -40,7 +39,6 @@ class ListOrganizations extends Component {
   }
 
   componentDidMount() {
-    window.MyVars = this;
     this.state.isLoading = true;
     let self = this;
     this.organizationApi.getStructure(null).then(function (orgStruct) {
@@ -76,15 +74,47 @@ class ListOrganizations extends Component {
     this.setState({openedDetails: !this.state.openedDetails});
 
     if (data.currentTarget === undefined) {
-      let self = this;
-      this.organizationApi.getStructure(null).then((orgStruct) => {
-        let orgStructure = new UiOrganizationInfo();
-        self.convertor.fromDto(orgStruct.getOrganizationInfo(), orgStructure);
-        self.state.organizationStructure = [];
-        self.state.organizationStructure.push(orgStructure);
-        self.setState({organizationStructure: self.state.organizationStructure, isLoading: false});
-      })
+      let res = this.isNew(this.state.organizationStructure, data);
+      if (res) {
+         let self = this;
+         this.organizationApi.getStructure(null).then((orgStruct) => {
+           let orgStructure = new UiOrganizationInfo();
+           self.convertor.fromDto(orgStruct.getOrganizationInfo(), orgStructure);
+           self.state.organizationStructure = [];
+           self.state.organizationStructure.push(orgStructure);
+           self.setState({organizationStructure: self.state.organizationStructure, isLoading: false});
+        })}
     }
+  }
+
+  update = (organizationStructure, data) => {
+    for(let i = 0; i < organizationStructure.length; i++) {
+      if (organizationStructure[i].children !== null) {
+        if(this.update(organizationStructure[i].children, data) === true) {
+          return true;
+        }
+      }
+      if (organizationStructure[i].organization_id === data.organization_id) {
+        organizationStructure[i].name = data.name;
+        organizationStructure[i].description = data.description;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  isNew = (organizationStructure, data) => {
+    for(let i = 0; i < organizationStructure.length; i++) {
+      if (organizationStructure[i].children !== null) {
+        if(this.isNew(organizationStructure[i].children, data) === false) {
+          return false;
+        }
+      }
+      if (organizationStructure[i].organization_id === data.organization_id) {
+        return false;
+      }
+    }
+    return true;
   }
 
   loadOrganizations = () => {

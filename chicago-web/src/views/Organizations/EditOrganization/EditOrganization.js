@@ -68,7 +68,9 @@ class EditOrganization extends Component {
         }
       ).then((sobj) => {
         console.log('Organization created: ', sobj);
-        self.props.toggle(sobj.getOrganization());
+        let uiOrganization = new UiOrganization();
+        this.convertor.fromDto(sobj.getOrganization(), uiOrganization);
+        self.props.toggle(uiOrganization);
       });
     } else {
       self.organizationApi.updateOrganization(self.state.organization, (e) => {
