@@ -8,6 +8,7 @@ import com.chicago.dto.Service;
 import com.chicago.services.internal.MediaTypeExt;
 import com.chicago.services.util.ResponseErrorUtil;
 import com.chicago.services.util.SecurityUtil;
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.subject.Subject;
@@ -31,57 +32,33 @@ public class OrganizationController
     @Path("create")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
-    public Response createOrganization(byte[] data)
+    public Response createOrganization(byte[] data) throws InvalidProtocolBufferException
     {
         Subject currentUser = SecurityUtils.getSubject();
         //currentUser.hasRole("");
-        try
-        {
-            byte[] response = _asyncComm.transaction(prepareRequest(data, Common.CrudOperation.CREATE));
-            return Response.ok(response).build();
-        } catch (Exception e)
-        {
-            return ResponseErrorUtil.createErrorResponse(e.getMessage(),
-                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
-        }
+        return executeRequest(OrganizationOuterClass.Organization.parseFrom(data), Common.CrudOperation.UPDATE);
     }
 
     @POST
     @Path("update")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
-    public Response updateOrganization(byte[] data)
+    public Response updateOrganization(byte[] data) throws InvalidProtocolBufferException
     {
         Subject currentUser = SecurityUtils.getSubject();
         //currentUser.hasRole("");
-        try
-        {
-            byte[] response = _asyncComm.transaction(prepareRequest(data, Common.CrudOperation.UPDATE));
-            return Response.ok(response).build();
-        } catch (Exception e)
-        {
-            return ResponseErrorUtil.createErrorResponse(e.getMessage(),
-                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
-        }
+        return executeRequest(OrganizationOuterClass.Organization.parseFrom(data), Common.CrudOperation.UPDATE);
     }
 
     @POST
     @Path("get")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
-    public Response getOrganization(byte[] data)
+    public Response getOrganization(byte[] data) throws InvalidProtocolBufferException
     {
         Subject currentUser = SecurityUtils.getSubject();
         //currentUser.hasRole("");
-        try
-        {
-            byte[] response = _asyncComm.transaction(prepareRequest(data, Common.CrudOperation.READ));
-            return Response.ok(response).build();
-        } catch (Exception e)
-        {
-            return ResponseErrorUtil.createErrorResponse(e.getMessage(),
-                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
-        }
+        return executeRequest(OrganizationOuterClass.Organization.parseFrom(data), Common.CrudOperation.READ);
     }
 
     @POST
@@ -109,13 +86,20 @@ public class OrganizationController
         }
     }
 
-    private Organizationmessages.OrganizationRequest prepareRequest(byte[] data, Common.CrudOperation operation) throws Exception
+    private Response executeRequest(OrganizationOuterClass.Organization organization, Common.CrudOperation operation)
     {
-        OrganizationOuterClass.Organization organization = OrganizationOuterClass.Organization.parseFrom(data);
-
-        return Organizationmessages.OrganizationRequest.newBuilder()
-                .setCrudOperation(operation)
-                .setOrganization(organization)
-                .build();
+        try
+        {
+            Organizationmessages.OrganizationRequest request = Organizationmessages.OrganizationRequest.newBuilder()
+                    .setCrudOperation(operation)
+                    .setOrganization(organization)
+                    .build();
+            byte[] response = _asyncComm.transaction(request);
+            return Response.ok(response).build();
+        } catch (Exception e)
+        {
+            return ResponseErrorUtil.createErrorResponse(e.getMessage(),
+                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        }
     }
 }

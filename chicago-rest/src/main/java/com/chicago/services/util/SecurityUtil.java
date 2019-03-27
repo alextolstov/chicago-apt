@@ -14,6 +14,12 @@ public class SecurityUtil
         return props.get("user_id");
     }
 
+    public static String getSessionEntityId()
+    {
+        LinkedHashMap<String, String> props = getSessionProps();
+        return props.get("entity_id");
+    }
+
     private static LinkedHashMap<String, String> getSessionProps()
     {
         PrincipalCollection principals = SecurityUtils.getSubject().getPrincipals();
