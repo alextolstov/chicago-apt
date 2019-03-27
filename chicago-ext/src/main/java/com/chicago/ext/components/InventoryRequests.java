@@ -34,6 +34,7 @@ public class InventoryRequests extends AbstractComponent
         _ed.registerHandler(Inventorymessages.InventoryItemBrandRequest.class, new InventoryItemBrandEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemUnitRequest.class, new InventoryItemUnitEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemSupplierRequest.class, new InventoryItemSupplierEventHandler());
+        _ed.registerHandler(Inventorymessages.InventoryLocationRequest.class, new InventoryLocationEventHandler());
         // Response
         KafkaMessageProducer producer = cm.getResource(KafkaMessageProducer.class.getName());
         _ed.registerHandler(Inventorymessages.InventoryItemResponse.class, producer.new MessageEventHandler());
@@ -313,6 +314,59 @@ public class InventoryRequests extends AbstractComponent
                     response = Inventorymessages.InventoryItemBrandResponse
                             .newBuilder()
                             .setItemBrand((Inventory.InventoryItemBrand) dataMsg)
+                            .build();
+                }
+            } catch (Exception ex)
+            {
+                response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
+            }
+            _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
+            LOG.info("Published real-time response on request with transaction id: {}", transactionId);
+        }
+    }
+
+    class InventoryLocationEventHandler implements EventHandler<Inventorymessages.InventoryLocationRequest>
+    {
+        @Override
+        public void handleEvent(Inventorymessages.InventoryLocationRequest event, String transactionId)
+        {
+            Message response;
+            try
+            {
+                Message dataMsg = null;
+                List<Inventory.InventoryLocation> locations = null;
+
+                switch (event.getCrudOperation())
+                {
+                    case CREATE:
+                    {
+                        dataMsg = _inventoryBll.createInventoryLocation(event.getInventoryLocation());
+                        break;
+                    }
+                    case UPDATE:
+                    {
+                        _inventoryBll.updateInventoryLocation(event.getInventoryLocation());
+                        dataMsg = Inventory.InventoryItemSupplier.getDefaultInstance();
+                        break;
+                    }
+                    case READ: // On read return all brands
+                    {
+                        locations = _inventoryBll.getInventoryLocations(event.getInventoryLocation().getEntityId());
+                        break;
+                    }
+                }
+
+                if (event.getCrudOperation() == Common.CrudOperation.READ)
+                {
+                    response = Inventorymessages.InventoryLocationsResponse
+                            .newBuilder()
+                            .addAllInventoryLocations(locations)
+                            .build();
+                } else
+                {
+                    response = Inventorymessages.InventoryLocationResponse
+                            .newBuilder()
+                            .setInventoryLocation((Inventory.InventoryLocation) dataMsg)
                             .build();
                 }
             } catch (Exception ex)

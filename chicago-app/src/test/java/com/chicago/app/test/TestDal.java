@@ -83,6 +83,20 @@ public class TestDal
         ServiceLocatorUtilities.bind(serviceLocator, new TestApplicationBinder(ts));
         InventoryBll inventory = serviceLocator.getService(InventoryBll.class);
 
+        // Locations
+        Inventory.InventoryLocation location = Inventory.InventoryLocation.newBuilder()
+                .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
+                .setLocationName("Shelf")
+                .build();
+        Inventory.InventoryLocation createdLocation = inventory.createInventoryLocation(location);
+
+        Inventory.InventoryLocation updatedLocation = Inventory.InventoryLocation.newBuilder(createdLocation)
+                .setLocationName("Closet")
+                .build();
+        inventory.updateInventoryLocation(updatedLocation);
+        List<Inventory.InventoryLocation> locations = inventory.getInventoryLocations("9df37802-95a9-425e-be0f-00f45b2a6c4a");
+
+        // Brands
         Inventory.InventoryItemBrand brand = Inventory.InventoryItemBrand.newBuilder()
                 .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
                 .setBrandName("Nivea")
@@ -95,6 +109,7 @@ public class TestDal
         inventory.updateItemBrand(updatedBrand);
         List<Inventory.InventoryItemBrand> brands = inventory.getItemBrands("9df37802-95a9-425e-be0f-00f45b2a6c4a");
 
+        // Category
         Inventory.InventoryItemCategory category = Inventory.InventoryItemCategory.newBuilder()
                 .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
                 .setCategoryName("Shampoo")
@@ -113,6 +128,7 @@ public class TestDal
         inventory.updateItemCategory(updatedCategory);
         List<Inventory.InventoryItemCategory> categories = inventory.getItemCategories("9df37802-95a9-425e-be0f-00f45b2a6c4a");
 
+        // Units
         Inventory.InventoryItemUnit unit = Inventory.InventoryItemUnit.newBuilder()
                 .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
                 .setUnitName("gr")
@@ -125,12 +141,7 @@ public class TestDal
                 .build();
         Inventory.InventoryItemSupplier createdSupplier = inventory.createItemSupplier(supplier);
 
-        Inventory.InventoryLocation location = Inventory.InventoryLocation.newBuilder()
-                .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
-                .setLocationName("Shelf #1")
-                .build();
-        Inventory.InventoryLocation createdLocation = inventory.createInventoryLocation(location);
-
+        // Item
         Inventory.InventoryItem item = Inventory.InventoryItem.newBuilder()
                 .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
                 .setItemCategoryId(createdCategory.getCategoryId())

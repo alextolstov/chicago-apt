@@ -101,3 +101,22 @@ message InventoryItemsResponse
     repeated InventoryItem inventory_items = 1;
     TransactionError transaction_error = 2;
 }
+
+// Location
+message InventoryLocationRequest
+{
+    CrudOperation crud_operation = 1;
+    InventoryLocation inventory_location = 2;
+}
+
+message InventoryLocationResponse
+{
+    InventoryLocation inventory_location = 1;
+    TransactionError transaction_error = 2;
+}
+
+message InventoryLocationsResponse
+{
+    repeated InventoryLocation inventory_locations = 1;
+    TransactionError transaction_error = 2;
+}

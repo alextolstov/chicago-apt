@@ -371,7 +371,7 @@ public class InventoryDalImpl implements InventoryDal
     {
         Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_LOCATIONS_TABLE)
                 .where(QueryBuilder.eq("entity_id", UUID.fromString(location.getEntityId())))
-                .with(QueryBuilder.put("locations", UUID.fromString(location.getLocationName()), location.getLocationName()));
+                .with(QueryBuilder.put("locations", UUID.fromString(location.getLocationId()), location.getLocationName()));
 
         _cassandraConnector.getSession().execute(query);
     }

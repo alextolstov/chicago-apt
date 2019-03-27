@@ -130,7 +130,6 @@ public class InventoryBllImpl implements InventoryBll
         return newResult;
     }
 
-
     @Override
     public Inventory.InventoryItem createInventoryItem(Inventory.InventoryItem item)
     {
