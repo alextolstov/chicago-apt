@@ -17,6 +17,14 @@ enum TransferState
     REJECTED = 2;
 }
 
+message Inventory
+{
+    string organization_id = 1;
+    string inventory_id = 2;
+    string inventory_name = 3;
+    string description = 4;
+}
+
 message InventoryOperation
 {
     string inventory_id = 1;

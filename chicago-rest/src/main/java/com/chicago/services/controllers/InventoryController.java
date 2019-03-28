@@ -181,6 +181,64 @@ public class InventoryController
         return executeRequest(location, Common.CrudOperation.READ);
     }
 
+    // Inventory Item
+    @POST
+    @Path("item/create")
+    @RequiresAuthentication
+    @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
+    public Response createItem(byte[] data) throws InvalidProtocolBufferException
+    {
+        return executeRequest(Inventory.InventoryItemBrand.parseFrom(data), Common.CrudOperation.CREATE);
+    }
+
+    @POST
+    @Path("brand/update")
+    @RequiresAuthentication
+    @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
+    public Response updateItem(byte[] data) throws InvalidProtocolBufferException
+    {
+        return executeRequest(Inventory.InventoryItemBrand.parseFrom(data), Common.CrudOperation.UPDATE);
+    }
+
+    @POST
+    @Path("brand/get")
+    @RequiresAuthentication
+    @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
+    public Response getItem(byte[] data) throws InvalidProtocolBufferException
+    {
+        return executeRequest(Inventory.InventoryItemBrand.parseFrom(data), Common.CrudOperation.UPDATE);
+    }
+
+    @POST
+    @Path("brand/getall")
+    @RequiresAuthentication
+    @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
+    public Response getItems()
+    {
+        String entityId = SecurityUtil.getSessionEntityId();
+        Inventory.InventoryItem item = Inventory.InventoryItem.newBuilder()
+                .setEntityId(entityId)
+                .build();
+        return executeRequest(item, Common.CrudOperation.READ);
+    }
+
+    private Response executeRequest(Inventory.InventoryItem item, Common.CrudOperation operation)
+    {
+        try
+        {
+            Inventorymessages.InventoryItemRequest request = Inventorymessages.InventoryItemRequest.newBuilder()
+                    .setCrudOperation(operation)
+                    .setInventoryItem(item)
+                    .build();
+            byte[] response = _asyncComm.transaction(request);
+            return Response.ok(response).build();
+        } catch (Exception e)
+        {
+            return ResponseErrorUtil.createErrorResponse(e.getMessage(),
+                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        }
+    }
+
     private Response executeRequest(Inventory.InventoryItemBrand brand, Common.CrudOperation operation)
     {
         try

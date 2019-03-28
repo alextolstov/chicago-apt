@@ -30,6 +30,7 @@ public class InventoryRequests extends AbstractComponent
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
         _ed.registerHandler(Inventorymessages.InventoryItemRequest.class, new InventoryItemEventHandler());
+        _ed.registerHandler(Inventorymessages.InventoryItemsRequest.class, new InventoryItemsEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemCategoryRequest.class, new InventoryItemCategoryEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemBrandRequest.class, new InventoryItemBrandEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemUnitRequest.class, new InventoryItemUnitEventHandler());
@@ -84,7 +85,7 @@ public class InventoryRequests extends AbstractComponent
                         dataMsg = Inventory.InventoryItem.getDefaultInstance();
                         break;
                     }
-                    case READ: // On read return all brands
+                    case READ: // On read return all items
                     {
                         items = _inventoryBll.getInventoryItems(event.getInventoryItem().getEntityId());
                         break;

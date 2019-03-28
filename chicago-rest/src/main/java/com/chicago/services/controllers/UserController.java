@@ -80,7 +80,7 @@ public class UserController
             UserOuterClass.UserOrganization userOrganization = UserOuterClass.UserOrganization.parseFrom(data);
             byte[] response;
 
-            Usermessages.GetUsersRequest request = Usermessages.GetUsersRequest.newBuilder()
+            Usermessages.UsersRequest request = Usermessages.UsersRequest.newBuilder()
                     .setOrganizationId(userOrganization.getOrganizationId())
                     .build();
 

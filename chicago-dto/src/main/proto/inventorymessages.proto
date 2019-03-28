@@ -96,6 +96,11 @@ message InventoryItemResponse
     TransactionError transaction_error = 2;
 }
 
+message InventoryItemsRequest
+{
+    string inventory_id = 1;
+}
+
 message InventoryItemsResponse
 {
     repeated InventoryItem inventory_items = 1;

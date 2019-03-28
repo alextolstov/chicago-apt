@@ -56,12 +56,12 @@ message SetUserPasswordRequest
     UserPassword user_password = 1;
 }
 
-message GetUsersRequest
+message UsersRequest
 {
     string organization_id = 1;
 }
 
-message GetUsersResponse
+message UsersResponse
 {
     repeated User users = 1;
     TransactionError transaction_error = 2;

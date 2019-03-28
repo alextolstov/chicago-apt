@@ -27,12 +27,12 @@ public class UserRequests extends AbstractComponent
         _ed.registerHandler(Usermessages.SetUserAvatarRequest.class, new SetUserAvatarEventHandler());
         _ed.registerHandler(Usermessages.SetUserPasswordRequest.class, new SetUserPasswordEventHandler());
         _ed.registerHandler(Usermessages.UserRequest.class, new UserEventHandler());
+        _ed.registerHandler(Usermessages.UsersRequest.class, new UsersEventHandler());
         _ed.registerHandler(Usermessages.LoginUserRequest.class, new LoginUserEventHandler());
-        _ed.registerHandler(Usermessages.GetUsersRequest.class, new GetUsersEventHandler());
         // Response
         KafkaMessageProducer producer = cm.getResource(KafkaMessageProducer.class.getName());
         _ed.registerHandler(Usermessages.UserResponse.class, producer.new MessageEventHandler());
-        _ed.registerHandler(Usermessages.GetUsersResponse.class, producer.new MessageEventHandler());
+        _ed.registerHandler(Usermessages.UsersResponse.class, producer.new MessageEventHandler());
     }
 
     public boolean init(ConfigAccessor ca)
@@ -161,18 +161,18 @@ public class UserRequests extends AbstractComponent
         }
     }
 
-    // In: Usermessages.GetUsersRequest
-    // Out: Usermessages.GetUserResponse
-    class GetUsersEventHandler implements EventHandler<Usermessages.GetUsersRequest>
+    // In: Usermessages.UsersRequest
+    // Out: Usermessages.UsersResponse
+    class UsersEventHandler implements EventHandler<Usermessages.UsersRequest>
     {
         @Override
-        public void handleEvent(Usermessages.GetUsersRequest event, String transactionId)
+        public void handleEvent(Usermessages.UsersRequest event, String transactionId)
         {
             Message response;
             try
             {
                 List<UserOuterClass.User> users = _userBll.getUsers(event.getOrganizationId());
-                response = Usermessages.GetUsersResponse
+                response = Usermessages.UsersResponse
                         .newBuilder()
                         .addAllUsers(users)
                         .build();
