@@ -10,9 +10,11 @@ import java.util.UUID;
 public interface InventoryDal
 {
     // Inventory
-    String createInventory(String organizationId) throws Exception;
+    String createInventory(InventoryOuterClass.Inventory inventory) throws Exception;
 
-    void updateInventory(OrganizationOuterClass.Organization organization);
+    void updateInventory(InventoryOuterClass.Inventory inventory);
+
+    InventoryOuterClass.Inventory getInventory(String organizationId) throws Exception;
 
     // Item
     String createInventoryItem(InventoryOuterClass.InventoryItem inventoryItem);

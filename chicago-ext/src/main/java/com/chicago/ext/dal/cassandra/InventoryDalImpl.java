@@ -1,7 +1,6 @@
 package com.chicago.ext.dal.cassandra;
 
 import com.chicago.dto.InventoryOuterClass;
-import com.chicago.dto.OrganizationOuterClass;
 import com.chicago.ext.dal.DbConnector;
 import com.chicago.ext.dal.InventoryDal;
 import com.datastax.driver.core.ResultSet;
@@ -20,11 +19,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORIES_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEMS_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_BRANDS_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_CATEGORIES_TABLE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_UNITS_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_SUPPLIERS_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_UNITS_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_LOCATIONS_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.KEYSPACE;
 
@@ -36,15 +36,46 @@ public class InventoryDalImpl implements InventoryDal
     private DbConnector _cassandraConnector;
 
     @Override
-    public String createInventory(String organizationId) throws Exception
+    public String createInventory(InventoryOuterClass.Inventory inventory) throws Exception
     {
-        return null;
+        UUID newInventory = UUIDs.random();
+        Statement query = QueryBuilder.insertInto(KEYSPACE, INVENTORIES_TABLE)
+                .value("organization_id", inventory.getOrganizationId())
+                .value("inventory_id", newInventory)
+                .value("inventory_name", inventory.getInventoryName())
+                .value("description", inventory.getDescription());
+
+        return newInventory.toString();
     }
 
     @Override
-    public void updateInventory(OrganizationOuterClass.Organization organization)
+    public void updateInventory(InventoryOuterClass.Inventory inventory)
     {
+        Statement query = QueryBuilder.update(KEYSPACE, INVENTORIES_TABLE)
+                .with(QueryBuilder.set("inventory_name", inventory.getInventoryName()))
+                .and(QueryBuilder.set("description", inventory.getDescription()))
+                .where(QueryBuilder.eq("organization_id", UUID.fromString(inventory.getOrganizationId())));
+        _cassandraConnector.getSession().execute(query);
+    }
 
+    @Override
+    public InventoryOuterClass.Inventory getInventory(String organizationId) throws Exception
+    {
+        Statement query = QueryBuilder.select()
+                .from(KEYSPACE, INVENTORIES_TABLE)
+                .where(QueryBuilder.eq("organization_id", UUID.fromString(organizationId)));
+        ResultSet result = _cassandraConnector.getSession().execute(query);
+        Row row = result.one();
+        if (row == null)
+        {
+            throw new Exception("No inventory for organization " + organizationId + " found");
+        }
+        return InventoryOuterClass.Inventory.newBuilder()
+                .setOrganizationId(row.getUUID("organization_id").toString())
+                .setInventoryId(row.getUUID("inventory_id").toString())
+                .setInventoryName(row.getString("inventory_name"))
+                .setDescription(row.getString("description"))
+                .build();
     }
 
     @Override

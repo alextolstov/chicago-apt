@@ -208,7 +208,7 @@ INSERT INTO ChicagoErp.Roles (role_id, role_name, permission_ids, description) V
 }, 'Branch level admin');
 
 -- Inventory
-CREATE TABLE IF NOT EXISTS ChicagoErp.Inventory (
+CREATE TABLE IF NOT EXISTS ChicagoErp.Inventories (
     organization_id uuid PRIMARY KEY,
     inventory_id uuid,
     inventory_name varchar,
