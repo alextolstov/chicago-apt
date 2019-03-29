@@ -1,11 +1,7 @@
 package com.chicago.app.test;
 
 import com.chicago.app.ApplicationBinder;
-import com.chicago.dto.Inventory;
-import com.chicago.dto.OrganizationOuterClass;
-import com.chicago.dto.PermissionOuterClass;
-import com.chicago.dto.PositionOuterClass;
-import com.chicago.dto.UserOuterClass;
+import com.chicago.dto.*;
 import com.chicago.ext.bll.InventoryBll;
 import com.chicago.ext.bll.OrganizationBll;
 import com.chicago.ext.bll.UserBll;
@@ -84,65 +80,65 @@ public class TestDal
         InventoryBll inventory = serviceLocator.getService(InventoryBll.class);
 
         // Locations
-        Inventory.InventoryLocation location = Inventory.InventoryLocation.newBuilder()
+        InventoryOuterClass.InventoryLocation location = InventoryOuterClass.InventoryLocation.newBuilder()
                 .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
                 .setLocationName("Shelf")
                 .build();
-        Inventory.InventoryLocation createdLocation = inventory.createInventoryLocation(location);
+        InventoryOuterClass.InventoryLocation createdLocation = inventory.createInventoryLocation(location);
 
-        Inventory.InventoryLocation updatedLocation = Inventory.InventoryLocation.newBuilder(createdLocation)
+        InventoryOuterClass.InventoryLocation updatedLocation = InventoryOuterClass.InventoryLocation.newBuilder(createdLocation)
                 .setLocationName("Closet")
                 .build();
         inventory.updateInventoryLocation(updatedLocation);
-        List<Inventory.InventoryLocation> locations = inventory.getInventoryLocations("9df37802-95a9-425e-be0f-00f45b2a6c4a");
+        List<InventoryOuterClass.InventoryLocation> locations = inventory.getInventoryLocations("9df37802-95a9-425e-be0f-00f45b2a6c4a");
 
         // Brands
-        Inventory.InventoryItemBrand brand = Inventory.InventoryItemBrand.newBuilder()
+        InventoryOuterClass.InventoryItemBrand brand = InventoryOuterClass.InventoryItemBrand.newBuilder()
                 .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
                 .setBrandName("Nivea")
                 .build();
-        Inventory.InventoryItemBrand createdBrand = inventory.createItemBrand(brand);
+        InventoryOuterClass.InventoryItemBrand createdBrand = inventory.createItemBrand(brand);
 
-        Inventory.InventoryItemBrand updatedBrand = Inventory.InventoryItemBrand.newBuilder(createdBrand)
+        InventoryOuterClass.InventoryItemBrand updatedBrand = InventoryOuterClass.InventoryItemBrand.newBuilder(createdBrand)
                 .setBrandName("Gillet")
                 .build();
         inventory.updateItemBrand(updatedBrand);
-        List<Inventory.InventoryItemBrand> brands = inventory.getItemBrands("9df37802-95a9-425e-be0f-00f45b2a6c4a");
+        List<InventoryOuterClass.InventoryItemBrand> brands = inventory.getItemBrands("9df37802-95a9-425e-be0f-00f45b2a6c4a");
 
         // Category
-        Inventory.InventoryItemCategory category = Inventory.InventoryItemCategory.newBuilder()
+        InventoryOuterClass.InventoryItemCategory category = InventoryOuterClass.InventoryItemCategory.newBuilder()
                 .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
                 .setCategoryName("Shampoo")
                 .build();
-        Inventory.InventoryItemCategory createdCategory = inventory.createItemCategory(category);
+        InventoryOuterClass.InventoryItemCategory createdCategory = inventory.createItemCategory(category);
 
-        category = Inventory.InventoryItemCategory.newBuilder()
+        category = InventoryOuterClass.InventoryItemCategory.newBuilder()
                 .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
                 .setCategoryName("Paint")
                 .build();
         createdCategory = inventory.createItemCategory(category);
 
-        Inventory.InventoryItemCategory updatedCategory = Inventory.InventoryItemCategory.newBuilder(createdCategory)
+        InventoryOuterClass.InventoryItemCategory updatedCategory = InventoryOuterClass.InventoryItemCategory.newBuilder(createdCategory)
                 .setCategoryName("Soap")
                 .build();
         inventory.updateItemCategory(updatedCategory);
-        List<Inventory.InventoryItemCategory> categories = inventory.getItemCategories("9df37802-95a9-425e-be0f-00f45b2a6c4a");
+        List<InventoryOuterClass.InventoryItemCategory> categories = inventory.getItemCategories("9df37802-95a9-425e-be0f-00f45b2a6c4a");
 
         // Units
-        Inventory.InventoryItemUnit unit = Inventory.InventoryItemUnit.newBuilder()
+        InventoryOuterClass.InventoryItemUnit unit = InventoryOuterClass.InventoryItemUnit.newBuilder()
                 .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
                 .setUnitName("gr")
                 .build();
-        Inventory.InventoryItemUnit createdUnit = inventory.createItemUnit(unit);
+        InventoryOuterClass.InventoryItemUnit createdUnit = inventory.createItemUnit(unit);
 
-        Inventory.InventoryItemSupplier supplier = Inventory.InventoryItemSupplier.newBuilder()
+        InventoryOuterClass.InventoryItemSupplier supplier = InventoryOuterClass.InventoryItemSupplier.newBuilder()
                 .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
                 .setSupplierName("OOO Romashka")
                 .build();
-        Inventory.InventoryItemSupplier createdSupplier = inventory.createItemSupplier(supplier);
+        InventoryOuterClass.InventoryItemSupplier createdSupplier = inventory.createItemSupplier(supplier);
 
         // Item
-        Inventory.InventoryItem item = Inventory.InventoryItem.newBuilder()
+        InventoryOuterClass.InventoryItem item = InventoryOuterClass.InventoryItem.newBuilder()
                 .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
                 .setItemCategoryId(createdCategory.getCategoryId())
                 .setItemBrandId(createdBrand.getBrandId())
@@ -153,7 +149,7 @@ public class TestDal
                 .setInboundUnitId(createdUnit.getUnitId())
                 .setOutboundUnitId(createdUnit.getUnitId())
                 .build();
-        Inventory.InventoryItem newItem = inventory.createInventoryItem(item);
+        InventoryOuterClass.InventoryItem newItem = inventory.createInventoryItem(item);
     }
 
     @Test

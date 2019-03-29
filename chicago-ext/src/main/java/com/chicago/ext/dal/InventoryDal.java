@@ -1,6 +1,6 @@
 package com.chicago.ext.dal;
 
-import com.chicago.dto.Inventory;
+import com.chicago.dto.InventoryOuterClass;
 import com.chicago.dto.OrganizationOuterClass;
 
 import java.util.List;
@@ -15,55 +15,55 @@ public interface InventoryDal
     void updateInventory(OrganizationOuterClass.Organization organization);
 
     // Item
-    String createInventoryItem(Inventory.InventoryItem inventoryItem);
+    String createInventoryItem(InventoryOuterClass.InventoryItem inventoryItem);
 
-    void updateInventoryItem(Inventory.InventoryItem inventoryItem);
+    void updateInventoryItem(InventoryOuterClass.InventoryItem inventoryItem);
 
-    Inventory.InventoryItem getInventoryItem(String itemId) throws Exception;
+    InventoryOuterClass.InventoryItem getInventoryItem(String itemId) throws Exception;
 
-    List<Inventory.InventoryItem> getInventoryItems(String entityId) throws Exception;
+    List<InventoryOuterClass.InventoryItem> getInventoryItems(String entityId, String inventoryId) throws Exception;
 
     // Operations
-    void applyInventoryOperation(Inventory.InventoryOperation inventoryOperation);
+    void applyInventoryOperation(InventoryOuterClass.InventoryOperation inventoryOperation);
 
-    void startInventoryTransfer(Inventory.InventoryTransfer inventoryTransfer);
+    void startInventoryTransfer(InventoryOuterClass.InventoryTransfer inventoryTransfer);
 
-    void acceptInventoryTransfer(Inventory.InventoryTransfer inventoryTransfer);
+    void acceptInventoryTransfer(InventoryOuterClass.InventoryTransfer inventoryTransfer);
 
-    void rejectInventoryTransfer(Inventory.InventoryTransfer inventoryTransfer);
+    void rejectInventoryTransfer(InventoryOuterClass.InventoryTransfer inventoryTransfer);
 
     // Brands
-    Inventory.InventoryItemBrand createItemBrand(Inventory.InventoryItemBrand brand);
+    InventoryOuterClass.InventoryItemBrand createItemBrand(InventoryOuterClass.InventoryItemBrand brand);
 
-    void updateItemBrand(Inventory.InventoryItemBrand brand);
+    void updateItemBrand(InventoryOuterClass.InventoryItemBrand brand);
 
     Map<UUID, String> getItemBrands(String entityId);
 
     // Categories
-    Inventory.InventoryItemCategory createItemCategory(Inventory.InventoryItemCategory category);
+    InventoryOuterClass.InventoryItemCategory createItemCategory(InventoryOuterClass.InventoryItemCategory category);
 
-    void updateItemCategory(Inventory.InventoryItemCategory category);
+    void updateItemCategory(InventoryOuterClass.InventoryItemCategory category);
 
     Map<UUID, String> getItemCategories(String entityId);
 
     // Units
-    Inventory.InventoryItemUnit createItemUnit(Inventory.InventoryItemUnit unit);
+    InventoryOuterClass.InventoryItemUnit createItemUnit(InventoryOuterClass.InventoryItemUnit unit);
 
-    void updateItemUnit(Inventory.InventoryItemUnit unit);
+    void updateItemUnit(InventoryOuterClass.InventoryItemUnit unit);
 
     Map<UUID, String> getItemUnits(String entityId);
 
     // Suppliers
-    Inventory.InventoryItemSupplier createItemSupplier(Inventory.InventoryItemSupplier supplier);
+    InventoryOuterClass.InventoryItemSupplier createItemSupplier(InventoryOuterClass.InventoryItemSupplier supplier);
 
-    void updateItemSupplier(Inventory.InventoryItemSupplier supplier);
+    void updateItemSupplier(InventoryOuterClass.InventoryItemSupplier supplier);
 
     Map<UUID, String> getItemSuppliers(String entityId);
 
     // Locations
-    Inventory.InventoryLocation createInventoryLocation(Inventory.InventoryLocation location);
+    InventoryOuterClass.InventoryLocation createInventoryLocation(InventoryOuterClass.InventoryLocation location);
 
-    void updateInventoryLocation(Inventory.InventoryLocation location);
+    void updateInventoryLocation(InventoryOuterClass.InventoryLocation location);
 
     Map<UUID, String> getInventoryLocations(String entityId);
 }

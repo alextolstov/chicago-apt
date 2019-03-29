@@ -1,6 +1,6 @@
 package com.chicago.ext.bll;
 
-import com.chicago.dto.Inventory;
+import com.chicago.dto.InventoryOuterClass;
 import org.jvnet.hk2.annotations.Contract;
 
 import java.util.List;
@@ -9,46 +9,46 @@ import java.util.List;
 public interface InventoryBll
 {
     // Brands
-    Inventory.InventoryItemBrand createItemBrand(Inventory.InventoryItemBrand brand);
+    InventoryOuterClass.InventoryItemBrand createItemBrand(InventoryOuterClass.InventoryItemBrand brand);
 
-    void updateItemBrand(Inventory.InventoryItemBrand brand);
+    void updateItemBrand(InventoryOuterClass.InventoryItemBrand brand);
 
-    List<Inventory.InventoryItemBrand> getItemBrands(String entityId);
+    List<InventoryOuterClass.InventoryItemBrand> getItemBrands(String entityId);
 
     // Categories
-    Inventory.InventoryItemCategory createItemCategory(Inventory.InventoryItemCategory category);
+    InventoryOuterClass.InventoryItemCategory createItemCategory(InventoryOuterClass.InventoryItemCategory category);
 
-    void updateItemCategory(Inventory.InventoryItemCategory category);
+    void updateItemCategory(InventoryOuterClass.InventoryItemCategory category);
 
-    List<Inventory.InventoryItemCategory> getItemCategories(String entityId);
+    List<InventoryOuterClass.InventoryItemCategory> getItemCategories(String entityId);
 
     // Units
-    Inventory.InventoryItemUnit createItemUnit(Inventory.InventoryItemUnit unit);
+    InventoryOuterClass.InventoryItemUnit createItemUnit(InventoryOuterClass.InventoryItemUnit unit);
 
-    void updateItemUnit(Inventory.InventoryItemUnit unit);
+    void updateItemUnit(InventoryOuterClass.InventoryItemUnit unit);
 
-    List<Inventory.InventoryItemUnit> getItemUnits(String entityId);
+    List<InventoryOuterClass.InventoryItemUnit> getItemUnits(String entityId);
 
     // Suppliers
-    Inventory.InventoryItemSupplier createItemSupplier(Inventory.InventoryItemSupplier supplier);
+    InventoryOuterClass.InventoryItemSupplier createItemSupplier(InventoryOuterClass.InventoryItemSupplier supplier);
 
-    void updateItemSupplier(Inventory.InventoryItemSupplier supplier);
+    void updateItemSupplier(InventoryOuterClass.InventoryItemSupplier supplier);
 
-    List<Inventory.InventoryItemSupplier> getItemSuppliers(String entityId);
+    List<InventoryOuterClass.InventoryItemSupplier> getItemSuppliers(String entityId);
 
     // Locations
-    Inventory.InventoryLocation createInventoryLocation(Inventory.InventoryLocation location);
+    InventoryOuterClass.InventoryLocation createInventoryLocation(InventoryOuterClass.InventoryLocation location);
 
-    void updateInventoryLocation(Inventory.InventoryLocation location);
+    void updateInventoryLocation(InventoryOuterClass.InventoryLocation location);
 
-    List<Inventory.InventoryLocation> getInventoryLocations(String entityId);
+    List<InventoryOuterClass.InventoryLocation> getInventoryLocations(String entityId);
 
     // Items
-    Inventory.InventoryItem createInventoryItem(Inventory.InventoryItem item);
+    InventoryOuterClass.InventoryItem createInventoryItem(InventoryOuterClass.InventoryItem item);
 
-    void updateInventoryItem(Inventory.InventoryItem item);
+    void updateInventoryItem(InventoryOuterClass.InventoryItem item);
 
-    Inventory.InventoryItem getInventoryItem(String itemId) throws Exception;
+    InventoryOuterClass.InventoryItem getInventoryItem(String itemId) throws Exception;
 
-    List<Inventory.InventoryItem> getInventoryItems(String entityId) throws Exception;
+    List<InventoryOuterClass.InventoryItem> getInventoryItems(String entityId, String inventory_id) throws Exception;
 }

@@ -98,7 +98,8 @@ message InventoryItemResponse
 
 message InventoryItemsRequest
 {
-    string inventory_id = 1;
+    string entity_id = 1;
+    string inventory_id = 2;
 }
 
 message InventoryItemsResponse

@@ -2,7 +2,7 @@ package com.chicago.services.controllers;
 
 import com.chicago.common.comm.AsyncCommunicator;
 import com.chicago.dto.Common;
-import com.chicago.dto.Inventory;
+import com.chicago.dto.InventoryOuterClass;
 import com.chicago.dto.Inventorymessages;
 import com.chicago.dto.Service;
 import com.chicago.services.internal.MediaTypeExt;
@@ -32,7 +32,7 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response createBrand(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(Inventory.InventoryItemBrand.parseFrom(data), Common.CrudOperation.CREATE);
+        return executeRequest(InventoryOuterClass.InventoryItemBrand.parseFrom(data), Common.CrudOperation.CREATE);
     }
 
     @POST
@@ -41,7 +41,7 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response updateBrand(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(Inventory.InventoryItemBrand.parseFrom(data), Common.CrudOperation.UPDATE);
+        return executeRequest(InventoryOuterClass.InventoryItemBrand.parseFrom(data), Common.CrudOperation.UPDATE);
     }
 
     @POST
@@ -51,7 +51,7 @@ public class InventoryController
     public Response getBrands()
     {
         String entityId = SecurityUtil.getSessionEntityId();
-        Inventory.InventoryItemBrand brand = Inventory.InventoryItemBrand.newBuilder()
+        InventoryOuterClass.InventoryItemBrand brand = InventoryOuterClass.InventoryItemBrand.newBuilder()
                 .setEntityId(entityId)
                 .build();
         return executeRequest(brand, Common.CrudOperation.READ);
@@ -63,7 +63,7 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response createCategory(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(Inventory.InventoryItemCategory.parseFrom(data), Common.CrudOperation.CREATE);
+        return executeRequest(InventoryOuterClass.InventoryItemCategory.parseFrom(data), Common.CrudOperation.CREATE);
     }
 
     @POST
@@ -72,7 +72,7 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response updateCategory(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(Inventory.InventoryItemCategory.parseFrom(data), Common.CrudOperation.UPDATE);
+        return executeRequest(InventoryOuterClass.InventoryItemCategory.parseFrom(data), Common.CrudOperation.UPDATE);
     }
 
     @POST
@@ -82,7 +82,7 @@ public class InventoryController
     public Response getCategories()
     {
         String entityId = SecurityUtil.getSessionEntityId();
-        Inventory.InventoryItemCategory category = Inventory.InventoryItemCategory.newBuilder()
+        InventoryOuterClass.InventoryItemCategory category = InventoryOuterClass.InventoryItemCategory.newBuilder()
                 .setEntityId(entityId)
                 .build();
         return executeRequest(category, Common.CrudOperation.READ);
@@ -94,7 +94,7 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response createUnit(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(Inventory.InventoryItemUnit.parseFrom(data), Common.CrudOperation.CREATE);
+        return executeRequest(InventoryOuterClass.InventoryItemUnit.parseFrom(data), Common.CrudOperation.CREATE);
     }
 
     @POST
@@ -103,7 +103,7 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response updateUnit(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(Inventory.InventoryItemUnit.parseFrom(data), Common.CrudOperation.UPDATE);
+        return executeRequest(InventoryOuterClass.InventoryItemUnit.parseFrom(data), Common.CrudOperation.UPDATE);
     }
 
     @POST
@@ -113,7 +113,7 @@ public class InventoryController
     public Response getUnits() throws InvalidProtocolBufferException
     {
         String entityId = SecurityUtil.getSessionEntityId();
-        Inventory.InventoryItemUnit unit = Inventory.InventoryItemUnit.newBuilder()
+        InventoryOuterClass.InventoryItemUnit unit = InventoryOuterClass.InventoryItemUnit.newBuilder()
                 .setEntityId(entityId)
                 .build();
         return executeRequest(unit, Common.CrudOperation.READ);
@@ -125,7 +125,7 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response createSupplier(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(Inventory.InventoryItemSupplier.parseFrom(data), Common.CrudOperation.CREATE);
+        return executeRequest(InventoryOuterClass.InventoryItemSupplier.parseFrom(data), Common.CrudOperation.CREATE);
     }
 
     @POST
@@ -134,7 +134,7 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response updateSupplier(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(Inventory.InventoryItemSupplier.parseFrom(data), Common.CrudOperation.UPDATE);
+        return executeRequest(InventoryOuterClass.InventoryItemSupplier.parseFrom(data), Common.CrudOperation.UPDATE);
     }
 
     @POST
@@ -144,7 +144,7 @@ public class InventoryController
     public Response getSuppliers()
     {
         String entityId = SecurityUtil.getSessionEntityId();
-        Inventory.InventoryItemSupplier supplier = Inventory.InventoryItemSupplier.newBuilder()
+        InventoryOuterClass.InventoryItemSupplier supplier = InventoryOuterClass.InventoryItemSupplier.newBuilder()
                 .setEntityId(entityId)
                 .build();
         return executeRequest(supplier, Common.CrudOperation.READ);
@@ -156,7 +156,7 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response createLocation(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(Inventory.InventoryLocation.parseFrom(data), Common.CrudOperation.CREATE);
+        return executeRequest(InventoryOuterClass.InventoryLocation.parseFrom(data), Common.CrudOperation.CREATE);
     }
 
     @POST
@@ -165,7 +165,7 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response updateLocation(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(Inventory.InventoryLocation.parseFrom(data), Common.CrudOperation.UPDATE);
+        return executeRequest(InventoryOuterClass.InventoryLocation.parseFrom(data), Common.CrudOperation.UPDATE);
     }
 
     @POST
@@ -175,7 +175,7 @@ public class InventoryController
     public Response getLocations()
     {
         String entityId = SecurityUtil.getSessionEntityId();
-        Inventory.InventoryLocation location = Inventory.InventoryLocation.newBuilder()
+        InventoryOuterClass.InventoryLocation location = InventoryOuterClass.InventoryLocation.newBuilder()
                 .setEntityId(entityId)
                 .build();
         return executeRequest(location, Common.CrudOperation.READ);
@@ -188,7 +188,7 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response createItem(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(Inventory.InventoryItemBrand.parseFrom(data), Common.CrudOperation.CREATE);
+        return executeRequest(InventoryOuterClass.InventoryItemBrand.parseFrom(data), Common.CrudOperation.CREATE);
     }
 
     @POST
@@ -197,7 +197,7 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response updateItem(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(Inventory.InventoryItemBrand.parseFrom(data), Common.CrudOperation.UPDATE);
+        return executeRequest(InventoryOuterClass.InventoryItemBrand.parseFrom(data), Common.CrudOperation.UPDATE);
     }
 
     @POST
@@ -206,7 +206,7 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response getItem(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(Inventory.InventoryItemBrand.parseFrom(data), Common.CrudOperation.UPDATE);
+        return executeRequest(InventoryOuterClass.InventoryItemBrand.parseFrom(data), Common.CrudOperation.UPDATE);
     }
 
     @POST
@@ -216,13 +216,13 @@ public class InventoryController
     public Response getItems()
     {
         String entityId = SecurityUtil.getSessionEntityId();
-        Inventory.InventoryItem item = Inventory.InventoryItem.newBuilder()
+        InventoryOuterClass.InventoryItem item = InventoryOuterClass.InventoryItem.newBuilder()
                 .setEntityId(entityId)
                 .build();
         return executeRequest(item, Common.CrudOperation.READ);
     }
 
-    private Response executeRequest(Inventory.InventoryItem item, Common.CrudOperation operation)
+    private Response executeRequest(InventoryOuterClass.InventoryItem item, Common.CrudOperation operation)
     {
         try
         {
@@ -239,7 +239,7 @@ public class InventoryController
         }
     }
 
-    private Response executeRequest(Inventory.InventoryItemBrand brand, Common.CrudOperation operation)
+    private Response executeRequest(InventoryOuterClass.InventoryItemBrand brand, Common.CrudOperation operation)
     {
         try
         {
@@ -256,7 +256,7 @@ public class InventoryController
         }
     }
 
-    private Response executeRequest(Inventory.InventoryItemCategory category, Common.CrudOperation operation)
+    private Response executeRequest(InventoryOuterClass.InventoryItemCategory category, Common.CrudOperation operation)
     {
         try
         {
@@ -273,7 +273,7 @@ public class InventoryController
         }
     }
 
-    private Response executeRequest(Inventory.InventoryItemUnit unit, Common.CrudOperation operation)
+    private Response executeRequest(InventoryOuterClass.InventoryItemUnit unit, Common.CrudOperation operation)
     {
         try
         {
@@ -290,7 +290,7 @@ public class InventoryController
         }
     }
 
-    private Response executeRequest(Inventory.InventoryItemSupplier supplier, Common.CrudOperation operation)
+    private Response executeRequest(InventoryOuterClass.InventoryItemSupplier supplier, Common.CrudOperation operation)
     {
         try
         {
@@ -307,7 +307,7 @@ public class InventoryController
         }
     }
 
-    private Response executeRequest(Inventory.InventoryLocation location, Common.CrudOperation operation)
+    private Response executeRequest(InventoryOuterClass.InventoryLocation location, Common.CrudOperation operation)
     {
         try
         {

@@ -1,6 +1,6 @@
 package com.chicago.ext.dal.cassandra;
 
-import com.chicago.dto.Inventory;
+import com.chicago.dto.InventoryOuterClass;
 import com.chicago.dto.OrganizationOuterClass;
 import com.chicago.ext.dal.DbConnector;
 import com.chicago.ext.dal.InventoryDal;
@@ -48,11 +48,12 @@ public class InventoryDalImpl implements InventoryDal
     }
 
     @Override
-    public String createInventoryItem(Inventory.InventoryItem inventoryItem)
+    public String createInventoryItem(InventoryOuterClass.InventoryItem inventoryItem)
     {
         UUID newItemId = UUIDs.random();
         Statement query = QueryBuilder.insertInto(KEYSPACE, INVENTORY_ITEMS_TABLE)
                 .value("entity_id", UUID.fromString(inventoryItem.getEntityId()))
+                .value("inventory_id", UUID.fromString(inventoryItem.getInventoryId()))
                 .value("item_id", newItemId)
                 .value("item_category_id", UUID.fromString(inventoryItem.getItemCategoryId()))
                 .value("item_brand_id", UUID.fromString(inventoryItem.getItemBrandId()))
@@ -84,7 +85,7 @@ public class InventoryDalImpl implements InventoryDal
     }
 
     @Override
-    public void updateInventoryItem(Inventory.InventoryItem inventoryItem)
+    public void updateInventoryItem(InventoryOuterClass.InventoryItem inventoryItem)
     {
         Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_ITEMS_TABLE)
                 .with(QueryBuilder.set("item_category_id", UUID.fromString(inventoryItem.getItemCategoryId())))
@@ -115,7 +116,7 @@ public class InventoryDalImpl implements InventoryDal
     }
 
     @Override
-    public Inventory.InventoryItem getInventoryItem(String itemId) throws Exception
+    public InventoryOuterClass.InventoryItem getInventoryItem(String itemId) throws Exception
     {
         Statement query = QueryBuilder.select()
                 .from(KEYSPACE, INVENTORY_ITEMS_TABLE)
@@ -130,14 +131,15 @@ public class InventoryDalImpl implements InventoryDal
         return buildItem(row);
     }
 
-    public List<Inventory.InventoryItem> getInventoryItems(String entityId) throws Exception
+    public List<InventoryOuterClass.InventoryItem> getInventoryItems(String entityId, String inventoryId) throws Exception
     {
         Statement query = QueryBuilder.select()
                 .from(KEYSPACE, INVENTORY_ITEMS_TABLE)
-                .where(QueryBuilder.eq("entity_id", UUID.fromString(entityId)));
+                .where(QueryBuilder.eq("entity_id", UUID.fromString(entityId)))
+                .and(QueryBuilder.eq("inventory_id", UUID.fromString(entityId)));
         ResultSet result = _cassandraConnector.getSession().execute(query);
         Row row;
-        List<Inventory.InventoryItem> items = new ArrayList<>();
+        List<InventoryOuterClass.InventoryItem> items = new ArrayList<>();
 
         while ((row = result.one()) != null)
         {
@@ -148,31 +150,31 @@ public class InventoryDalImpl implements InventoryDal
     }
 
     @Override
-    public void applyInventoryOperation(Inventory.InventoryOperation inventoryOperation)
+    public void applyInventoryOperation(InventoryOuterClass.InventoryOperation inventoryOperation)
     {
 
     }
 
     @Override
-    public void startInventoryTransfer(Inventory.InventoryTransfer inventoryTransfer)
+    public void startInventoryTransfer(InventoryOuterClass.InventoryTransfer inventoryTransfer)
     {
 
     }
 
     @Override
-    public void acceptInventoryTransfer(Inventory.InventoryTransfer inventoryTransfer)
+    public void acceptInventoryTransfer(InventoryOuterClass.InventoryTransfer inventoryTransfer)
     {
 
     }
 
     @Override
-    public void rejectInventoryTransfer(Inventory.InventoryTransfer inventoryTransfer)
+    public void rejectInventoryTransfer(InventoryOuterClass.InventoryTransfer inventoryTransfer)
     {
 
     }
 
     @Override
-    public Inventory.InventoryItemBrand createItemBrand(Inventory.InventoryItemBrand brand)
+    public InventoryOuterClass.InventoryItemBrand createItemBrand(InventoryOuterClass.InventoryItemBrand brand)
     {
         UUID newId = UUIDs.random();
         Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_ITEM_BRANDS_TABLE)
@@ -180,13 +182,13 @@ public class InventoryDalImpl implements InventoryDal
                 .with(QueryBuilder.put("brands", newId, brand.getBrandName()));
         _cassandraConnector.getSession().execute(query);
 
-        return Inventory.InventoryItemBrand.newBuilder(brand)
+        return InventoryOuterClass.InventoryItemBrand.newBuilder(brand)
                 .setBrandId(newId.toString())
                 .build();
     }
 
     @Override
-    public void updateItemBrand(Inventory.InventoryItemBrand brand)
+    public void updateItemBrand(InventoryOuterClass.InventoryItemBrand brand)
     {
         Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_ITEM_BRANDS_TABLE)
                 .where(QueryBuilder.eq("entity_id", UUID.fromString(brand.getEntityId())))
@@ -202,7 +204,7 @@ public class InventoryDalImpl implements InventoryDal
     }
 
     @Override
-    public Inventory.InventoryItemCategory createItemCategory(Inventory.InventoryItemCategory category)
+    public InventoryOuterClass.InventoryItemCategory createItemCategory(InventoryOuterClass.InventoryItemCategory category)
     {
         UUID newId = UUIDs.random();
         Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_ITEM_CATEGORIES_TABLE)
@@ -210,13 +212,13 @@ public class InventoryDalImpl implements InventoryDal
                 .with(QueryBuilder.put("categories", newId, category.getCategoryName()));
         _cassandraConnector.getSession().execute(query);
 
-        return Inventory.InventoryItemCategory.newBuilder(category)
+        return InventoryOuterClass.InventoryItemCategory.newBuilder(category)
                 .setCategoryId(newId.toString())
                 .build();
     }
 
     @Override
-    public void updateItemCategory(Inventory.InventoryItemCategory category)
+    public void updateItemCategory(InventoryOuterClass.InventoryItemCategory category)
     {
         Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_ITEM_CATEGORIES_TABLE)
                 .where(QueryBuilder.eq("entity_id", UUID.fromString(category.getEntityId())))
@@ -232,7 +234,7 @@ public class InventoryDalImpl implements InventoryDal
     }
 
     @Override
-    public Inventory.InventoryItemUnit createItemUnit(Inventory.InventoryItemUnit unit)
+    public InventoryOuterClass.InventoryItemUnit createItemUnit(InventoryOuterClass.InventoryItemUnit unit)
     {
         UUID newId = UUIDs.random();
         Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_ITEM_UNITS_TABLE)
@@ -240,13 +242,13 @@ public class InventoryDalImpl implements InventoryDal
                 .with(QueryBuilder.put("units", newId, unit.getUnitName()));
         _cassandraConnector.getSession().execute(query);
 
-        return Inventory.InventoryItemUnit.newBuilder(unit)
+        return InventoryOuterClass.InventoryItemUnit.newBuilder(unit)
                 .setUnitId(newId.toString())
                 .build();
     }
 
     @Override
-    public void updateItemUnit(Inventory.InventoryItemUnit unit)
+    public void updateItemUnit(InventoryOuterClass.InventoryItemUnit unit)
     {
         Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_ITEM_UNITS_TABLE)
                 .where(QueryBuilder.eq("entity_id", UUID.fromString(unit.getEntityId())))
@@ -277,7 +279,7 @@ public class InventoryDalImpl implements InventoryDal
     }
 
     @Override
-    public Inventory.InventoryItemSupplier createItemSupplier(Inventory.InventoryItemSupplier supplier)
+    public InventoryOuterClass.InventoryItemSupplier createItemSupplier(InventoryOuterClass.InventoryItemSupplier supplier)
     {
         UUID newId = UUIDs.random();
 
@@ -286,13 +288,13 @@ public class InventoryDalImpl implements InventoryDal
                 .with(QueryBuilder.put("suppliers", newId, supplier.getSupplierName()));
         _cassandraConnector.getSession().execute(query);
 
-        return Inventory.InventoryItemSupplier.newBuilder(supplier)
+        return InventoryOuterClass.InventoryItemSupplier.newBuilder(supplier)
                 .setSupplierId(newId.toString())
                 .build();
     }
 
     @Override
-    public void updateItemSupplier(Inventory.InventoryItemSupplier supplier)
+    public void updateItemSupplier(InventoryOuterClass.InventoryItemSupplier supplier)
     {
         Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_ITEM_SUPPLIERS_TABLE)
                 .where(QueryBuilder.eq("entity_id", UUID.fromString(supplier.getEntityId())))
@@ -307,9 +309,9 @@ public class InventoryDalImpl implements InventoryDal
         return getItems(entityId, INVENTORY_ITEM_SUPPLIERS_TABLE, "suppliers");
     }
 
-    private Inventory.InventoryItem buildItem(Row row) throws Exception
+    private InventoryOuterClass.InventoryItem buildItem(Row row) throws Exception
     {
-        Inventory.InventoryItem.Builder builder = Inventory.InventoryItem.newBuilder();
+        InventoryOuterClass.InventoryItem.Builder builder = InventoryOuterClass.InventoryItem.newBuilder();
         builder.setEntityId(row.getUUID("entity_id").toString());
         builder.setItemId(row.getUUID("item_id").toString());
         if (row.getUUID("item_category_id") != null)
@@ -352,7 +354,7 @@ public class InventoryDalImpl implements InventoryDal
     }
 
     @Override
-    public Inventory.InventoryLocation createInventoryLocation(Inventory.InventoryLocation location)
+    public InventoryOuterClass.InventoryLocation createInventoryLocation(InventoryOuterClass.InventoryLocation location)
     {
         UUID newId = UUIDs.random();
 
@@ -361,13 +363,13 @@ public class InventoryDalImpl implements InventoryDal
                 .with(QueryBuilder.put("locations", newId, location.getLocationName()));
         _cassandraConnector.getSession().execute(query);
 
-        return Inventory.InventoryLocation.newBuilder(location)
+        return InventoryOuterClass.InventoryLocation.newBuilder(location)
                 .setLocationId(newId.toString())
                 .build();
     }
 
     @Override
-    public void updateInventoryLocation(Inventory.InventoryLocation location)
+    public void updateInventoryLocation(InventoryOuterClass.InventoryLocation location)
     {
         Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_LOCATIONS_TABLE)
                 .where(QueryBuilder.eq("entity_id", UUID.fromString(location.getEntityId())))
