@@ -43,13 +43,11 @@ public class UserController
             UserOuterClass.UserAvatar userAvatar = UserOuterClass.UserAvatar.newBuilder()
                     .setAvatar(ByteString.copyFrom(data))
                     .build();
-            byte[] response;
-
             Usermessages.SetUserAvatarRequest request = Usermessages.SetUserAvatarRequest.newBuilder()
                     .setUserAvatar(userAvatar)
                     .build();
 
-            response = _asyncComm.transaction(request);
+            byte[] response = _asyncComm.transaction(request);
             return Response.ok(response).build();
         } catch (TimeoutException | InvalidProtocolBufferException e)
         {
@@ -78,13 +76,11 @@ public class UserController
         try
         {
             UserOuterClass.UserOrganization userOrganization = UserOuterClass.UserOrganization.parseFrom(data);
-            byte[] response;
-
             Usermessages.UsersRequest request = Usermessages.UsersRequest.newBuilder()
                     .setOrganizationId(userOrganization.getOrganizationId())
                     .build();
 
-            response = _asyncComm.transaction(request);
+            byte[] response = _asyncComm.transaction(request);
             return Response.ok(response).build();
         } catch (TimeoutException | InvalidProtocolBufferException e)
         {

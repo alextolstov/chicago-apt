@@ -16,6 +16,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import java.util.concurrent.TimeoutException;
 
 @Path("/inventory")
 public class InventoryController
@@ -188,38 +189,47 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response createItem(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(InventoryOuterClass.InventoryItemBrand.parseFrom(data), Common.CrudOperation.CREATE);
+        return executeRequest(InventoryOuterClass.InventoryItem.parseFrom(data), Common.CrudOperation.CREATE);
     }
 
     @POST
-    @Path("brand/update")
+    @Path("item/update")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response updateItem(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(InventoryOuterClass.InventoryItemBrand.parseFrom(data), Common.CrudOperation.UPDATE);
+        return executeRequest(InventoryOuterClass.InventoryItem.parseFrom(data), Common.CrudOperation.UPDATE);
     }
 
     @POST
-    @Path("brand/get")
+    @Path("item/get")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response getItem(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(InventoryOuterClass.InventoryItemBrand.parseFrom(data), Common.CrudOperation.UPDATE);
+        return executeRequest(InventoryOuterClass.InventoryItem.parseFrom(data), Common.CrudOperation.READ);
     }
 
     @POST
-    @Path("brand/getall")
+    @Path("item/getall")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
-    public Response getItems()
+    public Response getItems(String inventoryId)
     {
         String entityId = SecurityUtil.getSessionEntityId();
-        InventoryOuterClass.InventoryItem item = InventoryOuterClass.InventoryItem.newBuilder()
+        Inventorymessages.InventoryItemsRequest request = Inventorymessages.InventoryItemsRequest.newBuilder()
                 .setEntityId(entityId)
+                .setInventoryId(inventoryId)
                 .build();
-        return executeRequest(item, Common.CrudOperation.READ);
+        try
+        {
+            byte[] response = _asyncComm.transaction(request);
+            return Response.ok(response).build();
+        } catch (TimeoutException | InvalidProtocolBufferException e)
+        {
+            return ResponseErrorUtil.createErrorResponse(e.getMessage(),
+                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        }
     }
 
     private Response executeRequest(InventoryOuterClass.InventoryItem item, Common.CrudOperation operation)
