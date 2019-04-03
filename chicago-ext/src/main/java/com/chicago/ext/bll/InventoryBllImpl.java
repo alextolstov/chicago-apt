@@ -131,30 +131,30 @@ public class InventoryBllImpl implements InventoryBll
     }
 
     @Override
-    public InventoryOuterClass.InventoryItem createInventoryItem(InventoryOuterClass.InventoryItem item)
+    public InventoryOuterClass.InventoryCatalogItem createInventoryCatalogItem(InventoryOuterClass.InventoryCatalogItem item)
     {
-        String itemId = _inventoryDal.createInventoryItem(item);
-        InventoryOuterClass.InventoryItem newItem = InventoryOuterClass.InventoryItem.newBuilder(item)
+        String itemId = _inventoryDal.createInventoryCatalogItem(item);
+        InventoryOuterClass.InventoryCatalogItem newItem = InventoryOuterClass.InventoryCatalogItem.newBuilder(item)
                 .setItemId(itemId).build();
         return newItem;
     }
 
     @Override
-    public void updateInventoryItem(InventoryOuterClass.InventoryItem item)
+    public void updateInventoryCatalogItem(InventoryOuterClass.InventoryCatalogItem item)
     {
-        _inventoryDal.updateInventoryItem(item);
+        _inventoryDal.updateInventoryCatalogItem(item);
     }
 
     @Override
-    public InventoryOuterClass.InventoryItem getInventoryItem(String itemId) throws Exception
+    public InventoryOuterClass.InventoryCatalogItem getInventoryCatalogItem(String itemId) throws Exception
     {
-        return _inventoryDal.getInventoryItem(itemId);
+        return _inventoryDal.getInventoryCatalogItem(itemId);
     }
 
     @Override
-    public List<InventoryOuterClass.InventoryItem> getInventoryItems(String entityId, String inventoryId) throws Exception
+    public List<InventoryOuterClass.InventoryCatalogItem> getInventoryCatalogItems(String entityId) throws Exception
     {
-        return _inventoryDal.getInventoryItems(entityId, inventoryId);
+        return _inventoryDal.getInventoryCatalogItems(entityId);
      }
 }
 

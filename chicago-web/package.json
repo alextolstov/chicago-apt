@@ -113,7 +113,7 @@
       "ts"
     ]
   },
-  "proxy": "http://erp.salon",
+  "proxy": "http://localhost:8080",
   "bugs": {
     "url": "https://github.com/coreui/coreui-pro-react-admin-template/issues"
   }

@@ -43,12 +43,12 @@ public interface InventoryBll
 
     List<InventoryOuterClass.InventoryLocation> getInventoryLocations(String entityId);
 
-    // Items
-    InventoryOuterClass.InventoryItem createInventoryItem(InventoryOuterClass.InventoryItem item);
+    // Catalog Items
+    InventoryOuterClass.InventoryCatalogItem createInventoryCatalogItem(InventoryOuterClass.InventoryCatalogItem item);
 
-    void updateInventoryItem(InventoryOuterClass.InventoryItem item);
+    void updateInventoryCatalogItem(InventoryOuterClass.InventoryCatalogItem item);
 
-    InventoryOuterClass.InventoryItem getInventoryItem(String itemId) throws Exception;
+    InventoryOuterClass.InventoryCatalogItem getInventoryCatalogItem(String itemId) throws Exception;
 
-    List<InventoryOuterClass.InventoryItem> getInventoryItems(String entityId, String inventory_id) throws Exception;
+    List<InventoryOuterClass.InventoryCatalogItem> getInventoryCatalogItems(String entityId) throws Exception;
 }

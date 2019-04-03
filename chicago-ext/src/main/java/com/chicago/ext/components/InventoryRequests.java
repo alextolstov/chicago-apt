@@ -27,8 +27,8 @@ public class InventoryRequests extends AbstractComponent {
 
     public InventoryRequests(ComponentManager cm) throws ClassNotFoundException {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
-        _ed.registerHandler(Inventorymessages.InventoryItemRequest.class, new InventoryItemEventHandler());
-        _ed.registerHandler(Inventorymessages.InventoryItemsRequest.class, new InventoryItemsEventHandler());
+        _ed.registerHandler(Inventorymessages.InventoryCatalogItemRequest.class, new InventoryCatalogItemEventHandler());
+        _ed.registerHandler(Inventorymessages.InventoryCatalogItemsRequest.class, new InventoryCatalogItemsEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemCategoryRequest.class, new InventoryItemCategoryEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemBrandRequest.class, new InventoryItemBrandEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemUnitRequest.class, new InventoryItemUnitEventHandler());
@@ -36,8 +36,8 @@ public class InventoryRequests extends AbstractComponent {
         _ed.registerHandler(Inventorymessages.InventoryLocationRequest.class, new InventoryLocationEventHandler());
         // Response
         KafkaMessageProducer producer = cm.getResource(KafkaMessageProducer.class.getName());
-        _ed.registerHandler(Inventorymessages.InventoryItemResponse.class, producer.new MessageEventHandler());
-        _ed.registerHandler(Inventorymessages.InventoryItemsResponse.class, producer.new MessageEventHandler());
+        _ed.registerHandler(Inventorymessages.InventoryCatalogItemResponse.class, producer.new MessageEventHandler());
+        _ed.registerHandler(Inventorymessages.InventoryCatalogItemsResponse.class, producer.new MessageEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemCategoryResponse.class, producer.new MessageEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemCategoriesResponse.class, producer.new MessageEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryItemBrandResponse.class, producer.new MessageEventHandler());
@@ -57,31 +57,31 @@ public class InventoryRequests extends AbstractComponent {
         ComponentManager.registerComponentFactory(new Exception().getStackTrace()[0].getClassName());
     }
 
-    class InventoryItemEventHandler implements EventHandler<Inventorymessages.InventoryItemRequest> {
+    class InventoryCatalogItemEventHandler implements EventHandler<Inventorymessages.InventoryCatalogItemRequest> {
         @Override
-        public void handleEvent(Inventorymessages.InventoryItemRequest event, String transactionId) {
+        public void handleEvent(Inventorymessages.InventoryCatalogItemRequest event, String transactionId) {
             Message response;
             try {
-                InventoryOuterClass.InventoryItem item = null;
+                InventoryOuterClass.InventoryCatalogItem item = null;
 
                 switch (event.getCrudOperation()) {
                     case CREATE: {
-                        item = _inventoryBll.createInventoryItem(event.getInventoryItem());
+                        item = _inventoryBll.createInventoryCatalogItem(event.getInventoryItem());
                         break;
                     }
                     case UPDATE: {
-                        _inventoryBll.updateInventoryItem(event.getInventoryItem());
-                        item = InventoryOuterClass.InventoryItem.getDefaultInstance();
+                        _inventoryBll.updateInventoryCatalogItem(event.getInventoryItem());
+                        item = InventoryOuterClass.InventoryCatalogItem.getDefaultInstance();
                         break;
                     }
                     case READ: // On read return all items
                     {
-                        item = _inventoryBll.getInventoryItem(event.getInventoryItem().getItemId());
+                        item = _inventoryBll.getInventoryCatalogItem(event.getInventoryItem().getItemId());
                         break;
                     }
                 }
 
-                response = Inventorymessages.InventoryItemResponse
+                response = Inventorymessages.InventoryCatalogItemResponse
                         .newBuilder()
                         .setInventoryItem(item)
                         .build();
@@ -93,13 +93,13 @@ public class InventoryRequests extends AbstractComponent {
         }
     }
 
-    class InventoryItemsEventHandler implements EventHandler<Inventorymessages.InventoryItemsRequest> {
+    class InventoryCatalogItemsEventHandler implements EventHandler<Inventorymessages.InventoryCatalogItemsRequest> {
         @Override
-        public void handleEvent(Inventorymessages.InventoryItemsRequest event, String transactionId) {
+        public void handleEvent(Inventorymessages.InventoryCatalogItemsRequest event, String transactionId) {
             Message response;
             try {
-                List<InventoryOuterClass.InventoryItem> items = _inventoryBll.getInventoryItems(event.getEntityId(), event.getInventoryId());
-                response = Inventorymessages.InventoryItemsResponse
+                List<InventoryOuterClass.InventoryCatalogItem> items = _inventoryBll.getInventoryCatalogItems(event.getEntityId());
+                response = Inventorymessages.InventoryCatalogItemsResponse
                         .newBuilder()
                         .addAllInventoryItems(items)
                         .build();

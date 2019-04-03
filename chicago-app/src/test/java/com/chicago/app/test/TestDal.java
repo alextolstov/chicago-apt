@@ -138,7 +138,7 @@ public class TestDal
         InventoryOuterClass.InventoryItemSupplier createdSupplier = inventory.createItemSupplier(supplier);
 
         // Item
-        InventoryOuterClass.InventoryItem item = InventoryOuterClass.InventoryItem.newBuilder()
+        InventoryOuterClass.InventoryCatalogItem item = InventoryOuterClass.InventoryCatalogItem.newBuilder()
                 .setEntityId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
                 .setItemCategoryId(createdCategory.getCategoryId())
                 .setItemBrandId(createdBrand.getBrandId())
@@ -149,7 +149,7 @@ public class TestDal
                 .setInboundUnitId(createdUnit.getUnitId())
                 .setOutboundUnitId(createdUnit.getUnitId())
                 .build();
-        InventoryOuterClass.InventoryItem newItem = inventory.createInventoryItem(item);
+        InventoryOuterClass.InventoryCatalogItem newItem = inventory.createInventoryCatalogItem(item);
     }
 
     @Test

@@ -83,28 +83,27 @@ message InventoryItemSuppliersResponse
     TransactionError transaction_error = 2;
 }
 
-// Item
-message InventoryItemRequest
+// Catalog Item
+message InventoryCatalogItemRequest
 {
     CrudOperation crud_operation = 1;
-    InventoryItem inventory_item = 2;
+    InventoryCatalogItem inventory_item = 2;
 }
 
-message InventoryItemResponse
+message InventoryCatalogItemResponse
 {
-    InventoryItem inventory_item = 1;
+    InventoryCatalogItem inventory_item = 1;
     TransactionError transaction_error = 2;
 }
 
-message InventoryItemsRequest
+message InventoryCatalogItemsRequest
 {
     string entity_id = 1;
-    string inventory_id = 2;
 }
 
-message InventoryItemsResponse
+message InventoryCatalogItemsResponse
 {
-    repeated InventoryItem inventory_items = 1;
+    repeated InventoryCatalogItem inventory_items = 1;
     TransactionError transaction_error = 2;
 }
 

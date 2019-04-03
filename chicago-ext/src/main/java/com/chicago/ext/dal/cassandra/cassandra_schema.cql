@@ -245,9 +245,8 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryMonthlyPositions (
     amount float,
     create_datetime timestamp);
 
-CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItems (
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryCatalogItems (
     entity_id uuid,
-    inventory_id uuid,
     item_id uuid,
     item_category_id uuid,
     item_brand_id uuid,
@@ -274,7 +273,7 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItems (
     special_price float,
     retail_price float,
     create_datetime timestamp,
-    PRIMARY KEY(entity_id, inventory_id, item_id));
+    PRIMARY KEY(entity_id, item_id));
 
 CREATE MATERIALIZED VIEW ChicagoErp.InventoryItemByItemId AS SELECT
     entity_id,
@@ -305,14 +304,12 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryLocations (
     entity_id uuid PRIMARY KEY,
     locations map<uuid, varchar>);
 
-CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemsCatalog (
-    item_id uuid PRIMARY KEY,
-    location_id uuid,
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItems (
+    inventory_id uuid,
+    item_id uuid,
     item_quantity int,
     item_amount float,
-    item_name varchar,
-    item_image blob,
-    description varchar);
+    PRIMARY KEY (inventory_id, item_id));
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.ProcessCards (
     entity_id uuid PRIMARY KEY,

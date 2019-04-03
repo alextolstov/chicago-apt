@@ -189,7 +189,7 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response createItem(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(InventoryOuterClass.InventoryItem.parseFrom(data), Common.CrudOperation.CREATE);
+        return executeRequest(InventoryOuterClass.InventoryCatalogItem.parseFrom(data), Common.CrudOperation.CREATE);
     }
 
     @POST
@@ -198,7 +198,7 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response updateItem(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(InventoryOuterClass.InventoryItem.parseFrom(data), Common.CrudOperation.UPDATE);
+        return executeRequest(InventoryOuterClass.InventoryCatalogItem.parseFrom(data), Common.CrudOperation.UPDATE);
     }
 
     @POST
@@ -207,19 +207,18 @@ public class InventoryController
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response getItem(byte[] data) throws InvalidProtocolBufferException
     {
-        return executeRequest(InventoryOuterClass.InventoryItem.parseFrom(data), Common.CrudOperation.READ);
+        return executeRequest(InventoryOuterClass.InventoryCatalogItem.parseFrom(data), Common.CrudOperation.READ);
     }
 
     @POST
     @Path("item/getall")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
-    public Response getItems(String inventoryId)
+    public Response getItems()
     {
         String entityId = SecurityUtil.getSessionEntityId();
-        Inventorymessages.InventoryItemsRequest request = Inventorymessages.InventoryItemsRequest.newBuilder()
+        Inventorymessages.InventoryCatalogItemsRequest request = Inventorymessages.InventoryCatalogItemsRequest.newBuilder()
                 .setEntityId(entityId)
-                .setInventoryId(inventoryId)
                 .build();
         try
         {
@@ -232,11 +231,11 @@ public class InventoryController
         }
     }
 
-    private Response executeRequest(InventoryOuterClass.InventoryItem item, Common.CrudOperation operation)
+    private Response executeRequest(InventoryOuterClass.InventoryCatalogItem item, Common.CrudOperation operation)
     {
         try
         {
-            Inventorymessages.InventoryItemRequest request = Inventorymessages.InventoryItemRequest.newBuilder()
+            Inventorymessages.InventoryCatalogItemRequest request = Inventorymessages.InventoryCatalogItemRequest.newBuilder()
                     .setCrudOperation(operation)
                     .setInventoryItem(item)
                     .build();

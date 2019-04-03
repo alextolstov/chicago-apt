@@ -16,14 +16,14 @@ public interface InventoryDal
 
     InventoryOuterClass.Inventory getInventory(String organizationId) throws Exception;
 
-    // Item
-    String createInventoryItem(InventoryOuterClass.InventoryItem inventoryItem);
+    // Catalog Item
+    String createInventoryCatalogItem(InventoryOuterClass.InventoryCatalogItem inventoryItem);
 
-    void updateInventoryItem(InventoryOuterClass.InventoryItem inventoryItem);
+    void updateInventoryCatalogItem(InventoryOuterClass.InventoryCatalogItem inventoryItem);
 
-    InventoryOuterClass.InventoryItem getInventoryItem(String itemId) throws Exception;
+    InventoryOuterClass.InventoryCatalogItem getInventoryCatalogItem(String itemId) throws Exception;
 
-    List<InventoryOuterClass.InventoryItem> getInventoryItems(String entityId, String inventoryId) throws Exception;
+    List<InventoryOuterClass.InventoryCatalogItem> getInventoryCatalogItems(String entityId) throws Exception;
 
     // Operations
     void applyInventoryOperation(InventoryOuterClass.InventoryOperation inventoryOperation);

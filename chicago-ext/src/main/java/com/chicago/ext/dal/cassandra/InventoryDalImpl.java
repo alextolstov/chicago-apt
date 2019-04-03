@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORIES_TABLE;
-import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEMS_TABLE;
+import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_CATALOG_ITEMS_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_BRANDS_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_CATEGORIES_TABLE;
 import static com.chicago.ext.dal.cassandra.CassandraConstants.INVENTORY_ITEM_SUPPLIERS_TABLE;
@@ -36,7 +36,7 @@ public class InventoryDalImpl implements InventoryDal
     private DbConnector _cassandraConnector;
 
     @Override
-    public String createInventory(InventoryOuterClass.Inventory inventory) throws Exception
+    public String createInventory(InventoryOuterClass.Inventory inventory)
     {
         UUID newInventory = UUIDs.random();
         Statement query = QueryBuilder.insertInto(KEYSPACE, INVENTORIES_TABLE)
@@ -79,36 +79,35 @@ public class InventoryDalImpl implements InventoryDal
     }
 
     @Override
-    public String createInventoryItem(InventoryOuterClass.InventoryItem inventoryItem)
+    public String createInventoryCatalogItem(InventoryOuterClass.InventoryCatalogItem catalogItem)
     {
         UUID newItemId = UUIDs.random();
-        Statement query = QueryBuilder.insertInto(KEYSPACE, INVENTORY_ITEMS_TABLE)
-                .value("entity_id", UUID.fromString(inventoryItem.getEntityId()))
-                .value("inventory_id", UUID.fromString(inventoryItem.getInventoryId()))
+        Statement query = QueryBuilder.insertInto(KEYSPACE, INVENTORY_CATALOG_ITEMS_TABLE)
+                .value("entity_id", UUID.fromString(catalogItem.getEntityId()))
                 .value("item_id", newItemId)
-                .value("item_category_id", UUID.fromString(inventoryItem.getItemCategoryId()))
-                .value("item_brand_id", UUID.fromString(inventoryItem.getItemBrandId()))
-                .value("item_unit_id", UUID.fromString(inventoryItem.getItemUnitId()))
-                .value("item_supplier_id", UUID.fromString(inventoryItem.getItemSupplierId()))
-                .value("description", inventoryItem.getDescription())
-                .value("weight_net", inventoryItem.getWeightNet())
-                .value("weight_gross", inventoryItem.getWeightGross())
-                .value("package_weight", inventoryItem.getPackageWeight())
-                .value("quantity_per_pack", inventoryItem.getQuantityPerPack())
-                .value("inbound_quantity", inventoryItem.getInboundQuantity())
-                .value("inbound_unit_id", UUID.fromString(inventoryItem.getInboundUnitId()))
-                .value("outbound_quantity", inventoryItem.getOutboundQuantity())
-                .value("outbound_unit_id", UUID.fromString(inventoryItem.getInboundUnitId()))
-                .value("location_id", UUID.fromString(inventoryItem.getLocationId()))
-                .value("ean13", inventoryItem.getEan13())
-                .value("vendor_code", inventoryItem.getVendorCode())
-                .value("discontinued", inventoryItem.getDiscontinued())
+                .value("item_category_id", UUID.fromString(catalogItem.getItemCategoryId()))
+                .value("item_brand_id", UUID.fromString(catalogItem.getItemBrandId()))
+                .value("item_unit_id", UUID.fromString(catalogItem.getItemUnitId()))
+                .value("item_supplier_id", UUID.fromString(catalogItem.getItemSupplierId()))
+                .value("description", catalogItem.getDescription())
+                .value("weight_net", catalogItem.getWeightNet())
+                .value("weight_gross", catalogItem.getWeightGross())
+                .value("package_weight", catalogItem.getPackageWeight())
+                .value("quantity_per_pack", catalogItem.getQuantityPerPack())
+                .value("inbound_quantity", catalogItem.getInboundQuantity())
+                .value("inbound_unit_id", UUID.fromString(catalogItem.getInboundUnitId()))
+                .value("outbound_quantity", catalogItem.getOutboundQuantity())
+                .value("outbound_unit_id", UUID.fromString(catalogItem.getInboundUnitId()))
+                .value("location_id", UUID.fromString(catalogItem.getLocationId()))
+                .value("ean13", catalogItem.getEan13())
+                .value("vendor_code", catalogItem.getVendorCode())
+                .value("discontinued", catalogItem.getDiscontinued())
 //                .value("image", inventoryItem.getImage())
-                .value("certificate", inventoryItem.getCertificate())
-                .value("notes", inventoryItem.getNotes())
-                .value("vendor_price", inventoryItem.getVendorPrice())
-                .value("retail_price", inventoryItem.getRetailPrice())
-                .value("create_datetime", inventoryItem.getCreateDatetime());
+                .value("certificate", catalogItem.getCertificate())
+                .value("notes", catalogItem.getNotes())
+                .value("vendor_price", catalogItem.getVendorPrice())
+                .value("retail_price", catalogItem.getRetailPrice())
+                .value("create_datetime", catalogItem.getCreateDatetime());
 
         _cassandraConnector.getSession().execute(query);
         LOG.info("New item {} created", newItemId);
@@ -116,9 +115,9 @@ public class InventoryDalImpl implements InventoryDal
     }
 
     @Override
-    public void updateInventoryItem(InventoryOuterClass.InventoryItem inventoryItem)
+    public void updateInventoryCatalogItem(InventoryOuterClass.InventoryCatalogItem inventoryItem)
     {
-        Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_ITEMS_TABLE)
+        Statement query = QueryBuilder.update(KEYSPACE, INVENTORY_CATALOG_ITEMS_TABLE)
                 .with(QueryBuilder.set("item_category_id", UUID.fromString(inventoryItem.getItemCategoryId())))
                 .and(QueryBuilder.set("item_category_id", UUID.fromString(inventoryItem.getItemCategoryId())))
                 .and(QueryBuilder.set("item_brand_id", UUID.fromString(inventoryItem.getItemBrandId())))
@@ -147,10 +146,10 @@ public class InventoryDalImpl implements InventoryDal
     }
 
     @Override
-    public InventoryOuterClass.InventoryItem getInventoryItem(String itemId) throws Exception
+    public InventoryOuterClass.InventoryCatalogItem getInventoryCatalogItem(String itemId) throws Exception
     {
         Statement query = QueryBuilder.select()
-                .from(KEYSPACE, INVENTORY_ITEMS_TABLE)
+                .from(KEYSPACE, INVENTORY_CATALOG_ITEMS_TABLE)
                 .where(QueryBuilder.eq("item_id", UUID.fromString(itemId)));
         ResultSet result = _cassandraConnector.getSession().execute(query);
         Row row = result.one();
@@ -159,22 +158,22 @@ public class InventoryDalImpl implements InventoryDal
             throw new Exception("No item with " + itemId + " found");
         }
 
-        return buildItem(row);
+        return buildCatalogItem(row);
     }
 
-    public List<InventoryOuterClass.InventoryItem> getInventoryItems(String entityId, String inventoryId) throws Exception
+    @Override
+    public List<InventoryOuterClass.InventoryCatalogItem> getInventoryCatalogItems(String entityId)
     {
         Statement query = QueryBuilder.select()
-                .from(KEYSPACE, INVENTORY_ITEMS_TABLE)
-                .where(QueryBuilder.eq("entity_id", UUID.fromString(entityId)))
-                .and(QueryBuilder.eq("inventory_id", UUID.fromString(entityId)));
+                .from(KEYSPACE, INVENTORY_CATALOG_ITEMS_TABLE)
+                .where(QueryBuilder.eq("entity_id", UUID.fromString(entityId)));
         ResultSet result = _cassandraConnector.getSession().execute(query);
         Row row;
-        List<InventoryOuterClass.InventoryItem> items = new ArrayList<>();
+        List<InventoryOuterClass.InventoryCatalogItem> items = new ArrayList<>();
 
         while ((row = result.one()) != null)
         {
-            items.add(buildItem(row));
+            items.add(buildCatalogItem(row));
         }
 
         return items;
@@ -340,9 +339,9 @@ public class InventoryDalImpl implements InventoryDal
         return getItems(entityId, INVENTORY_ITEM_SUPPLIERS_TABLE, "suppliers");
     }
 
-    private InventoryOuterClass.InventoryItem buildItem(Row row) throws Exception
+    private InventoryOuterClass.InventoryCatalogItem buildCatalogItem(Row row)
     {
-        InventoryOuterClass.InventoryItem.Builder builder = InventoryOuterClass.InventoryItem.newBuilder();
+        InventoryOuterClass.InventoryCatalogItem.Builder builder = InventoryOuterClass.InventoryCatalogItem.newBuilder();
         builder.setEntityId(row.getUUID("entity_id").toString());
         builder.setItemId(row.getUUID("item_id").toString());
         if (row.getUUID("item_category_id") != null)
