@@ -13,7 +13,7 @@ class OrganizationConvertor{
     uiObj.entity_id = dtoObj.getEntityId != undefined ? dtoObj.getEntityId() : "";
     uiObj.phone = dtoObj.getPhone != undefined ? dtoObj.getPhone() : "";
     uiObj.fax = dtoObj.getFax != undefined ? dtoObj.getFax() : "";
-    uiObj.address_id = dtoObj.AddressId != undefined ? dtoObj.AddressId() : "";
+    uiObj.address_id = dtoObj.getAddressId != undefined ? dtoObj.getAddressId() : "";
 
     if (dtoObj.getUsersList != undefined) {
       let users = dtoObj.getUsersList();

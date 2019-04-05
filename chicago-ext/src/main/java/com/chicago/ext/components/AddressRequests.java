@@ -73,7 +73,7 @@ public class AddressRequests extends AbstractComponent
                     case UPDATE:
                     {
                         _addressBll.updateAddress(event.getAddress());
-                        address = AddressOuterClass.Address.getDefaultInstance();
+                        address = AddressOuterClass.Address.newBuilder(event.getAddress()).build();
                         break;
                     }
                 }

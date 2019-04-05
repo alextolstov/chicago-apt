@@ -9,8 +9,9 @@ import 'react-select/dist/react-select.min.css';
 import FormApi from '../../../api/FormApi';
 import DateTimeApi from "../../../api/DateTimeApi";
 import AddressApi from "../../../api/AddressApi";
+import UiAddress from "../../../models/UiAddress";
 
-const address_proto = require('dto/address_pb');
+//const address_proto = require('dto/address_pb');
 
 const messages = defineMessages({
   streetPlace: {
@@ -60,7 +61,7 @@ class AddressForm extends Component {
     super(props);
 
     this.state = {
-      address: new address_proto.Address(),
+      address: new UiAddress(),
       dateTime: new DateTimeApi(),
       formApi: new FormApi(),
       addressApi: new AddressApi()
@@ -68,10 +69,9 @@ class AddressForm extends Component {
 
     if (props.addressId !== "") {
       let self = this;
-      this.state.addressApi.getAddress(props.addressId).then(function (addressMsg) {
-        let savedAddress = addressMsg.getAddress();
-        if (savedAddress != null) {
-          self.setState({address: savedAddress});
+      this.state.addressApi.getAddress(props.addressId).then(function (uiAddress) {
+        if (uiAddress != null) {
+          self.setState({address: uiAddress});
         }
       });
     }
@@ -80,34 +80,34 @@ class AddressForm extends Component {
   handleChange = (event) => {
     switch (event.target.id) {
       case "office_apt_number":
-        this.state.address.setOfficeAptNumber(event.target.value);
+        this.state.address.office_apt_number = event.target.value;
         break;
       case "house_number":
-        this.state.address.setHouseNumber(event.target.value);
+        this.state.address.house_number = event.target.value;
         break;
       case "building_info":
-        this.state.address.setBuildingInfo(event.target.value);
+        this.state.address.billing_info = event.target.value;
         break;
       case "street_name":
-        this.state.address.setStreetName(event.target.value);
+        this.state.address.street_name = event.target.value;
         break;
       case "city":
-        this.state.address.setCity(event.target.value);
+        this.state.address.city = event.target.value;
         break;
       case "place_name":
-        this.state.address.setPlaceName(event.target.value);
+        this.state.address.place_name = event.target.value;
         break;
       case "county":
-        this.state.address.setCounty(event.target.value);
+        this.state.address.county = event.target.value;
         break;
       case "state":
-        this.state.address.setState(event.target.value);
+        this.state.address.state = event.target.value;
         break;
       case "zip_code":
-        this.state.address.setZipCode(event.target.value);
+        this.state.address.zip_code = event.target.value;
         break;
       case "country":
-        this.state.address.setCountry(event.target.value);
+        this.state.address.country = event.target.value;
         break;
       default:
         break;  
@@ -120,14 +120,13 @@ class AddressForm extends Component {
     if (event.target.parentNode.disabled === true) {
       return;
     }
-    this.state.address.setUserId(this.props.userId);
+    this.state.address.user_id = this.props.userId;
     let self = this;
 
-    if (this.state.address.getAddressId() === "") {
-      this.state.addressApi.createAddress(this.state.address, this).then(function (addressMsg) {
-        let savedAddress = addressMsg.getAddress();
-        if (savedAddress != null) {
-          self.setState({address: savedAddress});
+    if (this.state.address.address_id === "") {
+      this.state.addressApi.createAddress(this.state.address, this).then(function (uiAddress) {
+        if (uiAddress != null) {
+          self.setState({address: uiAddress});
           self.handleSuccess();
         }
       });
@@ -175,7 +174,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.streetPlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getStreetName === undefined ? "" : this.state.address.getStreetName()}
+                                      value={this.state.address.street_name}
                                       type="text" id="street_name" name="street_name" placeholder={pholder} required/>
                   }
                 </FormattedMessage>
@@ -183,7 +182,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.housePlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getHouseNumber === undefined ? "" : this.state.address.getHouseNumber()}
+                                      value={this.state.address.house_number}
                                       type="text" id="house_number" name="house_number" placeholder={pholder} required/>
                   }
                 </FormattedMessage>
@@ -191,7 +190,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.buildingPlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getBuildingInfo === undefined ? "" : this.state.address.getBuildingInfo()}
+                                      value={this.state.address.building_info}
                                       type="text" id="building_info" name="building_info" placeholder={pholder}
                                       required/>
                   }
@@ -200,7 +199,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.officeAptPlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getOfficeAptNumber === undefined ? "" : this.state.address.getOfficeAptNumber()}
+                                      value={this.state.address.office_apt_number}
                                       type="text" id="office_apt_number" name="office_apt_number" placeholder={pholder}
                                       required/>
                   }
@@ -220,7 +219,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.cityPlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getCity === undefined ? "" : this.state.address.getCity()}
+                                      value={this.state.address.city}
                                       type="text" id="city" name="city" placeholder={pholder} required/>
                   }
                 </FormattedMessage>
@@ -238,7 +237,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.placenamePlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getPlaceName === undefined ? "" : this.state.address.getPlaceName()}
+                                      value={this.state.address.place_name}
                                       type="text" id="place_name" name="place_name" placeholder={pholder} required/>
                   }
                 </FormattedMessage>
@@ -256,7 +255,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.countyPlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getCounty === undefined ? "" : this.state.address.getCounty()}
+                                      value={this.state.address.county}
                                       type="text" id="county" name="county" placeholder={pholder} required/>
                   }
                 </FormattedMessage>
@@ -264,7 +263,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.statePlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getState === undefined ? "" : this.state.address.getState()}
+                                      value={this.state.address.state}
                                       type="text" id="state" name="state" placeholder={pholder} required/>
                   }
                 </FormattedMessage>
@@ -272,7 +271,7 @@ class AddressForm extends Component {
                 <FormattedMessage {...messages.countryPlace}>
                   {
                     pholder => <Input onChange={this.handleChange}
-                                      value={this.state.address.getCountry === undefined ? "" : this.state.address.getCountry()}
+                                      value={this.state.address.country}
                                       type="text" id="country" name="country" placeholder={pholder} required/>
                   }
                 </FormattedMessage>

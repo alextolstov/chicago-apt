@@ -30,6 +30,7 @@ class UiOrganization {
     newObj.users = this.users;
     newObj.organizations = this.organizations;
     newObj.address_id = this.address_id;
+    return newObj;
   }
 }
 
