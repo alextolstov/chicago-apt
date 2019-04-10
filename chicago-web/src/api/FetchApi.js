@@ -1,5 +1,14 @@
 export default class FetchApi {
-    defaultFetch(url, serialized_obj, deserializer, errorHandler) {
+
+  restCrud = (url, dataObject, deserializer, errorHandler) => {
+    let serialized_object = dataObject.serializeBinary();
+    return this.fetchApi.defaultFetch(url,
+      serialized_object,
+      deserializer,
+      errorHandler);
+  }
+
+  defaultFetch = (url, serialized_obj, deserializer, errorHandler) => {
         return fetch(url, {
             method: 'POST',
             body: serialized_obj,

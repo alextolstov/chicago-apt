@@ -304,7 +304,7 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryLocations (
     entity_id uuid PRIMARY KEY,
     locations map<uuid, varchar>);
 
-CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItems (
+CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryPositions (
     inventory_id uuid,
     item_id uuid,
     item_quantity int,

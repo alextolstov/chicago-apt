@@ -1,8 +1,8 @@
 import FetchApi from './FetchApi'
-import OrganizationConvertor from "../convertors/OrganizationConvertor";
+import InventoryConvertor from "../convertors/InventoryConvertor";
 
-const organization_proto = require('dto/organization_pb.js');
-const organizationmessages_proto = require('dto/organizationmessages_pb.js');
+const inventory_proto = require('dto/inventory_pb.js');
+const inventorymessages_proto = require('dto/inventorynmessages_pb.js');
 
 export default class OrganizationApi {
   constructor(){

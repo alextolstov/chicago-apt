@@ -19,7 +19,7 @@ export default class AddressApi {
     this.convertor.toDto(uiAddress, protoAddress);
     let self = this;
 
-    return this.addressCrud(this.createAddressUrl, protoAddress, addressmessages_proto.AddressResponse.deserializeBinary, errorHandler)
+    return this.fetchApi.restCrud(this.createAddressUrl, protoAddress, addressmessages_proto.AddressResponse.deserializeBinary, errorHandler)
       .then(function (addressMsg) {
         return self.getUiAddress(self, addressMsg);
       });
@@ -30,7 +30,7 @@ export default class AddressApi {
     this.convertor.toDto(uiAddress, protoAddress);
     let self = this;
 
-    return this.addressCrud(this.updateAddressUrl, protoAddress, addressmessages_proto.AddressResponse.deserializeBinary, errorHandler)
+    return this.fetchApi.restCrud(this.updateAddressUrl, protoAddress, addressmessages_proto.AddressResponse.deserializeBinary, errorHandler)
       .then(function (addressMsg) {
         return self.getUiAddress(self, addressMsg);
       });
@@ -41,7 +41,7 @@ export default class AddressApi {
     protoAddress.setAddressId(addressId);
     let self = this;
 
-    return this.addressCrud(this.getAddressUrl, protoAddress, addressmessages_proto.AddressResponse.deserializeBinary, errorHandler)
+    return this.fetchApi.restCrud(this.getAddressUrl, protoAddress, addressmessages_proto.AddressResponse.deserializeBinary, errorHandler)
       .then(function (addressMsg) {
         return self.getUiAddress(self, addressMsg);
       });
@@ -57,11 +57,4 @@ export default class AddressApi {
     return Promise.resolve(uiAddress);
   }
 
-  addressCrud(url, protoData, deserializer, errorHandler){
-    let serialized_object = protoData.serializeBinary();
-    return this.fetchApi.defaultFetch(url,
-      serialized_object,
-      deserializer,
-      errorHandler);
-  }
 }

@@ -17,14 +17,13 @@ export default class PermissionApi {
 
   getPermission(errorHandler) {
     let permission = new permission_proto.Permission();
-    return this.permissionCrud(this.getPermissionsUrl, permission, permissionmessages_proto.SystemPermissionsResponse.deserializeBinary, errorHandler);
+    return this.fetchApi.restCrud(this.getPermissionsUrl, permission, permissionmessages_proto.SystemPermissionsResponse.deserializeBinary, errorHandler);
   }
   
   getUserRoles(user, errorHandler) {
     let roles = new user_proto.UserPermissions();
     roles.setUserId(user.getUserId());
-    return this.permissionCrud(this.getUserRolesUrl, roles, permissionmessages_proto.UserPermissionsResponse.deserializeBinary, errorHandler);
-       
+    return this.fetchApi.restCrud(this.getUserRolesUrl, roles, permissionmessages_proto.UserPermissionsResponse.deserializeBinary, errorHandler);
   }
 
   saveUserRoles(user, newRoles, errorHandler) {
@@ -41,7 +40,7 @@ export default class PermissionApi {
     }
   
     roles.setRolesList(rolesArr); 
-    return this.permissionCrud(this.saveUserRoleUrl, roles, usermessages_proto.SetUserPermissionsResponse.deserializeBinary, errorHandler);
+    return this.fetchApi.restCrud(this.saveUserRoleUrl, roles, usermessages_proto.SetUserPermissionsResponse.deserializeBinary, errorHandler);
 
   }
  // get user Permissions and save to appStore
@@ -82,11 +81,4 @@ export default class PermissionApi {
           });
   }        
 
-  permissionCrud(url, userObject, deserializer, errorHandler) {
-    let serialized_object = userObject.serializeBinary();
-    return this.fetchApi.defaultFetch(url,
-      serialized_object,
-      deserializer,
-      errorHandler);
-  }
 }

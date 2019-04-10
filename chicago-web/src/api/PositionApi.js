@@ -16,28 +16,21 @@ export default class PositionApi {
     let position = new position_proto.Position();
     position.setOrganizationId(organizationId);
     position.setDescription(description);
-    return this.positionCrud(this.createPositionUrl, position, positionmessages_proto.PositionResponse.deserializeBinary, errorHandler);
+    return this.fetchApi.restCrud(this.createPositionUrl, position, positionmessages_proto.PositionResponse.deserializeBinary, errorHandler);
   }
 
   updatePosition(position, errorHandler) {
-    return this.positionCrud(this.updatePositionUrl, position, positionmessages_proto.PositionResponse.deserializeBinary, errorHandler);
+    return this.fetchApi.restCrud(this.updatePositionUrl, position, positionmessages_proto.PositionResponse.deserializeBinary, errorHandler);
   }
 
   deletePosition(organizationId, position, errorHandler) {
-    return this.positionCrud(this.deletePositionUrl, position, positionmessages_proto.PositionResponse.deserializeBinary, errorHandler);
+    return this.fetchApi.restCrud(this.deletePositionUrl, position, positionmessages_proto.PositionResponse.deserializeBinary, errorHandler);
   }
 
   getPositions(organizationId, errorHandler) {
     let position = new position_proto.Position();
     position.setOrganizationId(organizationId);
-    return this.positionCrud(this.getPositionsUrl, position, positionmessages_proto.PositionsResponse.deserializeBinary, errorHandler);
+    return this.fetchApi.restCrud(this.getPositionsUrl, position, positionmessages_proto.PositionsResponse.deserializeBinary, errorHandler);
   }
 
-  positionCrud(url, userObject, deserializer, errorHandler) {
-    let serialized_object = userObject.serializeBinary();
-    return this.fetchApi.defaultFetch(url,
-      serialized_object,
-      deserializer,
-      errorHandler);
-  }
 }

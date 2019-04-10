@@ -50,9 +50,9 @@ message InventoryPosition
     string item_id = 2;
     int32 quantity = 3;
     float amount = 4;
-    string item_name = 5;
-    bytes item_image = 6;
-    string description = 7;
+
+    bytes image = 5;
+    string description = 6;
 }
 
 message InventoryCatalogItem
