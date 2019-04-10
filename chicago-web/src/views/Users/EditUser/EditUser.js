@@ -376,7 +376,7 @@ class EditUser extends Component {
     this.props.appStore.userPermissions.forEach((l, v) => {
       roleArr.push(l.value)
     });
-    this.state.permissionApi.saveUserRoles(this.state.user, roleArr, null).then(function () {
+    this.state.permissionApi.saveUserRoles(this.state.user.getUserId(), roleArr, null).then(function () {
       toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 1000

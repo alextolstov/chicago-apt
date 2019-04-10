@@ -5,6 +5,10 @@ class UiOrganizationInfo {
     this.name = "";
     this.children = null;
   }
+
+  getCopy = () => {
+    return Object.assign({}, this);
+  }
 }
 
 export default UiOrganizationInfo;
