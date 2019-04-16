@@ -95,13 +95,12 @@ class Login extends Component {
     let form = "username=" + this.state.emailOrPhone.toLowerCase().replace('+', '%2B') + "&password=" + this.state.password;
     let self = this;
 
-    this.state.userApi.login(form, this.state.emailOrPhone.toLowerCase(), this.handleError).then(function (data) {
-      if (data != null) {
-        let user = data.getUser();
-        self.props.appStore.userData = user;
-        window.sessionStorage.setItem("current_user", user.getUserId());
+    this.state.userApi.login(form, this.state.emailOrPhone.toLowerCase(), this.handleError).then(function (uiUser) {
+      if (uiUser != null) {
+        self.props.appStore.userData = uiUser;
+        window.sessionStorage.setItem("current_user", uiUser.user_id);
         // get Roles/Permission
-        self.state.permissionApi.setPermissionsUser(self.props.appStore, user, () => self.props.history.push("/dashbord"));
+        self.state.permissionApi.setPermissionsUser(self.props.appStore, uiUser.user_id, () => self.props.history.push("/dashbord"));
       }
     })
   }

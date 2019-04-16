@@ -30,7 +30,7 @@ import {toast} from 'react-toastify';
 import ReactPhoneInput from 'react-phone-input-2'
 import {country} from "../../../index";
 import Spinner from '../../Spinner/Spinner';
-
+import UiUser from '../../../models/UiUser'
 const jspb = require('google-protobuf');
 const user_proto = require('dto/user_pb');
 
@@ -111,12 +111,6 @@ class EditUser extends Component {
     super(props);
 
     this.state = {
-      dateTimeApi: new DateTimeApi(),
-      userApi: new UserApi(),
-      positionApi: new PositionApi(),
-      permissionApi: new PermissionApi(),
-      formApi: new FormApi(),
-
       userPositions: [],
       userPermissions: [],
       userRoles: [],
@@ -139,10 +133,16 @@ class EditUser extends Component {
       isLoading: true,
     };
 
-    this.DateOfBirth = '';
-    this.EmploymentDate = '';
-    this.ActualEmploymentDate = '';
-    this.DismissalDate = '';
+    this.dateTimeApi = new DateTimeApi();
+    this.userApi = new UserApi();
+    this.positionApi = new PositionApi();
+    this.permissionApi = new PermissionApi();
+    this.formApi = new FormApi();
+
+    this.dateOfBirth = '';
+    this.employmentDate = '';
+    this.actualEmploymentDate = '';
+    this.dismissalDate = '';
     this.diplomaDate = '';
     this.retirementDate = '';
     this.medicalBookDate = '';
@@ -151,32 +151,32 @@ class EditUser extends Component {
 
     if (this.state.userId === 'new') {
       this.state.readMode = true;    // исходное состояние панелей
-      this.state.user = new user_proto.User();
+      this.state.user = new UiUser();
     }
     else if (this.state.userId === 'current') {
       this.state.readMode = true;    // исходное состояние панелей
-      this.state.user = jspb.Message.cloneMessage(this.props.appStore.userData);
-      this.state.userPositions = this.state.user.getPositionsMap();
+      this.state.user = this.props.appStore.userData.getCopy();
+      this.state.userPositions = this.state.user.positions;
     }
   }
 
   handleSaveUserInfo = (event) => {
     let self = this;
     if (this.state.userId === 'new') {
-      this.state.userApi.createUser(this.state.user, this.handleError);
-      toast.success(<FormattedMessage id="users.edit.success" defaultMessage="SuccessNew..."/>, {
+      this.userApi.createUser(this.state.user, this.handleError);
+      toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success New..."/>, {
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 1000
       });
     } else {
       // Working with existing profile
-      this.state.user.clearPositionsMap();
+      this.state.user.positions = new Map();
       this.state.userPositions.forEach((v) => {
-        this.state.user.getPositionsMap().set(v, '');
+        this.state.user.positions.set(v, '');
       });
 
       this.dateBeforeSave();
-      this.state.userApi.saveUser(this.state.user, this.handleError).then(function () {
+      this.userApi.saveUser(this.state.user, this.handleError).then(function () {
         if (self.state.userId === 'current') {
           self.props.appStore.userData = self.state.user;
         }
@@ -187,7 +187,6 @@ class EditUser extends Component {
         });
         if (self.props.loadList)
           self.props.loadList();       // refresh list users
-
       });
     }
   }
@@ -224,33 +223,33 @@ class EditUser extends Component {
   }
 
   setPosition = (user) => {
-    const entryList = user.getPositionsMap().getEntryList();
-    let posUser = [];
-    for (let i = 0; i < entryList.length; i++)
-      posUser.push(entryList[i][0]);
-    this.state.userPositions = posUser;
+    const posMap = user.positions;
+    let userPos = [];
+    for (let i = 0; i < posMap.length; i++)
+      userPos.push(posMap[i][0]);
+    this.state.userPositions = userPos;
   }
 
   componentDidMount() {
     // get User
-    this.state.loginUser = jspb.Message.cloneMessage(this.props.appStore.userData);
+    this.state.loginUser = this.props.appStore.userData.getCopy();
     if (this.state.userId === 'new') {
-      this.state.user = new user_proto.User();
+      this.state.user = new UiUser();
       this.state.readMode = true;
       this.setState({isLoading: false});
     }
     else if (this.state.userId === 'current') {
-      this.state.user = jspb.Message.cloneMessage(this.props.appStore.userData);
-      const userId = this.state.user.getUserId();
+      this.state.user = this.props.appStore.userData.getCopy();
+      const userId = this.state.user.user_id;
       let self = this;
       self.state.readyPermission = false;
-      this.state.userApi.getUserById(userId, null).then(function (userMsg) {
-        if (userMsg != null) {
-          self.state.user = userMsg.getUser();
+      this.userApi.getUserById(userId, null).then(function (uiUser) {
+        if (uiUser != null) {
+          self.state.user = uiUser;
           self.dateAfterLoad();
-          self.state.phone = self.state.user.getCellPhone();
+          self.state.phone = self.state.user.cell_phone;
           self.setPosition(self.state.user);
-          self.state.permissionApi.setPermissionsUser(self.props.appStore, self.state.user, self.readyPermission);
+          self.permissionApi.setPermissionsUser(self.props.appStore, self.state.user.user_id, self.readyPermission);
           self.setState({need_show: true, isLoading: false});
           self.state.readMode = true;
           self.setUncheckedState(self.state.readMode);
@@ -261,18 +260,17 @@ class EditUser extends Component {
           position: toast.POSITION.TOP_LEFT
         });
       })
-
     }
     else {
       let self = this;
       self.state.readyPermission = false;
-      this.state.userApi.getUserById(this.state.userId, null).then(function (userMsg) {
-        if (userMsg != null) {
-          self.state.user = userMsg.getUser();
+      this.userApi.getUserById(this.state.userId, null).then(function (uiUser) {
+        if (uiUser != null) {
+          self.state.user = uiUser;
           self.dateAfterLoad();
-          self.state.phone = self.state.user.getCellPhone();
+          self.state.phone = self.state.user.cell_phone;
           self.setPosition(self.state.user);
-          self.state.permissionApi.setPermissionsUser(self.props.appStore, self.state.user, self.readyPermission);
+          self.permissionApi.setPermissionsUser(self.props.appStore, self.state.user.user_id, self.readyPermission);
           self.setState({need_show: true, isLoading: false});
           self.state.readMode = true;
           self.setUncheckedState(self.state.readMode);
@@ -287,49 +285,47 @@ class EditUser extends Component {
   }
 
   dateAfterLoad() {
-    this.DateOfBirth = new Date(this.state.user.getDateOfBirth()).toISOString().substr(0, 10);
-    this.EmploymentDate = new Date(this.state.user.getEmploymentDate()).toISOString().substr(0, 10);
-    this.ActualEmploymentDate = new Date(this.state.user.getActualEmploymentDate()).toISOString().substr(0, 10);
-    this.DismissalDate = new Date(this.state.user.getDismissalDate()).toISOString().substr(0, 10);
-    this.diplomaDate = new Date(this.state.user.getDiplomaDate()).toISOString().substr(0, 10);
-    this.retirementDate = new Date(this.state.user.getRetirementDate()).toISOString().substr(0, 10);
-    this.medicalBookDate = new Date(this.state.user.getMedicalBookDate()).toISOString().substr(0, 10);
-    this.actualDismissalDate = new Date(this.state.user.getActualDismissalDate()).toISOString().substr(0, 10);
-    this.state.mobilePhone = this.state.user.getCellPhone();
-    this.state.homePhone = this.state.user.getHomePhone();
-    this.state.workPhone = this.state.user.getWorkPhone();
+    this.dateOfBirth = new Date(this.state.user.date_of_birth).toISOString().substr(0, 10);
+    this.employmentDate = new Date(this.state.user.employment_date).toISOString().substr(0, 10);
+    this.actualEmploymentDate = new Date(this.state.user.actual_employment_date).toISOString().substr(0, 10);
+    this.dismissalDate = new Date(this.state.user.dismissal_date).toISOString().substr(0, 10);
+    this.diplomaDate = new Date(this.state.user.diploma_date).toISOString().substr(0, 10);
+    this.retirementDate = new Date(this.state.user.retirement_date).toISOString().substr(0, 10);
+    this.medicalBookDate = new Date(this.state.user.medical_book_date).toISOString().substr(0, 10);
+    this.actualDismissalDate = new Date(this.state.user.actual_dismissal_date).toISOString().substr(0, 10);
+    this.state.mobilePhone = this.state.user.cell_phone;
+    this.state.homePhone = this.state.user.home_phone;
+    this.state.workPhone = this.state.user.work_phone;
   }
 
   dateBeforeSave() {
-    this.state.user.setDateOfBirth(this.state.dateTimeApi.dateToUnixUTC(this.DateOfBirth));
-    this.state.user.setEmploymentDate(this.state.dateTimeApi.dateToUnixUTC(this.EmploymentDate));
-    this.state.user.setActualEmploymentDate(this.state.dateTimeApi.dateToUnixUTC(this.ActualEmploymentDate));
-    this.state.user.setDismissalDate(this.state.dateTimeApi.dateToUnixUTC(this.DismissalDate));
-    this.state.user.setDiplomaDate(this.state.dateTimeApi.dateToUnixUTC(this.diplomaDate));
-    this.state.user.setRetirementDate(this.state.dateTimeApi.dateToUnixUTC(this.retirementDate));
-    this.state.user.setMedicalBookDate(this.state.dateTimeApi.dateToUnixUTC(this.medicalBookDate));
-    this.state.user.setActualDismissalDate(this.state.dateTimeApi.dateToUnixUTC(this.actualDismissalDate));
+    this.state.user.setDateOfBirth(this.dateTimeApi.dateToUnixUTC(this.dateOfBirth));
+    this.state.user.setEmploymentDate(this.dateTimeApi.dateToUnixUTC(this.employmentDate));
+    this.state.user.setActualEmploymentDate(this.dateTimeApi.dateToUnixUTC(this.actualEmploymentDate));
+    this.state.user.setDismissalDate(this.dateTimeApi.dateToUnixUTC(this.dismissalDate));
+    this.state.user.setDiplomaDate(this.dateTimeApi.dateToUnixUTC(this.diplomaDate));
+    this.state.user.setRetirementDate(this.dateTimeApi.dateToUnixUTC(this.retirementDate));
+    this.state.user.setMedicalBookDate(this.dateTimeApi.dateToUnixUTC(this.medicalBookDate));
+    this.state.user.setActualDismissalDate(this.dateTimeApi.dateToUnixUTC(this.actualDismissalDate));
   }
 
   componentDidUpdate(prevProps, prevState, prevContext) {
     if (this.state.need_show === true) {
       this.state.need_show = false;
+      this.state.readyPermission = false;
       let self = this;
-      self.state.readyPermission = false;
-      this.state.userApi.getUserById(this.state.userId, null).then(function (userMsg) {
-
-        if (userMsg != null) {
-          self.state.user = userMsg.getUser();
-
+      this.userApi.getUserById(this.state.userId, null).then(function (uiUser) {
+        if (uiUser != null) {
+          self.state.user = uiUser;
           self.dateAfterLoad();
-          self.state.phone = self.state.user.getCellPhone();
+          self.state.phone = self.state.user.cell_phone;
           self.setPosition(self.state.user);
-          self.state.permissionApi.setPermissionsUser(self.props.appStore, self.state.user, self.readyPermission);
+          self.permissionApi.setPermissionsUser(self.props.appStore, self.state.user.user_id, self.readyPermission);
           self.setState({need_show: false, isLoading: false});
           self.state.readMode = true;
           self.setUncheckedState(self.state.readMode);
         }
-      })
+      });
     }
   }
 
@@ -376,7 +372,7 @@ class EditUser extends Component {
     this.props.appStore.userPermissions.forEach((l, v) => {
       roleArr.push(l.value)
     });
-    this.state.permissionApi.saveUserRoles(this.state.user.getUserId(), roleArr, null).then(function () {
+    this.permissionApi.saveUserRoles(this.state.user.user_id, roleArr, null).then(function () {
       toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 1000
@@ -396,25 +392,25 @@ class EditUser extends Component {
     let self = this;
     this.state.user.setOrganizationId(this.state.loginUser.getOrganizationId());
 
-    this.state.userApi.createUser(this.state.user,
+    this.userApi.createUser(this.state.user,
       (e) => {
         console.log('Error Create User:', e);
       }).then(function () {
-      if (self.props.loadList)
+      if (self.props.loadList) {
         self.props.loadList();       // refresh list
+      }
       console.log('Save toast');
-
       toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 1000
       });
-
     });
   }
 
   handleSelectChangeRole = (value) => {
     this.props.appStore.userPermissions = value;
   }
+
   handleSelectChangePosition = (event) => {
     this.setState({userPositions: event});
   }
@@ -422,61 +418,61 @@ class EditUser extends Component {
   handleChange = (event) => {
     switch (event.target.id) {
       case "new_email":
-        this.state.user.setEmail(event.target.value);
+        this.state.user.email = event.target.value;
         break;
       case "new_cellPhone":
-        this.state.user.setCellPhone(event.target.value);
+        this.state.user.cell_phone = event.target.value;
         break;
       case "password":
-        this.state.user.setPassword(event.target.value);
+        this.state.user.password = event.target.value;
         break;
       case "email":
-        this.state.user.setEmail(event.target.value);
+        this.state.user.email = event.target.value;
         break;
       case "whole_name":
         const fio = event.target.value.split(' ')
         if (fio[2])
-          this.state.user.setMiddleName(fio[2]);
+          this.state.user.middle_name = fio[2];
         if (fio[1])
-          this.state.user.setFirstName(fio[1]);
+          this.state.user.first_name = fio[1];
         if (fio[0])
-          this.state.user.setLastName(fio[0]);
+          this.state.user.last_name = fio[0];
         break;
       case "first_name":
-        this.state.user.setFirstName(event.target.value);
+        this.state.user.first_name = event.target.value;
         break;
       case "middle_name":
-        this.state.user.setMiddleName(event.target.value);
+        this.state.user.middle_name = event.target.value;
         break;
       case "last_name":
-        this.state.user.setLastName(event.target.value);
+        this.state.user.last_name = event.target.value;
         break;
       case "nick_name":
-        this.state.user.setNickName(event.target.value);
+        this.state.user.nick_name = event.target.value;
         break;
       case "cell_phone":
-        this.state.user.setCellPhone(event.target.value);
+        this.state.user.cell_phone = event.target.value;
         break;
       case "home_phone":
-        this.state.user.setHomePhone(event.target.value);
+        this.state.user.home_phone = event.target.value;
         break;
       case "work_phone":
-        this.state.user.setWorkPhone(event.target.value);
+        this.state.user.work_phone = event.target.value;
         break;
       case "passport_number":
-        this.state.user.setPassportNumber(event.target.value);
+        this.state.user.passport_number = event.target.value;
         break;
       case "date_of_birth":
-        this.DateOfBirth = event.target.value;
+        this.dateOfBirth = event.target.value;
         break;
       case "employment_date":
-        this.EmploymentDate = event.target.value;
+        this.employmentDate = event.target.value;
         break;
       case "actual_employment_date":
-        this.ActualEmploymentDate = event.target.value;
+        this.actualEmploymentDate = event.target.value;
         break;
       case "dismissal_date":
-        this.DismissalDate = event.target.value;
+        this.dismissalDate = event.target.value;
         break;
       case "actual_dismissal_date":
         this.actualDismissalDate = event.target.value;
@@ -491,19 +487,19 @@ class EditUser extends Component {
         this.diplomaDate = event.target.value;
         break;
       case "retirement_id_number":
-        this.state.user.setRetirementIdNumber(event.target.value);
+        this.state.user.retirement_id_number = event.target.value;
         break;
       case "retirement_date":
         this.retirementDate = event.target.value;
         break;
       case "medical_book":
-        this.state.user.setMedicalBook(event.target.value);
+        this.state.user.medical_book = event.target.value;
         break;
       case "medical_book_date":
         this.medicalBookDate = event.target.value;
         break;
       case "employment_book_number":
-        this.state.user.setEmploymentBookNumber(event.target.value);
+        this.state.user.employment_book_number = event.target.value;
         break;
       default:
         break;
@@ -542,7 +538,7 @@ class EditUser extends Component {
                                             defaultMessage="Create new user"/></strong>
                   <div className="card-header-actions">
                     <AppSwitch id="new_user_enabled"
-                               onClick={(e) => this.state.formApi.handleFormEnableDisable('new_user_card', e)}
+                               onClick={(e) => this.formApi.handleFormEnableDisable('new_user_card', e)}
                                className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                                label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                   </div>
@@ -562,7 +558,7 @@ class EditUser extends Component {
                                             defaultMessage="Email management"/></strong>
                   <div className="card-header-actions">
                     <AppSwitch id="email_management_enabled"
-                               onClick={(e) => this.state.formApi.handleFormEnableDisable('email_card', e)}
+                               onClick={(e) => this.formApi.handleFormEnableDisable('email_card', e)}
                                className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                                label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                   </div>
@@ -597,7 +593,7 @@ class EditUser extends Component {
                                             defaultMessage="Password management"/></strong>
                   <div className="card-header-actions">
                     <AppSwitch id="password_management_enabled"
-                               onClick={(e) => this.state.formApi.handleFormEnableDisable('password_card', e)}
+                               onClick={(e) => this.formApi.handleFormEnableDisable('password_card', e)}
                                className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                                label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
                   </div>
@@ -655,7 +651,7 @@ class EditUser extends Component {
                     <AppSwitch id="personal_info_enabled"
                                onClick={(e) => {
                                  this.handleFormEnableDisable('personal_info_card');
-                                 return this.state.formApi.handleFormEnableDisable('personal_info_card', e)
+                                 return this.formApi.handleFormEnableDisable('personal_info_card', e)
                                }}
                                className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                                label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
@@ -675,7 +671,7 @@ class EditUser extends Component {
                       <FormattedMessage {...messages.firstNamePlace}>
                         {
                           pholder => <Input onChange={this.handleChange}
-                                            value={this.state.user.getFirstName === undefined ? "" : this.state.user.getFirstName()}
+                                            value={this.state.user.first_name}
                                             type="text" id="first_name" name="first_name" placeholder={pholder}
                                             required/>
                         }
@@ -694,7 +690,7 @@ class EditUser extends Component {
                       <FormattedMessage {...messages.midleNamePlace}>
                         {
                           pholder => <Input onChange={this.handleChange}
-                                            value={this.state.user.getMiddleName === undefined ? "" : this.state.user.getMiddleName()}
+                                            value={this.state.user.middle_name}
                                             type="text" id="middle_name" name="middle_name" placeholder={pholder}
                                             required/>
                         }
@@ -713,7 +709,7 @@ class EditUser extends Component {
                       <FormattedMessage {...messages.lastNamePlace}>
                         {
                           pholder => <Input onChange={this.handleChange}
-                                            value={this.state.user.getLastName === undefined ? "" : this.state.user.getLastName()}
+                                            value={this.state.user.last_name}
                                             type="text" id="last_name" name="last_name" placeholder={pholder} required/>
                         }
                       </FormattedMessage>
@@ -731,7 +727,7 @@ class EditUser extends Component {
                       <FormattedMessage {...messages.nickNamePlace}>
                         {
                           pholder => <Input onChange={this.handleChange}
-                                            value={this.state.user.getNickName === undefined ? "" : this.state.user.getNickName()}
+                                            value={this.state.user.nick_name}
                                             type="text" id="nick_name" name="nick_name" placeholder={pholder} required/>
                         }
                       </FormattedMessage>
@@ -766,7 +762,7 @@ class EditUser extends Component {
                       <FormattedMessage {...messages.passportPlace}>
                         {
                           pholder => <Input onChange={this.handleChange}
-                                            value={this.state.user.getPassportNumber === undefined ? "" : this.state.user.getPassportNumber()}
+                                            value={this.state.user.passport_number}
                                             type="text" id="passport_number" name="passport_number"
                                             placeholder={pholder}
                                             required/>
@@ -832,7 +828,7 @@ class EditUser extends Component {
                     <AppSwitch id="attributes_enabled"
                                onClick={(e) => {
                                  this.handleFormEnableDisable('attributes_card');
-                                 return this.state.formApi.handleFormEnableDisable('attributes_card', e)
+                                 return this.formApi.handleFormEnableDisable('attributes_card', e)
                                }}
                                className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
                                label dataOn={'\u2713'} dataOff={'\u2715'} size={'sm'}/>
@@ -914,7 +910,7 @@ class EditUser extends Component {
                       <FormattedMessage {...messages.taxPayerPlace}>
                         {
                           pholder => <Input onChange={this.handleChange}
-                                            value={this.state.user.getTaxPayerId === undefined ? "" : this.state.user.getTaxPayerId()}
+                                            value={this.state.user.tax_payer_id}
                                             type="text" id="tax_payer_id" name="tax_payer_id" placeholder={pholder}
                                             required/>
                         }
@@ -933,7 +929,7 @@ class EditUser extends Component {
                       <FormattedMessage {...messages.diplomaPlace}>
                         {
                           pholder => <Input onChange={this.handleChange}
-                                            value={this.state.user.getDiplomaNumber === undefined ? "" : this.state.user.getDiplomaNumber()}
+                                            value={this.state.user.diploma_number}
                                             type="text" id="diploma_number" name="diploma_number" placeholder={pholder}
                                             required/>
                         }
@@ -956,7 +952,7 @@ class EditUser extends Component {
                       <FormattedMessage {...messages.retirementPlace}>
                         {
                           pholder => <Input onChange={this.handleChange}
-                                            value={this.state.user.getRetirementIdNumber === undefined ? "" : this.state.user.getRetirementIdNumber()}
+                                            value={this.state.user.retirement_id_number}
                                             type="text" id="retirement_id_number" name="retirement_id_number"
                                             placeholder={pholder} required/>
                         }
@@ -979,7 +975,7 @@ class EditUser extends Component {
                       <FormattedMessage {...messages.medicalPlace}>
                         {
                           pholder => <Input onChange={this.handleChange}
-                                            value={this.state.user.getMedicalBook === undefined ? "" : this.state.user.getMedicalBook()}
+                                            value={this.state.user.medical_book}
                                             type="text" id="medical_book" name="medical_book" placeholder={pholder}
                                             required/>
                         }
@@ -1002,7 +998,7 @@ class EditUser extends Component {
                       <FormattedMessage {...messages.employmentPlace}>
                         {
                           pholder => <Input onChange={this.handleChange}
-                                            value={this.state.user.getEmploymentBookNumber === undefined ? "" : this.state.user.getEmploymentBookNumber()}
+                                            value={this.state.user.employment_book_number}
                                             type="text" id="employment_book_number" name="employment_book_number"
                                             placeholder={pholder}
                                             required/>
@@ -1037,7 +1033,7 @@ class EditUser extends Component {
                   </FormGroup>
                 </CardBody>
               </Card>
-              <PositionForm positionApiParent={this.state.positionApi} readyPosition={this.readyPosition}/>
+              <PositionForm positionApiParent={this.positionApi} readyPosition={this.readyPosition}/>
               <Card id="permission_card">
                 <CardHeader>
                   <i><button id="save_permission" onClick={this.handleSaveRole}>
@@ -1049,7 +1045,7 @@ class EditUser extends Component {
                     <AppSwitch id="permission_management_enabled"
                                onClick={(e) => {
                                  this.handleFormEnableDisable('permission_card');
-                                 return this.state.formApi.handleFormEnableDisable('permission_card', e)
+                                 return this.formApi.handleFormEnableDisable('permission_card', e)
                                }}
 
                                className={'mx-1'} color={'dark'} outline={'alt'} checked={true}
@@ -1080,11 +1076,11 @@ class EditUser extends Component {
                   </FormGroup>
                 </CardBody>
               </Card>
-              <PermissionForm permissionApiParent={this.state.permissionApi} readyPermission={this.readyPermission}
+              <PermissionForm permissionApiParent={this.permissionApi} readyPermission={this.readyPermission}
                               user={this.state.user}/>
 
               <AddressForm userId={this.props.appStore.userData.getUserId()}
-                           addressId={this.state.user.getAddressId === undefined ? "" : this.state.user.getAddressId()}/>
+                           addressId={this.state.user.address_id}/>
             </Col>
           </Row>
         </div>

@@ -20,8 +20,8 @@ export default class AddressApi {
     let self = this;
 
     return this.fetchApi.restCrud(this.createAddressUrl, protoAddress, addressmessages_proto.AddressResponse.deserializeBinary, errorHandler)
-      .then(function (addressMsg) {
-        return self.getUiAddress(self, addressMsg);
+      .then(function (msg) {
+        return self.getUiAddress(self, msg);
       });
   }
 
@@ -31,8 +31,8 @@ export default class AddressApi {
     let self = this;
 
     return this.fetchApi.restCrud(this.updateAddressUrl, protoAddress, addressmessages_proto.AddressResponse.deserializeBinary, errorHandler)
-      .then(function (addressMsg) {
-        return self.getUiAddress(self, addressMsg);
+      .then(function (msg) {
+        return self.getUiAddress(self, msg);
       });
   }
 
@@ -42,8 +42,8 @@ export default class AddressApi {
     let self = this;
 
     return this.fetchApi.restCrud(this.getAddressUrl, protoAddress, addressmessages_proto.AddressResponse.deserializeBinary, errorHandler)
-      .then(function (addressMsg) {
-        return self.getUiAddress(self, addressMsg);
+      .then(function (msg) {
+        return self.getUiAddress(self, msg);
       });
   }
 

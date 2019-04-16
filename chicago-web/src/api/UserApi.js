@@ -1,4 +1,6 @@
 import FetchApi from './FetchApi';
+import UiUser from "../models/UiUser";
+import UserConvertor from "../convertors/UserConvertor";
 
 const user_proto = require('dto/user_pb');
 const usermessages_proto = require('dto/usermessages_pb.js');
@@ -13,6 +15,7 @@ export default class UserApi {
     this.saveUserUrl = '/api/users/saveuser';
     this.getUsersUrl = '/api/users/getusers';
     this.fetchApi = new FetchApi();
+    this.convertor = new UserConvertor();
   }
 
   testAuth() {
@@ -30,6 +33,7 @@ export default class UserApi {
   }
 
   login(credentials, userName, errorHandler) {
+    let self = this;
     return fetch(this.loginUrl, {
       method: 'POST',
       body: credentials,
@@ -42,8 +46,9 @@ export default class UserApi {
         if (!response.ok) {
           throw response;
         }
-        return this.getUserByPhoneOrEmail(userName, errorHandler).then(function (data) {
-          return data;
+        return this.getUserByPhoneOrEmail(userName, errorHandler)
+          .then(function (msg) {
+            return self.getUiUser(self, msg);
         });
       })
       .catch(rest_error => {
@@ -103,19 +108,54 @@ export default class UserApi {
   }
 
   getUser(user, errorHandler) {
-    return this.fetchApi.restCrud(this.getUserUrl, user, usermessages_proto.UserResponse.deserializeBinary, errorHandler);
+    let self = this;
+    return this.fetchApi.restCrud(this.getUserUrl, user, usermessages_proto.UserResponse.deserializeBinary, errorHandler)
+    .then(function (msg) {
+      return self.getUiUser(self, msg);
+    });
   }
 
   getUsers(userOrganization, errorHandler) {
-    return this.fetchApi.restCrud(this.getUsersUrl, userOrganization, usermessages_proto.GetUsersResponse.deserializeBinary, errorHandler);
+    let self = this;
+    return this.fetchApi.restCrud(this.getUsersUrl, userOrganization, usermessages_proto.GetUsersResponse.deserializeBinary, errorHandler)
+      .then(function (msg) {
+        return self.getUiUsers(self, msg);
+      });
   }
 
   createUser(user, errorHandler) {
-    return this.fetchApi.restCrud(this.createUserUrl, user, usermessages_proto.UserResponse.deserializeBinary, errorHandler);
+    let self = this;
+    return this.fetchApi.restCrud(this.createUserUrl, user, usermessages_proto.UserResponse.deserializeBinary, errorHandler)
+      .then(function (msg) {
+        return self.getUiUser(self, msg);
+      });
   }
 
   saveUser(user, errorHandler) {
     return this.fetchApi.restCrud(this.saveUserUrl, user, usermessages_proto.UserResponse.deserializeBinary, errorHandler);
+  }
+
+  getUiUsers(self, msg) {
+    let savedUsers = msg.getUsers();
+    let uiUsers = new Array();
+    if (savedUsers != null) {
+      for(let i = 0; i < savedUsers.length; i++) {
+        let uiUser = new UiUser();
+        self.convertor.fromDto(savedUsers[i], uiUser);
+        uiUsers.push(uiUser);
+      }
+    }
+    return Promise.resolve(uiUsers);
+  }
+
+  getUiUser(self, msg) {
+    let savedUser = msg.getUser();
+    let uiUser = null;
+    if (savedUser != null) {
+      uiUser = new UiUser();
+      self.convertor.fromDto(savedUser, uiUser);
+    }
+    return Promise.resolve(uiUser);
   }
 
 }

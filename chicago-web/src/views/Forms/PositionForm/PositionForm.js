@@ -35,15 +35,8 @@ class PositionForm extends Component {
     let self = this;
     this.state.positionApi.getPositions(this.state.organizationId, null)
       .then(function (data) {
-        if (data !== undefined && data !== null) {
-          self.props.appStore.companyPositions = [];
-          let positions = data.getPositions().getPositionsMap();
-
-          positions.forEach((l, v) => {
-            self.props.appStore.companyPositions.push({value:v, label:l});
-          });
-          self.props.readyPosition(true);           
-        }
+          self.props.appStore.companyPositions = data;
+          self.props.readyPosition(true);
       });
   }
 

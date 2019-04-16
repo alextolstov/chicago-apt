@@ -31,6 +31,7 @@ export default class PermissionApi {
   getUserRoles(userId, errorHandler) {
     let roles = new user_proto.UserPermissions();
     roles.setUserId(userId);
+    let self = this;
     return this.fetchApi.restCrud(this.getUserRolesUrl, roles, permissionmessages_proto.UserPermissionsResponse.deserializeBinary, errorHandler)
       .then(function (msg) {
         return self.getUiRoles(self, msg);
@@ -55,7 +56,7 @@ export default class PermissionApi {
   }
 
   // get user Permissions and save to appStore
-  setPermissionsUser(appStore, user, callback) {
+  setPermissionsUser(appStore, userId, callback) {
     let self = this;
     self.getPermission(null)
       .then(function (data) {
@@ -71,7 +72,7 @@ export default class PermissionApi {
             self.permissionsArr.push({value: v, label: l});
 
           });
-          self.getUserRoles(user, null)
+          self.getUserRoles(userId, null)
             .then(function (data) {
               if (data) {
                 let userPermissions = data.getPermissions();
@@ -102,13 +103,16 @@ export default class PermissionApi {
     return Promise.resolve(uiPermission);
   }
 
-  getUiRole(self, msg) {
-    let savedRole = msg.getRole();
-    let uiRole = null;
-    if (savedrole != null) {
-      uiRole = new UiRole();
-      self.role_convertor.fromDto(savedRole, uiRole);
+  getUiRoles(self, msg) {
+    let savedRoles = msg.getRoles();
+    let uiRoles = new Array();
+    if (savedRoles != null) {
+      for(let i = 0; i < savedRoles.length; i++) {
+        let uiRole = new UiRole();
+        self.role_convertor.fromDto(savedRoles[i], uiRole);
+        uiRoles.push(uiRole);
+      }
     }
-    return Promise.resolve(uiRole);
+    return Promise.resolve(uiRoles);
   }
 }
