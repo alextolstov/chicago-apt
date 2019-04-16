@@ -275,13 +275,12 @@ CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryCatalogItems (
     create_datetime timestamp,
     PRIMARY KEY(entity_id, item_id));
 
-CREATE MATERIALIZED VIEW ChicagoErp.InventoryItemByItemId AS SELECT
+CREATE MATERIALIZED VIEW ChicagoErp.InventoryCatalogItemByItemId AS SELECT
     entity_id,
-    inventory_id,
     item_id
-    FROM ChicagoErp.InventoryItems
-    WHERE item_id IS NOT NULL AND inventory_id IS NOT NULL
-    PRIMARY KEY(item_id, entity_id, inventory_id);
+    FROM ChicagoErp.InventoryCatalogItems
+    WHERE item_id IS NOT NULL
+    PRIMARY KEY(item_id, entity_id);
 
 CREATE TABLE IF NOT EXISTS ChicagoErp.InventoryItemCategories (
     entity_id uuid PRIMARY KEY,
