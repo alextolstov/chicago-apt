@@ -406,8 +406,9 @@ class EditUser extends Component {
     });
   }
 
-  handleSelectChangeRole = (value) => {
-    this.props.appStore.userRoles = value;
+  handleSelectChangeRole = (event) => {
+    this.props.appStore.userRoles = event;
+    this.setState({userRoles: event});
   }
 
   handleSelectChangePosition = (event) => {
