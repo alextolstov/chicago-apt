@@ -131,7 +131,9 @@ export default class UserApi {
       });
   }
 
-  saveUser(user, errorHandler) {
+  saveUser(uiUser, errorHandler) {
+    let user = new user_proto.User();
+    this.convertor.toDto(uiUser, user);
     return this.fetchApi.restCrud(this.saveUserUrl, user, usermessages_proto.UserResponse.deserializeBinary, errorHandler);
   }
 

@@ -34,36 +34,38 @@ class UserConvertor {
   }
 
   toDto = (uiObj, dtoObj) => {
-     dtoObj.getUserId(uiObj.user_id);
-     dtoObj.getEmail(uiObj.email);
-     dtoObj.getPassword(uiObj.password);
-     dtoObj.getAvatar(uiObj.avatar);
-     dtoObj.getFirstName(uiObj.first_name);
-     dtoObj.getMiddleName(uiObj.middle_name);
-     dtoObj.getLastName(uiObj.last_name);
-     dtoObj.getNickName(uiObj.nick_name);
-     dtoObj.getCellPhone(uiObj.cell_phone);
-     dtoObj.getHomePhone(uiObj.home_phone);
-     dtoObj.getWorkPhone(uiObj.work_phone);
-     dtoObj.getPassportNumber(uiObj.passport_number);
-     dtoObj.getDateOfBirth(uiObj.date_of_birth);
-     dtoObj.getEmploymentDate(uiObj.employment_date);
-     dtoObj.getActualEmploymentDate(uiObj.actual_employment_date);
-     dtoObj.getDismissalDate(uiObj.dismissal_date);
-     dtoObj.getActualDismissalDate(uiObj.actual_dismissal_date);
-     dtoObj.getTaxPayerId(uiObj.tax_payer_id);
-     dtoObj.getDiplomaNumber(uiObj.diploma_number);
-     dtoObj.getDiplomaDate(uiObj.diploma_date);
-     dtoObj.getRetirementIdNumber(uiObj.retirement_id_number);
-     dtoObj.getRetirementDate(uiObj.retirement_date);
-     dtoObj.getMedicalBook(uiObj.medical_book);
-     dtoObj.getMedicalBookDate(uiObj.medical_book_date);
-     dtoObj.getEmploymentBookNumber(uiObj.employment_book_number);
-     dtoObj.getOrganizationId(uiObj.organization_id);
-     dtoObj.getAddressId(uiObj.address_id);
-     dtoObj.getPermissionNames(uiObj.permission_names);
-     dtoObj.getPositions(uiObj.positions);
-     dtoObj.getCreateDate(uiObj.create_datetime);
+     dtoObj.setUserId(uiObj.user_id);
+     dtoObj.setEmail(uiObj.email);
+     dtoObj.setPassword(uiObj.password);
+     dtoObj.setAvatar(uiObj.avatar);
+     dtoObj.setFirstName(uiObj.first_name);
+     dtoObj.setMiddleName(uiObj.middle_name);
+     dtoObj.setLastName(uiObj.last_name);
+     dtoObj.setNickName(uiObj.nick_name);
+     dtoObj.setCellPhone(uiObj.cell_phone);
+     dtoObj.setHomePhone(uiObj.home_phone);
+     dtoObj.setWorkPhone(uiObj.work_phone);
+     dtoObj.setPassportNumber(uiObj.passport_number);
+     dtoObj.setDateOfBirth(uiObj.date_of_birth);
+     dtoObj.setEmploymentDate(uiObj.employment_date);
+     dtoObj.setActualEmploymentDate(uiObj.actual_employment_date);
+     dtoObj.setDismissalDate(uiObj.dismissal_date);
+     dtoObj.setActualDismissalDate(uiObj.actual_dismissal_date);
+     dtoObj.setTaxPayerId(uiObj.tax_payer_id);
+     dtoObj.setDiplomaNumber(uiObj.diploma_number);
+     dtoObj.setDiplomaDate(uiObj.diploma_date);
+     dtoObj.setRetirementIdNumber(uiObj.retirement_id_number);
+     dtoObj.setRetirementDate(uiObj.retirement_date);
+     dtoObj.setMedicalBook(uiObj.medical_book);
+     dtoObj.setMedicalBookDate(uiObj.medical_book_date);
+     dtoObj.setEmploymentBookNumber(uiObj.employment_book_number);
+     dtoObj.setOrganizationId(uiObj.organization_id);
+     dtoObj.setAddressId(uiObj.address_id);
+     let posMap = dtoObj.getPositionsMap();
+    for (let i in uiObj.positions) {
+      posMap[i] = uiObj.positions[i];
+    }
+     dtoObj.setCreateDatetime(uiObj.create_datetime);
   }
 }
 

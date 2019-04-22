@@ -298,14 +298,14 @@ class EditUser extends Component {
   }
 
   dateBeforeSave() {
-    this.state.user.setDateOfBirth(this.dateTimeApi.dateToUnixUTC(this.dateOfBirth));
-    this.state.user.setEmploymentDate(this.dateTimeApi.dateToUnixUTC(this.employmentDate));
-    this.state.user.setActualEmploymentDate(this.dateTimeApi.dateToUnixUTC(this.actualEmploymentDate));
-    this.state.user.setDismissalDate(this.dateTimeApi.dateToUnixUTC(this.dismissalDate));
-    this.state.user.setDiplomaDate(this.dateTimeApi.dateToUnixUTC(this.diplomaDate));
-    this.state.user.setRetirementDate(this.dateTimeApi.dateToUnixUTC(this.retirementDate));
-    this.state.user.setMedicalBookDate(this.dateTimeApi.dateToUnixUTC(this.medicalBookDate));
-    this.state.user.setActualDismissalDate(this.dateTimeApi.dateToUnixUTC(this.actualDismissalDate));
+    this.state.user.date_of_birth = this.dateTimeApi.dateToUnixUTC(this.dateOfBirth);
+    this.state.user.employment_date = this.dateTimeApi.dateToUnixUTC(this.employmentDate);
+    this.state.user.actual_employment_date = this.dateTimeApi.dateToUnixUTC(this.actualEmploymentDate);
+    this.state.user.dismissal_date = this.dateTimeApi.dateToUnixUTC(this.dismissalDate);
+    this.state.user.diploma_date = this.dateTimeApi.dateToUnixUTC(this.diplomaDate);
+    this.state.user.retirement_date = this.dateTimeApi.dateToUnixUTC(this.retirementDate);
+    this.state.user.medical_book_date = this.dateTimeApi.dateToUnixUTC(this.medicalBookDate);
+    this.state.user.actual_dismissal_date = this.dateTimeApi.dateToUnixUTC(this.actualDismissalDate);
   }
 
   componentDidUpdate(prevProps, prevState, prevContext) {
