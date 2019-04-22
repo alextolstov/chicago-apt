@@ -62,6 +62,7 @@ export default class PermissionApi {
       .then(function (sysRoles) {
         if (sysRoles !== undefined && sysRoles !== null) {
           appStore.companyRoles = new Array();
+          appStore.userRoles = new Array();
           appStore.userPermissions = new Array();
 
           sysRoles.forEach((item, i) => {
@@ -71,14 +72,15 @@ export default class PermissionApi {
           });
 
           self.getUserRoles(userId, null)
-            .then(function (userRoles) {
-              if (userRoles) {
-                for(let i = 0; i < userRoles.length; i++) {
-                  for(let j = 0; j < userRoles[i].permissions.length; j++) {
-                    let permName = userRoles[i].permissions[j].permission_name;
-                    if(!appStore.userPermissions.find((elm) => { return elm === permName})) {
-                      appStore.userPermissions.push(permName);
-                    }
+            .then(function (uRoles) {
+              for (let i = 0; i < uRoles.length; i++) {
+                appStore.userRoles.push({value: uRoles[i].role_id, label: uRoles[i].role_name});
+                for (let j = 0; j < uRoles[i].permissions.length; j++) {
+                  let permName = uRoles[i].permissions[j].permission_name;
+                  if (!appStore.userPermissions.find((elm) => {
+                    return elm === permName
+                  })) {
+                    appStore.userPermissions.push(permName);
                   }
                 }
               }

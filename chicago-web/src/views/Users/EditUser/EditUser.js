@@ -112,7 +112,6 @@ class EditUser extends Component {
 
     this.state = {
       userPositions: [],
-      userPermissions: [],
       userRoles: [],
 
       userId: (props.match && props.match.params) ? props.match.params.id : props.userId,
@@ -369,7 +368,7 @@ class EditUser extends Component {
 
   handleSaveRole = (event) => {
     let roleArr = [];
-    this.props.appStore.userPermissions.forEach((l, v) => {
+    this.props.appStore.userRoles.forEach((l, v) => {
       roleArr.push(l.value)
     });
     this.permissionApi.setUserRoles(this.state.user.user_id, roleArr, null).then(function () {
@@ -408,7 +407,7 @@ class EditUser extends Component {
   }
 
   handleSelectChangeRole = (value) => {
-    this.props.appStore.userPermissions = value;
+    this.props.appStore.userRoles = value;
   }
 
   handleSelectChangePosition = (event) => {
@@ -1065,8 +1064,8 @@ class EditUser extends Component {
                         <Select
                           id="permissions"
                           name="permissions"
-                          value={this.props.appStore.userPermissions}
-                          options={this.props.appStore.companyPermissions}
+                          value={this.props.appStore.userRoles}
+                          options={this.props.appStore.companyRoles}
                           onChange={this.handleSelectChangeRole}
                           multi
                           disabled={permission_enabled}
