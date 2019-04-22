@@ -183,7 +183,7 @@ public class TestDal
             users = ub.getUsers(newOrg.getOrganizationId());
 
             PermissionDal pd = serviceLocator.getService(PermissionDal.class);
-            PermissionOuterClass.Roles roles = pd.getSystemPermissions();
+            List<PermissionOuterClass.Role> roles = pd.getSystemRoles();
 
             PermissionOuterClass.Role role = PermissionOuterClass.Role.newBuilder()
                     .setRoleId("9df37802-95a9-425e-be0f-00f45b2a6c4a")
@@ -203,6 +203,7 @@ public class TestDal
                     .addAllExtraPermissions(perm)
                     .build();
             pd.setUserPermissions(up.getUserId(), up.getRolesList(), up.getExtraPermissionsList());
+            UserOuterClass.UserPermissions userPerm = pd.getUserPermissions("a5a3e208-c10f-4eb2-b7ad-04d4bbbb13de");
         } catch (Exception e)
         {
             e.printStackTrace();

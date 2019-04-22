@@ -5,13 +5,13 @@ class PermissionConvertor {
     console.log(dtoObj);
     uiObj.permission_id = dtoObj.getPermissionId != undefined ? dtoObj.getPermissionId() : "";
     uiObj.permission_name = dtoObj.getPermissionName != undefined ? dtoObj.getPermissionName() : "";
-    uiObj.permission_description = dtoObj.getPermissionDescription != undefined ? dtoObj.getPermissionDescription() : "";
+    uiObj.description = dtoObj.getDescription != undefined ? dtoObj.getDescription() : "";
   }
 
   toDto = (uiObj, dtoObj) => {
     dtoObj.setPermissionId(uiObj.permission_id);
     dtoObj.setPermissionName(uiObj.permission_name);
-    dtoObj.setPermissionDescription(uiObj.permission_description);
+    dtoObj.setDescription(uiObj.description);
   }
 }
 
@@ -21,14 +21,22 @@ class RoleConvertor {
     uiObj.role_id = dtoObj.getRoleId != undefined ? dtoObj.getRoleId() : "";
     uiObj.role_name = dtoObj.getRoleName != undefined ? dtoObj.getRoleName() : "";
     uiObj.role_description = dtoObj.getRoleDescription != undefined ? dtoObj.getRoleDescription() : "";
-    uiObj.permissions = dtoObj.getPermissions != undefined ? dtoObj.getPermissions() : "";
+
+    let protoPermissions = dtoObj.getPermissionsList != undefined ? dtoObj.getPermissionsList() : [];
+    for(let i = 0; i < protoPermissions.length; i++) {
+      let uiPerm = new UiPermission();
+      uiPerm.permission_id = protoPermissions[i].getPermissionId();
+      uiPerm.permission_name = protoPermissions[i].getPermissionName();
+      uiPerm.description = protoPermissions[i].getDescription();
+      uiObj.permissions.push(uiPerm);
+    }
   }
 
   toDto = (uiObj, dtoObj) => {
     dtoObj.setRoleId(uiObj.role_id);
     dtoObj.setRoleName(uiObj.role_name);
     dtoObj.setRoleDescription(uiObj.role_description);
-    dtoObj.setPermissions(uiObj.permissions);
+    dtoObj.setPermissionsList(uiObj.permissions);
   }
 }
 

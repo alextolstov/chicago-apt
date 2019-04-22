@@ -490,7 +490,7 @@ class Dashboard extends Component {
                   <ButtonDropdown id='card1' isOpen={this.state.card1} toggle={() => { this.setState({ card1: !this.state.card1 }); }}>
                     <DropdownToggle caret className="p-0" color="transparent">
                       <i className="icon-settings"></i>
-                      <div className="Dashboard">{this.props.appStore.userData.getLastName()}</div>
+                      <div className="Dashboard">{this.props.appStore.userData.last_name}</div>
                     </DropdownToggle>
                     <DropdownMenu right>
                       <DropdownItem>Action</DropdownItem>

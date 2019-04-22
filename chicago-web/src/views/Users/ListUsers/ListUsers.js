@@ -53,12 +53,10 @@ class ListUsers extends Component {
     this.state.isLoading = true;
     const self = this;
 
-    if (!userData.getOrganizationId()) {
+    if (!userData.organization_id) {
       const current_user = sessionStorage.getItem("current_user");
-      this.state.userApi.getUserById(current_user, null).then(function (userMsg) {
-        const user = userMsg.getUser();
-        const orgId = user.getOrganizationId();
-        self.loadListUsers(orgId);
+      this.state.userApi.getUserById(current_user, null).then(function (user) {
+        self.loadListUsers(user.organization_id);
       }).catch(function (error) {
         console.log('ListUser Load User error:', error);
         toast.error(error, {
@@ -66,7 +64,7 @@ class ListUsers extends Component {
         });
       })
     } else {
-      const orgId = userData.getOrganizationId();
+      const orgId = userData.organization_id;
       self.loadListUsers(orgId);
     }
   }
@@ -89,21 +87,19 @@ class ListUsers extends Component {
     let self = this;
     this.state.userApi.getUsers(userOrgs, (e) => {
       console.log('Error load data ListUser:', e);
-    }).then(function (usersMsg) {
-      const usersList=usersMsg.getUsersList();
-      
+    }).then(function (usersList) {
       let optionsList = [];
-      for(let i=0; i<usersList.length; i++) {
-        const mapPositions=usersList[i].getPositionsMap().getEntryList();
+      for (let i = 0; i < usersList.length; i++) {
+        const mapPositions = usersList[i].positions;
         let strPositions = "";
-        for(let j=0; j<mapPositions.length; j++) {
-          if(j>0) strPositions += ",";
-          strPositions +=  mapPositions[j][1];
+        for (let j = 0; j < mapPositions.length; j++) {
+          if (j > 0) strPositions += ",";
+          strPositions += mapPositions[j][1];
         }
-          
+
         optionsList.push({
-          id: usersList[i].getUserId(),
-          name: self.state.personNameLocalizer.toPersonName(usersList[i].getFirstName(), usersList[i].getMiddleName(), usersList[i].getLastName()),
+          id: usersList[i].user_id,
+          name: self.state.personNameLocalizer.toPersonName(usersList[i].first_name, usersList[i].middle_name, usersList[i].last_name),
           positions: strPositions,
         });
       }
@@ -116,7 +112,7 @@ class ListUsers extends Component {
     })
   }
 
-  addUser=() => {
+  addUser = () => {
     this.state.openedDetails = true;
     this.setState({selected: {id: "new"}});
   }
@@ -157,7 +153,7 @@ class ListUsers extends Component {
                 </BootstrapTable>
                 }
                 {this.state.isLoading &&
-                  <Spinner/>
+                <Spinner/>
                 }
 
               </CardBody>

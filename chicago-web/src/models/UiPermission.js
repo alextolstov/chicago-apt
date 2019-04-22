@@ -2,7 +2,7 @@ class UiPermission {
   constructor() {
     this.permission_id = "";
     this.permission_name = "";
-    this.permission_description = "";
+    this.description = "";
   }
 
   getCopy = () => {

@@ -27,7 +27,7 @@ class PositionForm extends Component {
 
     this.state = {
       positionApi: props.positionApiParent,
-      organizationId: this.props.appStore.userData.getOrganizationId(),
+      organizationId: this.props.appStore.userData.organization_id,
     };
   }
 

@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class PermissionRequests extends AbstractComponent
 {
@@ -30,10 +31,10 @@ public class PermissionRequests extends AbstractComponent
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
         _ed.registerHandler(Permissionmessages.UserPermissionsRequest.class, new UserPermissionsEventHandler());
-        _ed.registerHandler(Permissionmessages.SystemPermissionsRequest.class, new SystemPermissionsEventHandler());
+        _ed.registerHandler(Permissionmessages.SystemRolesRequest.class, new SystemPermissionsEventHandler());
         // Response
         KafkaMessageProducer producer = cm.getResource(KafkaMessageProducer.class.getName());
-        _ed.registerHandler(Permissionmessages.SystemPermissionsResponse.class, producer.new MessageEventHandler());
+        _ed.registerHandler(Permissionmessages.SystemRolesResponse.class, producer.new MessageEventHandler());
         _ed.registerHandler(Permissionmessages.UserPermissionsResponse.class, producer.new MessageEventHandler());
     }
 
@@ -87,24 +88,24 @@ public class PermissionRequests extends AbstractComponent
         }
     }
 
-    class SystemPermissionsEventHandler implements EventHandler<Permissionmessages.SystemPermissionsRequest>
+    class SystemPermissionsEventHandler implements EventHandler<Permissionmessages.SystemRolesRequest>
     {
         @Override
-        public void handleEvent(Permissionmessages.SystemPermissionsRequest event, String transactionId)
+        public void handleEvent(Permissionmessages.SystemRolesRequest event, String transactionId)
         {
             Message response;
             try
             {
-                PermissionOuterClass.Roles permissionsMsg = _permissionBll.getSystemPermissions();
+                List<PermissionOuterClass.Role> permissionsMsg = _permissionBll.getSystemRoles();
 
-                response = Permissionmessages.SystemPermissionsResponse
+                response = Permissionmessages.SystemRolesResponse
                         .newBuilder()
-                        .setRoles(permissionsMsg)
+                        .addAllRoles(permissionsMsg)
                         .build();
 
             } catch (Exception ex)
             {
-                response = ResponseFactoryUtil.createErrorResponse(ex, Permissionmessages.SystemPermissionsResponse.class);
+                response = ResponseFactoryUtil.createErrorResponse(ex, Permissionmessages.SystemRolesResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
             LOG.info("Published real-time response on request with transaction id: {}", transactionId);

@@ -100,7 +100,7 @@ class Login extends Component {
         self.props.appStore.userData = uiUser;
         window.sessionStorage.setItem("current_user", uiUser.user_id);
         // get Roles/Permission
-        self.state.permissionApi.setPermissionsUser(self.props.appStore, uiUser.user_id, () => self.props.history.push("/dashbord"));
+        self.state.permissionApi.setUserPermissions(self.props.appStore, uiUser.user_id, () => self.props.history.push("/dashbord"));
       }
     })
   }

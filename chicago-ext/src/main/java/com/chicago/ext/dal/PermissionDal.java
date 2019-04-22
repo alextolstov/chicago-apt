@@ -14,5 +14,5 @@ public interface PermissionDal
 
     UserOuterClass.UserPermissions getUserPermissions(String userId);
 
-    PermissionOuterClass.Roles getSystemPermissions();
+    List<PermissionOuterClass.Role> getSystemRoles();
 }

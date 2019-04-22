@@ -22,11 +22,10 @@ class PrivateRoute extends Component {
       if (userId != null) {
         // Session still alive but is user info left? If not lets take it from server
         if (self.props.appStore.userData.getUserId() === "") {
-          userApi.getUserById(userId, null).then(function (data) {
-            if (data != null) {
-              let user = data.getUser();
+          userApi.getUserById(userId, null).then(function (user) {
+            if (user != null) {
               self.props.appStore.userData = user;
-              window.sessionStorage.setItem("current_user", user.getUserId());
+              window.sessionStorage.setItem("current_user", user.user_id);
             }
           });
         }

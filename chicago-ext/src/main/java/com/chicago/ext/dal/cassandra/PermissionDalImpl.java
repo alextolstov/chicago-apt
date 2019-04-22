@@ -135,14 +135,19 @@ public class PermissionDalImpl implements PermissionDal
 
         if (row != null)
         {
+            builder.setUserId(userId);
             Set<UUID> roleIds = row.getSet("role_ids", UUID.class);
             List<PermissionOuterClass.Role> rolesList = new ArrayList<>();
             for (UUID roleId : roleIds)
             {
-                PermissionOuterClass.Role role = PermissionOuterClass.Role.newBuilder()
-                        .setRoleId(roleId.toString())
-                        .build();
-                rolesList.add(role);
+                PermissionOuterClass.Role role = getRole(roleId);
+                if (role != null)
+                {
+                    rolesList.add(role);
+                }else
+                {
+                    LOG.error("Role with id: {} not found", roleId);
+                }
             }
             builder.addAllRoles(rolesList);
 
@@ -162,11 +167,11 @@ public class PermissionDalImpl implements PermissionDal
     }
 
     @Override
-    public PermissionOuterClass.Roles getSystemPermissions()
+    public List<PermissionOuterClass.Role> getSystemRoles()
     {
         Statement query = QueryBuilder.select().from(KEYSPACE, ROLES_TABLE);
         ResultSet rolesResult = _cassandraConnector.getSession().execute(query);
-        List<PermissionOuterClass.Role> rolesArr = new ArrayList<>();
+        List<PermissionOuterClass.Role> rolesList = new ArrayList<>();
         Row roleRow;
 
         while ((roleRow = rolesResult.one()) != null)
@@ -175,31 +180,57 @@ public class PermissionDalImpl implements PermissionDal
             String roleName = roleRow.getString("role_name");
             String roleDescription = roleRow.getString("description");
             Set<Integer> permissionIds = roleRow.getSet("permission_ids", Integer.class);
-            query = QueryBuilder.select().from(KEYSPACE, PERMISSIONS_TABLE)
-                    .where(QueryBuilder.in("permission_id", permissionIds));
-            ResultSet permissionsResult = _cassandraConnector.getSession().execute(query);
-
-            Row permissionRow;
-            List<PermissionOuterClass.Permission> permissionsArr = new ArrayList<>();
-            while ((permissionRow = permissionsResult.one()) != null)
-            {
-                PermissionOuterClass.Permission permission = PermissionOuterClass.Permission.newBuilder()
-                        .setPermissionId(permissionRow.getInt("permission_id"))
-                        .setPermissionName(permissionRow.getString("permission_name"))
-                        .setPermissionDescription(permissionRow.getString("description"))
-                        .build();
-                permissionsArr.add(permission);
-            }
+            List<PermissionOuterClass.Permission> permissions = getPermissions(permissionIds);
             PermissionOuterClass.Role role = PermissionOuterClass.Role.newBuilder()
                     .setRoleId(roleId.toString())
                     .setRoleName(roleName)
                     .setRoleDescription(roleDescription)
-                    .addAllPermissions(permissionsArr)
+                    .addAllPermissions(permissions)
                     .build();
-            rolesArr.add(role);
+            rolesList.add(role);
         }
-        return PermissionOuterClass.Roles.newBuilder()
-                .addAllRole(rolesArr)
-                .build();
+        return rolesList;
+    }
+
+    private PermissionOuterClass.Role getRole(UUID roleId)
+    {
+        Statement query = QueryBuilder.select().from(KEYSPACE, ROLES_TABLE)
+                .where(QueryBuilder.in("role_id", roleId));
+        ResultSet roleResult = _cassandraConnector.getSession().execute(query);
+        Row roleRow = roleResult.one();
+
+        if (roleRow != null)
+        {
+            Set<Integer> permissionIds = roleRow.getSet("permission_ids", Integer.class);
+            List<PermissionOuterClass.Permission> permissions = getPermissions(permissionIds);
+            PermissionOuterClass.Role role = PermissionOuterClass.Role.newBuilder()
+                    .setRoleId(roleId.toString())
+                    .setRoleName(roleRow.getString("role_name"))
+                    .setRoleDescription(roleRow.getString("description"))
+                    .addAllPermissions(permissions)
+                    .build();
+            return role;
+        }
+        return null;
+    }
+
+    private List<PermissionOuterClass.Permission> getPermissions(Set<Integer> permissionsIds)
+    {
+        Statement query = QueryBuilder.select().from(KEYSPACE, PERMISSIONS_TABLE)
+                .where(QueryBuilder.in("permission_id", permissionsIds));
+        ResultSet permissionResult = _cassandraConnector.getSession().execute(query);
+
+        Row permissionRow;
+        List<PermissionOuterClass.Permission> permissionsArr = new ArrayList<>();
+        while ((permissionRow = permissionResult.one()) != null)
+        {
+            PermissionOuterClass.Permission permission = PermissionOuterClass.Permission.newBuilder()
+                    .setPermissionId(permissionRow.getInt("permission_id"))
+                    .setPermissionName(permissionRow.getString("permission_name"))
+                    .setDescription(permissionRow.getString("description"))
+                    .build();
+            permissionsArr.add(permission);
+        }
+        return permissionsArr;
     }
 }

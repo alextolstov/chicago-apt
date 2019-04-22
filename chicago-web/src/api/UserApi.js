@@ -117,7 +117,7 @@ export default class UserApi {
 
   getUsers(userOrganization, errorHandler) {
     let self = this;
-    return this.fetchApi.restCrud(this.getUsersUrl, userOrganization, usermessages_proto.GetUsersResponse.deserializeBinary, errorHandler)
+    return this.fetchApi.restCrud(this.getUsersUrl, userOrganization, usermessages_proto.UsersResponse.deserializeBinary, errorHandler)
       .then(function (msg) {
         return self.getUiUsers(self, msg);
       });
@@ -136,7 +136,7 @@ export default class UserApi {
   }
 
   getUiUsers(self, msg) {
-    let savedUsers = msg.getUsers();
+    let savedUsers = msg.getUsersList();
     let uiUsers = new Array();
     if (savedUsers != null) {
       for(let i = 0; i < savedUsers.length; i++) {

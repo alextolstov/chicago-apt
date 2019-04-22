@@ -26,7 +26,7 @@ class PermissionForm extends Component {
 
     this.state = {
       permissionApi: props.permissionApiParent,
-      organizationId: this.props.appStore.userData.getOrganizationId(),
+      organizationId: this.props.appStore.userData.organization_id,
       permissionsArr: [],
       permissionsUserArr: [],
       permissionsMap: new Map()
@@ -41,14 +41,13 @@ class PermissionForm extends Component {
       event.target.value = "";
 
       this.state.permissionApi.createPermission(this.state.organizationId, val, null)
-        .then(function (data) {
-          if (data !== undefined && data !== null) {
-            let newPermission = data.getPermission();
+        .then(function (permission) {
+          if (permission !== undefined && permission !== null) {
             self.props.appStore.companyPermissions.push({
-              value: newPermission.getPermissionId(),
-              label: newPermission.getDescription()
+              value: permission.permission_id,
+              label: permission.description
             });
-            self.state.permissionsArr.push([newPermission.getPositionId(), newPermission.getDescription()]);
+            self.state.permissionsArr.push([permission.permission_id, permission.description]);
             self.setState({permissionsArr: self.state.permissionsArr});
           }
         });

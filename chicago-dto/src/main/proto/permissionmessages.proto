@@ -20,14 +20,14 @@ message UserPermissionsResponse
     TransactionError transaction_error = 2;
 }
 
-message SystemPermissionsRequest
+message SystemRolesRequest
 {
     string user_id = 1;
 }
 
-message SystemPermissionsResponse
+message SystemRolesResponse
 {
-    Roles roles = 1;
+    repeated Role roles = 1;
     TransactionError transaction_error = 2;
 }
 

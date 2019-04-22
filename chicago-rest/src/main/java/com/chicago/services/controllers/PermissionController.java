@@ -68,10 +68,10 @@ public class PermissionController
     }
 
     @POST
-    @Path("getsystem")
+    @Path("getsystemroles")
     @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
-    public Response getSystemPermissions()
+    public Response getSystemRoles()
     {
         Subject currentUser = SecurityUtils.getSubject();
         //currentUser.hasRole("");
@@ -96,14 +96,14 @@ public class PermissionController
                 .build();
     }
 
-    private Permissionmessages.SystemPermissionsRequest prepareRequest()
+    private Permissionmessages.SystemRolesRequest prepareRequest()
     {
         PrincipalCollection principals = SecurityUtils.getSubject().getPrincipals();
         SimplePrincipalCollection pcoll = (SimplePrincipalCollection)principals.getPrimaryPrincipal();
         LinkedHashMap<String, String> props = (LinkedHashMap<String, String>) pcoll.iterator().next();
         String user_id = props.get("user_id");
 
-        return Permissionmessages.SystemPermissionsRequest.newBuilder()
+        return Permissionmessages.SystemRolesRequest.newBuilder()
                 .setUserId(user_id)
                 .build();
     }

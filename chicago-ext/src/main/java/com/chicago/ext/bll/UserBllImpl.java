@@ -102,7 +102,7 @@ public class UserBllImpl implements UserBll
             result = _userDal.getHashSaltByCell(cellPhone);
         } catch (UserNotFoundException ex)
         {
-            LOG.info("User with cell {} not found will try email {}", cellPhone, email);
+            LOG.info("User with cell phone {} not found will try email {}", cellPhone, email);
             result = _userDal.getHashSaltByEmail(email);
         }
 

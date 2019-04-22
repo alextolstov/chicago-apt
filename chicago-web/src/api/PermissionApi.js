@@ -1,5 +1,4 @@
 import FetchApi from './FetchApi'
-import _ from 'lodash';
 import {UiPermission, UiRole} from "../models/UiPermission";
 import {PermissionConvertor, RoleConvertor} from "../convertors/PermissionConvertor";
 
@@ -10,21 +9,21 @@ const usermessages_proto = require('dto/usermessages_pb.js');
 
 export default class PermissionApi {
   constructor() {
-    this.getPermissionsUrl = '/api/permissions/getsystem';
+    this.getSystemRolesUrl = '/api/permissions/getsystemroles';
     this.getUserRolesUrl = '/api/permissions/get';
     this.saveUserRoleUrl = '/api/permissions/update';
     this.fetchApi = new FetchApi();
-    this.permissionsArr = [];
     this.perm_convertor = new PermissionConvertor();
     this.role_convertor = new RoleConvertor();
   }
 
-  getPermission(errorHandler) {
+  // Global system roles
+  getSystemRoles(errorHandler) {
     let permission = new permission_proto.Permission();
     let self = this;
-    return this.fetchApi.restCrud(this.getPermissionsUrl, permission, permissionmessages_proto.SystemPermissionsResponse.deserializeBinary, errorHandler)
+    return this.fetchApi.restCrud(this.getSystemRolesUrl, permission, permissionmessages_proto.SystemRolesResponse.deserializeBinary, errorHandler)
       .then(function (msg) {
-        return self.getUiPermission(self, msg);
+        return self.getUiRoles(self, msg);
       });
   }
 
@@ -34,11 +33,12 @@ export default class PermissionApi {
     let self = this;
     return this.fetchApi.restCrud(this.getUserRolesUrl, roles, permissionmessages_proto.UserPermissionsResponse.deserializeBinary, errorHandler)
       .then(function (msg) {
-        return self.getUiRoles(self, msg);
+        let perm = msg.getPermissions();
+        return self.getUiRoles(self, perm);
       });
   }
 
-  saveUserRoles(userId, newRoles, errorHandler) {
+  setUserRoles(userId, newRoles, errorHandler) {
     let roles = new user_proto.UserPermissions();
     roles.setUserId(userId);
 
@@ -56,58 +56,59 @@ export default class PermissionApi {
   }
 
   // get user Permissions and save to appStore
-  setPermissionsUser(appStore, userId, callback) {
+  setUserPermissions(appStore, userId, callback) {
     let self = this;
-    self.getPermission(null)
-      .then(function (data) {
-        if (data !== undefined && data !== null) {
-          appStore.companyPermissions = [];
-          appStore.userPermissions = [];
-          let roles = data.getRoles();
-          let rolesList = roles.getRoleList();
-          rolesList.forEach((item, i) => {
-            const v = item.getRoleId();
-            const l = item.getRoleName();
-            appStore.companyPermissions.push({value: v, label: l});
-            self.permissionsArr.push({value: v, label: l});
+    self.getSystemRoles(null)
+      .then(function (sysRoles) {
+        if (sysRoles !== undefined && sysRoles !== null) {
+          appStore.companyRoles = new Array();
+          appStore.userPermissions = new Array();
 
+          sysRoles.forEach((item, i) => {
+            const v = item.role_id;
+            const l = item.role_name;
+            appStore.companyRoles.push({value: v, label: l});
           });
-          self.getUserRoles(userId, null)
-            .then(function (data) {
-              if (data) {
-                let userPermissions = data.getPermissions();
-                let rolesList = userPermissions.getRolesList();
 
-                rolesList.forEach((item, i) => {
-                  const v = item.getRoleId();
-                  const lobj = _.find(self.permissionsArr, {value: v});
-                  const l = lobj.label;
-                  appStore.userPermissions.push({value: v, label: l});
-                });
+          self.getUserRoles(userId, null)
+            .then(function (userRoles) {
+              if (userRoles) {
+                for(let i = 0; i < userRoles.length; i++) {
+                  for(let j = 0; j < userRoles[i].permissions.length; j++) {
+                    let permName = userRoles[i].permissions[j].permission_name;
+                    if(!appStore.userPermissions.find((elm) => { return elm === permName})) {
+                      appStore.userPermissions.push(permName);
+                    }
+                  }
+                }
               }
               // Redirect current page to dashboard
               callback();
             })
-
         }
       });
   }
 
-  getUiPermission(self, msg) {
-    let savedPermission = msg.getPermission();
-    let uiPermission = null;
-    if (savedPermission != null) {
-      uiPermission = new UiPermission();
-      self.perm_convertor.fromDto(savedPermission, uiPermission);
+  getUiPermissions(self, msg) {
+    let savedPermissions = msg.getPermissionsList();
+    let uiPermissions = [];
+
+    if (savedPermissions != null) {
+      for (let i = 0; i < savedPermissions.length; i++) {
+        let uiPermission = new UiPermission()
+        self.perm_convertor.fromDto(savedPermissions[i], uiPermission);
+        uiPermissions.push(uiPermission);
+      }
     }
-    return Promise.resolve(uiPermission);
+    return Promise.resolve(uiPermissions);
   }
 
   getUiRoles(self, msg) {
-    let savedRoles = msg.getRoles();
-    let uiRoles = new Array();
+    let savedRoles = msg.getRolesList();
+    let uiRoles = [];
+
     if (savedRoles != null) {
-      for(let i = 0; i < savedRoles.length; i++) {
+      for (let i = 0; i < savedRoles.length; i++) {
         let uiRole = new UiRole();
         self.role_convertor.fromDto(savedRoles[i], uiRole);
         uiRoles.push(uiRole);

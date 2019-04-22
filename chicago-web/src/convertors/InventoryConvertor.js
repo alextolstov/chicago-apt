@@ -3,10 +3,10 @@ import {UiInventory, UiInventoryOperation} from "../models/UiInventory";
 class InventoryConvertor {
   fromDto = (dtoObj, uiObj) => {
     console.log(dtoObj);
-    this.organization_id = dtoObj.getOrganizationId != undefined ? dtoObj.getOrganizationId() : "";
-    this.inventory_id = dtoObj.getInventoryId != undefined ? dtoObj.getInventoryId() : "";
-    this.inventory_name = dtoObj.getInventoryName != undefined ? dtoObj.getInventoryName() : "";
-    this.description = dtoObj.getDescription != undefined ? dtoObj.getDescription() : "";
+    uiObj.organization_id = dtoObj.getOrganizationId != undefined ? dtoObj.getOrganizationId() : "";
+    uiObj.inventory_id = dtoObj.getInventoryId != undefined ? dtoObj.getInventoryId() : "";
+    uiObj.inventory_name = dtoObj.getInventoryName != undefined ? dtoObj.getInventoryName() : "";
+    uiObj.description = dtoObj.getDescription != undefined ? dtoObj.getDescription() : "";
   }
 
   toDto = (uiObj, dtoObj) => {
@@ -20,11 +20,11 @@ class InventoryConvertor {
 class InventoryOperationConvertor {
   fromDto = (dtoObj, uiObj) => {
     console.log(dtoObj);
-    this.inventory_id = dtoObj.getInventoryId != undefined ? dtoObj.getInventoryId() : "";
-    this.operation_type = dtoObj.getOperationType != undefined ? dtoObj.getOperationType() : 0;
-    this.item_id = dtoObj.getItemId != undefined ? dtoObj.getItemId() : 0;
-    this.quantity = dtoObj.getQuantity != undefined ? dtoObj.getQuantity() : 0;
-    this.amount = dtoObj.getAmount != undefined ? dtoObj.getAmount() : 0;
+    uiObj.inventory_id = dtoObj.getInventoryId != undefined ? dtoObj.getInventoryId() : "";
+    uiObj.operation_type = dtoObj.getOperationType != undefined ? dtoObj.getOperationType() : 0;
+    uiObj.item_id = dtoObj.getItemId != undefined ? dtoObj.getItemId() : 0;
+    uiObj.quantity = dtoObj.getQuantity != undefined ? dtoObj.getQuantity() : 0;
+    uiObj.amount = dtoObj.getAmount != undefined ? dtoObj.getAmount() : 0;
   }
 
   toDto = (uiObj, dtoObj) => {
@@ -39,12 +39,12 @@ class InventoryOperationConvertor {
 class InventoryTransferConvertor {
   fromDto = (dtoObj, uiObj) => {
     console.log(dtoObj);
-    this.inventory_from_id = dtoObj.getInventoryFromId != undefined ? dtoObj.getInventoryFromId() : "";
-    this.inventory_to_id = dtoObj.getInventoryToId != undefined ? dtoObj.getInventoryToId() : 0;
-    this.item_id = dtoObj.getItemId != undefined ? dtoObj.getItemId() : 0;
-    this.quantity = dtoObj.getQuantity != undefined ? dtoObj.getQuantity() : 0;
-    this.amount = dtoObj.getAmount != undefined ? dtoObj.getAmount() : 0;
-    this.transfer_state = dtoObj.getTransferState != undefined ? dtoObj.getTransferState() : 0;
+    uiObj.inventory_from_id = dtoObj.getInventoryFromId != undefined ? dtoObj.getInventoryFromId() : "";
+    uiObj.inventory_to_id = dtoObj.getInventoryToId != undefined ? dtoObj.getInventoryToId() : 0;
+    uiObj.item_id = dtoObj.getItemId != undefined ? dtoObj.getItemId() : 0;
+    uiObj.quantity = dtoObj.getQuantity != undefined ? dtoObj.getQuantity() : 0;
+    uiObj.amount = dtoObj.getAmount != undefined ? dtoObj.getAmount() : 0;
+    uiObj.transfer_state = dtoObj.getTransferState != undefined ? dtoObj.getTransferState() : 0;
   }
 
   toDto = (uiObj, dtoObj) => {
@@ -60,10 +60,10 @@ class InventoryTransferConvertor {
 class InventoryPositionConvertor {
   fromDto = (dtoObj, uiObj) => {
     console.log(dtoObj);
-    this.inventory_id = dtoObj.getInventoryId != undefined ? dtoObj.getInventoryId() : "";
-    this.item_id = dtoObj.getItemId != undefined ? dtoObj.getItemId() : 0;
-    this.quantity = dtoObj.getQuantity != undefined ? dtoObj.getQuantity() : 0;
-    this.amount = dtoObj.getAmount != undefined ? dtoObj.getAmount() : 0;
+    uiObj.inventory_id = dtoObj.getInventoryId != undefined ? dtoObj.getInventoryId() : "";
+    uiObj.item_id = dtoObj.getItemId != undefined ? dtoObj.getItemId() : 0;
+    uiObj.quantity = dtoObj.getQuantity != undefined ? dtoObj.getQuantity() : 0;
+    uiObj.amount = dtoObj.getAmount != undefined ? dtoObj.getAmount() : 0;
   }
 
   toDto = (uiObj, dtoObj) => {
@@ -77,32 +77,32 @@ class InventoryPositionConvertor {
 class InventoryCatalogItemConvertor {
   fromDto = (dtoObj, uiObj) => {
     console.log(dtoObj);
-    this.entity_id = dtoObj.getEntityId != undefined ? dtoObj.getEntityId() : "";
-    this.item_id = dtoObj.getItemId != undefined ? dtoObj.getItemId() : "";
-    this.item_category_id = dtoObj.getItemCategoryId != undefined ? dtoObj.getItemCategoryId() : "";
-    this.item_brand_id = dtoObj.getItemBrandId != undefined ? dtoObj.getItemBrandId() : "";
-    this.item_unit_id = dtoObj.getItemUnitId != undefined ? dtoObj.getItemUnitId() : ""
-    this.item_supplier_id = dtoObj.getItemSupplierId != undefined ? dtoObj.getItemSupplierId() : "";
-    this.description = dtoObj.getDescription != undefined ? dtoObj.getDescription() : "";
-    this.weight_net = dtoObj.getWeightNet != undefined ? dtoObj.getWeightNet() : 0;
-    this.weight_gross = dtoObj.getWeightGross != undefined ? dtoObj.getWeightGross() : 0;
-    this.package_weight = dtoObj.getPackageWeight != undefined ? dtoObj.getPackageWeight() : 0;
-    this.quantity_per_pack = dtoObj.getQuantityPerPack != undefined ? dtoObj.getQuantityPerPack() : 0;
-    this.inbound_quantity = dtoObj.getInboundQuanitity != undefined ? dtoObj.getInboundQuanitity() : 0;
-    this.inbound_unit_id = dtoObj.getInboundUnitId != undefined ? dtoObj.getInboundUnitId() : "";
-    this.outbound_quantity = dtoObj.getOutboundQuanitity != undefined ? dtoObj.getOutboundQuanitity() : 0;
-    this.outbound_unit_id = dtoObj.getOutboundUnitId != undefined ? dtoObj.getOutboundUnitId() : "";
-    this.location_id = dtoObj.getLocationid != undefined ? dtoObj.getLocationid() : "";
-    this.ean13 = dtoObj.getEan13 != undefined ? dtoObj.getEan13() : "";
-    this.vendor_code = dtoObj.getVendorCode != undefined ? dtoObj.getVendorCode() : "";
-    this.discontinued  = dtoObj.getDiscontinued != undefined ? dtoObj.getDiscontinued() : false;
-    this.image  = dtoObj.getImage != undefined ? dtoObj.getImage() : null;
-    this.certificate  = dtoObj.getCertificate != undefined ? dtoObj.getCetificate() : "";
-    this.notes = dtoObj.getNotes != undefined ? dtoObj.getNotes() : "";
-    this.vendor_price = dtoObj.getVendorPrice != undefined ? dtoObj.getVendorPrice() : "";
-    this.special_price = dtoObj.getSpecialPrice != undefined ? dtoObj.getSpecialPrice() : "";
-    this.retail_price = dtoObj.getRetailPrice != undefined ? dtoObj.getRetailPrice() : "";
-    this.create_datetime = dtoObj.getCreateDateTime != undefined ? dtoObj.getCreateDateTime() : 0;
+    uiObj.entity_id = dtoObj.getEntityId != undefined ? dtoObj.getEntityId() : "";
+    uiObj.item_id = dtoObj.getItemId != undefined ? dtoObj.getItemId() : "";
+    uiObj.item_category_id = dtoObj.getItemCategoryId != undefined ? dtoObj.getItemCategoryId() : "";
+    uiObj.item_brand_id = dtoObj.getItemBrandId != undefined ? dtoObj.getItemBrandId() : "";
+    uiObj.item_unit_id = dtoObj.getItemUnitId != undefined ? dtoObj.getItemUnitId() : ""
+    uiObj.item_supplier_id = dtoObj.getItemSupplierId != undefined ? dtoObj.getItemSupplierId() : "";
+    uiObj.description = dtoObj.getDescription != undefined ? dtoObj.getDescription() : "";
+    uiObj.weight_net = dtoObj.getWeightNet != undefined ? dtoObj.getWeightNet() : 0;
+    uiObj.weight_gross = dtoObj.getWeightGross != undefined ? dtoObj.getWeightGross() : 0;
+    uiObj.package_weight = dtoObj.getPackageWeight != undefined ? dtoObj.getPackageWeight() : 0;
+    uiObj.quantity_per_pack = dtoObj.getQuantityPerPack != undefined ? dtoObj.getQuantityPerPack() : 0;
+    uiObj.inbound_quantity = dtoObj.getInboundQuanitity != undefined ? dtoObj.getInboundQuanitity() : 0;
+    uiObj.inbound_unit_id = dtoObj.getInboundUnitId != undefined ? dtoObj.getInboundUnitId() : "";
+    uiObj.outbound_quantity = dtoObj.getOutboundQuanitity != undefined ? dtoObj.getOutboundQuanitity() : 0;
+    uiObj.outbound_unit_id = dtoObj.getOutboundUnitId != undefined ? dtoObj.getOutboundUnitId() : "";
+    uiObj.location_id = dtoObj.getLocationid != undefined ? dtoObj.getLocationid() : "";
+    uiObj.ean13 = dtoObj.getEan13 != undefined ? dtoObj.getEan13() : "";
+    uiObj.vendor_code = dtoObj.getVendorCode != undefined ? dtoObj.getVendorCode() : "";
+    uiObj.discontinued  = dtoObj.getDiscontinued != undefined ? dtoObj.getDiscontinued() : false;
+    uiObj.image  = dtoObj.getImage != undefined ? dtoObj.getImage() : null;
+    uiObj.certificate  = dtoObj.getCertificate != undefined ? dtoObj.getCetificate() : "";
+    uiObj.notes = dtoObj.getNotes != undefined ? dtoObj.getNotes() : "";
+    uiObj.vendor_price = dtoObj.getVendorPrice != undefined ? dtoObj.getVendorPrice() : "";
+    uiObj.special_price = dtoObj.getSpecialPrice != undefined ? dtoObj.getSpecialPrice() : "";
+    uiObj.retail_price = dtoObj.getRetailPrice != undefined ? dtoObj.getRetailPrice() : "";
+    uiObj.create_datetime = dtoObj.getCreateDateTime != undefined ? dtoObj.getCreateDateTime() : 0;
   }
 
   toDto = (uiObj, dtoObj) => {
@@ -137,9 +137,9 @@ class InventoryCatalogItemConvertor {
 class InventoryItemCategoryConvertor {
   fromDto = (dtoObj, uiObj) => {
     console.log(dtoObj);
-    this.entity_id = dtoObj.getEntityId != undefined ? dtoObj.getEntityId() : "";
-    this.category_name = dtoObj.getCategoryName != undefined ? dtoObj.getCategoryName() : "";
-    this.category_id = dtoObj.getCategoryId != undefined ? dtoObj.getCategoryId() : "";
+    uiObj.entity_id = dtoObj.getEntityId != undefined ? dtoObj.getEntityId() : "";
+    uiObj.category_name = dtoObj.getCategoryName != undefined ? dtoObj.getCategoryName() : "";
+    uiObj.category_id = dtoObj.getCategoryId != undefined ? dtoObj.getCategoryId() : "";
   }
 
   toDto = (uiObj, dtoObj) => {
@@ -152,9 +152,9 @@ class InventoryItemCategoryConvertor {
 class InventoryItemBrandConvertor {
   fromDto = (dtoObj, uiObj) => {
     console.log(dtoObj);
-    this.entity_id = dtoObj.getEntityId != undefined ? dtoObj.getEntityId() : "";
-    this.brand_name = dtoObj.getBrandName != undefined ? dtoObj.getBrandName() : "";
-    this.brand_id = dtoObj.getBrandId != undefined ? dtoObj.getBrandId() : "";
+    uiObj.entity_id = dtoObj.getEntityId != undefined ? dtoObj.getEntityId() : "";
+    uiObj.brand_name = dtoObj.getBrandName != undefined ? dtoObj.getBrandName() : "";
+    uiObj.brand_id = dtoObj.getBrandId != undefined ? dtoObj.getBrandId() : "";
   }
 
   toDto = (uiObj, dtoObj) => {
@@ -167,9 +167,9 @@ class InventoryItemBrandConvertor {
 class InventoryItemUnitConvertor {
   fromDto = (dtoObj, uiObj) => {
     console.log(dtoObj);
-    this.entity_id = dtoObj.getEntityId != undefined ? dtoObj.getEntityId() : "";
-    this.unit_name = dtoObj.getUnitName != undefined ? dtoObj.getUnitName() : "";
-    this.unit_id = dtoObj.getUnitId != undefined ? dtoObj.getUnitId() : "";
+    uiObj.entity_id = dtoObj.getEntityId != undefined ? dtoObj.getEntityId() : "";
+    uiObj.unit_name = dtoObj.getUnitName != undefined ? dtoObj.getUnitName() : "";
+    uiObj.unit_id = dtoObj.getUnitId != undefined ? dtoObj.getUnitId() : "";
   }
 
   toDto = (uiObj, dtoObj) => {
@@ -182,9 +182,9 @@ class InventoryItemUnitConvertor {
 class InventoryItemSupplierConvertor {
   fromDto = (dtoObj, uiObj) => {
     console.log(dtoObj);
-    this.entity_id = dtoObj.getEntityId != undefined ? dtoObj.getEntityId() : "";
-    this.supplier_name = dtoObj.getSupplierName != undefined ? dtoObj.getSupplierName() : "";
-    this.supplier_id = dtoObj.getSupplierId != undefined ? dtoObj.getSupplierId() : "";
+    uiObj.entity_id = dtoObj.getEntityId != undefined ? dtoObj.getEntityId() : "";
+    uiObj.supplier_name = dtoObj.getSupplierName != undefined ? dtoObj.getSupplierName() : "";
+    uiObj.supplier_id = dtoObj.getSupplierId != undefined ? dtoObj.getSupplierId() : "";
   }
 
   toDto = (uiObj, dtoObj) => {
@@ -197,9 +197,9 @@ class InventoryItemSupplierConvertor {
 class InventoryItemLocationConvertor {
   fromDto = (dtoObj, uiObj) => {
     console.log(dtoObj);
-    this.entity_id = dtoObj.getEntityId != undefined ? dtoObj.getEntityId() : "";
-    this.location_name = dtoObj.getLocationName != undefined ? dtoObj.getLocationName() : "";
-    this.location_id = dtoObj.getLocationId != undefined ? dtoObj.getLocationId() : "";
+    uiObj.entity_id = dtoObj.getEntityId != undefined ? dtoObj.getEntityId() : "";
+    uiObj.location_name = dtoObj.getLocationName != undefined ? dtoObj.getLocationName() : "";
+    uiObj.location_id = dtoObj.getLocationId != undefined ? dtoObj.getLocationId() : "";
   }
 
   toDto = (uiObj, dtoObj) => {

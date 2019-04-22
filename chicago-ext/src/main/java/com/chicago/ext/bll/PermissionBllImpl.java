@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.util.List;
 
 @Contract
 public class PermissionBllImpl implements PermissionBll
@@ -29,8 +30,8 @@ public class PermissionBllImpl implements PermissionBll
     }
 
     @Override
-    public PermissionOuterClass.Roles getSystemPermissions()
+    public List<PermissionOuterClass.Role> getSystemRoles()
     {
-        return _permissionDal.getSystemPermissions();
+        return _permissionDal.getSystemRoles();
     }
 }

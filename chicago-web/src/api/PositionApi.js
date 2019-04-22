@@ -59,8 +59,11 @@ export default class PositionApi {
   }
 
   getUiPositions(self, msg) {
-    let savedPos = msg.getPositions();
-    let positionsMap = [];
+    if (msg.getPositionsList === undefined) {
+      return Promise.resolve([]);
+    }
+    let savedPos = msg.getPositionsList();
+    let positionsMap = {};
 
     if (savedPos !== undefined && savedPos !== null) {
       savedPos.forEach((l, v) => {

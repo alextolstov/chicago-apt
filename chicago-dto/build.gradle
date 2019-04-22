@@ -24,7 +24,7 @@ protobuf {
             js {
                 option 'import_style=commonjs'
                 option 'binary'
-                option "output_dir=../../../../../../../chicago-web/node_modules/models"
+                option "output_dir=../../../../../../../chicago-web/node_modules/dto"
             }
         }
     }

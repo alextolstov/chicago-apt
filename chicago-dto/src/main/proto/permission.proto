@@ -8,7 +8,7 @@ message Permission
 {
     int32 permission_id = 1;
     string permission_name = 2;
-    string permission_description = 3;
+    string description = 3;
 }
 
 message Role
@@ -19,7 +19,3 @@ message Role
     repeated Permission permissions = 4;
 }
 
-message Roles
-{
-    repeated Role role = 1;
-}

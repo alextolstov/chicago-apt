@@ -147,7 +147,7 @@ class EditUser extends Component {
     this.retirementDate = '';
     this.medicalBookDate = '';
     this.actualDismissalDate = '';
-    this.state.loginUser = jspb.Message.cloneMessage(this.props.appStore.userData);
+    this.state.loginUser = this.props.appStore.userData.getCopy();
 
     if (this.state.userId === 'new') {
       this.state.readMode = true;    // исходное состояние панелей
@@ -249,7 +249,7 @@ class EditUser extends Component {
           self.dateAfterLoad();
           self.state.phone = self.state.user.cell_phone;
           self.setPosition(self.state.user);
-          self.permissionApi.setPermissionsUser(self.props.appStore, self.state.user.user_id, self.readyPermission);
+//          self.permissionApi.setUserPermissions(self.props.appStore, self.state.user.user_id, self.readyPermission);
           self.setState({need_show: true, isLoading: false});
           self.state.readMode = true;
           self.setUncheckedState(self.state.readMode);
@@ -270,7 +270,7 @@ class EditUser extends Component {
           self.dateAfterLoad();
           self.state.phone = self.state.user.cell_phone;
           self.setPosition(self.state.user);
-          self.permissionApi.setPermissionsUser(self.props.appStore, self.state.user.user_id, self.readyPermission);
+          //self.permissionApi.setUserPermissions(self.props.appStore, self.state.user.user_id, self.readyPermission);
           self.setState({need_show: true, isLoading: false});
           self.state.readMode = true;
           self.setUncheckedState(self.state.readMode);
@@ -320,7 +320,7 @@ class EditUser extends Component {
           self.dateAfterLoad();
           self.state.phone = self.state.user.cell_phone;
           self.setPosition(self.state.user);
-          self.permissionApi.setPermissionsUser(self.props.appStore, self.state.user.user_id, self.readyPermission);
+          self.permissionApi.setUserPermissions(self.props.appStore, self.state.user.user_id, self.readyPermission);
           self.setState({need_show: false, isLoading: false});
           self.state.readMode = true;
           self.setUncheckedState(self.state.readMode);
@@ -372,7 +372,7 @@ class EditUser extends Component {
     this.props.appStore.userPermissions.forEach((l, v) => {
       roleArr.push(l.value)
     });
-    this.permissionApi.saveUserRoles(this.state.user.user_id, roleArr, null).then(function () {
+    this.permissionApi.setUserRoles(this.state.user.user_id, roleArr, null).then(function () {
       toast.success(<FormattedMessage id="users.edit.success" defaultMessage="Success..."/>, {
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 1000
@@ -575,7 +575,7 @@ class EditUser extends Component {
                       </InputGroupAddon>
                       <FormattedMessage {...messages.emailPlace}>
                         {
-                          pholder => <Input onChange={this.handleChange} value={this.state.user.getEmail()}
+                          pholder => <Input onChange={this.handleChange} value={this.state.user.email}
                                             type="text" id="email" name="email" placeholder={pholder} required/>
                         }
                       </FormattedMessage>
@@ -1079,7 +1079,7 @@ class EditUser extends Component {
               <PermissionForm permissionApiParent={this.permissionApi} readyPermission={this.readyPermission}
                               user={this.state.user}/>
 
-              <AddressForm userId={this.props.appStore.userData.getUserId()}
+              <AddressForm userId={this.props.appStore.userData.user_id}
                            addressId={this.state.user.address_id}/>
             </Col>
           </Row>
