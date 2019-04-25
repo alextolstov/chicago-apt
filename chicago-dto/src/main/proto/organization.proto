@@ -35,3 +35,8 @@ message OrganizationInfo
     string name = 3;
     repeated OrganizationInfo organizations = 4;
 }
+
+message OrganizationId
+{
+    string organization_id = 1;
+}

@@ -3,6 +3,8 @@ package com.chicago.ext.bll;
 import com.chicago.dto.PositionOuterClass;
 import org.jvnet.hk2.annotations.Contract;
 
+import java.util.List;
+
 @Contract
 public interface PositionBll
 {
@@ -12,7 +14,7 @@ public interface PositionBll
 
     void deletePosition(PositionOuterClass.Position position) throws Exception;
 
-    PositionOuterClass.Positions getPositions(String organizationId) throws Exception;
+    List<PositionOuterClass.Position> getPositions(String organizationId) throws Exception;
 }
 
 

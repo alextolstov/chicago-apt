@@ -20,12 +20,14 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class InventoryRequests extends AbstractComponent {
+public class InventoryRequests extends AbstractComponent
+{
     private static final Logger LOG = LoggerFactory.getLogger(InventoryRequests.class);
     // Can not be injected, class created with new(). Will use ServiceLocator
     private InventoryBll _inventoryBll;
 
-    public InventoryRequests(ComponentManager cm) throws ClassNotFoundException {
+    public InventoryRequests(ComponentManager cm) throws ClassNotFoundException
+    {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
         _ed.registerHandler(Inventorymessages.InventoryCatalogItemRequest.class, new InventoryCatalogItemEventHandler());
         _ed.registerHandler(Inventorymessages.InventoryCatalogItemsRequest.class, new InventoryCatalogItemsEventHandler());
@@ -48,28 +50,36 @@ public class InventoryRequests extends AbstractComponent {
         _ed.registerHandler(Inventorymessages.InventoryItemSuppliersResponse.class, producer.new MessageEventHandler());
     }
 
-    public boolean init(ConfigAccessor ca) {
+    public boolean init(ConfigAccessor ca)
+    {
         _inventoryBll = ServiceLocatorFactory.getInstance().find("servicelocator").getService(InventoryBll.class);
         return true;
     }
 
-    public static void registerComponentFactories() {
+    public static void registerComponentFactories()
+    {
         ComponentManager.registerComponentFactory(new Exception().getStackTrace()[0].getClassName());
     }
 
-    class InventoryCatalogItemEventHandler implements EventHandler<Inventorymessages.InventoryCatalogItemRequest> {
+    class InventoryCatalogItemEventHandler implements EventHandler<Inventorymessages.InventoryCatalogItemRequest>
+    {
         @Override
-        public void handleEvent(Inventorymessages.InventoryCatalogItemRequest event, String transactionId) {
+        public void handleEvent(Inventorymessages.InventoryCatalogItemRequest event, String transactionId)
+        {
             Message response;
-            try {
+            try
+            {
                 InventoryOuterClass.InventoryCatalogItem item = null;
 
-                switch (event.getCrudOperation()) {
-                    case CREATE: {
+                switch (event.getCrudOperation())
+                {
+                    case CREATE:
+                    {
                         item = _inventoryBll.createInventoryCatalogItem(event.getInventoryItem());
                         break;
                     }
-                    case UPDATE: {
+                    case UPDATE:
+                    {
                         _inventoryBll.updateInventoryCatalogItem(event.getInventoryItem());
                         item = InventoryOuterClass.InventoryCatalogItem.getDefaultInstance();
                         break;
@@ -85,7 +95,8 @@ public class InventoryRequests extends AbstractComponent {
                         .newBuilder()
                         .setInventoryItem(item)
                         .build();
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
@@ -93,17 +104,21 @@ public class InventoryRequests extends AbstractComponent {
         }
     }
 
-    class InventoryCatalogItemsEventHandler implements EventHandler<Inventorymessages.InventoryCatalogItemsRequest> {
+    class InventoryCatalogItemsEventHandler implements EventHandler<Inventorymessages.InventoryCatalogItemsRequest>
+    {
         @Override
-        public void handleEvent(Inventorymessages.InventoryCatalogItemsRequest event, String transactionId) {
+        public void handleEvent(Inventorymessages.InventoryCatalogItemsRequest event, String transactionId)
+        {
             Message response;
-            try {
+            try
+            {
                 List<InventoryOuterClass.InventoryCatalogItem> items = _inventoryBll.getInventoryCatalogItems(event.getEntityId());
                 response = Inventorymessages.InventoryCatalogItemsResponse
                         .newBuilder()
                         .addAllInventoryItems(items)
                         .build();
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
@@ -111,20 +126,26 @@ public class InventoryRequests extends AbstractComponent {
         }
     }
 
-    class InventoryItemCategoryEventHandler implements EventHandler<Inventorymessages.InventoryItemCategoryRequest> {
+    class InventoryItemCategoryEventHandler implements EventHandler<Inventorymessages.InventoryItemCategoryRequest>
+    {
         @Override
-        public void handleEvent(Inventorymessages.InventoryItemCategoryRequest event, String transactionId) {
+        public void handleEvent(Inventorymessages.InventoryItemCategoryRequest event, String transactionId)
+        {
             Message response;
-            try {
+            try
+            {
                 Message dataMsg = null;
                 List<InventoryOuterClass.InventoryItemCategory> categories = null;
 
-                switch (event.getCrudOperation()) {
-                    case CREATE: {
+                switch (event.getCrudOperation())
+                {
+                    case CREATE:
+                    {
                         dataMsg = _inventoryBll.createItemCategory(event.getItemCategory());
                         break;
                     }
-                    case UPDATE: {
+                    case UPDATE:
+                    {
                         _inventoryBll.updateItemCategory(event.getItemCategory());
                         dataMsg = InventoryOuterClass.InventoryItemCategory.getDefaultInstance();
                         break;
@@ -136,18 +157,21 @@ public class InventoryRequests extends AbstractComponent {
                     }
                 }
 
-                if (event.getCrudOperation() == Common.CrudOperation.READ) {
+                if (event.getCrudOperation() == Common.CrudOperation.READ)
+                {
                     response = Inventorymessages.InventoryItemCategoriesResponse
                             .newBuilder()
                             .addAllItemCategories(categories)
                             .build();
-                } else {
+                } else
+                {
                     response = Inventorymessages.InventoryItemCategoryResponse
                             .newBuilder()
                             .setItemCategory((InventoryOuterClass.InventoryItemCategory) dataMsg)
                             .build();
                 }
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
@@ -155,20 +179,26 @@ public class InventoryRequests extends AbstractComponent {
         }
     }
 
-    class InventoryItemBrandEventHandler implements EventHandler<Inventorymessages.InventoryItemBrandRequest> {
+    class InventoryItemBrandEventHandler implements EventHandler<Inventorymessages.InventoryItemBrandRequest>
+    {
         @Override
-        public void handleEvent(Inventorymessages.InventoryItemBrandRequest event, String transactionId) {
+        public void handleEvent(Inventorymessages.InventoryItemBrandRequest event, String transactionId)
+        {
             Message response;
-            try {
+            try
+            {
                 Message dataMsg = null;
                 List<InventoryOuterClass.InventoryItemBrand> brands = null;
 
-                switch (event.getCrudOperation()) {
-                    case CREATE: {
+                switch (event.getCrudOperation())
+                {
+                    case CREATE:
+                    {
                         dataMsg = _inventoryBll.createItemBrand(event.getItemBrand());
                         break;
                     }
-                    case UPDATE: {
+                    case UPDATE:
+                    {
                         _inventoryBll.updateItemBrand(event.getItemBrand());
                         dataMsg = InventoryOuterClass.InventoryItemBrand.getDefaultInstance();
                         break;
@@ -180,18 +210,21 @@ public class InventoryRequests extends AbstractComponent {
                     }
                 }
 
-                if (event.getCrudOperation() == Common.CrudOperation.READ) {
+                if (event.getCrudOperation() == Common.CrudOperation.READ)
+                {
                     response = Inventorymessages.InventoryItemBrandsResponse
                             .newBuilder()
                             .addAllItemBrands(brands)
                             .build();
-                } else {
+                } else
+                {
                     response = Inventorymessages.InventoryItemBrandResponse
                             .newBuilder()
                             .setItemBrand((InventoryOuterClass.InventoryItemBrand) dataMsg)
                             .build();
                 }
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
@@ -199,20 +232,26 @@ public class InventoryRequests extends AbstractComponent {
         }
     }
 
-    class InventoryItemUnitEventHandler implements EventHandler<Inventorymessages.InventoryItemUnitRequest> {
+    class InventoryItemUnitEventHandler implements EventHandler<Inventorymessages.InventoryItemUnitRequest>
+    {
         @Override
-        public void handleEvent(Inventorymessages.InventoryItemUnitRequest event, String transactionId) {
+        public void handleEvent(Inventorymessages.InventoryItemUnitRequest event, String transactionId)
+        {
             Message response;
-            try {
+            try
+            {
                 Message dataMsg = null;
                 List<InventoryOuterClass.InventoryItemUnit> units = null;
 
-                switch (event.getCrudOperation()) {
-                    case CREATE: {
+                switch (event.getCrudOperation())
+                {
+                    case CREATE:
+                    {
                         dataMsg = _inventoryBll.createItemUnit(event.getItemUnit());
                         break;
                     }
-                    case UPDATE: {
+                    case UPDATE:
+                    {
                         _inventoryBll.updateItemUnit(event.getItemUnit());
                         dataMsg = InventoryOuterClass.InventoryItemUnit.getDefaultInstance();
                         break;
@@ -224,18 +263,21 @@ public class InventoryRequests extends AbstractComponent {
                     }
                 }
 
-                if (event.getCrudOperation() == Common.CrudOperation.READ) {
+                if (event.getCrudOperation() == Common.CrudOperation.READ)
+                {
                     response = Inventorymessages.InventoryItemUnitsResponse
                             .newBuilder()
                             .addAllItemUnits(units)
                             .build();
-                } else {
+                } else
+                {
                     response = Inventorymessages.InventoryItemUnitResponse
                             .newBuilder()
                             .setItemUnit((InventoryOuterClass.InventoryItemUnit) dataMsg)
                             .build();
                 }
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
@@ -243,20 +285,26 @@ public class InventoryRequests extends AbstractComponent {
         }
     }
 
-    class InventoryItemSupplierEventHandler implements EventHandler<Inventorymessages.InventoryItemSupplierRequest> {
+    class InventoryItemSupplierEventHandler implements EventHandler<Inventorymessages.InventoryItemSupplierRequest>
+    {
         @Override
-        public void handleEvent(Inventorymessages.InventoryItemSupplierRequest event, String transactionId) {
+        public void handleEvent(Inventorymessages.InventoryItemSupplierRequest event, String transactionId)
+        {
             Message response;
-            try {
+            try
+            {
                 Message dataMsg = null;
                 List<InventoryOuterClass.InventoryItemSupplier> suppliers = null;
 
-                switch (event.getCrudOperation()) {
-                    case CREATE: {
+                switch (event.getCrudOperation())
+                {
+                    case CREATE:
+                    {
                         dataMsg = _inventoryBll.createItemSupplier(event.getItemSupplier());
                         break;
                     }
-                    case UPDATE: {
+                    case UPDATE:
+                    {
                         _inventoryBll.updateItemSupplier(event.getItemSupplier());
                         dataMsg = InventoryOuterClass.InventoryItemSupplier.getDefaultInstance();
                         break;
@@ -268,18 +316,21 @@ public class InventoryRequests extends AbstractComponent {
                     }
                 }
 
-                if (event.getCrudOperation() == Common.CrudOperation.READ) {
+                if (event.getCrudOperation() == Common.CrudOperation.READ)
+                {
                     response = Inventorymessages.InventoryItemSuppliersResponse
                             .newBuilder()
                             .addAllItemSuppliers(suppliers)
                             .build();
-                } else {
+                } else
+                {
                     response = Inventorymessages.InventoryItemBrandResponse
                             .newBuilder()
                             .setItemBrand((InventoryOuterClass.InventoryItemBrand) dataMsg)
                             .build();
                 }
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
@@ -287,20 +338,26 @@ public class InventoryRequests extends AbstractComponent {
         }
     }
 
-    class InventoryLocationEventHandler implements EventHandler<Inventorymessages.InventoryLocationRequest> {
+    class InventoryLocationEventHandler implements EventHandler<Inventorymessages.InventoryLocationRequest>
+    {
         @Override
-        public void handleEvent(Inventorymessages.InventoryLocationRequest event, String transactionId) {
+        public void handleEvent(Inventorymessages.InventoryLocationRequest event, String transactionId)
+        {
             Message response;
-            try {
+            try
+            {
                 Message dataMsg = null;
                 List<InventoryOuterClass.InventoryLocation> locations = null;
 
-                switch (event.getCrudOperation()) {
-                    case CREATE: {
+                switch (event.getCrudOperation())
+                {
+                    case CREATE:
+                    {
                         dataMsg = _inventoryBll.createInventoryLocation(event.getInventoryLocation());
                         break;
                     }
-                    case UPDATE: {
+                    case UPDATE:
+                    {
                         _inventoryBll.updateInventoryLocation(event.getInventoryLocation());
                         dataMsg = InventoryOuterClass.InventoryItemSupplier.getDefaultInstance();
                         break;
@@ -312,18 +369,21 @@ public class InventoryRequests extends AbstractComponent {
                     }
                 }
 
-                if (event.getCrudOperation() == Common.CrudOperation.READ) {
+                if (event.getCrudOperation() == Common.CrudOperation.READ)
+                {
                     response = Inventorymessages.InventoryLocationsResponse
                             .newBuilder()
                             .addAllInventoryLocations(locations)
                             .build();
-                } else {
+                } else
+                {
                     response = Inventorymessages.InventoryLocationResponse
                             .newBuilder()
                             .setInventoryLocation((InventoryOuterClass.InventoryLocation) dataMsg)
                             .build();
                 }
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));

@@ -1,9 +1,13 @@
 package com.chicago.services.controllers;
 
 import com.chicago.common.comm.AsyncCommunicator;
-import com.chicago.dto.*;
+import com.chicago.dto.Common;
+import com.chicago.dto.PositionOuterClass;
+import com.chicago.dto.Positionmessages;
+import com.chicago.dto.Service;
 import com.chicago.services.internal.MediaTypeExt;
 import com.chicago.services.util.ResponseErrorUtil;
+import com.google.protobuf.Message;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.subject.Subject;
@@ -99,22 +103,12 @@ public class PositionController
         }
     }
 
-    private Positionmessages.PositionRequest prepareRequest(byte[] data, Common.CrudOperation operation) throws Exception
+    private Message prepareRequest(byte[] data, Common.CrudOperation operation) throws Exception
     {
         PositionOuterClass.Position position = PositionOuterClass.Position.parseFrom(data);
-
         return Positionmessages.PositionRequest.newBuilder()
                 .setCrudOperation(operation)
                 .setPosition(position)
-                .build();
-    }
-
-    private Positionmessages.PositionsRequest prepareRequest(byte[] data) throws Exception
-    {
-        PositionOuterClass.Positions positions = PositionOuterClass.Positions.parseFrom(data);
-
-        return Positionmessages.PositionsRequest.newBuilder()
-                .setOrganizationId(positions.getOrganizationId())
                 .build();
     }
 }

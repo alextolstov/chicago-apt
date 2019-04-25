@@ -4,6 +4,8 @@ import PositionConvertor from "../convertors/PositionConvertor";
 
 const position_proto = require('dto/position_pb.js');
 const positionmessages_proto = require('dto/positionmessages_pb.js');
+const organization_proto = require('dto/organization_pb.js');
+const organizationmessages_proto = require('dto/organizationmessages_pb.js');
 
 export default class PositionApi {
   constructor() {
@@ -12,7 +14,7 @@ export default class PositionApi {
     this.deletePositionUrl = '/api/position/delete';
     this.getPositionsUrl = '/api/position/get';
     this.fetchApi = new FetchApi();
-    this.concertor = new PositionConvertor();
+    this.convertor = new PositionConvertor();
   }
 
   createPosition(organizationId, description, errorHandler) {
@@ -39,10 +41,10 @@ export default class PositionApi {
   }
 
   getPositions(organizationId, errorHandler) {
-    let position = new position_proto.Position();
-    position.setOrganizationId(organizationId);
+    let organization = new organization_proto.OrganizationId();
+    organization.setOrganizationId(organizationId);
     let self = this;
-    return this.fetchApi.restCrud(this.getPositionsUrl, position, positionmessages_proto.PositionsResponse.deserializeBinary, errorHandler)
+    return this.fetchApi.restCrud(this.getPositionsUrl, organization, positionmessages_proto.PositionsResponse.deserializeBinary, errorHandler)
       .then(function (msg) {
         return self.getUiPositions(self, msg);
       });
@@ -59,10 +61,10 @@ export default class PositionApi {
   }
 
   getUiPositions(self, msg) {
-    if (msg.getPositionsList === undefined) {
+    if (msg.getPositions === undefined) {
       return Promise.resolve([]);
     }
-    let savedPos = msg.getPositionsList();
+    let savedPos = msg.getPositions().getPositions();
     let positionsMap = {};
 
     if (savedPos !== undefined && savedPos !== null) {

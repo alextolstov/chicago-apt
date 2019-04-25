@@ -19,13 +19,8 @@ message PositionResponse
     TransactionError transaction_error = 2;
 }
 
-message PositionsRequest
-{
-    string organization_id = 1;
-}
-
 message PositionsResponse
 {
-    Positions positions = 1;
+    repeated Position positions = 1;
     TransactionError transaction_error = 2;
 }

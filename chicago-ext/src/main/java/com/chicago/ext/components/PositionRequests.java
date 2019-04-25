@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class PositionRequests extends AbstractComponent
 {
@@ -49,9 +50,10 @@ public class PositionRequests extends AbstractComponent
         public void handleEvent(Positionmessages.PositionRequest event, String transactionId)
         {
             Message response;
+            List<PositionOuterClass.Position> positions = null;
             try
             {
-                Message posMsg = null;
+                PositionOuterClass.Position posMsg = null;
 
                 switch (event.getCrudOperation())
                 {
@@ -74,7 +76,7 @@ public class PositionRequests extends AbstractComponent
                     }
                     case READ:
                     {
-                        posMsg = _positionBll.getPositions(event.getPosition().getOrganizationId());
+                        positions = _positionBll.getPositions(event.getPosition().getOrganizationId());
                         break;
                     }
                 }
@@ -83,14 +85,14 @@ public class PositionRequests extends AbstractComponent
                 {
                     response = Positionmessages.PositionsResponse
                             .newBuilder()
-                            .setPositions((PositionOuterClass.Positions)posMsg)
+                            .addAllPositions(positions)
                             .build();
                 }
                 else
                 {
                     response = Positionmessages.PositionResponse
                             .newBuilder()
-                            .setPosition((PositionOuterClass.Position)posMsg)
+                            .setPosition(posMsg)
                             .build();
                 }
             } catch (Exception ex)

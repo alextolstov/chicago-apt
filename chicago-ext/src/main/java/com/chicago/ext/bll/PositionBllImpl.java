@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -37,14 +39,24 @@ public class PositionBllImpl implements PositionBll
     }
 
     @Override
-    public PositionOuterClass.Positions getPositions(String organizationId) throws Exception
+    public List<PositionOuterClass.Position> getPositions(String organizationId) throws Exception
     {
         // Protobuf doesnt support UUID, need to convert to string
         Map<UUID, String> result = _positionDal.getPositions(organizationId);
         Map<String, String> newResult = result.entrySet().stream()
                 .collect(Collectors.toMap(entry -> entry.getKey().toString(), Map.Entry::getValue));
-        return PositionOuterClass.Positions.newBuilder()
-                .putAllPositions(newResult)
-                .build();
+
+        List<PositionOuterClass.Position> positions = new ArrayList<>();
+
+        for (Map.Entry<String, String> entry : newResult.entrySet())
+        {
+            positions.add(
+                    PositionOuterClass.Position.newBuilder()
+                    .setOrganizationId(organizationId)
+                    .setPositionId(entry.getKey())
+                    .setDescription(entry.getValue())
+                    .build());
+        }
+        return positions;
     }
 }
