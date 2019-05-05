@@ -28,7 +28,7 @@ class UiUser {
     this.organization_id = 0;
     this.address_id = 0;
     this.permission_names = [];
-    this.positions = new Map();
+    this.positions = [];
     this.create_datetime = 0;
   }
 

@@ -47,8 +47,8 @@ export default class UserApi {
           throw response;
         }
         return this.getUserByPhoneOrEmail(userName, errorHandler)
-          .then(function (msg) {
-            return self.getUiUser(self, msg);
+          .then(function (uiUser) {
+            return Promise.resolve(uiUser);
         });
       })
       .catch(rest_error => {

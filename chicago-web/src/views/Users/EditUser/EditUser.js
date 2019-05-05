@@ -170,8 +170,8 @@ class EditUser extends Component {
     } else {
       // Working with existing profile
       this.state.user.positions = new Map();
-      this.state.userPositions.forEach((v) => {
-        this.state.user.positions.set(v, '');
+      this.state.userPositions.forEach((pos) => {
+        this.state.user.positions.set(pos.value, '');
       });
 
       this.dateBeforeSave();
@@ -222,11 +222,10 @@ class EditUser extends Component {
   }
 
   setPosition = (user) => {
-    const posMap = user.positions;
-    let userPos = [];
-    for (let i = 0; i < posMap.length; i++)
-      userPos.push(posMap[i][0]);
-    this.state.userPositions = userPos;
+    this.state.userPositions = [];
+    user.positions.forEach((label, value)=>{
+      this.state.userPositions.push(value);
+    });
   }
 
   componentDidMount() {

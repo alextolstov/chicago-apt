@@ -17,7 +17,7 @@ class UserConvertor {
     uiObj.employment_date = dtoObj.getEmploymentDate != undefined ? dtoObj.getEmploymentDate() : "";
     uiObj.actual_employment_date = dtoObj.getActualEmploymentDate != undefined ? dtoObj.getActualEmploymentDate() : "";
     uiObj.dismissal_date = dtoObj.getDismissalDate != undefined ? dtoObj.getDismissalDate() : "";
-    uiObj.actual_dismissal_date=dtoObj.getActualDismissalDate != undefined ? dtoObj.getActualDismissalDate() : "";
+    uiObj.actual_dismissal_date = dtoObj.getActualDismissalDate != undefined ? dtoObj.getActualDismissalDate() : "";
     uiObj.tax_payer_id = dtoObj.getTaxPayerId != undefined ? dtoObj.getTaxPayerId() : "";
     uiObj.diploma_number = dtoObj.getDiplomaNumber != undefined ? dtoObj.getDiplomaNumber() : "";
     uiObj.diploma_date = dtoObj.getDiplomaDate != undefined ? dtoObj.getDiplomaDate() : "";
@@ -29,43 +29,43 @@ class UserConvertor {
     uiObj.organization_id = dtoObj.getOrganizationId != undefined ? dtoObj.getOrganizationId() : "";
     uiObj.address_id = dtoObj.getAddressId != undefined ? dtoObj.getAddressId() : "";
     uiObj.permission_names = dtoObj.getPermissionNames != undefined ? dtoObj.getPermissionNames() : "";
-    uiObj.positions = dtoObj.getPositionsList != undefined ? dtoObj.getPositionsList() : new Map();
+    uiObj.positions = dtoObj.getPositionsMap != undefined ? dtoObj.getPositionsMap() : new Map();
     uiObj.create_datetime = dtoObj.getCreateDate != undefined ? dtoObj.getCreateDate() : "";
   }
 
   toDto = (uiObj, dtoObj) => {
-     dtoObj.setUserId(uiObj.user_id);
-     dtoObj.setEmail(uiObj.email);
-     dtoObj.setPassword(uiObj.password);
-     dtoObj.setAvatar(uiObj.avatar);
-     dtoObj.setFirstName(uiObj.first_name);
-     dtoObj.setMiddleName(uiObj.middle_name);
-     dtoObj.setLastName(uiObj.last_name);
-     dtoObj.setNickName(uiObj.nick_name);
-     dtoObj.setCellPhone(uiObj.cell_phone);
-     dtoObj.setHomePhone(uiObj.home_phone);
-     dtoObj.setWorkPhone(uiObj.work_phone);
-     dtoObj.setPassportNumber(uiObj.passport_number);
-     dtoObj.setDateOfBirth(uiObj.date_of_birth);
-     dtoObj.setEmploymentDate(uiObj.employment_date);
-     dtoObj.setActualEmploymentDate(uiObj.actual_employment_date);
-     dtoObj.setDismissalDate(uiObj.dismissal_date);
-     dtoObj.setActualDismissalDate(uiObj.actual_dismissal_date);
-     dtoObj.setTaxPayerId(uiObj.tax_payer_id);
-     dtoObj.setDiplomaNumber(uiObj.diploma_number);
-     dtoObj.setDiplomaDate(uiObj.diploma_date);
-     dtoObj.setRetirementIdNumber(uiObj.retirement_id_number);
-     dtoObj.setRetirementDate(uiObj.retirement_date);
-     dtoObj.setMedicalBook(uiObj.medical_book);
-     dtoObj.setMedicalBookDate(uiObj.medical_book_date);
-     dtoObj.setEmploymentBookNumber(uiObj.employment_book_number);
-     dtoObj.setOrganizationId(uiObj.organization_id);
-     dtoObj.setAddressId(uiObj.address_id);
-     let posMap = dtoObj.getPositionsMap();
-    for (let i in uiObj.positions) {
-      posMap[i] = uiObj.positions[i];
+    dtoObj.setUserId(uiObj.user_id);
+    dtoObj.setEmail(uiObj.email);
+    dtoObj.setPassword(uiObj.password);
+    dtoObj.setAvatar(uiObj.avatar);
+    dtoObj.setFirstName(uiObj.first_name);
+    dtoObj.setMiddleName(uiObj.middle_name);
+    dtoObj.setLastName(uiObj.last_name);
+    dtoObj.setNickName(uiObj.nick_name);
+    dtoObj.setCellPhone(uiObj.cell_phone);
+    dtoObj.setHomePhone(uiObj.home_phone);
+    dtoObj.setWorkPhone(uiObj.work_phone);
+    dtoObj.setPassportNumber(uiObj.passport_number);
+    dtoObj.setDateOfBirth(uiObj.date_of_birth);
+    dtoObj.setEmploymentDate(uiObj.employment_date);
+    dtoObj.setActualEmploymentDate(uiObj.actual_employment_date);
+    dtoObj.setDismissalDate(uiObj.dismissal_date);
+    dtoObj.setActualDismissalDate(uiObj.actual_dismissal_date);
+    dtoObj.setTaxPayerId(uiObj.tax_payer_id);
+    dtoObj.setDiplomaNumber(uiObj.diploma_number);
+    dtoObj.setDiplomaDate(uiObj.diploma_date);
+    dtoObj.setRetirementIdNumber(uiObj.retirement_id_number);
+    dtoObj.setRetirementDate(uiObj.retirement_date);
+    dtoObj.setMedicalBook(uiObj.medical_book);
+    dtoObj.setMedicalBookDate(uiObj.medical_book_date);
+    dtoObj.setEmploymentBookNumber(uiObj.employment_book_number);
+    dtoObj.setOrganizationId(uiObj.organization_id);
+    dtoObj.setAddressId(uiObj.address_id);
+    let posMap = dtoObj.getPositionsMap();
+    for (var [key, value] of uiObj.positions) {
+      posMap.set(key, value);
     }
-     dtoObj.setCreateDatetime(uiObj.create_datetime);
+    dtoObj.setCreateDatetime(uiObj.create_datetime);
   }
 }
 

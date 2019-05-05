@@ -43,7 +43,7 @@ class PositionForm extends Component {
   handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       let self = this;
-      let val = event.target.value;
+      let val = event.tastate.userPositionsrget.value;
       event.target.value = "";
       self.props.readyPosition(false);           
 
