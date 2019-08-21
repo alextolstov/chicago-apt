@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class TestDal
+public class TestCassandraDal
 {
     @Rule
     public CassandraCQLUnit cassandraCQLUnit = new CassandraCQLUnit(
@@ -31,7 +31,7 @@ public class TestDal
     {
         ServiceLocator serviceLocator = ServiceLocatorFactory.getInstance().create("servicelocator");
         TestCassandraConnector ts = new TestCassandraConnector(cassandraCQLUnit);
-        ServiceLocatorUtilities.bind(serviceLocator, new TestApplicationBinder(ts));
+        ServiceLocatorUtilities.bind(serviceLocator, new TestCassandraBinder(ts));
         UserBll userbll = serviceLocator.getService(UserBll.class);
         UserOuterClass.User newuser = UserOuterClass.User.newBuilder()
                 .setFirstName("Aleksey")
@@ -76,7 +76,7 @@ public class TestDal
     {
         ServiceLocator serviceLocator = ServiceLocatorFactory.getInstance().create("servicelocator");
         TestCassandraConnector ts = new TestCassandraConnector(cassandraCQLUnit);
-        ServiceLocatorUtilities.bind(serviceLocator, new TestApplicationBinder(ts));
+        ServiceLocatorUtilities.bind(serviceLocator, new TestCassandraBinder(ts));
         InventoryBll inventory = serviceLocator.getService(InventoryBll.class);
 
         // Locations
@@ -159,7 +159,7 @@ public class TestDal
         {
             ServiceLocator serviceLocator = ServiceLocatorFactory.getInstance().create("servicelocator");
             TestCassandraConnector ts = new TestCassandraConnector(cassandraCQLUnit);
-            ServiceLocatorUtilities.bind(serviceLocator, new TestApplicationBinder(ts));
+            ServiceLocatorUtilities.bind(serviceLocator, new TestCassandraBinder(ts));
             UserBll ub = serviceLocator.getService(UserBll.class);
             UserOuterClass.User user = UserOuterClass.User.newBuilder()
                     .setEmail("test@gmail.com")

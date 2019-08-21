@@ -13,9 +13,9 @@ export default class FetchApi {
             method: 'POST',
             body: serialized_obj,
             credentials: 'include',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
+            // headers: {
+            //     'Content-Type': 'application/x-www-form-urlencoded'
+            // }
         }).then(response => {
             if (!response.ok) {
                 throw response;

@@ -10,6 +10,7 @@ import com.chicago.ext.dal.UserNotFoundException;
 import com.chicago.ext.dal.UserPermissionsNotFoundException;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
+import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.utils.UUIDs;
@@ -39,7 +40,7 @@ public class UserDalImpl implements UserDal
     private static final Logger LOG = LoggerFactory.getLogger(UserDalImpl.class);
 
     @Inject
-    private DbConnector _cassandraConnector;
+    private DbConnector<Session> _cassandraConnector;
     @Inject
     private PositionDal _positionDal;
 

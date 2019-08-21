@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package com.chicago.dto;
+
+import "common.proto";
+import "city.proto";
+
+option java_package = "com.chicago.dto";
+
+message CityRequest
+{
+    CrudOperation crud_operation = 1;
+    City city = 2;
+}
+
+message CityResponse
+{
+    City city = 1;
+    TransactionError transaction_error = 2;
+}

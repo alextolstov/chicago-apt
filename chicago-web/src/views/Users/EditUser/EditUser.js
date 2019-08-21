@@ -16,7 +16,7 @@ import {
 import {AppSwitch} from '@coreui/react'
 // React select
 import Select from 'react-select';
-import 'react-select/dist/react-select.min.css';
+//import 'react-select/dist/react-select.min.css';
 import UserApi from '../../../api/UserApi';
 import FormApi from '../../../api/FormApi';
 import PositionApi from '../../../api/PositionApi';

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-public class CassandraConnector implements DbConnector
+public class CassandraConnector implements DbConnector<Session>
 {
     private static final Logger LOG = LoggerFactory.getLogger(CassandraConnector.class);
     private Cluster _cluster;

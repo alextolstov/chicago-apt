@@ -32,12 +32,12 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import javax.inject.Singleton;
 
-public class TestApplicationBinder extends AbstractBinder
+public class TestCassandraBinder extends AbstractBinder
 {
 //    private String _configFile;
     TestCassandraConnector _ts;
 
-    public TestApplicationBinder(TestCassandraConnector ts)
+    public TestCassandraBinder(TestCassandraConnector ts)
     {
         _ts = ts;
   //      _configFile = configFile;

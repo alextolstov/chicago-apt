@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package com.chicago.dto;
+
+option java_package = "com.chicago.dto";
+
+enum ViewFromWindow
+{
+    VIEW_NOT_IMPORTANT = 0;
+    STREET_VIEW = 1;
+    BACKYARD_VIEW = 2;
+}
+
+enum PropertyType
+{
+    APARTMENT = 0;
+    ROOM = 1;
+    SHARE = 2;
+    HOUSE = 3;
+    HOUSE_PART = 4;
+    OFFICE = 5;
+    RETAIL_SPACE = 6;
+    WAREHOUSE = 7;
+    RESTAURANT = 8;
+    GARAGE = 9;
+    AUTO_SERVICE = 11;
+}
+
+enum Market
+{
+    MARKET_NOT_IMPORTANT = 0;
+    SECOND = 1;
+    FIRST = 2;
+}
+
+enum CeilingHeight
+{
+    HEIGHT_NOT_IMPORTANT = 0;
+    FROM_2_5 = 1;
+    FROM_3_0 = 2;
+    FROM_3_5 = 3;
+    FROM_4_0 = 4;
+}
+
+message SearchFilters
+{
+    // Location
+    string city_id = 1;
+    string district_id = 2;
+    repeated string subway_station_id = 3;
+
+    // Main filter
+    PropertyType type_id = 4;
+    Market market_id = 5;
+    repeated int32 rooms_number = 6;
+    int32 apt_price_from = 7;
+    int32 apt_price_to = 8;
+    int32 apt_size_from = 9;
+    int32 apt_size_to = 10;
+
+    // Additional filters
+    ViewFromWindow windows_view = 11;
+    bool balcony = 12;
+    int32 kitchen_size_from = 13;
+    int32 kitchen_size_to = 14;
+    CeilingHeight ceiling_height = 15;
+    // Floors
+    int32 floor_from = 16;
+    int32 floor_to = 17;
+    int32 floors_in_house_from = 18;
+    int32 floors_in_house_to = 19;
+    bool not_first_floor = 20;
+    bool not_last_floor = 21;
+    bool last_floor = 22;
+}
+
+message Property
+{
+    string property_id = 1;
+}

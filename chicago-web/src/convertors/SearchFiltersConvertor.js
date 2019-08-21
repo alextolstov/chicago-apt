@@ -1,0 +1,74 @@
+import UiSearchFilters from "../models/UiSearchFilters";
+const searchfilters_proto = require('dto/searchfilters_pb');
+
+
+class SearchFiltersConvertor {
+  fromDto = (dtoObj) => {
+    console.log(dtoObj);
+
+    let uiObj = UiSearchFilters();
+    uiObj.city_id = dtoObj.getCityId != undefined ? dtoObj.getCityId() : null;
+    uiObj.subway_station_id = dtoObj.getSubwayStationIdList != undefined ? dtoObj.getSubwayStationIdList() : null;
+
+    uiObj.type_id = dtoObj.getTypeId != undefined ? dtoObj.getTypeId() : null;
+    uiObj.market_id = dtoObj.getMarketId != undefined ? dtoObj.getMarketId() : null;
+    uiObj.rooms_number = dtoObj.getRoomsNumberList != undefined ? dtoObj.getRoomsNumberList() : null;;
+    uiObj.apt_price_from = dtoObj.aptPriceFrom != undefined ? dtoObj.aptPriceFrom() : null;
+    uiObj.apt_price_to = dtoObj.aptPriceTo != undefined ? dtoObj.aptPriceTo() : null;
+    uiObj.apt_size_from = dtoObj.aptSizeTo != undefined ? dtoObj.aptSizeTo() : null;
+    uiObj.apt_size_to = dtoObj.aptSizeFrom != undefined ? dtoObj.aptSizeFrom() : null;
+
+    uiObj.windows_view = dtoObj.getWindowsView != undefined ? dtoObj.getWindowsView() : null;
+    uiObj.balcony = dtoObj.getBalcony != undefined ? dtoObj.getBalcony() : null;
+    uiObj.kitchen_size_from = dtoObj.getKitchenSizeFrom != undefined ? dtoObj.getKitchenSizeFrom() : null;
+    uiObj.kitchen_size_to = dtoObj.getKitchenSizeTo != undefined ? dtoObj.getKitchenSizeTo() : null;
+    uiObj.ceiling_height = dtoObj.getCeilingHeight != undefined ? dtoObj.getCeilingHeight() : null;
+
+    uiObj.floor_from = dtoObj.getFloorFrom != undefined ? dtoObj.getFloorFrom() : 0;
+    uiObj.floor_to = dtoObj.getFloorTo != undefined ? dtoObj.getFloorTo() : null;
+    uiObj.floors_in_house_from = dtoObj.getFloorsInHouseFrom != undefined ? dtoObj.getFloorsInHouseFrom() : 0;
+    uiObj.floors_in_house_to = dtoObj.getFloorsInHouseTo != undefined ? dtoObj.getFloorsInHouseTo() : 0;
+    uiObj.not_first_floor = dtoObj.getNotFirstFloor != undefined ? dtoObj.getNotFirstFloor() : false;
+    uiObj.not_last_floor = dtoObj.getNotLastFloor != undefined ? dtoObj.getNotLastFloor() : false;
+    uiObj.last_floor = dtoObj.getLastFloor != undefined ? dtoObj.getLastFloor() : false;
+
+    return uiObj;
+  }
+
+  toDto = (uiObj) => {
+    let dtoObj = new searchfilters_proto.SearchFilters();
+    dtoObj.setCityId(uiObj.city_id);
+    dtoObj.setDistrictId(uiObj.district_id);
+
+    for (let i = 0; i < uiObj.subway_station_id.length; i++) {
+      dtoObj.addSubwayStationId(uiObj.subway_station_id[i]);
+    }
+    dtoObj.setTypeId(uiObj.getTypeId());
+    dtoObj.setMarketId(uiObj.getMarketId());
+
+    for (let i = 0; i < uiObj.rooms_number.length; i++) {
+      dtoObj.addRoomsNumber(uiObj.rooms_number[i]);
+    }
+
+    dtoObj.setAptPriceFrom(uiObj.apt_price_from);
+    dtoObj.setAptPriceTo(uiObj.apt_price_to);
+    dtoObj.setAptSizeFrom(uiObj.apt_size_from);
+    dtoObj.setAptSizeTo(uiObj.apt_size_to);
+    dtoObj.setWindowsView(uiObj.windows_view);
+    dtoObj.setBalcony(uiObj.balcony);
+    dtoObj.setKitchenSizeFrom(uiObj.kitchen_size_from);
+    dtoObj.setKitchenSizeTo(uiObj.kitchen_size_to);
+    dtoObj.setCeilingHeight(uiObj.ceiling_height);
+    dtoObj.setFloorFrom(uiObj.floor_from);
+    dtoObj.setFloorTo(uiObj.floor_to);
+    dtoObj.setFloorsInHouseFrom(uiObj.floors_in_house_from);
+    dtoObj.setFloorsInHouseTo(uiObj.floors_in_house_to);
+    dtoObj.setNotFirstFloor(uiObj.not_first_floor);
+    dtoObj.setNotLastFloor(uiObj.not_last_floor);
+    dtoObj.setLastFloor(uiObj.last_floor);
+
+    return dtoObj;
+  }
+}
+
+export default SearchFiltersConvertor;

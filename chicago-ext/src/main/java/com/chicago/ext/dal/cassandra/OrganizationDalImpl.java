@@ -7,6 +7,7 @@ import com.chicago.ext.dal.OrganizationDal;
 import com.chicago.ext.dal.OrganizationNotFoundException;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
+import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.utils.UUIDs;
@@ -25,7 +26,7 @@ public class OrganizationDalImpl implements OrganizationDal
 {
     private static final Logger LOG = LoggerFactory.getLogger(UserDalImpl.class);
     @Inject
-    private DbConnector _cassandraConnector;
+    private DbConnector<Session> _cassandraConnector;
 
     @Override
     public String createOrganization(OrganizationOuterClass.Organization organization) throws Exception

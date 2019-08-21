@@ -11,7 +11,7 @@ import './react_dates_overrides.css';
 // React select
 import states from './data/states';
 import Select from 'react-select';
-import 'react-select/dist/react-select.min.css';
+//import 'react-select/dist/react-select.min.css';
 
 const options = states.US;
 
@@ -177,11 +177,20 @@ class AdvancedForms extends React.Component {
             </CardHeader>
             <CardBody>
               <Select
+                closeMenuOnSelect={false}
                 name="form-field-name2"
                 value={this.state.value}
                 options={options}
                 onChange={this.saveChanges}
+                isMulti
                 multi
+                styles={{
+                  multiValueLabel: base => ({
+                    ...base,
+                    backgroundColor: 'red',
+                    color: 'white',
+                  }),
+                }}
               />
             </CardBody>
           </Card>

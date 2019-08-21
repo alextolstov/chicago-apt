@@ -1,10 +1,8 @@
 package com.chicago.ext.dal;
 
-import com.datastax.driver.core.Session;
-
-public interface DbConnector
+public interface DbConnector<T>
 {
-    public Session getSession();
+    public T getSession();
 
     public void close();
 }

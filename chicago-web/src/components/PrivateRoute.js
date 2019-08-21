@@ -61,7 +61,7 @@ class PrivateRoute extends Component {
         </div>);
     }
 
-    if (isAuthenticated === false) {
+    if (isAuthenticated === false && this.props.location.pathname === '/settings') {
       return (
         <Redirect to="/login"/>
       );

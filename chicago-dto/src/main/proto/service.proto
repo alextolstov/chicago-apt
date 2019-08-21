@@ -12,8 +12,9 @@ message ServiceConfig
     ComponentsConfig components_config = 3;
     KafkaConfig kafka_config = 4;
     CassandraConfig cassandra_config = 5;
-    ZooKeeperConfig zookeeper_config = 6;
-    ShutdownConfig shutdown_config = 7;
+    MySqlConfig mysql_config = 6;
+    ZooKeeperConfig zookeeper_config = 7;
+    ShutdownConfig shutdown_config = 8;
 }
 
 message RestServiceConfig

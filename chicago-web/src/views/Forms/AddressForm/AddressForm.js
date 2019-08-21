@@ -5,7 +5,7 @@ import {Card, CardBody, CardHeader, FormGroup, Input, InputGroup, InputGroupAddo
 import {AppSwitch} from '@coreui/react'
 // React select
 import 'react-toastify/dist/ReactToastify.css';
-import 'react-select/dist/react-select.min.css';
+//import 'react-select/dist/react-select.min.css';
 import FormApi from '../../../api/FormApi';
 import DateTimeApi from "../../../api/DateTimeApi";
 import AddressApi from "../../../api/AddressApi";

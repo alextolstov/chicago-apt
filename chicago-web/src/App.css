@@ -1,3 +1,9 @@
 @media (min-width: 992px) {
   .modal-max {
     max-width: 1600px; } }
+
+.suggestions-suggestion {
+  padding: 4px 4px;
+  color: black;
+  overflow: hidden
+}

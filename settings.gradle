@@ -1,4 +1,4 @@
-rootProject.name = "chicago-erp"
+rootProject.name = "chicago-apt"
 include 'chicago-dto'
 include 'chicago-common'
 include 'chicago-rest'

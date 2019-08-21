@@ -1,0 +1,34 @@
+syntax = "proto3";
+package com.chicago.dto;
+
+option java_package = "com.chicago.dto";
+
+import "config.proto";
+
+message District
+{
+    int32 district_id = 1;
+    string district_name = 2;
+    string district_classifier = 3;
+}
+
+message SubwayLine
+{
+    string line_id = 1;
+    string line_name = 2;
+    repeated SubwayStation subway_stations = 3;
+}
+
+message SubwayStation
+{
+    int32 station_id = 1;
+    string station_name = 2;
+}
+
+message City
+{
+    string city_id = 1;
+    repeated District districts = 2;
+    repeated SubwayLine subway_lines = 3;
+}
+
