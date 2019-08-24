@@ -15,6 +15,8 @@ import com.chicago.ext.bll.PermissionBll;
 import com.chicago.ext.bll.PermissionBllImpl;
 import com.chicago.ext.bll.PositionBll;
 import com.chicago.ext.bll.PositionBllImpl;
+import com.chicago.ext.bll.SearchFiltersBll;
+import com.chicago.ext.bll.SearchFiltersBllImpl;
 import com.chicago.ext.bll.UserBll;
 import com.chicago.ext.bll.UserBllImpl;
 import com.chicago.ext.dal.AddressDal;
@@ -24,6 +26,7 @@ import com.chicago.ext.dal.InventoryDal;
 import com.chicago.ext.dal.OrganizationDal;
 import com.chicago.ext.dal.PermissionDal;
 import com.chicago.ext.dal.PositionDal;
+import com.chicago.ext.dal.SearchFiltersDal;
 import com.chicago.ext.dal.UserDal;
 import com.chicago.ext.dal.cassandra.AddressDalImpl;
 import com.chicago.ext.dal.cassandra.CassandraConnector;
@@ -34,6 +37,7 @@ import com.chicago.ext.dal.cassandra.PositionDalImpl;
 import com.chicago.ext.dal.cassandra.UserDalImpl;
 import com.chicago.ext.dal.mysql.CityDalImpl;
 import com.chicago.ext.dal.mysql.MySqlConnector;
+import com.chicago.ext.dal.mysql.SearchFiltersDalImpl;
 import org.glassfish.hk2.api.TypeLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
@@ -87,6 +91,9 @@ public class ApplicationBinder extends AbstractBinder
 //
 //        bind(InventoryDalImpl.class).to(InventoryDal.class).in(Singleton.class);
 //        bind(InventoryBllImpl.class).to(InventoryBll.class).in(Singleton.class);
+
+        bind(SearchFiltersDalImpl.class).to(SearchFiltersDal.class).in(Singleton.class);
+        bind(SearchFiltersBllImpl.class).to(SearchFiltersBll.class).in(Singleton.class);
 
         bind(CityDalImpl.class).to(CityDal.class).in(Singleton.class);
         bind(CityBllImpl.class).to(CityBll.class).in(Singleton.class);

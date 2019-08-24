@@ -17,8 +17,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-@Path("/searchproperty")
-public class SearchPropertyController
+@Path("/search")
+public class SearchFiltersController
 {
     @Inject
     Service.RestServiceConfig _config;
@@ -28,7 +28,7 @@ public class SearchPropertyController
 
     @POST
     @Path("get")
-    @RequiresAuthentication
+//    @RequiresAuthentication
     @Produces(MediaTypeExt.APPLICATION_OCTET_STREAM)
     public Response getProperties(byte[] data)
     {

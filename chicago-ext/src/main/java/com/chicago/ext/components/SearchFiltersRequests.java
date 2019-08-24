@@ -7,11 +7,10 @@ import com.chicago.common.core.ComponentManager;
 import com.chicago.common.core.ConfigAccessor;
 import com.chicago.common.core.EventBase;
 import com.chicago.common.core.EventHandler;
-import com.chicago.dto.AddressOuterClass;
-import com.chicago.dto.Addressmessages;
+import com.chicago.dto.Common;
+import com.chicago.dto.Searchfilters;
 import com.chicago.dto.Searchfiltersmessages;
-import com.chicago.dto.Usermessages;
-import com.chicago.ext.bll.AddressBll;
+import com.chicago.ext.bll.SearchFiltersBll;
 import com.chicago.ext.util.ResponseFactoryUtil;
 import com.google.protobuf.Message;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
@@ -19,17 +18,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-public class SearchPropertyRequests extends AbstractComponent
+public class SearchFiltersRequests extends AbstractComponent
 {
-    private static final Logger LOG = LoggerFactory.getLogger(SearchPropertyRequests.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SearchFiltersRequests.class);
     // Can not be injected, class created with new(). Will use ServiceLocator
-    private AddressBll _addressBll;
+    private SearchFiltersBll _searchFiltersBll;
 
-    public SearchPropertyRequests(ComponentManager cm) throws ClassNotFoundException
+    public SearchFiltersRequests(ComponentManager cm) throws ClassNotFoundException
     {
         _ed = cm.getResource(AbstractEventDispatcher.class.getName());
-        _ed.registerHandler(Addressmessages.AddressRequest.class, new AddressEventHandler());
+        _ed.registerHandler(Searchfiltersmessages.SearchFiltersRequest.class, new SearchFiltersEventHandler());
         // Response
         KafkaMessageProducer producer = cm.getResource(KafkaMessageProducer.class.getName());
         _ed.registerHandler(Searchfiltersmessages.SearchFiltersResponse.class, producer.new MessageEventHandler());
@@ -37,6 +38,7 @@ public class SearchPropertyRequests extends AbstractComponent
 
     public boolean init(ConfigAccessor ca)
     {
+        _searchFiltersBll = ServiceLocatorFactory.getInstance().find("servicelocator").getService(SearchFiltersBll.class);
         return true;
     }
 
@@ -45,43 +47,24 @@ public class SearchPropertyRequests extends AbstractComponent
         ComponentManager.registerComponentFactory(new Exception().getStackTrace()[0].getClassName());
     }
 
-    class AddressEventHandler implements EventHandler<Addressmessages.AddressRequest>
+    class SearchFiltersEventHandler implements EventHandler<Searchfiltersmessages.SearchFiltersRequest>
     {
         @Override
-        public void handleEvent(Addressmessages.AddressRequest event, String transactionId)
+        public void handleEvent(Searchfiltersmessages.SearchFiltersRequest event, String transactionId)
         {
             Message response;
             try
             {
-                AddressOuterClass.Address address = null;
-
-                switch (event.getCrudOperation())
-                {
-                    case CREATE:
-                    {
-                        address = _addressBll.createAddress(event.getAddress());
-                        break;
-                    }
-                    case READ:
-                    {
-                        address = _addressBll.getAddress(event.getAddress().getAddressId());
-                        break;
-                    }
-                    case UPDATE:
-                    {
-                        _addressBll.updateAddress(event.getAddress());
-                        address = AddressOuterClass.Address.newBuilder(event.getAddress()).build();
-                        break;
-                    }
-                }
-
-                response = Addressmessages.AddressResponse
+                List<Searchfilters.Property> propertyList = new ArrayList<>();
+                Searchfilters.Property p = Searchfilters.Property.newBuilder().setPropertyId("1223").build();
+                propertyList.add(p);
+                response = Searchfiltersmessages.SearchFiltersResponse
                         .newBuilder()
-                        .setAddress(address)
+                        .addAllProperty(propertyList)
                         .build();
             } catch (Exception ex)
             {
-                response = ResponseFactoryUtil.createErrorResponse(ex, Usermessages.UserResponse.class);
+                response = ResponseFactoryUtil.createErrorResponse(ex, Common.VoidResponse.class);
             }
             _ed.publishRealTimeEvent(new EventBase(LocalDateTime.now(), response, transactionId));
             LOG.info("Published real-time response on request with transaction id: {}", transactionId);

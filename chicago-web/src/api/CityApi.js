@@ -19,11 +19,11 @@ export default class CityApi {
 
     return this.fetchApi.restCrud(this.cityUrl, protoCity, citymessages_proto.CityResponse.deserializeBinary, errorHandler)
       .then(function (msg) {
-        return self.getUiPropertyList(self, msg);
+        return self.getUiMessage(self, msg);
       });
   }
 
-  getUiPropertyList(self, msg) {
+  getUiMessage(self, msg) {
     let cityDto = msg.getCity();
     let uiCity = self.convertor.fromDto(cityDto);
     return Promise.resolve(uiCity);

@@ -37,8 +37,8 @@ const CeilingHeight =
 class UiSearchFilters {
   constructor() {
     this.city_id = null;
-    this.district_id = null; // Array
-    this.subway_station_id = null; // Array
+    this.district_id = new Array();
+    this.subway_station_id = new Array();
 
     this.type_id = PropertyType.APARTMENT;
     this.market_id = Market.MARKET_NOT_IMPORTANT;

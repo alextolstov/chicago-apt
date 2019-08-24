@@ -6,7 +6,7 @@ class SearchFiltersConvertor {
   fromDto = (dtoObj) => {
     console.log(dtoObj);
 
-    let uiObj = UiSearchFilters();
+    let uiObj = new UiSearchFilters();
     uiObj.city_id = dtoObj.getCityId != undefined ? dtoObj.getCityId() : null;
     uiObj.subway_station_id = dtoObj.getSubwayStationIdList != undefined ? dtoObj.getSubwayStationIdList() : null;
 
@@ -38,16 +38,20 @@ class SearchFiltersConvertor {
   toDto = (uiObj) => {
     let dtoObj = new searchfilters_proto.SearchFilters();
     dtoObj.setCityId(uiObj.city_id);
-    dtoObj.setDistrictId(uiObj.district_id);
 
-    for (let i = 0; i < uiObj.subway_station_id.length; i++) {
-      dtoObj.addSubwayStationId(uiObj.subway_station_id[i]);
+    for (let d of uiObj.district_id) {
+      dtoObj.addDistrictId(d);
     }
-    dtoObj.setTypeId(uiObj.getTypeId());
-    dtoObj.setMarketId(uiObj.getMarketId());
 
-    for (let i = 0; i < uiObj.rooms_number.length; i++) {
-      dtoObj.addRoomsNumber(uiObj.rooms_number[i]);
+    for (let s of uiObj.subway_station_id) {
+      dtoObj.addSubwayStationId(s);
+    }
+
+    dtoObj.setTypeId(uiObj.type_id);
+    dtoObj.setMarketId(uiObj.market_id);
+
+    for (let r of uiObj.rooms_number) {
+      dtoObj.addRoomsNumber(r);
     }
 
     dtoObj.setAptPriceFrom(uiObj.apt_price_from);
@@ -66,7 +70,6 @@ class SearchFiltersConvertor {
     dtoObj.setNotFirstFloor(uiObj.not_first_floor);
     dtoObj.setNotLastFloor(uiObj.not_last_floor);
     dtoObj.setLastFloor(uiObj.last_floor);
-
     return dtoObj;
   }
 }

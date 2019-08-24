@@ -44,7 +44,7 @@ distributions {
                 from(project.configurations.runtime)
             }
             into('config') {
-                from('src/main/resources/config/userservice.cfg')
+                from('src/main/resources/config/realtyservice.cfg')
                 from('src/main/resources/config/logback.xml')
             }
         }
