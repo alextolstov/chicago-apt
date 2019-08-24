@@ -1,5 +1,6 @@
 package com.chicago.ext.dal;
 
+import com.chicago.ext.model.EnumTypes;
 import com.chicago.ext.model.SearchFiltersModel;
 
 import java.util.List;
@@ -12,9 +13,9 @@ public interface SearchFiltersDal
     List<String> getSubwayStationsId(List<String> stationsId) throws Exception;
 
     // Main filter
-    int getPropertyType(SearchFiltersModel.PropertyType propertyType) throws Exception;
-    int getMarket(SearchFiltersModel.Market propertyMarket) throws Exception;
+    int getPropertyType(EnumTypes.PropertyType propertyType) throws Exception;
+    int getMarket(EnumTypes.Market propertyMarket) throws Exception;
     // Additional filters
-    int getViewFromWindow(SearchFiltersModel.ViewFromWindow viewFromWindow) throws Exception;
-    int getCeilingHeight(SearchFiltersModel.CeilingHeight ceilingHeight) throws Exception;;
+    int getViewFromWindow(EnumTypes.ViewFromWindow viewFromWindow) throws Exception;
+    int getCeilingHeight(EnumTypes.CeilingHeight ceilingHeight) throws Exception;;
 }

@@ -2,6 +2,7 @@ package com.chicago.ext.dal.mysql;
 
 import com.chicago.ext.dal.DbConnector;
 import com.chicago.ext.dal.SearchFiltersDal;
+import com.chicago.ext.model.EnumTypes;
 import com.chicago.ext.model.SearchFiltersModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,25 +38,25 @@ public class SearchFiltersDalImpl implements SearchFiltersDal
     }
 
     @Override
-    public int getPropertyType(SearchFiltersModel.PropertyType propertyType) throws Exception
+    public int getPropertyType(EnumTypes.PropertyType propertyType) throws Exception
     {
         return 0;
     }
 
     @Override
-    public int getMarket(SearchFiltersModel.Market propertyMarket) throws Exception
+    public int getMarket(EnumTypes.Market propertyMarket) throws Exception
     {
         return 0;
     }
 
     @Override
-    public int getViewFromWindow(SearchFiltersModel.ViewFromWindow viewFromWindow) throws Exception
+    public int getViewFromWindow(EnumTypes.ViewFromWindow viewFromWindow) throws Exception
     {
         return 0;
     }
 
     @Override
-    public int getCeilingHeight(SearchFiltersModel.CeilingHeight ceilingHeight) throws Exception
+    public int getCeilingHeight(EnumTypes.CeilingHeight ceilingHeight) throws Exception
     {
         return 0;
     }
