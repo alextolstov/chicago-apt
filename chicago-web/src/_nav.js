@@ -9,7 +9,7 @@ export default {
             icon: 'icon-speedometer',
             badge: {
                 variant: 'info',
-                text: 'NEW',
+                icon: 'icon-home',
             },
         },
         {
