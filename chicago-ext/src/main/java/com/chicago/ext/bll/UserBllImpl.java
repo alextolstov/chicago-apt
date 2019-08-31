@@ -8,7 +8,7 @@ import com.chicago.ext.dal.PasswordNotMatchException;
 import com.chicago.ext.dal.PermissionDal;
 import com.chicago.ext.dal.UserDal;
 import com.chicago.ext.dal.UserNotFoundException;
-import javafx.util.Pair;
+import com.chicago.ext.util.Pair;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -2,7 +2,7 @@ package com.chicago.ext.dal;
 
 import com.chicago.dto.PermissionOuterClass;
 import com.chicago.dto.UserOuterClass;
-import javafx.util.Pair;
+import com.chicago.ext.util.Pair;
 
 import java.util.List;
 

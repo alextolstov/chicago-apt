@@ -8,6 +8,7 @@ import com.chicago.ext.dal.PositionDal;
 import com.chicago.ext.dal.UserDal;
 import com.chicago.ext.dal.UserNotFoundException;
 import com.chicago.ext.dal.UserPermissionsNotFoundException;
+import com.chicago.ext.util.Pair;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
@@ -15,7 +16,6 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.utils.UUIDs;
 import com.google.protobuf.ByteString;
-import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
