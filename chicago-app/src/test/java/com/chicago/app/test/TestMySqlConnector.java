@@ -11,7 +11,7 @@ public class TestMySqlConnector implements DbConnector
     private Connection _connection = null;
     public TestMySqlConnector()
     {
-        connect("jdbc:mysql://192.168.1.15:3306/realestate?serverTimezone=EST5EDT&user=conclavia&password=2vjJcJy9_23o");
+        connect("jdbc:mysql://108.50.217.209:3306/realestate?serverTimezone=EST5EDT&user=conclavia&password=2vjJcJy9_23o");
     }
 
     private void connect(String connectionString)
