@@ -8,6 +8,6 @@ import org.jvnet.hk2.annotations.Contract;
 @Contract
 public interface SearchFiltersBll
 {
-    CianSearchFiltersModel getCianSearchFilters(SearchFiltersModel ourSearchFilters) throws Exception;
-    YandexSearchFiltersModel getYandexSearchFilters(SearchFiltersModel ourSearchFilters) throws Exception;
+    CianSearchFiltersModel getCianSearchFilters(SearchFiltersModel.SearchFilters ourSearchFilters) throws Exception;
+    YandexSearchFiltersModel getYandexSearchFilters(SearchFiltersModel.SearchFilters ourSearchFilters) throws Exception;
 }

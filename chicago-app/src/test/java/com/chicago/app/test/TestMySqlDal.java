@@ -27,7 +27,7 @@ public class TestMySqlDal
         DbConnector<Connection> dbService = ts;
         try
         {
-            // Distcircts
+            // Distcirctsed
             CallableStatement stmt = dbService.getSession().prepareCall("{ call spGetCityDistrict(?) }");
             String cityId = "c2deb16a-0330-4f05-821f-1d09c93331e6";
             CityModel.City cmodel = new CityModel.City();
