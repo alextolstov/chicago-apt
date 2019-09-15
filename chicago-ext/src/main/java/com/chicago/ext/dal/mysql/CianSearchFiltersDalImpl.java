@@ -109,6 +109,13 @@ public class CianSearchFiltersDalImpl implements SearchFiltersDal
         CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetCityDistrict(?) }");
         return 0;
     }
+
+    @Override
+    public void addSearchFilter(String userId, String searchFilter) throws Exception
+    {
+
+    }
+
     public String getPriceFrom(int price) throws Exception
     {
         return Integer.toString(price);
