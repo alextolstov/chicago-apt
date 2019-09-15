@@ -19,6 +19,7 @@ import {
 import { BrandButtons, ButtonDropdowns, ButtonGroups, Buttons, LoadingButtons } from './Buttons';
 import Charts from './Charts';
 import Dashboard from './Dashboard';
+import SavedSearches from './SavedSearches';
 import { EditUser, ManageUsers } from './Users';
 import { CodeEditors, TextEditors } from './Editors';
 import { AdvancedForms, BasicForms, ValidationForms } from './Forms';
@@ -55,6 +56,7 @@ export {
   Tables,
   Charts,
   Dashboard,
+  SavedSearches,
   EditUser,
   ManageUsers,
   Widgets,

@@ -11,7 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
 
 import static org.junit.Assert.assertEquals;
-
+/*
 public class ProtobufTest extends JerseyTest
 {
     @Override
@@ -49,3 +49,4 @@ public class ProtobufTest extends JerseyTest
                 .build();
     }
 }
+*/

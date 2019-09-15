@@ -13,16 +13,9 @@ export default {
             },
         },
         {
-            name: <FormattedMessage id="menu.users.header" defaultMessage="Employees"/>,
-            url: '/users',
-            icon: 'icon-people',
-            children: [
-                {
-                    name: <FormattedMessage id="menu.users.list" defaultMessage="Employees list"/>,
-                    url: '/users/listusers',
-                    icon: 'icon-people',
-                }
-            ]
+            name: <FormattedMessage id="menu.users.header" defaultMessage="История поиска"/>,
+            url: '/savedsearches',
+            icon: 'icon-magnifier',
         },
       {
         name: <FormattedMessage id="menu.organizations.header" defaultMessage="Organizations"/>,

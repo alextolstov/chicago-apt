@@ -1,4 +1,5 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react'
+import cookies from 'react-cookies';
 import {
   Button,
   ButtonDropdown,
@@ -16,27 +17,26 @@ import {
   Input,
   InputGroupAddon,
   Label,
-  Progress,
   Row,
-  Table,
   UncontrolledTooltip,
-} from 'reactstrap';
-import {inject, observer} from 'mobx-react';
-import UiSearchFilters from "../../models/UiSearchFilters";
-import Select from 'react-select';
-import CityApi from '../../api/CityApi';
-import SearchApi from '../../api/SearchFiltersApi';
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-import data from './_test_data';
+} from 'reactstrap'
+import { inject, observer } from 'mobx-react'
+import UiSearchFilters, { FloorBeamsMaterial, Market, PropertyType, ViewFromWindow } from '../../models/UiSearchFilters'
+import UiProperty from '../../models/UiProperty'
+import Select from 'react-select'
+import CityApi from '../../api/CityApi'
+import SearchApi from '../../api/SearchFiltersApi'
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table'
+import data from './_test_data'
 
 class Dashboard extends Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
 
     this.state = {
-      type_name: "Квартира",
-      market_name: "Любой",
-      rooms: "Любое",
+      type_name: 'Квартира',
+      market_name: 'Любой',
+      rooms: 'Любое',
       dropdownOpen: false,
       windowRadioSelected: 1,
       ceilingRadioSelected: 1,
@@ -49,219 +49,259 @@ class Dashboard extends Component {
       districtOptions: [],
 
       selectedSubwayStations: [],
-      subwayStationOptions: []
-    };
+      subwayStationOptions: [],
 
-    this.uiParameters = new UiSearchFilters();
-    this.cityApi = new CityApi();
-    this.searchApi = new SearchApi();
-    this.table = data.rows;
+      // Cookie
+      onboarded: cookies.load("onboarded")
+    }
+
+    this.uiParameters = new UiSearchFilters()
+    this.cityApi = new CityApi()
+    this.searchApi = new SearchApi()
+    this.table = data.rows
+
+    let testProperty = new UiProperty()
+    testProperty.property_id = 1
+    testProperty.city = 'Санкт-Петербург'
+    testProperty.street = 'Съезжинская ул.'
+    testProperty.house = '19'
+    testProperty.floor_plan = null
+    testProperty.type_id = PropertyType.APARTMENT
+    testProperty.market_id = Market.SECOND
+    testProperty.apt_price = 100000
+    testProperty.apt_size = 120
+    testProperty.windows_view = ViewFromWindow.STREET_VIEW
+    testProperty.balcony = true
+    testProperty.kitchen_size = 12
+    testProperty.ceiling_height = 3.27
+    testProperty.floor = 4
+    testProperty.floors_in_house = 4
+    testProperty.rooms_number = 4
+    testProperty.floor_beams_material = FloorBeamsMaterial.METAL_CONCRETE
+    testProperty.floor_depreciation_percent = 41
+    testProperty.sewer_depreciation_percent = 23
+    testProperty.walls_depreciation_percent = 45
+    testProperty.complains_number = 21
+
+    this.properties = new Array()
+    this.properties.push(testProperty)
   }
 
-  componentDidMount() {
-    let self = this;
-    const $ = window.$;
-    $("#geoaddress").suggestions({
-      token: "6c595d7dcead327d7c7b5a1d74d37ba7291428c6",
-      type: "ADDRESS",
+  componentDidMount () {
+    // If cookie not found just create it
+    if (!this.state.onboarded) {
+      cookies.save("onboarded", this.uuidv4(), {path: "/"});
+    }
+
+    let self = this
+    const $ = window.$
+    $('#geoaddress').suggestions({
+      token: '6c595d7dcead327d7c7b5a1d74d37ba7291428c6',
+      type: 'ADDRESS',
       /* Вызывается, когда пользователь выбирает одну из подсказок */
       onSelect: function (suggestion) {
-        self.uiParameters.city_id = suggestion.data.city_fias_id;
-        console.log(suggestion);
+        self.uiParameters.city_id = suggestion.data.city_fias_id
+        console.log(suggestion)
       }
-    });
+    })
 
-    $("#geocity").suggestions({
-      token: "6c595d7dcead327d7c7b5a1d74d37ba7291428c6",
-      type: "ADDRESS",
+    $('#geocity').suggestions({
+      token: '6c595d7dcead327d7c7b5a1d74d37ba7291428c6',
+      type: 'ADDRESS',
       hint: false,
-      bounds: "city",
+      bounds: 'city',
       constraints: {
-        label: "",
-        locations: {city_type_full: "город"}
+        label: '',
+        locations: { city_type_full: 'город' }
       },      /* Вызывается, когда пользователь выбирает одну из подсказок */
       onSelect: function (suggestion) {
-        self.uiParameters.city_id = suggestion.data.city_fias_id;
-        console.log(suggestion);
+        self.uiParameters.city_id = suggestion.data.city_fias_id
+        console.log(suggestion)
         // Call server
         self.cityApi.getCity(self.uiParameters.city_id, (e) => {
             console.log('Error load:', e)
           }
         ).then(function (obj) {
           // Districts
-          let districtOptMap = new Map();
+          let districtOptMap = new Map()
           for (let d of obj.districts) {
-            let valueArr = districtOptMap.get(d.district_classifier);
+            let valueArr = districtOptMap.get(d.district_classifier)
             if (valueArr === undefined) {
-              valueArr = new Array();
+              valueArr = new Array()
             }
-            valueArr.push({district_id: d.district_id, district_name: d.district_name});
-            districtOptMap.set(d.district_classifier, valueArr);
+            valueArr.push({ district_id: d.district_id, district_name: d.district_name })
+            districtOptMap.set(d.district_classifier, valueArr)
           }
 
-          let districtOpt = new Array();
+          let districtOpt = new Array()
           districtOptMap.forEach(function (val, key) {
-            let classifier = {label: key, options: []};
+            let classifier = { label: key, options: [] }
             for (let v of val) {
               classifier.options.push({
                 value: v.district_id,
                 label: v.district_name
-              });
+              })
             }
-            districtOpt.push(classifier);
-          });
-          self.setState({districtOptions: districtOpt});
+            districtOpt.push(classifier)
+          })
+          self.setState({ districtOptions: districtOpt })
 
           // Subway Stations
-          let subwayStationOpt = new Array();
+          let subwayStationOpt = new Array()
           for (let sl of obj.subway_lines) {
-            let line = {label: sl.line_name, options: []};
+            let line = { label: sl.line_name, options: [] }
             for (let ss of sl.subway_stations) {
               line.options.push({
                 value: ss.station_id,
                 label: ss.station_name
               })
             }
-            subwayStationOpt.push(line);
+            subwayStationOpt.push(line)
           }
-          self.setState({subwayStationOptions: subwayStationOpt});
-        });
+          self.setState({ subwayStationOptions: subwayStationOpt })
+        })
       }
-    });
+    })
+  }
+
+  uuidv4 = () => {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    )
   }
 
   toggle = () => {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen,
-    });
+    })
   }
 
   onWindowRadioBtnClick = (radioSelected) => {
-    this.uiParameters.windows_view = radioSelected;
-    this.setState({windowRadioSelected: radioSelected});
+    this.uiParameters.windows_view = radioSelected
+    this.setState({ windowRadioSelected: radioSelected })
   }
 
   onCeilingRadioBtnClick = (radioSelected) => {
-    this.uiParameters.ceiling_height = radioSelected;
-    this.setState({ceilingRadioSelected: radioSelected});
+    this.uiParameters.ceiling_height = radioSelected
+    this.setState({ ceilingRadioSelected: radioSelected })
   }
 
   onNotFirstFloorsRadioBtnClick = (radioSelected) => {
-    this.uiParameters.not_first_floor = !this.state.notFirstFloorRadioSelected;
-    this.setState({notFirstFloorRadioSelected: !this.state.notFirstFloorRadioSelected});
+    this.uiParameters.not_first_floor = !this.state.notFirstFloorRadioSelected
+    this.setState({ notFirstFloorRadioSelected: !this.state.notFirstFloorRadioSelected })
   }
 
   onLastOrNotLastFloorsRadioBtnClick = (radioSelected) => {
     if (radioSelected === 2) {
-      this.uiParameters.not_last_floor = true;
-      this.uiParameters.last_floor = false;
+      this.uiParameters.not_last_floor = true
+      this.uiParameters.last_floor = false
     } else {
-      this.uiParameters.last_floor = true;
-      this.uiParameters.not_last_floor = false;
+      this.uiParameters.last_floor = true
+      this.uiParameters.not_last_floor = false
     }
-    this.setState({lastOrNotLastFloorsRadioSelected: radioSelected});
+    this.setState({ lastOrNotLastFloorsRadioSelected: radioSelected })
   }
 
   onBalconRadioBtnClick = (radioSelected) => {
-    this.uiParameters.balcony = !this.state.balconRadioSelected;
-    this.setState({balconRadioSelected: !this.state.balconRadioSelected});
+    this.uiParameters.balcony = !this.state.balconRadioSelected
+    this.setState({ balconRadioSelected: !this.state.balconRadioSelected })
   }
 
   handleClick = (e) => {
-    e.stopPropagation();
+    e.stopPropagation()
   }
 
   handleTypeClick = (e) => {
-    this.uiParameters.type_id = e.target.attributes.id;
-    this.setState({type_name: e.nativeEvent.target.innerText});
+    this.uiParameters.type_id = e.target.attributes.id
+    this.setState({ type_name: e.nativeEvent.target.innerText })
   }
 
   handleMarketClick = (e) => {
-    this.uiParameters.market_id = e.target.attributes.id;
-    this.setState({market_name: e.nativeEvent.target.innerText});
+    this.uiParameters.market_id = e.target.attributes.id
+    this.setState({ market_name: e.nativeEvent.target.innerText })
   }
 
   handleRoomsClick = (e) => {
-    let clicked_rooms = parseInt(e.target.attributes.id.value, 10);
+    let clicked_rooms = parseInt(e.target.attributes.id.value, 10)
     if (this.uiParameters.rooms_number.has(clicked_rooms)) {
-      this.uiParameters.rooms_number.delete(clicked_rooms);
+      this.uiParameters.rooms_number.delete(clicked_rooms)
     } else {
-      this.uiParameters.rooms_number.add(clicked_rooms);
+      this.uiParameters.rooms_number.add(clicked_rooms)
     }
 
-    var show_rooms = [...this.uiParameters.rooms_number].join(',');
-    if (show_rooms === "") {
-      show_rooms = "Любое";
+    var show_rooms = [...this.uiParameters.rooms_number].join(',')
+    if (show_rooms === '') {
+      show_rooms = 'Любое'
     }
-    this.setState({rooms: show_rooms});
+    this.setState({ rooms: show_rooms })
   }
 
   handlePriceFromChange = (e) => {
-    e.target.value = this.stripNonNumeric(e.target.value);
-    this.uiParameters.apt_price_from = parseInt(e.target.value.replace(/\D/g, ''));
+    e.target.value = this.stripNonNumeric(e.target.value)
+    this.uiParameters.apt_price_from = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handlePriceToChange = (e) => {
-    e.target.value = this.stripNonNumeric(e.target.value);
-    this.uiParameters.apt_price_to = parseInt(e.target.value.replace(/\D/g, ''));
+    e.target.value = this.stripNonNumeric(e.target.value)
+    this.uiParameters.apt_price_to = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handleAptSizeFromChange = (e) => {
-    e.target.value = this.stripNonNumeric(e.target.value);
-    this.uiParameters.apt_size_from = parseInt(e.target.value.replace(/\D/g, ''));
+    e.target.value = this.stripNonNumeric(e.target.value)
+    this.uiParameters.apt_size_from = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handleAptSizeToChange = (e) => {
-    e.target.value = this.stripNonNumeric(e.target.value);
-    this.uiParameters.apt_size_to = parseInt(e.target.value.replace(/\D/g, ''));
+    e.target.value = this.stripNonNumeric(e.target.value)
+    this.uiParameters.apt_size_to = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handleKitchenSizeFromChange = (e) => {
-    e.target.value = this.stripNonNumeric(e.target.value);
-    this.uiParameters.kitchen_size_from = parseInt(e.target.value.replace(/\D/g, ''));
+    e.target.value = this.stripNonNumeric(e.target.value)
+    this.uiParameters.kitchen_size_from = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handleKitchenSizeToChange = (e) => {
-    e.target.value = this.stripNonNumeric(e.target.value);
-    this.uiParameters.kitchen_size_to = parseInt(e.target.value.replace(/\D/g, ''));
+    e.target.value = this.stripNonNumeric(e.target.value)
+    this.uiParameters.kitchen_size_to = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handleFilterButtonClick = (e) => {
-    this.setState({showFilters: !this.state.showFilters});
+    this.setState({ showFilters: !this.state.showFilters })
   }
 
   handleSearchButtonClick = (e) => {
-    console.log(this.uiParameters);
+    console.log(this.uiParameters)
     this.searchApi.search(this.uiParameters, (e) => {
       console.log('Error load:', e)
     })
       .then(function (obj) {
-        console.log(obj);
-      });
+        console.log(obj)
+      })
   }
 
   saveDistrictsChange = (selectedDistricts) => {
     for (let d of selectedDistricts) {
-      this.uiParameters.district_id.push(d.value);
+      this.uiParameters.district_id.push(d.value)
     }
-    this.setState({selectedDistricts});
+    this.setState({ selectedDistricts })
   }
 
   saveSubwayStationsChange = (selectedSubwayStations) => {
     for (let s of selectedSubwayStations) {
-      this.uiParameters.subway_station_id.push(s.value);
+      this.uiParameters.subway_station_id.push(s.value)
     }
-    this.setState({selectedSubwayStations});
+    this.setState({ selectedSubwayStations })
   }
 
   stripNonNumeric = (strValue) => {
-    var validChars = /[0-9]/;
-    var strIn = strValue;
-    var strOut = '';
+    var validChars = /[0-9]/
+    var strIn = strValue
+    var strOut = ''
     for (let i = 0; i < strIn.length; i++) {
-      strOut += (validChars.test(strIn.charAt(i))) ? strIn.charAt(i) : '';
+      strOut += (validChars.test(strIn.charAt(i))) ? strIn.charAt(i) : ''
     }
-    return strOut.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return strOut.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   }
 
   imageCellFormatter = (cell, row) => {
@@ -269,16 +309,33 @@ class Dashboard extends Component {
       <div>
         <div>{row.image}</div>
       </div>
-    );
+    )
   }
 
   infoCellFormatter = (cell, row) => {
     return (
-      <div>
-        <div><Label>Цена (₽):</Label>{this.stripNonNumeric(row.price)}</div>
-        <div>{row.description}</div>
+      <div className="container">
+        <div className="row">
+          <Col xs="10" sm="10" lg="3">
+            <div><Label>{row.city}, {row.street} {row.house}</Label>{this.stripNonNumeric(row.apt_price)}</div>
+            <div><Label>Площадь (м²):</Label>{row.apt_size}</div>
+          </Col>
+          <Col xs="10" sm="10" lg="3">
+            <div><Label>Цена (₽):</Label>{this.stripNonNumeric(row.apt_price.toString())}</div>
+            <div><Label>Площадь (м²):</Label>{row.apt_size}</div>
+          </Col>
+          <Col xs="10" sm="10" lg="3">
+            <div><Label>Цена (₽):</Label>{this.stripNonNumeric(row.apt_price)}</div>
+            <div><Label>Площадь (м²):</Label>{row.apt_size}</div>
+          </Col>
+          <Col xs="10" sm="10" lg="3">
+            <div><Label>Цена (₽):</Label>{this.stripNonNumeric(row.apt_price)}</div>
+            <div><Label>Площадь (м²):</Label>{row.apt_size}</div>
+          </Col>
+
+        </div>
       </div>
-    );
+    )
   }
 
   sellerCellFormatter = (cell, row) => {
@@ -287,13 +344,12 @@ class Dashboard extends Component {
         <div>{row.seller.name}</div>
         <div>{row.description}</div>
       </div>
-    );
+    )
   }
 
-  render() {
-
+  render () {
     return (
-      <div className="animated fadeIn">
+    <div className="animated fadeIn">
         <Row>
           <Col>
             <Card>
@@ -369,7 +425,7 @@ class Dashboard extends Component {
                   <Col xs="12" sm="12" lg="2">
                     <ButtonGroup className="float-right">
                       <ButtonDropdown id='card1' isOpen={this.state.card1} toggle={() => {
-                        this.setState({card1: !this.state.card1});
+                        this.setState({ card1: !this.state.card1 })
                       }}>
                         <DropdownToggle caret className="p-0" color="black">
                           <i className="fa fa-list-ul fa-lg"></i>
@@ -405,7 +461,7 @@ class Dashboard extends Component {
                   <Col xs="12" sm="12" lg="2">
                     <ButtonGroup className="float-right">
                       <Dropdown id='card2' isOpen={this.state.card2} toggle={() => {
-                        this.setState({card2: !this.state.card2});
+                        this.setState({ card2: !this.state.card2 })
                       }}>
                         <DropdownToggle caret className="p-0" color="black">
                           <i className="fa fa-list-ul fa-lg"></i>
@@ -426,7 +482,7 @@ class Dashboard extends Component {
                   <Col xs="12" sm="12" lg="2">
                     <ButtonGroup className="float-right">
                       <Dropdown id='card3' isOpen={this.state.card3} toggle={() => {
-                        this.setState({card3: !this.state.card3});
+                        this.setState({ card3: !this.state.card3 })
                       }}>
                         <DropdownToggle caret className="p-0" color="black">
                           <i className="fa fa-list-ul fa-lg"></i>
@@ -657,15 +713,17 @@ class Dashboard extends Component {
         <Row>
           <Col>
             <br/>
-            <BootstrapTable data={this.table} version="4" striped hover pagination search options={this.options}>
-              <TableHeaderColumn dataField="image" isKey width='10%' dataFormat={this.imageCellFormatter}></TableHeaderColumn>
-              <TableHeaderColumn dataField="description" dataFormat={this.infoCellFormatter}>Описание</TableHeaderColumn>
+            <BootstrapTable data={this.properties} version="4" striped hover pagination search options={this.options}>
+              <TableHeaderColumn dataField="image" isKey width='10%'
+                                 dataFormat={this.imageCellFormatter}></TableHeaderColumn>
+              <TableHeaderColumn dataField="description"
+                                 dataFormat={this.infoCellFormatter}>Описание</TableHeaderColumn>
             </BootstrapTable>
           </Col>
         </Row>
       </div>
-    );
+    )
   }
 }
 
-export default inject("appStore")(observer(Dashboard));
+export default inject('appStore')(observer(Dashboard))

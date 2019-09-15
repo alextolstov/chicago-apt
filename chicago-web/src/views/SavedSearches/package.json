@@ -1,0 +1,6 @@
+{
+  "name": "SavedSearches",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./SavedSearches.js"
+}

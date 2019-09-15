@@ -18,3 +18,15 @@ message SearchFiltersResponse
     repeated Property property = 1;
     TransactionError transaction_error = 2;
 }
+
+message SearchFiltersCatalogRequest
+{
+    CrudOperation crud_operation = 1;
+    string userId = 2;
+}
+
+message SearchFiltersCatalogResponse
+{
+    repeated SearchFilters searchfilters = 1;
+    TransactionError transaction_error = 2;
+}

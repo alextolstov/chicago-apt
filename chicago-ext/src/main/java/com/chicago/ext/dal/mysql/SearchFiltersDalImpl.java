@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.util.List;
 
@@ -59,5 +60,11 @@ public class SearchFiltersDalImpl implements SearchFiltersDal
     public int getCeilingHeight(EnumTypes.CeilingHeight ceilingHeight) throws Exception
     {
         return 0;
+    }
+
+    @Override
+    public void addSearchFilter(String userId, String searchFilter) throws Exception
+    {
+        CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetCityDistrict(?) }");
     }
 }

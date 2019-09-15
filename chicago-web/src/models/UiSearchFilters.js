@@ -1,10 +1,10 @@
-const ViewFromWindow = {
+export const ViewFromWindow = {
   VIEW_NOT_IMPORTANT: 0,
   STREET_VIEW: 1,
   BACKYARD_VIEW: 2
 }
 
-const PropertyType = {
+export const PropertyType = {
   APARTMENT: 0,
   ROOM: 1,
   SHARE: 2,
@@ -18,14 +18,13 @@ const PropertyType = {
   AUTO_SERVICE: 11
 }
 
-const Market = {
+export const Market = {
   MARKET_NOT_IMPORTANT: 0,
   SECOND: 1,
   FIRST: 2
 }
 
-const CeilingHeight =
-{
+export const CeilingHeight = {
   HEIGHT_NOT_IMPORTANT: 0,
   FROM_2_5: 1,
   FROM_3_0: 2,
@@ -33,6 +32,11 @@ const CeilingHeight =
   FROM_4_0: 4
 }
 
+export const FloorBeamsMaterial = {
+  WOOD_WOOD: 0,
+  METAL_WOOD: 1,
+  METAL_CONCRETE: 2
+}
 
 class UiSearchFilters {
   constructor() {

@@ -48,7 +48,6 @@ enum FloorBeamsMaterial {
     METAL_CONCRETE = 2;
 }
 
-
 message SearchFilters
 {
     // Location

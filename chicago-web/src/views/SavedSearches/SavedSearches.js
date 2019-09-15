@@ -1,21 +1,20 @@
 import React, {Component} from 'react';
 import {Card, CardBody, CardHeader, Modal, ModalBody, ModalHeader} from 'reactstrap';
+import cookies from 'react-cookies';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import {FormattedMessage} from 'react-intl';
 import {inject, observer} from 'mobx-react/index';
 import 'spinkit/css/spinkit.css';
-import UserApi from '../../../api/UserApi';
-import EditUser from '../EditUser';
 import {toast} from 'react-toastify';
-import PersonNameLocalizeApi from '../../../api/PersonNameLocalizeApi'
-import Spinner from "../../Spinner/Spinner";
+import Spinner from "../Spinner/Spinner";
 
 const user_proto = require('dto/user_pb');
 
-class ListUsers extends Component {
+class SavedSearches extends Component {
   constructor(props) {
     super(props);
+
     this.table = [];
     this.options = {
       sortIndicator: true,
@@ -25,7 +24,8 @@ class ListUsers extends Component {
       clearSearch: false,
       alwaysShowAllBtns: false,
       withFirstAndLast: false,
-      onRowClick: this.onRowSelect
+      onRowClick: this.onRowSelect,
+      onboarded: cookies.load("onboarded")
     }
 
     this.selectRowProp = {
@@ -36,8 +36,6 @@ class ListUsers extends Component {
 
     this.state = {
       data: null,
-      userApi: new UserApi(),
-      personNameLocalizer: new PersonNameLocalizeApi(),
       selected: {
         id: '',
         name: '',
@@ -53,20 +51,20 @@ class ListUsers extends Component {
     this.state.isLoading = true;
     const self = this;
 
-    if (!userData.organization_id) {
-      const current_user = sessionStorage.getItem("current_user");
-      this.state.userApi.getUserById(current_user, null).then(function (user) {
-        self.loadListUsers(user.organization_id);
-      }).catch(function (error) {
-        console.log('ListUser Load User error:', error);
-        toast.error(error, {
-          position: toast.POSITION.TOP_LEFT
-        });
-      })
-    } else {
-      const orgId = userData.organization_id;
-      self.loadListUsers(orgId);
-    }
+    // if (!userData.organization_id) {
+    //   const current_user = sessionStorage.getItem("current_user");
+    //   this.state.userApi.getUserById(current_user, null).then(function (user) {
+    //     self.loadListUsers(user.organization_id);
+    //   }).catch(function (error) {
+    //     console.log('ListUser Load User error:', error);
+    //     toast.error(error, {
+    //       position: toast.POSITION.TOP_LEFT
+    //     });
+    //   })
+    // } else {
+    //   const orgId = userData.organization_id;
+    //   self.loadListUsers(orgId);
+    // }
   }
 
   onRowSelect = (row) => {
@@ -99,7 +97,6 @@ class ListUsers extends Component {
 
         optionsList.push({
           id: usersList[i].user_id,
-          name: self.state.personNameLocalizer.toPersonName(usersList[i].first_name, usersList[i].middle_name, usersList[i].last_name),
           positions: strPositions,
         });
       }
@@ -161,17 +158,9 @@ class ListUsers extends Component {
             </Card>
           </div>
         </div>
-        {(this.state.selected.id) &&
-        <Modal isOpen={this.state.openedDetails} toggle={this.toggleDetails} className={'modal-max'}>
-          <ModalHeader toggle={this.toggleDetails}>{this.state.selected.name}</ModalHeader>
-          <ModalBody>
-            <EditUser userId={this.state.selected.id} loadList={this.loadList}/>
-          </ModalBody>
-        </Modal>
-        }
       </div>
     );
   }
 }
 
-export default inject('appStore')(observer(ListUsers));
+export default inject('appStore')(observer(SavedSearches));

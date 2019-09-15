@@ -139,6 +139,11 @@ const Dashboard = Loadable({
   loading: Loading,
 });
 
+const SavedSearches = Loadable({
+  loader: () => import('./views/SavedSearches'),
+  loading: Loading,
+});
+
 // issue with mispalced position of cm value for acync load
 // const CodeEditors = Loadable({
 //   loader: () => import('./views/Editors/CodeEditors'),
@@ -269,6 +274,7 @@ const ListOrganizations = Loadable({
 const routes = [
   { path: '/', name: 'Home', component: DefaultLayout, exact: true },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
+  { path: '/savedsearches', name: 'SavedSearches', component: SavedSearches },
   { path: '/theme', name: 'Theme', component: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', component: Colors },
   { path: '/theme/typography', name: 'Typography', component: Typography },

@@ -17,5 +17,6 @@ public interface SearchFiltersDal
     int getMarket(EnumTypes.Market propertyMarket) throws Exception;
     // Additional filters
     int getViewFromWindow(EnumTypes.ViewFromWindow viewFromWindow) throws Exception;
-    int getCeilingHeight(EnumTypes.CeilingHeight ceilingHeight) throws Exception;;
+    int getCeilingHeight(EnumTypes.CeilingHeight ceilingHeight) throws Exception;
+    void addSearchFilter(String userId, String searchFilter) throws Exception;
 }
