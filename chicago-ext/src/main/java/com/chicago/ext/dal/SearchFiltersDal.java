@@ -1,7 +1,6 @@
 package com.chicago.ext.dal;
 
 import com.chicago.ext.model.EnumTypes;
-import com.chicago.ext.model.SearchFiltersModel;
 
 import java.util.List;
 
@@ -12,8 +11,8 @@ public interface SearchFiltersDal
     List<String> getDistrictsList(List<String> districtsList) throws Exception;
     List<String> getSubwayStationsList(List<String> stationsList) throws Exception;
     List<Integer> getRoomsNumberList(List<Integer> roomsNumberList) throws Exception;
-    int getPriceFrom(int price) throws Exception;
-    int getPriceTo(int price) throws Exception;
+    int getAptPriceFrom(int price) throws Exception;
+    int getAptPriceTo(int price) throws Exception;
     int getAptSizeFrom(int size) throws Exception;
     int getAptSizeTo(int size) throws Exception;
     int getKitchenSizeFrom(int size) throws Exception;
