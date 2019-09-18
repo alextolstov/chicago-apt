@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class CianSearchFiltersDalImpl implements SearchFiltersDal
+public class CianSearchFiltersDalImpl extends AbstractSearchFiltersDal
 {
     private static final Logger LOG = LoggerFactory.getLogger(CianSearchFiltersDalImpl.class);
     private int _client = 1;
@@ -108,12 +108,6 @@ public class CianSearchFiltersDalImpl implements SearchFiltersDal
     {
         CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetCityDistrict(?) }");
         return 0;
-    }
-
-    @Override
-    public void addSearchFilter(String userId, String searchFilter) throws Exception
-    {
-
     }
 
     public String getPriceFrom(int price) throws Exception

@@ -23,6 +23,7 @@ public interface SearchFiltersDal
     int getViewFromWindow(EnumTypes.ViewFromWindow viewFromWindow) throws Exception;
     int getCeilingHeight(EnumTypes.CeilingHeight ceilingHeight) throws Exception;
     void addSearchFilter(String userId, String searchFilter) throws Exception;
+    List<String> getSearchFilters(String userId) throws Exception;
 }
 /*
 

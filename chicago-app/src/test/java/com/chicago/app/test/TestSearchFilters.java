@@ -5,12 +5,14 @@ import com.chicago.ext.bll.SearchFiltersBll;
 import com.chicago.ext.dal.DbConnector;
 import com.chicago.ext.dal.SearchFiltersDal;
 import com.chicago.ext.model.SearchFiltersModel;
+import com.google.gson.Gson;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.Console;
 import java.net.URLEncoder;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -61,12 +63,28 @@ public class TestSearchFilters
 
         try
         {
-            String cityId;
-            List<String> districts = new ArrayList();
-            List<String> stations = new ArrayList();
-            cityId = searchFiltersDal.getCityId(model.getCityId());
-            districts = searchFiltersDal.getDistrictsList(model.getDistrictsList());
-            stations = searchFiltersDal.getSubwayStationsList(model.getSubwayStationsList());
+            SearchFiltersModel.SearchFilters sf = new SearchFiltersModel.SearchFilters();
+            sf.setAptPriceFrom(1000);
+            sf.setAptPriceTo(2000);
+            Gson gson = new Gson();
+            String json = gson.toJson(sf);
+            searchFiltersDal.addSearchFilter("test", json);
+            List<String> sfList = searchFiltersDal.getSearchFilters("test");
+            for(String filter : sfList)
+            {
+                SearchFiltersModel.SearchFilters obj = gson.fromJson(filter, SearchFiltersModel.SearchFilters.class);
+            }
+
+        }catch (Exception ex)
+        {
+            System.out.println("");
+        }
+
+        try
+        {
+            String cityId = searchFiltersDal.getCityId(model.getCityId());
+            List<String> districts = searchFiltersDal.getDistrictsList(model.getDistrictsList());
+            List<String> stations = searchFiltersDal.getSubwayStationsList(model.getSubwayStationsList());
 
             String str1 = URLEncoder.encode("[", "UTF-8");
             String str2 = URLEncoder.encode("]", "UTF-8");
@@ -100,7 +118,8 @@ public class TestSearchFilters
             }
                 int i=1;
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             ex.printStackTrace();
         }
 
