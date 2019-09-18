@@ -20,8 +20,8 @@ public class SearchFiltersBllImpl implements SearchFiltersBll
         String httpRequest = "https://spb.cian.ru&parm1={1}&{2}";
         _searchFiltersDal.getCityId(outSearchFilters.getCityId());
         _searchFiltersDal.getDistrictsList(outSearchFilters.getDistrictsList());
-        _searchFiltersDal.getPriceFrom(outSearchFilters.getAptPriceFrom());
-        _searchFiltersDal.getPriceTo(outSearchFilters.getAptPriceTo());
+        _searchFiltersDal.getAptPriceFrom(outSearchFilters.getAptPriceFrom());
+        _searchFiltersDal.getAptPriceTo(outSearchFilters.getAptPriceTo());
         //outSearchFilters.getAptSizeFrom();
         //outSearchFilters.getAptSizeTo();
          //CianSearchFiltersDalImpl
