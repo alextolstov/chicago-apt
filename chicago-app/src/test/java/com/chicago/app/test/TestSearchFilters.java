@@ -63,7 +63,7 @@ public class TestSearchFilters
         Assert.assertEquals(model.getCityId(), "c2deb16a-0330-4f05-821f-1d09c93331e6");
         Assert.assertEquals(model.getAptSizeFrom(), 60);
         Assert.assertEquals(model.getAptSizeTo(), 120);
-        Assert.assertEquals(model.isBalcony(), true);
+        Assert.assertTrue(model.isBalcony());
         //Assert.assertEquals(model.isLastFloor(), true);
         //Assert.assertEquals(model.isNotFirstFloor(), false);
         //Assert.assertEquals(model.isNotLastFloor(), true);
@@ -104,33 +104,33 @@ public class TestSearchFilters
             int idx = 0;
             for (String station : stations)
             {
-                httpRequest += "&metro" + str1 + Integer.toString(idx++) + str2 +  "=" + station;
+                httpRequest += "&metro" + str1 + idx++ + str2 +  "=" + station;
             }
 
             idx = 0;
             for (String district : districts)
             {
-                httpRequest += "&district" + str1 + Integer.toString(idx++) + str2 +  "=" + district;
+                httpRequest += "&district" + str1 + idx++ + str2 +  "=" + district;
             }
 
             if ( model.getAptPriceFrom()!=0 )
             {
-                httpRequest += "&minprice="+ searchFiltersDal.getAptPriceFrom(model.getAptPriceFrom());
+                httpRequest += "&minprice=" + searchFiltersDal.getAptPriceFrom(model.getAptPriceFrom());
             }
 
             if ( model.getAptPriceTo()!=0 )
             {
-                httpRequest += "&maxprice="+ Integer.toString(searchFiltersDal.getAptPriceTo(model.getAptPriceTo()));
+                httpRequest += "&maxprice=" + searchFiltersDal.getAptPriceTo(model.getAptPriceTo());
             }
 
             if ( model.getAptSizeFrom() !=0 )
             {
-                httpRequest += "&mintarea="+ Integer.toString(searchFiltersDal.getAptSizeFrom(model.getAptSizeFrom()));
+                httpRequest += "&mintarea=" + searchFiltersDal.getAptSizeFrom(model.getAptSizeFrom());
             }
 
             if ( model.getAptSizeTo() !=0 )
             {
-                httpRequest += "&maxtarea="+ Integer.toString(searchFiltersDal.getAptSizeTo(model.getAptSizeTo()));
+                httpRequest += "&maxtarea=" + searchFiltersDal.getAptSizeTo(model.getAptSizeTo());
             }
 
             idx = 0;
