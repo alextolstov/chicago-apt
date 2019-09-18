@@ -32,8 +32,9 @@ public class EnumTypes
     public enum Market
     {
         MARKET_NOT_IMPORTANT(0),
-        SECOND(1),
-        FIRST(2);
+        FIRST(1),
+        SECOND(2);
+
 
         private int _value;
 

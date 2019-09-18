@@ -85,15 +85,13 @@ public class CianSearchFiltersDalImpl implements SearchFiltersDal
     @Override
     public int getPropertyType(EnumTypes.PropertyType propertyType) throws Exception
     {
-        CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetCityDistrict(?) }");
-        return 0;
+        return propertyType.getValue();
     }
 
     @Override
     public int getMarket(EnumTypes.Market propertyMarket) throws Exception
     {
-        CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetCityDistrict(?) }");
-        return 0;
+        return propertyMarket.getValue();
     }
 
     @Override
@@ -116,20 +114,74 @@ public class CianSearchFiltersDalImpl implements SearchFiltersDal
 
     }
 
-    public String getPriceFrom(int price) throws Exception
+    public int getPriceFrom(int price) throws Exception
     {
-        return Integer.toString(price);
+        return price;
     }
-    public String getPriceTo(int price) throws Exception
+
+    public int getPriceTo(int price) throws Exception
     {
-        return Integer.toString(price);
+        return price;
     }
-    public String getAptSizeFrom(int size) throws Exception
+
+    public int getAptSizeFrom(int size) throws Exception
     {
-        return Integer.toString(size);
+        return size;
     }
-    public String getAptSizeTo(int size) throws Exception
+
+    public int getAptSizeTo(int size) throws Exception
     {
-        return Integer.toString(size);
+        return size;
     }
+
+    public List<Integer> getRoomsNumberList(List<Integer> roomsNumberList) throws Exception
+    {
+        return roomsNumberList;
+    }
+
+    public boolean isLastFloor(boolean isLastFloor) throws Exception
+    {
+        return isLastFloor;
+    }
+
+    public boolean isNotFirstFloor(boolean isNotFirstFloor) throws Exception
+    {
+        return isNotFirstFloor;
+    }
+
+    public boolean isNotLastFloor(boolean isNotLastFloor) throws Exception
+    {
+        return isNotLastFloor;
+    }
+
+    public int getFloorFrom(int floor) throws Exception
+    {
+        return floor;
+    }
+
+    public int getFloorTo(int floor) throws Exception
+    {
+        return floor;
+    }
+
+    public int getFloorsInHouseFrom(int floor) throws Exception
+    {
+        return floor;
+    }
+
+    public int getFloorsInHouseTo(int floor) throws Exception
+    {
+        return floor;
+    }
+
+    public int getKitchenSizeFrom(int size) throws Exception
+    {
+        return size;
+    }
+
+    public int getKitchenSizeTo(int size) throws Exception
+    {
+        return size;
+    }
+
 }

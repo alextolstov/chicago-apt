@@ -51,6 +51,7 @@ public final class SearchFiltersModel
             filtersModel.setCityId(searchFiltersDto.getCityId());
             filtersModel.setDistrictsList(searchFiltersDto.getDistrictIdList());
             filtersModel.setSubwayStationsList(searchFiltersDto.getSubwayStationIdList());
+            filtersModel.setTypeId(EnumTypes.PropertyType.values()[searchFiltersDto.getTypeId().getNumber()]);
 
             // Main filters
             filtersModel.setMarketId(EnumTypes.Market.values()[searchFiltersDto.getMarketId().getNumber()]);
