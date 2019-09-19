@@ -124,10 +124,5 @@ public class TestSearchFilters
         }
 
         SearchFiltersBll searchFiltersBll = serviceLocator.getService(SearchFiltersBll.class);
-//        String abc = searchFiltersBll.getCianSearchFilters();
-  //      Assert.assertEquals("test string", abc);
     }
 }
-/*
-тест провека
- */

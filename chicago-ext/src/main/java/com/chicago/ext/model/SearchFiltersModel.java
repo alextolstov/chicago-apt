@@ -32,49 +32,79 @@ public final class SearchFiltersModel
         private EnumTypes.CeilingHeight ceilingHeight;
 
         // Floors
-        int floorFrom;
-        int floorTo;
-        int floorsInHouseFrom;
-        int floorsInHouseTo;
-        boolean notFirstFloor;
-        boolean notLastFloor;
-        boolean lastFloor;
+        private int floorFrom;
+        private int floorTo;
+        private int floorsInHouseFrom;
+        private int floorsInHouseTo;
+
+        private boolean notFirstFloor;
+        private boolean notLastFloor;
+        private boolean lastFloor;
     }
 
     public static class SearchFiltersConvertor
     {
-        public SearchFiltersModel.SearchFilters fromDto(Searchfilters.SearchFilters searchFiltersDto)
+        public Searchfilters.SearchFilters toDto(SearchFiltersModel.SearchFilters model)
+        {
+            Searchfilters.SearchFilters dto = Searchfilters.SearchFilters.newBuilder()
+                    .setCityId(model.cityId)
+                    .addAllDistrictId(model.getDistrictsList())
+                    .addAllSubwayStationId(model.getSubwayStationsList())
+                    .setTypeId(Searchfilters.PropertyType.values()[model.getTypeId().getValue()])
+                    .setMarketId(Searchfilters.Market.values()[model.getMarketId().getValue()])
+                    .addAllRoomsNumber(model.getRoomsNumberList())
+                    .setAptPriceFrom(model.getAptPriceFrom())
+                    .setAptPriceTo(model.getAptPriceTo())
+                    .setAptSizeFrom(model.getAptSizeFrom())
+                    .setAptSizeTo(model.getAptSizeTo())
+                    .setWindowsView(Searchfilters.ViewFromWindow.values()[model.getWindowsView().getValue()])
+                    .setBalcony(model.isBalcony())
+                    .setKitchenSizeFrom(model.getKitchenSizeFrom())
+                    .setKitchenSizeTo(model.getKitchenSizeTo())
+                    .setCeilingHeight(Searchfilters.CeilingHeight.values()[model.getCeilingHeight().getValue()])
+                    .setFloorFrom(model.getFloorFrom())
+                    .setFloorTo(model.getFloorTo())
+                    .setFloorsInHouseFrom(model.getFloorsInHouseFrom())
+                    .setFloorsInHouseTo(model.getFloorsInHouseTo())
+                    .setNotFirstFloor(model.isNotFirstFloor())
+                    .setNotLastFloor(model.isNotLastFloor())
+                    .setLastFloor(model.isLastFloor())
+                    .build();
+            return dto;
+        }
+
+        public SearchFiltersModel.SearchFilters fromDto(Searchfilters.SearchFilters dto)
         {
             SearchFiltersModel.SearchFilters filtersModel = new SearchFilters();
 
             // Location
-            filtersModel.setCityId(searchFiltersDto.getCityId());
-            filtersModel.setDistrictsList(searchFiltersDto.getDistrictIdList());
-            filtersModel.setSubwayStationsList(searchFiltersDto.getSubwayStationIdList());
+            filtersModel.setCityId(dto.getCityId());
+            filtersModel.setDistrictsList(dto.getDistrictIdList());
+            filtersModel.setSubwayStationsList(dto.getSubwayStationIdList());
 
             // Main filters
-            filtersModel.setMarketId(EnumTypes.Market.values()[searchFiltersDto.getMarketId().getNumber()]);
-            filtersModel.setRoomsNumberList(searchFiltersDto.getRoomsNumberList());
-            filtersModel.setAptPriceFrom(searchFiltersDto.getAptPriceFrom());
-            filtersModel.setAptPriceTo(searchFiltersDto.getAptPriceTo());
-            filtersModel.setAptSizeFrom(searchFiltersDto.getAptSizeFrom());
-            filtersModel.setAptSizeTo(searchFiltersDto.getAptSizeTo());
+            filtersModel.setMarketId(EnumTypes.Market.values()[dto.getMarketId().getNumber()]);
+            filtersModel.setRoomsNumberList(dto.getRoomsNumberList());
+            filtersModel.setAptPriceFrom(dto.getAptPriceFrom());
+            filtersModel.setAptPriceTo(dto.getAptPriceTo());
+            filtersModel.setAptSizeFrom(dto.getAptSizeFrom());
+            filtersModel.setAptSizeTo(dto.getAptSizeTo());
 
             // Additional filters
-            filtersModel.setWindowsView(EnumTypes.ViewFromWindow.values()[searchFiltersDto.getWindowsView().getNumber()]);
-            filtersModel.setBalcony(searchFiltersDto.getBalcony());
-            filtersModel.setKitchenSizeFrom(searchFiltersDto.getKitchenSizeFrom());
-            filtersModel.setKitchenSizeTo(searchFiltersDto.getKitchenSizeTo());
-            filtersModel.setCeilingHeight(EnumTypes.CeilingHeight.values()[searchFiltersDto.getCeilingHeight().getNumber()]);
+            filtersModel.setWindowsView(EnumTypes.ViewFromWindow.values()[dto.getWindowsView().getNumber()]);
+            filtersModel.setBalcony(dto.getBalcony());
+            filtersModel.setKitchenSizeFrom(dto.getKitchenSizeFrom());
+            filtersModel.setKitchenSizeTo(dto.getKitchenSizeTo());
+            filtersModel.setCeilingHeight(EnumTypes.CeilingHeight.values()[dto.getCeilingHeight().getNumber()]);
 
             // Floors
-            filtersModel.setFloorFrom(searchFiltersDto.getFloorFrom());
-            filtersModel.setFloorTo(searchFiltersDto.getFloorTo());
-            filtersModel.setFloorsInHouseFrom(searchFiltersDto.getFloorsInHouseFrom());
-            filtersModel.setFloorsInHouseTo(searchFiltersDto.getFloorsInHouseTo());
-            filtersModel.setNotFirstFloor(searchFiltersDto.getNotFirstFloor());
-            filtersModel.setNotLastFloor(searchFiltersDto.getNotLastFloor());
-            filtersModel.setLastFloor(searchFiltersDto.getLastFloor());
+            filtersModel.setFloorFrom(dto.getFloorFrom());
+            filtersModel.setFloorTo(dto.getFloorTo());
+            filtersModel.setFloorsInHouseFrom(dto.getFloorsInHouseFrom());
+            filtersModel.setFloorsInHouseTo(dto.getFloorsInHouseTo());
+            filtersModel.setNotFirstFloor(dto.getNotFirstFloor());
+            filtersModel.setNotLastFloor(dto.getNotLastFloor());
+            filtersModel.setLastFloor(dto.getLastFloor());
 
             return filtersModel;
         }
