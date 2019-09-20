@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class CianSearchFiltersDalImpl implements SearchFiltersDal
+public class CianSearchFiltersDalImpl extends AbstractSearchFiltersDal
 {
     private static final Logger LOG = LoggerFactory.getLogger(CianSearchFiltersDalImpl.class);
     private int _client = 1;
@@ -44,7 +44,7 @@ public class CianSearchFiltersDalImpl implements SearchFiltersDal
     @Override
     public List<String> getDistrictsList(List<String> districtsList) throws Exception
     {
-        CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetHashWebsiteDistrict(?) }");
+        CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetWebsiteDistrict(?) }");
         stmt.setInt("websiteId", _client);
         ResultSet districtRs = stmt.executeQuery();
         while (districtRs.next())
@@ -64,7 +64,7 @@ public class CianSearchFiltersDalImpl implements SearchFiltersDal
     @Override
     public List<String> getSubwayStationsList(List<String> stationsList) throws Exception
     {
-        CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetHashWebsiteStation(?) }");
+        CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetWebsiteStation(?) }");
         stmt.setInt("websiteId", _client);
         ResultSet stationRs = stmt.executeQuery();
         while (stationRs.next())
@@ -97,91 +97,96 @@ public class CianSearchFiltersDalImpl implements SearchFiltersDal
     @Override
     public int getViewFromWindow(EnumTypes.ViewFromWindow viewFromWindow) throws Exception
     {
-        CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetCityDistrict(?) }");
         return 0;
     }
 
     @Override
     public int getCeilingHeight(EnumTypes.CeilingHeight ceilingHeight) throws Exception
     {
-        CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetCityDistrict(?) }");
         return 0;
     }
 
     @Override
-    public void addSearchFilter(String userId, String searchFilter) throws Exception
-    {
-
-    }
-
-    public int getPriceFrom(int price) throws Exception
+    public int getAptPriceFrom(int price) throws Exception
     {
         return price;
     }
 
-    public int getPriceTo(int price) throws Exception
+    @Override
+    public int getAptPriceTo(int price) throws Exception
     {
         return price;
     }
 
+    @Override
     public int getAptSizeFrom(int size) throws Exception
     {
         return size;
     }
 
+    @Override
     public int getAptSizeTo(int size) throws Exception
     {
         return size;
     }
 
+    @Override
     public List<Integer> getRoomsNumberList(List<Integer> roomsNumberList) throws Exception
     {
         return roomsNumberList;
     }
 
+    @Override
     public boolean isLastFloor(boolean isLastFloor) throws Exception
     {
         return isLastFloor;
     }
 
+    @Override
     public boolean isNotFirstFloor(boolean isNotFirstFloor) throws Exception
     {
         return isNotFirstFloor;
     }
 
+    @Override
     public boolean isNotLastFloor(boolean isNotLastFloor) throws Exception
     {
         return isNotLastFloor;
     }
 
+    @Override
     public int getFloorFrom(int floor) throws Exception
     {
         return floor;
     }
 
+    @Override
     public int getFloorTo(int floor) throws Exception
     {
         return floor;
     }
 
+    @Override
     public int getFloorsInHouseFrom(int floor) throws Exception
     {
         return floor;
     }
 
+    @Override
     public int getFloorsInHouseTo(int floor) throws Exception
     {
         return floor;
     }
 
+    @Override
     public int getKitchenSizeFrom(int size) throws Exception
     {
         return size;
     }
 
+    @Override
     public int getKitchenSizeTo(int size) throws Exception
     {
         return size;
     }
-
 }

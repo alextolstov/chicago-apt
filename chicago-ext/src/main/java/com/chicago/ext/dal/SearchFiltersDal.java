@@ -32,20 +32,5 @@ public interface SearchFiltersDal
     int getViewFromWindow(EnumTypes.ViewFromWindow viewFromWindow) throws Exception;
     int getCeilingHeight(EnumTypes.CeilingHeight ceilingHeight) throws Exception;
     void addSearchFilter(String userId, String searchFilter) throws Exception;
+    List<String> getSearchFilters(String userId) throws Exception;
 }
-/*
-
-    // Additional filters
-    private boolean balcony;
-    private int kitchenSizeFrom;
-    private int kitchenSizeTo;
-
-    // Floors
-    int floorFrom;
-    int floorTo;
-    int floorsInHouseFrom;
-    int floorsInHouseTo;
-    boolean notFirstFloor;
-    boolean notLastFloor;
-    boolean lastFloor;
-    */
