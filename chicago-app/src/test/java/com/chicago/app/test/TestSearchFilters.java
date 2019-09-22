@@ -4,6 +4,7 @@ import com.chicago.dto.Searchfilters;
 import com.chicago.ext.bll.SearchFiltersBll;
 import com.chicago.ext.dal.DbConnector;
 import com.chicago.ext.dal.SearchFiltersDal;
+import com.chicago.ext.model.EnumTypes;
 import com.chicago.ext.model.SearchFiltersModel;
 import com.google.gson.Gson;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -12,7 +13,6 @@ import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.Console;
 import java.net.URLEncoder;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -43,6 +43,8 @@ public class TestSearchFilters
                 .setFloorTo(5)
                 .setFloorsInHouseFrom(1)
                 .setFloorsInHouseTo(10)
+                .setTypeId(Searchfilters.PropertyType.ROOM)
+                .setMarketId(Searchfilters.Market.FIRST)
                 .build();
 
         SearchFiltersModel.SearchFiltersConvertor cnv = new SearchFiltersModel.SearchFiltersConvertor();
@@ -51,6 +53,9 @@ public class TestSearchFilters
         Assert.assertEquals(model.getAptSizeFrom(), 60);
         Assert.assertEquals(model.getAptSizeTo(), 120);
         Assert.assertEquals(model.isBalcony(), true);
+        Assert.assertEquals(model.getMarketId(), EnumTypes.Market.FIRST);
+        Assert.assertEquals(model.getTypeId(), EnumTypes.PropertyType.ROOM);
+
 
         // Now test DAL
         ServiceLocator serviceLocator = ServiceLocatorFactory.getInstance().create("servicelocator");
@@ -88,33 +93,137 @@ public class TestSearchFilters
 
             String str1 = URLEncoder.encode("[", "UTF-8");
             String str2 = URLEncoder.encode("]", "UTF-8");
-            String httpRequest = "https://spb.cian.ru/cat.php?deal_type=sale&engine_version=2&offer_type=flat&region=";
+            String httpRequest = "https://spb.cian.ru/cat.php?deal_type=sale&engine_version=2&region=";
             httpRequest +=  searchFiltersDal.getCityId(model.getCityId());
+
+            if( model.getTypeId() == EnumTypes.PropertyType.APARTMENT )
+            {
+                httpRequest += "&offer_type=flat";
+            }
+
+            if( model.getTypeId() == EnumTypes.PropertyType.ROOM )
+            {
+                httpRequest += "&offer_type=flat&room0=1";
+            }
+
             int idx = 0;
             for (String station : stations)
             {
-                httpRequest += "&metro" + str1 + Integer.toString(idx++) + str2 +  "=" + station;
+                httpRequest += "&metro" + str1 + idx++ + str2 +  "=" + station;
             }
+
             idx = 0;
             for (String district : districts)
             {
-                httpRequest += "&district" + str1 + Integer.toString(idx++) + str2 +  "=" + district;
+                httpRequest += "&district" + str1 + idx++ + str2 +  "=" + district;
             }
+
             if ( model.getAptPriceFrom()!=0 )
             {
-                httpRequest += "&minprice="+ searchFiltersDal.getPriceFrom(model.getAptPriceFrom());
+                httpRequest += "&minprice=" + searchFiltersDal.getAptPriceFrom(model.getAptPriceFrom());
             }
+
             if ( model.getAptPriceTo()!=0 )
             {
-                httpRequest += "&maxprice="+ searchFiltersDal.getPriceTo(model.getAptPriceTo());
+                httpRequest += "&maxprice=" + searchFiltersDal.getAptPriceTo(model.getAptPriceTo());
             }
+
             if ( model.getAptSizeFrom() !=0 )
             {
-                httpRequest += "&mintarea="+ searchFiltersDal.getPriceFrom(model.getAptSizeFrom());
+                httpRequest += "&mintarea=" + searchFiltersDal.getAptSizeFrom(model.getAptSizeFrom());
             }
+
             if ( model.getAptSizeTo() !=0 )
             {
-                httpRequest += "&maxtarea="+ searchFiltersDal.getPriceTo(model.getAptSizeTo());
+                httpRequest += "&maxtarea=" + searchFiltersDal.getAptSizeTo(model.getAptSizeTo());
+            }
+
+            idx = 0;
+            if ( model.getMarketId() == EnumTypes.Market.SECOND )
+            {
+                httpRequest += "&object_type" +str1 + "0" + str2 +  "=1";
+            }
+
+            if ( model.getMarketId() == EnumTypes.Market.FIRST )
+            {
+                httpRequest += "&object_type" +str1 + "0" + str2 +  "=2";
+            }
+
+            List<Integer> rooms = model.getRoomsNumberList();
+
+            for (Integer room : rooms)
+            {
+                switch (room) {
+                    case 0:
+                        httpRequest += "&room9=1"; //&room0 just a room, not appartment
+                        break;
+                    case 1:
+                        httpRequest += "&room1=1";
+                        break;
+                    case 2:
+                        httpRequest += "&room2=1";
+                        break;
+                    case 3:
+                        httpRequest += "&room3=1";
+                        break;
+                    case 4:
+                        httpRequest += "&room4=1";
+                        break;
+                    case 5:
+                        httpRequest += "&room5=1";
+                        break;
+                    case 6:
+                        httpRequest += "&room6=1" ;
+                        break;
+                    default:
+                        httpRequest += "&room9=0"; // appartment
+                        break;
+                }
+            }
+
+            if( model.isNotLastFloor())
+            {
+                httpRequest += "&floornl=1";
+            }
+
+            if(model.isLastFloor())
+            {
+                httpRequest += "&floornl=0";
+            }
+
+            if( model.isNotFirstFloor())
+            {
+                httpRequest += "&is_first_floor=0";
+            }
+
+            if ( model.getFloorFrom() !=0 )
+            {
+                httpRequest += "&minfloor="+ Integer.toString(searchFiltersDal.getFloorFrom(model.getFloorFrom()));
+            }
+
+            if ( model.getFloorTo() !=0 )
+            {
+                httpRequest += "&maxfloor="+ Integer.toString(searchFiltersDal.getFloorTo(model.getFloorTo()));
+            }
+
+            if ( model.getFloorsInHouseFrom() !=0 )
+            {
+                httpRequest += "&minfloorn="+ Integer.toString(searchFiltersDal.getFloorsInHouseFrom(model.getFloorsInHouseFrom()));
+            }
+
+            if ( model.getFloorsInHouseTo() !=0 )
+            {
+                httpRequest += "&maxfloorn="+ Integer.toString(searchFiltersDal.getFloorsInHouseTo(model.getFloorsInHouseTo()));
+            }
+
+            if ( model.getKitchenSizeFrom() !=0 )
+            {
+                httpRequest += "&minkarea="+ Integer.toString(searchFiltersDal.getKitchenSizeFrom(model.getKitchenSizeFrom()));
+            }
+
+            if ( model.getKitchenSizeTo() !=0 )
+            {
+                httpRequest += "&maxkarea="+ Integer.toString(searchFiltersDal.getKitchenSizeTo(model.getKitchenSizeTo()));
             }
                 int i=1;
         }

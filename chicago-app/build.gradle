@@ -20,8 +20,6 @@ dependencies {
     implementation "org.slf4j:slf4j-api:${slf4jVer}"
     implementation "ch.qos.logback:logback-classic:${logbackVer}"
     implementation "commons-io:commons-io:${commonsVer}"
-    implementation "com.google.code.gson:gson:${gsonVer}"
-
     implementation project(":chicago-common")
     implementation project(":chicago-ext")
     implementation project(":chicago-dto")

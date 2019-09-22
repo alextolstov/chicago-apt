@@ -85,45 +85,108 @@ public class CianSearchFiltersDalImpl extends AbstractSearchFiltersDal
     @Override
     public int getPropertyType(EnumTypes.PropertyType propertyType) throws Exception
     {
-        CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetCityDistrict(?) }");
-        return 0;
+        return propertyType.getValue();
     }
 
     @Override
     public int getMarket(EnumTypes.Market propertyMarket) throws Exception
     {
-        CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetCityDistrict(?) }");
-        return 0;
+        return propertyMarket.getValue();
     }
 
     @Override
     public int getViewFromWindow(EnumTypes.ViewFromWindow viewFromWindow) throws Exception
     {
-        CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetCityDistrict(?) }");
         return 0;
     }
 
     @Override
     public int getCeilingHeight(EnumTypes.CeilingHeight ceilingHeight) throws Exception
     {
-        CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetCityDistrict(?) }");
         return 0;
     }
 
-    public String getPriceFrom(int price) throws Exception
+    @Override
+    public int getAptPriceFrom(int price) throws Exception
     {
-        return Integer.toString(price);
+        return price;
     }
-    public String getPriceTo(int price) throws Exception
+
+    @Override
+    public int getAptPriceTo(int price) throws Exception
     {
-        return Integer.toString(price);
+        return price;
     }
-    public String getAptSizeFrom(int size) throws Exception
+
+    @Override
+    public int getAptSizeFrom(int size) throws Exception
     {
-        return Integer.toString(size);
+        return size;
     }
-    public String getAptSizeTo(int size) throws Exception
+
+    @Override
+    public int getAptSizeTo(int size) throws Exception
     {
-        return Integer.toString(size);
+        return size;
+    }
+
+    @Override
+    public List<Integer> getRoomsNumberList(List<Integer> roomsNumberList) throws Exception
+    {
+        return roomsNumberList;
+    }
+
+    @Override
+    public boolean isLastFloor(boolean isLastFloor) throws Exception
+    {
+        return isLastFloor;
+    }
+
+    @Override
+    public boolean isNotFirstFloor(boolean isNotFirstFloor) throws Exception
+    {
+        return isNotFirstFloor;
+    }
+
+    @Override
+    public boolean isNotLastFloor(boolean isNotLastFloor) throws Exception
+    {
+        return isNotLastFloor;
+    }
+
+    @Override
+    public int getFloorFrom(int floor) throws Exception
+    {
+        return floor;
+    }
+
+    @Override
+    public int getFloorTo(int floor) throws Exception
+    {
+        return floor;
+    }
+
+    @Override
+    public int getFloorsInHouseFrom(int floor) throws Exception
+    {
+        return floor;
+    }
+
+    @Override
+    public int getFloorsInHouseTo(int floor) throws Exception
+    {
+        return floor;
+    }
+
+    @Override
+    public int getKitchenSizeFrom(int size) throws Exception
+    {
+        return size;
+    }
+
+    @Override
+    public int getKitchenSizeTo(int size) throws Exception
+    {
+        return size;
     }
 }
