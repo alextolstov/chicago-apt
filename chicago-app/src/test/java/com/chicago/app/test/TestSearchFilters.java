@@ -15,7 +15,6 @@ import org.junit.Test;
 
 import java.net.URLEncoder;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TestSearchFilters

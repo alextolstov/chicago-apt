@@ -19,6 +19,7 @@ dependencies {
     implementation "com.datastax.cassandra:cassandra-driver-core:${cassandraDriverVer}"
     implementation "mysql:mysql-connector-java:${mySqlDriverVer}"
     implementation "org.projectlombok:lombok:${lombokVer}"
+    implementation "com.google.code.gson:gson:${gsonVer}"
 
     implementation project(":chicago-common")
     implementation project(":chicago-dto")

@@ -41,7 +41,7 @@ public class YandexSearchFiltersDalImpl extends AbstractSearchFiltersDal
         }
 
         @Override
-        public List<String> getDistrictsList(List<String> districtsList) throws Exception
+        public List<String> getDistrictsList(List<Integer> districtsList) throws Exception
         {
             CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetWebsiteDistrict(?) }");
             stmt.setInt("websiteId", _client);
@@ -53,15 +53,15 @@ public class YandexSearchFiltersDalImpl extends AbstractSearchFiltersDal
             stmt.close();
 
             List<String> cianDistrictsList = new ArrayList<>();
-            for (String district : districtsList)
+            for (int district : districtsList)
             {
-                cianDistrictsList.add(_mapDistricts.get(Integer.parseInt(district)));
+                cianDistrictsList.add(_mapDistricts.get(district));
             }
             return cianDistrictsList;
         }
 
         @Override
-        public List<String> getSubwayStationsList(List<String> stationsList) throws Exception
+        public List<String> getSubwayStationsList(List<Integer> stationsList) throws Exception
         {
             CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetWebsiteStation(?) }");
             stmt.setInt("websiteId", _client);
@@ -73,9 +73,9 @@ public class YandexSearchFiltersDalImpl extends AbstractSearchFiltersDal
             stmt.close();
 
             List<String> cianStationsList = new ArrayList<>();
-            for (String station : stationsList)
+            for (int station : stationsList)
             {
-                cianStationsList.add(_mapStations.get(Integer.parseInt(station)));
+                cianStationsList.add(_mapStations.get(station));
             }
             return cianStationsList;
 
