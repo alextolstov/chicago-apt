@@ -91,7 +91,7 @@ public class SearchFiltersBllImpl implements SearchFiltersBll
 
         List<Integer> rooms = outSearchFilters.getRoomsNumberList();
         sb.setLength(0);
-        for (Integer room : rooms)
+        for (int room : rooms)
         {
             switch (room) {
                 case 0:
@@ -166,7 +166,6 @@ public class SearchFiltersBllImpl implements SearchFiltersBll
         {
             httpRequest += "&maxkarea=" + _searchFiltersDal.getKitchenSizeTo(outSearchFilters.getKitchenSizeTo());
         }
-
 
         return null;
     }
