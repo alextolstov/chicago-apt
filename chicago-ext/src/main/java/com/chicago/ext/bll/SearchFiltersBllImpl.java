@@ -17,9 +17,12 @@ public class SearchFiltersBllImpl implements SearchFiltersBll
     @Inject
     private SearchFiltersDal _searchFiltersDal;
 
+    private Gson _gson = new Gson();
+
     @Override
     public CianSearchFiltersModel.CianSearchFilters getCianSearchFilters(SearchFiltersModel.SearchFilters outSearchFilters) throws Exception
     {
+        _searchFiltersDal.addSearchFilter(outSearchFilters.getUserId(), _gson.toJson(outSearchFilters, SearchFiltersModel.SearchFilters.class));
         String httpRequest = "https://spb.cian.ru&parm1={1}&{2}";
         _searchFiltersDal.getCityId(outSearchFilters.getCityId());
         _searchFiltersDal.getDistrictsList(outSearchFilters.getDistrictsList());

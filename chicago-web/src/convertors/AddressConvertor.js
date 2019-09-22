@@ -9,7 +9,7 @@ class AddressConvertor {
     uiObj.house_number = dtoObj.getHouseNumber !== undefined ? dtoObj.getHouseNumber() : "";
     uiObj.building_info = dtoObj.getBuildingInfo !== undefined ? dtoObj.getBuildingInfo() : "";
     uiObj.office_apt_number = dtoObj.getOfficeAptNumber !== undefined ? dtoObj.getOfficeAptNumber() : "";
-    uiObj.city = dtoObj.getCity !== undefined ? dtoObj.getCity() : "";
+    uiObj.city = dtoObj.getCityId !== undefined ? dtoObj.getCityId() : "";
     uiObj.entity_id = dtoObj.getEntityId !== undefined ? dtoObj.getEntityId() : "";
     uiObj.place_name = dtoObj.getPlaceName !== undefined ? dtoObj.getPlaceName() : "";
     uiObj.county = dtoObj.getCounty !== undefined ? dtoObj.getCounty() : "";

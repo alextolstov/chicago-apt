@@ -23,11 +23,11 @@ public class TestSearchFilters
     @Test
     public void testReadCity() {
         Searchfilters.SearchFilters searchFiltersDto = Searchfilters.SearchFilters.newBuilder()
-                .addDistrictId("17")
-                .addDistrictId("11")
-                .addSubwayStationId("4")
-                .addSubwayStationId("19")
-                .addSubwayStationId("56")
+                .addDistrictId(17)
+                .addDistrictId(11)
+                .addSubwayStationId(4)
+                .addSubwayStationId(19)
+                .addSubwayStationId(56)
                 .setCityId("c2deb16a-0330-4f05-821f-1d09c93331e6")
                 .setAptPriceFrom(5000000)
                 .setAptPriceTo(15000000)

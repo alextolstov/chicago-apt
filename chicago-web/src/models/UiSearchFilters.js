@@ -40,9 +40,10 @@ export const FloorBeamsMaterial = {
 
 class UiSearchFilters {
   constructor() {
+    this.user_id = null;
     this.city_id = null;
-    this.district_id = new Array();
-    this.subway_station_id = new Array();
+    this.district_id = new Set();
+    this.subway_station_id = new Set();
 
     this.type_id = PropertyType.APARTMENT;
     this.market_id = Market.MARKET_NOT_IMPORTANT;

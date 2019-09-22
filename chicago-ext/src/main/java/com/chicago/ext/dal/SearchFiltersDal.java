@@ -9,8 +9,8 @@ public interface SearchFiltersDal
 {
     // Location
     String getCityId(String cityId) throws Exception;
-    List<String> getDistrictsList(List<String> districtsList) throws Exception;
-    List<String> getSubwayStationsList(List<String> stationsList) throws Exception;
+    List<String> getDistrictsList(List<Integer> districtsList) throws Exception;
+    List<String> getSubwayStationsList(List<Integer> stationsList) throws Exception;
     String getPriceFrom(int price) throws Exception;
     String getPriceTo(int price) throws Exception;
     String getAptSizeFrom(int size) throws Exception;

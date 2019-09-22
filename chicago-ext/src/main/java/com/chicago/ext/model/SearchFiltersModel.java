@@ -11,9 +11,10 @@ public final class SearchFiltersModel
     public @Data static class SearchFilters
     {
         // Location
+        private String userId;
         private String cityId;
-        private List<String> districtsList = new ArrayList();
-        private List<String> subwayStationsList = new ArrayList();
+        private List<Integer> districtsList = new ArrayList();
+        private List<Integer> subwayStationsList = new ArrayList();
 
         // Main filters
         private EnumTypes.PropertyType typeId;
@@ -47,6 +48,7 @@ public final class SearchFiltersModel
         public Searchfilters.SearchFilters toDto(SearchFiltersModel.SearchFilters model)
         {
             Searchfilters.SearchFilters dto = Searchfilters.SearchFilters.newBuilder()
+                    .setUserId(model.userId)
                     .setCityId(model.cityId)
                     .addAllDistrictId(model.getDistrictsList())
                     .addAllSubwayStationId(model.getSubwayStationsList())
@@ -75,38 +77,39 @@ public final class SearchFiltersModel
 
         public SearchFiltersModel.SearchFilters fromDto(Searchfilters.SearchFilters dto)
         {
-            SearchFiltersModel.SearchFilters filtersModel = new SearchFilters();
+            SearchFiltersModel.SearchFilters model = new SearchFilters();
 
             // Location
-            filtersModel.setCityId(dto.getCityId());
-            filtersModel.setDistrictsList(dto.getDistrictIdList());
-            filtersModel.setSubwayStationsList(dto.getSubwayStationIdList());
+            model.setUserId(dto.getUserId());
+            model.setCityId(dto.getCityId());
+            model.setDistrictsList(dto.getDistrictIdList());
+            model.setSubwayStationsList(dto.getSubwayStationIdList());
 
             // Main filters
-            filtersModel.setMarketId(EnumTypes.Market.values()[dto.getMarketId().getNumber()]);
-            filtersModel.setRoomsNumberList(dto.getRoomsNumberList());
-            filtersModel.setAptPriceFrom(dto.getAptPriceFrom());
-            filtersModel.setAptPriceTo(dto.getAptPriceTo());
-            filtersModel.setAptSizeFrom(dto.getAptSizeFrom());
-            filtersModel.setAptSizeTo(dto.getAptSizeTo());
+            model.setMarketId(EnumTypes.Market.values()[dto.getMarketId().getNumber()]);
+            model.setRoomsNumberList(dto.getRoomsNumberList());
+            model.setAptPriceFrom(dto.getAptPriceFrom());
+            model.setAptPriceTo(dto.getAptPriceTo());
+            model.setAptSizeFrom(dto.getAptSizeFrom());
+            model.setAptSizeTo(dto.getAptSizeTo());
 
             // Additional filters
-            filtersModel.setWindowsView(EnumTypes.ViewFromWindow.values()[dto.getWindowsView().getNumber()]);
-            filtersModel.setBalcony(dto.getBalcony());
-            filtersModel.setKitchenSizeFrom(dto.getKitchenSizeFrom());
-            filtersModel.setKitchenSizeTo(dto.getKitchenSizeTo());
-            filtersModel.setCeilingHeight(EnumTypes.CeilingHeight.values()[dto.getCeilingHeight().getNumber()]);
+            model.setWindowsView(EnumTypes.ViewFromWindow.values()[dto.getWindowsView().getNumber()]);
+            model.setBalcony(dto.getBalcony());
+            model.setKitchenSizeFrom(dto.getKitchenSizeFrom());
+            model.setKitchenSizeTo(dto.getKitchenSizeTo());
+            model.setCeilingHeight(EnumTypes.CeilingHeight.values()[dto.getCeilingHeight().getNumber()]);
 
             // Floors
-            filtersModel.setFloorFrom(dto.getFloorFrom());
-            filtersModel.setFloorTo(dto.getFloorTo());
-            filtersModel.setFloorsInHouseFrom(dto.getFloorsInHouseFrom());
-            filtersModel.setFloorsInHouseTo(dto.getFloorsInHouseTo());
-            filtersModel.setNotFirstFloor(dto.getNotFirstFloor());
-            filtersModel.setNotLastFloor(dto.getNotLastFloor());
-            filtersModel.setLastFloor(dto.getLastFloor());
+            model.setFloorFrom(dto.getFloorFrom());
+            model.setFloorTo(dto.getFloorTo());
+            model.setFloorsInHouseFrom(dto.getFloorsInHouseFrom());
+            model.setFloorsInHouseTo(dto.getFloorsInHouseTo());
+            model.setNotFirstFloor(dto.getNotFirstFloor());
+            model.setNotLastFloor(dto.getNotLastFloor());
+            model.setLastFloor(dto.getLastFloor());
 
-            return filtersModel;
+            return model;
         }
     }
 

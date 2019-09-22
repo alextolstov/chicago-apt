@@ -52,10 +52,11 @@ class Dashboard extends Component {
       subwayStationOptions: [],
 
       // Cookie
-      onboarded: cookies.load("onboarded")
+      onboarded: cookies.load("onboarded"),
+      propertiesList: new Array()
     }
 
-    this.uiParameters = new UiSearchFilters()
+    this.uiSearchFilters = new UiSearchFilters()
     this.cityApi = new CityApi()
     this.searchApi = new SearchApi()
     this.table = data.rows
@@ -83,14 +84,15 @@ class Dashboard extends Component {
     testProperty.walls_depreciation_percent = 45
     testProperty.complains_number = 21
 
-    this.properties = new Array()
-    this.properties.push(testProperty)
+    //this.state.propertiesList.push(testProperty)
   }
 
   componentDidMount () {
     // If cookie not found just create it
     if (!this.state.onboarded) {
-      cookies.save("onboarded", this.uuidv4(), {path: "/"});
+      let newCookie = this.uuidv4();
+      cookies.save("onboarded", newCookie, {path: "/"});
+      this.setState({onboarded: newCookie});
     }
 
     let self = this
@@ -100,7 +102,7 @@ class Dashboard extends Component {
       type: 'ADDRESS',
       /* Вызывается, когда пользователь выбирает одну из подсказок */
       onSelect: function (suggestion) {
-        self.uiParameters.city_id = suggestion.data.city_fias_id
+        self.uiSearchFilters.city_id = suggestion.data.city_fias_id
         console.log(suggestion)
       }
     })
@@ -115,10 +117,10 @@ class Dashboard extends Component {
         locations: { city_type_full: 'город' }
       },      /* Вызывается, когда пользователь выбирает одну из подсказок */
       onSelect: function (suggestion) {
-        self.uiParameters.city_id = suggestion.data.city_fias_id
+        self.uiSearchFilters.city_id = suggestion.data.city_fias_id
         console.log(suggestion)
         // Call server
-        self.cityApi.getCity(self.uiParameters.city_id, (e) => {
+        self.cityApi.getCity(self.uiSearchFilters.city_id, (e) => {
             console.log('Error load:', e)
           }
         ).then(function (obj) {
@@ -177,33 +179,33 @@ class Dashboard extends Component {
   }
 
   onWindowRadioBtnClick = (radioSelected) => {
-    this.uiParameters.windows_view = radioSelected
+    this.uiSearchFilters.windows_view = radioSelected
     this.setState({ windowRadioSelected: radioSelected })
   }
 
   onCeilingRadioBtnClick = (radioSelected) => {
-    this.uiParameters.ceiling_height = radioSelected
+    this.uiSearchFilters.ceiling_height = radioSelected
     this.setState({ ceilingRadioSelected: radioSelected })
   }
 
   onNotFirstFloorsRadioBtnClick = (radioSelected) => {
-    this.uiParameters.not_first_floor = !this.state.notFirstFloorRadioSelected
+    this.uiSearchFilters.not_first_floor = !this.state.notFirstFloorRadioSelected
     this.setState({ notFirstFloorRadioSelected: !this.state.notFirstFloorRadioSelected })
   }
 
   onLastOrNotLastFloorsRadioBtnClick = (radioSelected) => {
     if (radioSelected === 2) {
-      this.uiParameters.not_last_floor = true
-      this.uiParameters.last_floor = false
+      this.uiSearchFilters.not_last_floor = true
+      this.uiSearchFilters.last_floor = false
     } else {
-      this.uiParameters.last_floor = true
-      this.uiParameters.not_last_floor = false
+      this.uiSearchFilters.last_floor = true
+      this.uiSearchFilters.not_last_floor = false
     }
     this.setState({ lastOrNotLastFloorsRadioSelected: radioSelected })
   }
 
   onBalconRadioBtnClick = (radioSelected) => {
-    this.uiParameters.balcony = !this.state.balconRadioSelected
+    this.uiSearchFilters.balcony = !this.state.balconRadioSelected
     this.setState({ balconRadioSelected: !this.state.balconRadioSelected })
   }
 
@@ -212,24 +214,24 @@ class Dashboard extends Component {
   }
 
   handleTypeClick = (e) => {
-    this.uiParameters.type_id = e.target.attributes.id
+    this.uiSearchFilters.type_id = e.target.attributes.id
     this.setState({ type_name: e.nativeEvent.target.innerText })
   }
 
   handleMarketClick = (e) => {
-    this.uiParameters.market_id = e.target.attributes.id
+    this.uiSearchFilters.market_id = e.target.attributes.id
     this.setState({ market_name: e.nativeEvent.target.innerText })
   }
 
   handleRoomsClick = (e) => {
     let clicked_rooms = parseInt(e.target.attributes.id.value, 10)
-    if (this.uiParameters.rooms_number.has(clicked_rooms)) {
-      this.uiParameters.rooms_number.delete(clicked_rooms)
+    if (this.uiSearchFilters.rooms_number.has(clicked_rooms)) {
+      this.uiSearchFilters.rooms_number.delete(clicked_rooms)
     } else {
-      this.uiParameters.rooms_number.add(clicked_rooms)
+      this.uiSearchFilters.rooms_number.add(clicked_rooms)
     }
 
-    var show_rooms = [...this.uiParameters.rooms_number].join(',')
+    var show_rooms = [...this.uiSearchFilters.rooms_number].join(',')
     if (show_rooms === '') {
       show_rooms = 'Любое'
     }
@@ -238,32 +240,32 @@ class Dashboard extends Component {
 
   handlePriceFromChange = (e) => {
     e.target.value = this.stripNonNumeric(e.target.value)
-    this.uiParameters.apt_price_from = parseInt(e.target.value.replace(/\D/g, ''))
+    this.uiSearchFilters.apt_price_from = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handlePriceToChange = (e) => {
     e.target.value = this.stripNonNumeric(e.target.value)
-    this.uiParameters.apt_price_to = parseInt(e.target.value.replace(/\D/g, ''))
+    this.uiSearchFilters.apt_price_to = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handleAptSizeFromChange = (e) => {
     e.target.value = this.stripNonNumeric(e.target.value)
-    this.uiParameters.apt_size_from = parseInt(e.target.value.replace(/\D/g, ''))
+    this.uiSearchFilters.apt_size_from = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handleAptSizeToChange = (e) => {
     e.target.value = this.stripNonNumeric(e.target.value)
-    this.uiParameters.apt_size_to = parseInt(e.target.value.replace(/\D/g, ''))
+    this.uiSearchFilters.apt_size_to = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handleKitchenSizeFromChange = (e) => {
     e.target.value = this.stripNonNumeric(e.target.value)
-    this.uiParameters.kitchen_size_from = parseInt(e.target.value.replace(/\D/g, ''))
+    this.uiSearchFilters.kitchen_size_from = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handleKitchenSizeToChange = (e) => {
     e.target.value = this.stripNonNumeric(e.target.value)
-    this.uiParameters.kitchen_size_to = parseInt(e.target.value.replace(/\D/g, ''))
+    this.uiSearchFilters.kitchen_size_to = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handleFilterButtonClick = (e) => {
@@ -271,25 +273,36 @@ class Dashboard extends Component {
   }
 
   handleSearchButtonClick = (e) => {
-    console.log(this.uiParameters)
-    this.searchApi.search(this.uiParameters, (e) => {
+    let self = this;
+    this.uiSearchFilters.user_id = this.state.onboarded;
+    console.log(this.uiSearchFilters)
+    this.searchApi.search(this.uiSearchFilters, (e) => {
       console.log('Error load:', e)
     })
-      .then(function (obj) {
-        console.log(obj)
+      .then(function (properties) {
+        self.setState({propertiesList : properties});
+        // for(let p of propertiesList) {
+        //   this.statepropertiesList.push(p);
+        // }
       })
   }
 
   saveDistrictsChange = (selectedDistricts) => {
     for (let d of selectedDistricts) {
-      this.uiParameters.district_id.push(d.value)
+      let distictId = parseInt(d.value, 10);
+//      if (!this.uiSearchFilters.district_id.has(distictId)) {
+        this.uiSearchFilters.district_id.add(distictId);
+//      }
     }
     this.setState({ selectedDistricts })
   }
 
   saveSubwayStationsChange = (selectedSubwayStations) => {
     for (let s of selectedSubwayStations) {
-      this.uiParameters.subway_station_id.push(s.value)
+      let stationId = parseInt(s.value, 10);
+//      if (!this.uiSearchFilters.subway_station_id.has(stationId)) {
+        this.uiSearchFilters.subway_station_id.add(stationId);
+  //    }
     }
     this.setState({ selectedSubwayStations })
   }
@@ -312,17 +325,39 @@ class Dashboard extends Component {
     )
   }
 
+  convertViewFromWindow = (windows_view) => {
+    switch (windows_view) {
+      case ViewFromWindow.VIEW_NOT_IMPORTANT:
+        return "Не важно";
+      case ViewFromWindow.STREET_VIEW:
+        return "На улицу";
+      case ViewFromWindow.BACKYARD_VIEW:
+        return "Во двор";
+    }
+  }
+
+  convertPropertyType = (type_id) => {
+    switch (type_id) {
+      case PropertyType.APARTMENT:
+        return "Квартира";
+      case PropertyType.ROOM:
+        return "Комната";
+      case PropertyType.HOUSE:
+        return "Дом";
+    }
+  }
+
   infoCellFormatter = (cell, row) => {
     return (
       <div className="container">
         <div className="row">
           <Col xs="10" sm="10" lg="3">
-            <div><Label>{row.city}, {row.street} {row.house}</Label>{this.stripNonNumeric(row.apt_price)}</div>
+            <div><Label>{this.convertPropertyType(row.type_id)} по адресу {row.city}, {row.street} {row.house}</Label>{this.stripNonNumeric(row.apt_price)}</div>
             <div><Label>Площадь (м²):</Label>{row.apt_size}</div>
           </Col>
           <Col xs="10" sm="10" lg="3">
             <div><Label>Цена (₽):</Label>{this.stripNonNumeric(row.apt_price.toString())}</div>
-            <div><Label>Площадь (м²):</Label>{row.apt_size}</div>
+            <div><Label>Вид из окон:</Label>{this.convertViewFromWindow(row.windows_view)}</div>
           </Col>
           <Col xs="10" sm="10" lg="3">
             <div><Label>Цена (₽):</Label>{this.stripNonNumeric(row.apt_price)}</div>
@@ -713,7 +748,7 @@ class Dashboard extends Component {
         <Row>
           <Col>
             <br/>
-            <BootstrapTable data={this.properties} version="4" striped hover pagination search options={this.options}>
+            <BootstrapTable data={this.state.propertiesList} version="4" striped hover pagination search options={this.options}>
               <TableHeaderColumn dataField="image" isKey width='10%'
                                  dataFormat={this.imageCellFormatter}></TableHeaderColumn>
               <TableHeaderColumn dataField="description"

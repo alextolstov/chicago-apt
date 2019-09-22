@@ -50,35 +50,36 @@ enum FloorBeamsMaterial {
 
 message SearchFilters
 {
+    string user_id = 1;
     // Location
-    string city_id = 1;
-    repeated string district_id = 2;
-    repeated string subway_station_id = 3;
+    string city_id = 2;
+    repeated int32 district_id = 3;
+    repeated int32 subway_station_id = 4;
 
     // Main filter
-    PropertyType type_id = 4;
-    Market market_id = 5;
-    repeated int32 rooms_number = 6;
-    int32 apt_price_from = 7;
-    int32 apt_price_to = 8;
-    int32 apt_size_from = 9;
-    int32 apt_size_to = 10;
+    PropertyType type_id = 5;
+    Market market_id = 6;
+    repeated int32 rooms_number = 7;
+    int32 apt_price_from = 8;
+    int32 apt_price_to = 9;
+    int32 apt_size_from = 10;
+    int32 apt_size_to = 11;
 
     // Additional filters
-    ViewFromWindow windows_view = 11;
-    bool balcony = 12;
-    int32 kitchen_size_from = 13;
-    int32 kitchen_size_to = 14;
-    CeilingHeight ceiling_height = 15;
+    ViewFromWindow windows_view = 12;
+    bool balcony = 32;
+    int32 kitchen_size_from = 14;
+    int32 kitchen_size_to = 15;
+    CeilingHeight ceiling_height = 16;
 
     // Floors
-    int32 floor_from = 16;
-    int32 floor_to = 17;
-    int32 floors_in_house_from = 18;
-    int32 floors_in_house_to = 19;
-    bool not_first_floor = 20;
-    bool not_last_floor = 21;
-    bool last_floor = 22;
+    int32 floor_from = 17;
+    int32 floor_to = 18;
+    int32 floors_in_house_from = 19;
+    int32 floors_in_house_to = 20;
+    bool not_first_floor = 21;
+    bool not_last_floor = 22;
+    bool last_floor = 23;
 }
 
 message Property

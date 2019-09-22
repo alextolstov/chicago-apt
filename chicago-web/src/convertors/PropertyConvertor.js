@@ -1,11 +1,11 @@
 import UiProperty from "../models/UiProperty";
-const property_proto = require('dto/SearchFilters');
+const property_proto = require('dto/searchfilters_pb');
 
 class PropertyConvertor {
   fromDto = (dtoObj) => {
     let uiObj = new UiProperty();
     uiObj.property_id = dtoObj.getPropertyId !== undefined ? dtoObj.getPropertyId() : null;
-    uiObj.city = dtoObj.getCity !== undefined ? dtoObj.getCity() : null;
+    uiObj.city = dtoObj.getCityId !== undefined ? dtoObj.getCityId() : null;
     uiObj.street = dtoObj.getStreet !== undefined ? dtoObj.getStreet() : null;
     uiObj.house = dtoObj.getHouse !== undefined ? dtoObj.getHouse() : null;
     uiObj.floor_plan = dtoObj.getFloorPlan !== undefined ? dtoObj.getFloorPlan() : null;

@@ -7,6 +7,7 @@ class SearchFiltersConvertor {
     console.log(dtoObj);
 
     let uiObj = new UiSearchFilters();
+    uiObj.user_id = dtoObj.getUserId != undefined ? dtoObj.getUserId() : null;
     uiObj.city_id = dtoObj.getCityId != undefined ? dtoObj.getCityId() : null;
     uiObj.subway_station_id = dtoObj.getSubwayStationIdList != undefined ? dtoObj.getSubwayStationIdList() : null;
 
@@ -37,6 +38,7 @@ class SearchFiltersConvertor {
 
   toDto = (uiObj) => {
     let dtoObj = new searchfilters_proto.SearchFilters();
+    dtoObj.setUserId(uiObj.user_id);
     dtoObj.setCityId(uiObj.city_id);
 
     for (let d of uiObj.district_id) {

@@ -58,6 +58,8 @@ public class SearchFiltersRequests extends AbstractComponent
             Message response;
             try
             {
+                SearchFiltersModel.SearchFilters model = new SearchFiltersModel.SearchFiltersConvertor().fromDto(event.getSearchfilters());
+                _searchFiltersBll.getCianSearchFilters(model);
                 List<Searchfilters.Property> propertyList = new ArrayList<>();
                 Searchfilters.Property p = Searchfilters.Property.newBuilder().setPropertyId("1223").build();
                 propertyList.add(p);
