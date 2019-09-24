@@ -78,7 +78,7 @@ public final class SearchFiltersModel
             SearchFiltersModel.SearchFilters model = new SearchFilters();
 
             // Location
-            //model.setUserId(dto.getUserId());
+            model.setUserId(dto.getUserId());
             model.setCityId(dto.getCityId());
             model.setDistrictsList(dto.getDistrictIdList());
             model.setSubwayStationsList(dto.getSubwayStationIdList());
