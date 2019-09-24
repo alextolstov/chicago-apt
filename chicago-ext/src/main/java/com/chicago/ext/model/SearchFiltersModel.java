@@ -48,10 +48,8 @@ public final class SearchFiltersModel
         public Searchfilters.SearchFilters toDto(SearchFiltersModel.SearchFilters model)
         {
             Searchfilters.SearchFilters dto = Searchfilters.SearchFilters.newBuilder()
-                    .setUserId(model.userId)
+                    //.setUserId(model.userId)
                     .setCityId(model.cityId)
-                    .addAllDistrictId(model.getDistrictsList())
-                    .addAllSubwayStationId(model.getSubwayStationsList())
                     .setTypeId(Searchfilters.PropertyType.values()[model.getTypeId().getValue()])
                     .setMarketId(Searchfilters.Market.values()[model.getMarketId().getValue()])
                     .addAllRoomsNumber(model.getRoomsNumberList())
@@ -80,7 +78,7 @@ public final class SearchFiltersModel
             SearchFiltersModel.SearchFilters model = new SearchFilters();
 
             // Location
-            model.setUserId(dto.getUserId());
+            //model.setUserId(dto.getUserId());
             model.setCityId(dto.getCityId());
             model.setDistrictsList(dto.getDistrictIdList());
             model.setSubwayStationsList(dto.getSubwayStationIdList());
