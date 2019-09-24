@@ -27,6 +27,6 @@ message SearchFiltersCatalogRequest
 
 message SearchFiltersCatalogResponse
 {
-    repeated SearchFilters searchfilters = 1;
+    repeated SearchFilters search_filters = 1;
     TransactionError transaction_error = 2;
 }

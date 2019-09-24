@@ -1,5 +1,6 @@
 package com.chicago.ext.bll;
 
+import com.chicago.ext.components.SearchFiltersRequests;
 import com.chicago.ext.dal.SearchFiltersDal;
 import com.chicago.ext.model.CianSearchFiltersModel;
 import com.chicago.ext.model.EnumTypes;
@@ -7,6 +8,8 @@ import com.chicago.ext.model.SearchFiltersModel;
 import com.chicago.ext.model.YandexSearchFiltersModel;
 import com.google.gson.Gson;
 import org.jvnet.hk2.annotations.Contract;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.net.URLEncoder;
@@ -16,6 +19,8 @@ import java.util.List;
 @Contract
 public class SearchFiltersBllImpl implements SearchFiltersBll
 {
+    private static final Logger LOG = LoggerFactory.getLogger(SearchFiltersBllImpl.class);
+
     @Inject
     private SearchFiltersDal _searchFiltersDal;
 
@@ -24,6 +29,7 @@ public class SearchFiltersBllImpl implements SearchFiltersBll
     @Override
     public CianSearchFiltersModel.CianSearchFilters getCianSearchFilters(SearchFiltersModel.SearchFilters outSearchFilters) throws Exception
     {
+        _searchFiltersDal.addSearchFilter(outSearchFilters.getUserId(), _gson.toJson(outSearchFilters, SearchFiltersModel.SearchFilters.class));
         List<String> districts = _searchFiltersDal.getDistrictsList(outSearchFilters.getDistrictsList());
         List<String> stations = _searchFiltersDal.getSubwayStationsList(outSearchFilters.getSubwayStationsList());
 
@@ -185,8 +191,15 @@ public class SearchFiltersBllImpl implements SearchFiltersBll
 
         for (String filter : strFilters)
         {
-            SearchFiltersModel.SearchFilters obj = gson.fromJson(filter, SearchFiltersModel.SearchFilters.class);
-            searchfilters.add(obj);
+            try
+            {
+                SearchFiltersModel.SearchFilters obj = gson.fromJson(filter, SearchFiltersModel.SearchFilters.class);
+                searchfilters.add(obj);
+            }
+            catch (Exception ex)
+            {
+                LOG.warn("Failed to deserialize JSON :{}", filter);
+            }
         }
         return searchfilters;
     }

@@ -27,7 +27,6 @@ import Select from 'react-select'
 import CityApi from '../../api/CityApi'
 import SearchApi from '../../api/SearchFiltersApi'
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table'
-import data from './_test_data'
 
 class Dashboard extends Component {
   constructor (props) {
@@ -51,15 +50,14 @@ class Dashboard extends Component {
       selectedSubwayStations: [],
       subwayStationOptions: [],
 
-      // Cookie
-      onboarded: cookies.load("onboarded"),
       propertiesList: new Array()
     }
 
+    // Cookie
+    this.onboarded = cookies.load("onboarded"),
     this.uiSearchFilters = new UiSearchFilters()
     this.cityApi = new CityApi()
     this.searchApi = new SearchApi()
-    this.table = data.rows
 
     let testProperty = new UiProperty()
     testProperty.property_id = 1
@@ -83,16 +81,14 @@ class Dashboard extends Component {
     testProperty.sewer_depreciation_percent = 23
     testProperty.walls_depreciation_percent = 45
     testProperty.complains_number = 21
-
-    //this.state.propertiesList.push(testProperty)
   }
 
   componentDidMount () {
     // If cookie not found just create it
-    if (!this.state.onboarded) {
+    if (!this.onboarded) {
       let newCookie = this.uuidv4();
       cookies.save("onboarded", newCookie, {path: "/"});
-      this.setState({onboarded: newCookie});
+      this.onboarded = newCookie;
     }
 
     let self = this
@@ -274,25 +270,20 @@ class Dashboard extends Component {
 
   handleSearchButtonClick = (e) => {
     let self = this;
-    this.uiSearchFilters.user_id = this.state.onboarded;
+    this.uiSearchFilters.user_id = this.onboarded;
     console.log(this.uiSearchFilters)
     this.searchApi.search(this.uiSearchFilters, (e) => {
       console.log('Error load:', e)
     })
       .then(function (properties) {
         self.setState({propertiesList : properties});
-        // for(let p of propertiesList) {
-        //   this.statepropertiesList.push(p);
-        // }
       })
   }
 
   saveDistrictsChange = (selectedDistricts) => {
     for (let d of selectedDistricts) {
       let distictId = parseInt(d.value, 10);
-//      if (!this.uiSearchFilters.district_id.has(distictId)) {
         this.uiSearchFilters.district_id.add(distictId);
-//      }
     }
     this.setState({ selectedDistricts })
   }
@@ -300,14 +291,16 @@ class Dashboard extends Component {
   saveSubwayStationsChange = (selectedSubwayStations) => {
     for (let s of selectedSubwayStations) {
       let stationId = parseInt(s.value, 10);
-//      if (!this.uiSearchFilters.subway_station_id.has(stationId)) {
         this.uiSearchFilters.subway_station_id.add(stationId);
-  //    }
     }
     this.setState({ selectedSubwayStations })
   }
 
   stripNonNumeric = (strValue) => {
+    if (strValue === undefined || strValue === null) {
+      return "N/A"
+    }
+
     var validChars = /[0-9]/
     var strIn = strValue
     var strOut = ''

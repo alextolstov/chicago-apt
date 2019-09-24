@@ -11,9 +11,9 @@ class SearchFiltersConvertor {
     uiObj.city_id = dtoObj.getCityId != undefined ? dtoObj.getCityId() : null;
     uiObj.subway_station_id = dtoObj.getSubwayStationIdList != undefined ? dtoObj.getSubwayStationIdList() : null;
 
-    uiObj.type_id = dtoObj.getTypeId != undefined ? dtoObj.getTypeId() : null;
-    uiObj.market_id = dtoObj.getMarketId != undefined ? dtoObj.getMarketId() : null;
-    uiObj.rooms_number = dtoObj.getRoomsNumberList != undefined ? dtoObj.getRoomsNumberList() : null;;
+    uiObj.type_id = dtoObj.getTypeId != undefined ? dtoObj.getTypeId() : 0;
+    uiObj.market_id = dtoObj.getMarketId != undefined ? dtoObj.getMarketId() : 0;
+    uiObj.rooms_number = dtoObj.getRoomsNumberList != undefined ? dtoObj.getRoomsNumberList() : null;
     uiObj.apt_price_from = dtoObj.aptPriceFrom != undefined ? dtoObj.aptPriceFrom() : null;
     uiObj.apt_price_to = dtoObj.aptPriceTo != undefined ? dtoObj.aptPriceTo() : null;
     uiObj.apt_size_from = dtoObj.aptSizeTo != undefined ? dtoObj.aptSizeTo() : null;

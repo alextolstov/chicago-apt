@@ -94,7 +94,7 @@ public class SearchFiltersRequests extends AbstractComponent
                 }
                 response = Searchfiltersmessages.SearchFiltersCatalogResponse
                         .newBuilder()
-                        .addAllSearchfilters(dtoFilters)
+                        .addAllSearchFilters(dtoFilters)
                         .build();
             } catch (Exception ex)
             {

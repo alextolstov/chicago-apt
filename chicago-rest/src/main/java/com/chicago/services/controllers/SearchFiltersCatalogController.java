@@ -5,6 +5,7 @@ import com.chicago.dto.Common;
 import com.chicago.dto.Searchfilters;
 import com.chicago.dto.Searchfiltersmessages;
 import com.chicago.dto.Service;
+import com.chicago.dto.UserOuterClass;
 import com.chicago.services.internal.MediaTypeExt;
 import com.chicago.services.util.ResponseErrorUtil;
 import org.apache.shiro.SecurityUtils;
@@ -46,11 +47,11 @@ public class SearchFiltersCatalogController
 
     private Searchfiltersmessages.SearchFiltersCatalogRequest prepareRequest(byte[] data, Common.CrudOperation operation) throws Exception
     {
-        String userId = new String(data);
+        UserOuterClass.UserId userId = UserOuterClass.UserId.parseFrom(data);
 
         return Searchfiltersmessages.SearchFiltersCatalogRequest.newBuilder()
                 .setCrudOperation(operation)
-                .setUserId(userId)
+                .setUserId(userId.getUserId())
                 .build();
     }
 }

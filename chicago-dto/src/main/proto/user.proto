@@ -18,6 +18,11 @@ message UserOrganization
     string organization_id = 1;
 }
 
+message UserId
+{
+    string user_id = 1;
+}
+
 message User
 {
     string user_id = 1;

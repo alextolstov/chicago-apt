@@ -1,38 +1,19 @@
-import React, {Component} from 'react';
-import {Card, CardBody, CardHeader, Modal, ModalBody, ModalHeader} from 'reactstrap';
-import cookies from 'react-cookies';
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
-import {FormattedMessage} from 'react-intl';
-import {inject, observer} from 'mobx-react/index';
-import 'spinkit/css/spinkit.css';
-import {toast} from 'react-toastify';
-import Spinner from "../Spinner/Spinner";
+import React, { Component } from 'react'
+import { Col, Label } from 'reactstrap'
+import cookies from 'react-cookies'
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table'
+import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css'
+import { inject, observer } from 'mobx-react/index'
+import 'spinkit/css/spinkit.css'
+import Spinner from '../Spinner/Spinner'
+import SearchApi from '../../api/SearchFiltersApi'
+import UiSearchFilters, { PropertyType } from '../../models/UiSearchFilters'
 
-const user_proto = require('dto/user_pb');
+const user_proto = require('dto/user_pb')
 
 class SavedSearches extends Component {
-  constructor(props) {
-    super(props);
-
-    this.table = [];
-    this.options = {
-      sortIndicator: true,
-      hideSizePerPage: true,
-      paginationSize: 3,
-      hidePageListOnlyOnePage: true,
-      clearSearch: false,
-      alwaysShowAllBtns: false,
-      withFirstAndLast: false,
-      onRowClick: this.onRowSelect,
-      onboarded: cookies.load("onboarded")
-    }
-
-    this.selectRowProp = {
-      clickToSelect: true,
-      bgColor: '#f0f3f5',
-      onSelect: this.onRowSelect,
-    };
+  constructor (props) {
+    super(props)
 
     this.state = {
       data: null,
@@ -43,124 +24,141 @@ class SavedSearches extends Component {
       optionsList: [],
       isLoading: true,
       openedDetails: false,
-    };
+      searchFiltersList: new Array()
+    }
+
+    this.uiSearchFilters = new UiSearchFilters()
+    this.searchApi = new SearchApi()
+    // Cookie
+    this.onboarded = cookies.load('onboarded')
+
+    this.table = []
+    this.options = {
+      sortIndicator: true,
+      hideSizePerPage: true,
+      paginationSize: 3,
+      onRowClick: this.onRowSelect,
+    }
+
+    this.selectRowProp = {
+      clickToSelect: true,
+      bgColor: '#f0f3f5',
+      onSelect: this.onRowSelect,
+    }
+
   }
 
-  componentDidMount() {
-    const userData = this.props.appStore.userData;
-    this.state.isLoading = true;
-    const self = this;
+  componentDidMount () {
+    const userData = this.props.appStore.userData
+    let userId = new user_proto.UserId()
+    userId.setUserId(this.onboarded)
 
-    // if (!userData.organization_id) {
-    //   const current_user = sessionStorage.getItem("current_user");
-    //   this.state.userApi.getUserById(current_user, null).then(function (user) {
-    //     self.loadListUsers(user.organization_id);
-    //   }).catch(function (error) {
-    //     console.log('ListUser Load User error:', error);
-    //     toast.error(error, {
-    //       position: toast.POSITION.TOP_LEFT
-    //     });
-    //   })
-    // } else {
-    //   const orgId = userData.organization_id;
-    //   self.loadListUsers(orgId);
-    // }
+    const self = this
+    this.searchApi.getSearchCatalog(userId, (e) => {
+        console.log('Error load:', e)
+      }
+    ).then(function (options) {
+      console.log(options)
+      self.setState({ optionsList: options })
+      self.setState({ isLoading: false })
+    })
   }
+
+  // if (!userData.organization_id) {
+  //   const current_user = sessionStorage.getItem("current_user");
+  //   this.state.userApi.getUserById(current_user, null).then(function (user) {
+  //     self.loadListUsers(user.organization_id);
+  //   }).catch(function (error) {
+  //     console.log('ListUser Load User error:', error);
+  //     toast.error(error, {
+  //       position: toast.POSITION.TOP_LEFT
+  //     });
+  //   })
+  // } else {
+  //   const orgId = userData.organization_id;
+  //   self.loadListUsers(orgId);
+  // }
 
   onRowSelect = (row) => {
-    this.state.openedDetails = true;
-    this.setState({selected: row});
+    this.state.openedDetails = true
+    this.setState({ selected: row })
   }
 
   toggleDetails = () => {
     this.setState({
       openedDetails: !this.state.openedDetails,
-    });
-  }
-
-  loadListUsers = (orgId) => {
-    let userOrgs = new user_proto.UserOrganization();
-
-    userOrgs.setOrganizationId(orgId);
-    let self = this;
-    this.state.userApi.getUsers(userOrgs, (e) => {
-      console.log('Error load data ListUser:', e);
-    }).then(function (usersList) {
-      let optionsList = [];
-      for (let i = 0; i < usersList.length; i++) {
-        const mapPositions = usersList[i].positions;
-        let strPositions = "";
-        for (let j = 0; j < mapPositions.length; j++) {
-          if (j > 0) strPositions += ",";
-          strPositions += mapPositions[j][1];
-        }
-
-        optionsList.push({
-          id: usersList[i].user_id,
-          positions: strPositions,
-        });
-      }
-      self.setState({optionsList, isLoading: false});
-    }).catch(function (error) {
-      console.log('ListUser error:', error);
-      toast.error(error, {
-        position: toast.POSITION.TOP_LEFT
-      });
     })
   }
 
-  addUser = () => {
-    this.props.history.push("/dashbord")
-    // this.state.openedDetails = true;
-    // this.setState({selected: {id: "new"}});
+  getListAsString = (list) => {
+    if (list === undefined || list === null) {
+      return 'N/A'
+    }
+    return list.join();
   }
 
-  loadList = () => {
-    this.componentDidMount();
+  stripNonNumeric = (strValue) => {
+    if (strValue === undefined || strValue === null) {
+      return "N/A"
+    }
+
+    var validChars = /[0-9]/
+    var strIn = strValue
+    var strOut = ''
+    for (let i = 0; i < strIn.length; i++) {
+      strOut += (validChars.test(strIn.charAt(i))) ? strIn.charAt(i) : ''
+    }
+    return strOut.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   }
 
-  render() {
+
+  convertPropertyType = (type_id) => {
+    switch (type_id) {
+      case PropertyType.APARTMENT:
+        return 'Квартира'
+      case PropertyType.ROOM:
+        return 'Комната'
+      case PropertyType.HOUSE:
+        return 'Дом'
+    }
+  }
+  filterCellFormatter = (cell, row) => {
+    return (
+      <div className="container">
+        <div className="row">
+          <Col xs="10" sm="10" lg="3">
+            <div><Label>{this.convertPropertyType(row.type_id)} по
+              адресу {row.city}, {row.street} {row.house}</Label>{this.stripNonNumeric(row.apt_price)}</div>
+          </Col>
+
+        </div>
+      </div>
+    )
+  }
+
+  render () {
     return (
       <div className="row">
         <div>
           <div className="animated">
-            <Card>
-              <CardHeader>
+            {
+              !this.state.isLoading &&
+              <BootstrapTable data={this.state.optionsList} version="4" hover pagination={false}
+                              options={this.options} selectRow={this.selectRowProp}>
+                <TableHeaderColumn dataField="description" isKey width='10%'
+                                   dataFormat={this.filterCellFormatter}>Сохраненные поиски</TableHeaderColumn>
 
-                <h3><strong><FormattedMessage id="menu.users.list"
-                                              defaultMessage="Employees list"/>
-                </strong>
-                </h3>
-                <div>
-                  <button onClick={this.addUser}
-                  >
-                    <strong><FormattedMessage id="users.edit.new_user"
-                                              defaultMessage="Create new employee"/>
-                    </strong>
-                  </button>
-                </div>
-              </CardHeader>
-              <CardBody>
-                {!this.state.isLoading &&
-                <BootstrapTable data={this.state.optionsList} version="4" hover pagination={false}
-                                options={this.options} selectRow={this.selectRowProp}>
-                  <TableHeaderColumn isKey dataField="name"
-                                     filter={{type: 'TextFilter', placeholder: 'Поиск...', delay: 1000}}
-                                     dataSort>Сотрудник</TableHeaderColumn>
-                  <TableHeaderColumn dataField="positions">Позиция</TableHeaderColumn>
-                </BootstrapTable>
-                }
-                {this.state.isLoading &&
-                <Spinner/>
-                }
-
-              </CardBody>
-            </Card>
+              </BootstrapTable>
+            }
+            {
+              this.state.isLoading &&
+              <Spinner/>
+            }
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default inject('appStore')(observer(SavedSearches));
+export default inject('appStore')(observer(SavedSearches))

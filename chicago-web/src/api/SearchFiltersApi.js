@@ -9,7 +9,7 @@ const searchfiltersmessages_proto = require('dto/searchfiltersmessages_pb.js');
 export default class SearchFiltersApi {
   constructor(){
     this.searchUrl = '/api/search/get';
-    this.searchCatalogUrl = '/api/searchcatalog/get';
+    this.searchCatalogUrl = '/api/searchfilters/get';
     this.fetchApi = new FetchApi();
     this.searchFilterConvertor = new SearchFiltersConvertor();
     this.propertyConvertor = new PropertyConvertor();
@@ -47,7 +47,7 @@ export default class SearchFiltersApi {
   }
 
   getUiSearchFiltersCatalogMessage(self, msg) {
-    let filtersList = msg.getSearchFiltersCatalogList();
+    let filtersList = msg.getSearchFiltersList();
     let uiSearchFiltersList = new Array();
 
     for (let filter of filtersList) {
