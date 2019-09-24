@@ -20,12 +20,12 @@ dependencies {
     implementation "mysql:mysql-connector-java:${mySqlDriverVer}"
     implementation "org.projectlombok:lombok:${lombokVer}"
     implementation "com.google.code.gson:gson:${gsonVer}"
+    implementation "org.jsoup:jsoup:${jsoupVer}"
 
     implementation project(":chicago-common")
     implementation project(":chicago-dto")
 
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
-    
+
     testImplementation("org.cassandraunit:cassandra-unit:${cassandraUnitVer}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVer}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVer}")
