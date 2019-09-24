@@ -10,10 +10,12 @@ public final class CianSearchFiltersModel
     {
         // Location
         private String cityId;
-        private String districtId;
-        private List<String> subwayStationsId;
+        private List<Integer> districtsId;
+        private List<Integer> subwayStationsId;
 
         // Main filters
+        private EnumTypes.PropertyType typeId;
+        private EnumTypes.Market marketId;
         private List<Integer> roomsNumber;
         private int aptPriceFrom;
         private int aptPriceTo;
