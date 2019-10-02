@@ -14,4 +14,18 @@ export default class FormApi {
       }
     }
   }
+
+  stripNonNumeric = (strValue) => {
+    if (strValue === undefined || strValue === null) {
+      return "N/A"
+    }
+
+    var validChars = /[0-9]/
+    var strIn = strValue
+    var strOut = ''
+    for (let i = 0; i < strIn.length; i++) {
+      strOut += (validChars.test(strIn.charAt(i))) ? strIn.charAt(i) : ''
+    }
+    return strOut.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  }
 }

@@ -4,6 +4,7 @@ import PropertyConvertor from "../convertors/PropertyConvertor";
 import UiSearchFilters from "../models/UiSearchFilters";
 import UiProperty from "../models/UiProperty";
 
+const user_proto = require('dto/user_pb')
 const searchfiltersmessages_proto = require('dto/searchfiltersmessages_pb.js');
 
 export default class SearchFiltersApi {
@@ -26,9 +27,11 @@ export default class SearchFiltersApi {
   }
 
   getSearchCatalog(userId, errorHandler) {
+    let userDto = new user_proto.UserId();
+    userDto.setUserId(userId);
     let self = this;
 
-    return this.fetchApi.restCrud(this.searchCatalogUrl, userId, searchfiltersmessages_proto.SearchFiltersCatalogResponse.deserializeBinary, errorHandler)
+    return this.fetchApi.restCrud(this.searchCatalogUrl, userDto, searchfiltersmessages_proto.SearchFiltersCatalogResponse.deserializeBinary, errorHandler)
       .then(function (msg) {
         return self.getUiSearchFiltersCatalogMessage(self, msg);
       });

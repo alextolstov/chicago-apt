@@ -71,6 +71,28 @@ class UiSearchFilters {
   getCopy = () => {
     return Object.assign({}, this);
   }
+
+  convertPropertyType = (type_id) => {
+    switch (type_id) {
+      case PropertyType.APARTMENT:
+        return 'Квартира'
+      case PropertyType.ROOM:
+        return 'Комната'
+      case PropertyType.HOUSE:
+        return 'Дом'
+    }
+  }
+
+  convertViewFromWindow = (windows_view) => {
+    switch (windows_view) {
+      case ViewFromWindow.VIEW_NOT_IMPORTANT:
+        return "Не важно";
+      case ViewFromWindow.STREET_VIEW:
+        return "На улицу";
+      case ViewFromWindow.BACKYARD_VIEW:
+        return "Во двор";
+    }
+  }
 }
 
 export default UiSearchFilters;

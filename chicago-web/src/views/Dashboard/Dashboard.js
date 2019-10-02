@@ -26,6 +26,7 @@ import UiProperty from '../../models/UiProperty'
 import Select from 'react-select'
 import CityApi from '../../api/CityApi'
 import SearchApi from '../../api/SearchFiltersApi'
+import FormApi from '../../api/FormApi'
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table'
 
 class Dashboard extends Component {
@@ -50,14 +51,15 @@ class Dashboard extends Component {
       selectedSubwayStations: [],
       subwayStationOptions: [],
 
-      propertiesList: new Array()
+      propertiesList: new Array(),
     }
 
     // Cookie
-    this.onboarded = cookies.load("onboarded"),
-    this.uiSearchFilters = new UiSearchFilters()
-    this.cityApi = new CityApi()
-    this.searchApi = new SearchApi()
+    this.onboarded = cookies.load("onboarded");
+    this.uiSearchFilters = new UiSearchFilters();
+    this.cityApi = new CityApi();
+    this.searchApi = new SearchApi();
+    this.formApi = new FormApi();
 
     let testProperty = new UiProperty()
     testProperty.property_id = 1
@@ -87,11 +89,12 @@ class Dashboard extends Component {
     // If cookie not found just create it
     if (!this.onboarded) {
       let newCookie = this.uuidv4();
-      cookies.save("onboarded", newCookie, {path: "/"});
+      cookies.save("onboarded", newCookie, {maxAge:31536000, path: "/"});
       this.onboarded = newCookie;
     }
 
     let self = this
+    alert(this.props.appStore.last_filter);
     const $ = window.$
     $('#geoaddress').suggestions({
       token: '6c595d7dcead327d7c7b5a1d74d37ba7291428c6',
@@ -296,20 +299,6 @@ class Dashboard extends Component {
     this.setState({ selectedSubwayStations })
   }
 
-  stripNonNumeric = (strValue) => {
-    if (strValue === undefined || strValue === null) {
-      return "N/A"
-    }
-
-    var validChars = /[0-9]/
-    var strIn = strValue
-    var strOut = ''
-    for (let i = 0; i < strIn.length; i++) {
-      strOut += (validChars.test(strIn.charAt(i))) ? strIn.charAt(i) : ''
-    }
-    return strOut.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  }
-
   imageCellFormatter = (cell, row) => {
     return (
       <div>
@@ -318,46 +307,24 @@ class Dashboard extends Component {
     )
   }
 
-  convertViewFromWindow = (windows_view) => {
-    switch (windows_view) {
-      case ViewFromWindow.VIEW_NOT_IMPORTANT:
-        return "Не важно";
-      case ViewFromWindow.STREET_VIEW:
-        return "На улицу";
-      case ViewFromWindow.BACKYARD_VIEW:
-        return "Во двор";
-    }
-  }
-
-  convertPropertyType = (type_id) => {
-    switch (type_id) {
-      case PropertyType.APARTMENT:
-        return "Квартира";
-      case PropertyType.ROOM:
-        return "Комната";
-      case PropertyType.HOUSE:
-        return "Дом";
-    }
-  }
-
   infoCellFormatter = (cell, row) => {
     return (
       <div className="container">
         <div className="row">
           <Col xs="10" sm="10" lg="3">
-            <div><Label>{this.convertPropertyType(row.type_id)} по адресу {row.city}, {row.street} {row.house}</Label>{this.stripNonNumeric(row.apt_price)}</div>
+            <div><Label>{this.uiSearchFilters.convertPropertyType(row.type_id)} по адресу {row.city}, {row.street} {row.house}</Label>{this.formApi.stripNonNumeric(row.apt_price)}</div>
             <div><Label>Площадь (м²):</Label>{row.apt_size}</div>
           </Col>
           <Col xs="10" sm="10" lg="3">
-            <div><Label>Цена (₽):</Label>{this.stripNonNumeric(row.apt_price.toString())}</div>
-            <div><Label>Вид из окон:</Label>{this.convertViewFromWindow(row.windows_view)}</div>
+            <div><Label>Цена (₽):</Label>{this.formApi.stripNonNumeric(row.apt_price.toString())}</div>
+            <div><Label>Вид из окон:</Label>{this.uiSearchFilters.convertViewFromWindow(row.windows_view)}</div>
           </Col>
           <Col xs="10" sm="10" lg="3">
-            <div><Label>Цена (₽):</Label>{this.stripNonNumeric(row.apt_price)}</div>
+            <div><Label>Цена (₽):</Label>{this.formApi.stripNonNumeric(row.apt_price)}</div>
             <div><Label>Площадь (м²):</Label>{row.apt_size}</div>
           </Col>
           <Col xs="10" sm="10" lg="3">
-            <div><Label>Цена (₽):</Label>{this.stripNonNumeric(row.apt_price)}</div>
+            <div><Label>Цена (₽):</Label>{this.formApi.stripNonNumeric(row.apt_price)}</div>
             <div><Label>Площадь (м²):</Label>{row.apt_size}</div>
           </Col>
 
