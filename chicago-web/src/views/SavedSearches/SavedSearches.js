@@ -7,7 +7,7 @@ import { inject, observer } from 'mobx-react/index'
 import 'spinkit/css/spinkit.css'
 import Spinner from '../Spinner/Spinner'
 import SearchApi from '../../api/SearchFiltersApi'
-import UiSearchFilters, { PropertyType } from '../../models/UiSearchFilters'
+import UiSearchFilters from '../../models/UiSearchFilters'
 import FormApi from '../../api/FormApi'
 
 class SavedSearches extends Component {
@@ -62,8 +62,49 @@ class SavedSearches extends Component {
       <div className="container">
         <div className="row">
           <Col xs="10" sm="10" lg="3">
-            <div><Label>{this.uiSearchFilters.convertPropertyType(row.type_id)} по
-              адресу {row.city}, {row.street} {row.house}</Label>{this.formApi.stripNonNumeric(row.apt_price)}</div>
+            <div>
+              <p>{this.uiSearchFilters.convertPropertyType(row.type_id)} по адресу {row.city}, {row.street} {row.house}</p>
+            </div>
+          </Col>
+          <Col xs="10" sm="10" lg="3">
+            <div>
+              <b>Цена:</b> {this.formApi.stripNonNumeric(row.apt_price_from)} - {this.formApi.stripNonNumeric(row.apt_price_to)}
+            </div>
+          </Col>
+          <Col xs="10" sm="10" lg="3">
+            <div>
+              <b>Площадь м²:</b> {this.formApi.stripNonNumeric(row.apt_size_from)} - {this.formApi.stripNonNumeric(row.apt_size_to)}
+            </div>
+          </Col>
+          <Col xs="10" sm="10" lg="3">
+            <div>
+              <b>Кухня м²:</b> {this.formApi.stripNonNumeric(row.kitchen_size_from)} - {this.formApi.stripNonNumeric(row.kitchen_size_to)}
+            </div>
+          </Col>
+            <Col xs="10" sm="10" lg="3">
+            <div>
+              <b>Балкон:</b> {row.balcony ? "Балкон/Лоджия" : "не важно"}
+            </div>
+          </Col>
+          <Col xs="10" sm="10" lg="3">
+            <div>
+              <b>Потолки м:</b> {row.ceiling_height === 0 ? "" : row.ceiling_height}
+            </div>
+          </Col>
+          <Col xs="10" sm="10" lg="3">
+            <div>
+              <b>Этаж:</b> {row.floor_from === 0 ? "" : row.floor_from} - {row.floor_to === 0 ? "" : row.floor_to} {row.not_first_floor === false ? "" : "не первый"} {row.not_last_floor === false ? "" : "не последний"}
+            </div>
+          </Col>
+          <Col xs="10" sm="10" lg="3">
+            <div>
+              <b>Количество комнат:</b> {row.rooms_number.join()}
+            </div>
+          </Col>
+          <Col xs="10" sm="10" lg="3">
+            <div>
+              <b>Вид из окон:</b> {this.uiSearchFilters.convertViewFromWindow(row.windows_view)}
+            </div>
           </Col>
 
         </div>

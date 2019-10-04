@@ -83,6 +83,17 @@ class UiSearchFilters {
     }
   }
 
+  convertMarket = (market) => {
+    switch (market) {
+      case Market.MARKET_NOT_IMPORTANT:
+        return 'Любой'
+      case Market.FIRST:
+        return 'Новостройка'
+      case Market.SECOND:
+        return 'Вторичка'
+    }
+  }
+
   convertViewFromWindow = (windows_view) => {
     switch (windows_view) {
       case ViewFromWindow.VIEW_NOT_IMPORTANT:

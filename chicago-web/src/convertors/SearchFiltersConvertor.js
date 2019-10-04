@@ -14,16 +14,16 @@ class SearchFiltersConvertor {
     uiObj.type_id = dtoObj.getTypeId != undefined ? dtoObj.getTypeId() : 0;
     uiObj.market_id = dtoObj.getMarketId != undefined ? dtoObj.getMarketId() : 0;
     uiObj.rooms_number = dtoObj.getRoomsNumberList != undefined ? dtoObj.getRoomsNumberList() : null;
-    uiObj.apt_price_from = dtoObj.aptPriceFrom != undefined ? dtoObj.aptPriceFrom() : null;
-    uiObj.apt_price_to = dtoObj.aptPriceTo != undefined ? dtoObj.aptPriceTo() : null;
-    uiObj.apt_size_from = dtoObj.aptSizeTo != undefined ? dtoObj.aptSizeTo() : null;
-    uiObj.apt_size_to = dtoObj.aptSizeFrom != undefined ? dtoObj.aptSizeFrom() : null;
+    uiObj.apt_price_from = dtoObj.aptPriceFrom != undefined ? dtoObj.aptPriceFrom() : 0;
+    uiObj.apt_price_to = dtoObj.aptPriceTo != undefined ? dtoObj.aptPriceTo() : 0;
+    uiObj.apt_size_from = dtoObj.aptSizeTo != undefined ? dtoObj.aptSizeTo() : 0;
+    uiObj.apt_size_to = dtoObj.aptSizeFrom != undefined ? dtoObj.aptSizeFrom() : 0;
 
     uiObj.windows_view = dtoObj.getWindowsView != undefined ? dtoObj.getWindowsView() : null;
-    uiObj.balcony = dtoObj.getBalcony != undefined ? dtoObj.getBalcony() : null;
-    uiObj.kitchen_size_from = dtoObj.getKitchenSizeFrom != undefined ? dtoObj.getKitchenSizeFrom() : null;
-    uiObj.kitchen_size_to = dtoObj.getKitchenSizeTo != undefined ? dtoObj.getKitchenSizeTo() : null;
-    uiObj.ceiling_height = dtoObj.getCeilingHeight != undefined ? dtoObj.getCeilingHeight() : null;
+    uiObj.balcony = dtoObj.getBalcony != undefined ? dtoObj.getBalcony() : false;
+    uiObj.kitchen_size_from = dtoObj.getKitchenSizeFrom != undefined ? dtoObj.getKitchenSizeFrom() : 0;
+    uiObj.kitchen_size_to = dtoObj.getKitchenSizeTo != undefined ? dtoObj.getKitchenSizeTo() : 0;
+    uiObj.ceiling_height = dtoObj.getCeilingHeight != undefined ? dtoObj.getCeilingHeight() : 0;
 
     uiObj.floor_from = dtoObj.getFloorFrom != undefined ? dtoObj.getFloorFrom() : 0;
     uiObj.floor_to = dtoObj.getFloorTo != undefined ? dtoObj.getFloorTo() : null;

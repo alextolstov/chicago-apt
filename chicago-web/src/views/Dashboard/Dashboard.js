@@ -93,8 +93,11 @@ class Dashboard extends Component {
       this.onboarded = newCookie;
     }
 
-    let self = this
-    alert(this.props.appStore.last_filter);
+    let self = this;
+    if (this.props.appStore.last_filter !== undefined) {
+      this.uiSearchFilters = this.props.appStore.last_filter;
+    }
+
     const $ = window.$
     $('#geoaddress').suggestions({
       token: '6c595d7dcead327d7c7b5a1d74d37ba7291428c6',
@@ -238,32 +241,32 @@ class Dashboard extends Component {
   }
 
   handlePriceFromChange = (e) => {
-    e.target.value = this.stripNonNumeric(e.target.value)
+    e.target.value = this.formApi.stripNonNumeric(e.target.value)
     this.uiSearchFilters.apt_price_from = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handlePriceToChange = (e) => {
-    e.target.value = this.stripNonNumeric(e.target.value)
+    e.target.value = this.formApi.stripNonNumeric(e.target.value)
     this.uiSearchFilters.apt_price_to = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handleAptSizeFromChange = (e) => {
-    e.target.value = this.stripNonNumeric(e.target.value)
+    e.target.value = this.formApi.stripNonNumeric(e.target.value)
     this.uiSearchFilters.apt_size_from = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handleAptSizeToChange = (e) => {
-    e.target.value = this.stripNonNumeric(e.target.value)
+    e.target.value = this.formApi.stripNonNumeric(e.target.value)
     this.uiSearchFilters.apt_size_to = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handleKitchenSizeFromChange = (e) => {
-    e.target.value = this.stripNonNumeric(e.target.value)
+    e.target.value = this.formApi.stripNonNumeric(e.target.value)
     this.uiSearchFilters.kitchen_size_from = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
   handleKitchenSizeToChange = (e) => {
-    e.target.value = this.stripNonNumeric(e.target.value)
+    e.target.value = this.formApi.stripNonNumeric(e.target.value)
     this.uiSearchFilters.kitchen_size_to = parseInt(e.target.value.replace(/\D/g, ''))
   }
 

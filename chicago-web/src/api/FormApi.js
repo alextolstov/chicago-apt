@@ -17,7 +17,7 @@ export default class FormApi {
 
   stripNonNumeric = (strValue) => {
     if (strValue === undefined || strValue === null) {
-      return "N/A"
+      return "нет"
     }
 
     var validChars = /[0-9]/
