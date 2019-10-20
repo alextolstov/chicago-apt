@@ -21,7 +21,7 @@ import {
   UncontrolledTooltip,
 } from 'reactstrap'
 import { inject, observer } from 'mobx-react'
-import UiSearchFilters, { FloorBeamsMaterial, Market, PropertyType, ViewFromWindow } from '../../models/UiSearchFilters'
+import UiSearchFilters, { FloorBeamsMaterial, Market, PropertyType, ViewFromWindow, CeilingHeight } from '../../models/UiSearchFilters'
 import UiProperty from '../../models/UiProperty'
 import Select from 'react-select'
 import CityApi from '../../api/CityApi'
@@ -42,6 +42,12 @@ class Dashboard extends Component {
       ceilingRadioSelected: 1,
       notFirstFloorRadioSelected: false,
       lastOrNotLastFloorsRadioSelected: false,
+      apt_price_from: 0,
+      apt_price_to: 0,
+      apt_size_from: 0,
+      apt_size_to: 0,
+      kitchen_size_from: 0,
+      kitchen_size_to: 0,
       balconRadioSelected: false,
       showFilters: false,
 
@@ -96,6 +102,21 @@ class Dashboard extends Component {
     let self = this;
     if (this.props.appStore.last_filter !== undefined) {
       this.uiSearchFilters = this.props.appStore.last_filter;
+      this.setState({ type_name: this.uiSearchFilters.convertPropertyType(this.uiSearchFilters.type_id) });
+      this.setState({ market_name: this.uiSearchFilters.convertMarket(this.uiSearchFilters.market_id) });
+      this.setState({ balconRadioSelected: this.uiSearchFilters.balcony });
+      var show_rooms = [...this.uiSearchFilters.rooms_number].join(',')
+      if (show_rooms === '') {
+        show_rooms = 'Любое'
+      }
+      this.setState({ rooms: show_rooms });
+      this.setState({ notFirstFloorRadioSelected: this.uiSearchFilters.not_first_floor });
+      this.setState({ apt_price_from: this.uiSearchFilters.apt_price_from });
+      this.setState({ apt_price_to: this.uiSearchFilters.apt_price_to });
+      this.setState({ apt_size_from: this.uiSearchFilters.apt_size_from });
+      this.setState({ apt_size_to: this.uiSearchFilters.apt_size_to });
+      this.setState({ kitchen_size_from: this.uiSearchFilters.kitchen_size_from });
+      this.setState({ kitchen_size_to: this.uiSearchFilters.kitchen_size_to });
     }
 
     const $ = window.$
@@ -197,18 +218,18 @@ class Dashboard extends Component {
 
   onLastOrNotLastFloorsRadioBtnClick = (radioSelected) => {
     if (radioSelected === 2) {
-      this.uiSearchFilters.not_last_floor = true
-      this.uiSearchFilters.last_floor = false
+      this.uiSearchFilters.not_last_floor = true;
+      this.uiSearchFilters.last_floor = false;
     } else {
-      this.uiSearchFilters.last_floor = true
-      this.uiSearchFilters.not_last_floor = false
+      this.uiSearchFilters.last_floor = true;
+      this.uiSearchFilters.not_last_floor = false;
     }
-    this.setState({ lastOrNotLastFloorsRadioSelected: radioSelected })
+    this.setState({ lastOrNotLastFloorsRadioSelected: radioSelected });
   }
 
   onBalconRadioBtnClick = (radioSelected) => {
-    this.uiSearchFilters.balcony = !this.state.balconRadioSelected
-    this.setState({ balconRadioSelected: !this.state.balconRadioSelected })
+    this.uiSearchFilters.balcony = !this.state.balconRadioSelected;
+    this.setState({ balconRadioSelected: !this.state.balconRadioSelected });
   }
 
   handleClick = (e) => {
@@ -216,13 +237,13 @@ class Dashboard extends Component {
   }
 
   handleTypeClick = (e) => {
-    this.uiSearchFilters.type_id = e.target.attributes.id
-    this.setState({ type_name: e.nativeEvent.target.innerText })
+    this.uiSearchFilters.type_id = parseInt(e.target.attributes.id.value, 10);
+    this.setState({ type_name: e.nativeEvent.target.innerText });
   }
 
   handleMarketClick = (e) => {
-    this.uiSearchFilters.market_id = e.target.attributes.id
-    this.setState({ market_name: e.nativeEvent.target.innerText })
+    this.uiSearchFilters.market_id = parseInt(e.target.attributes.id.value, 10);
+    this.setState({ market_name: e.nativeEvent.target.innerText });
   }
 
   handleRoomsClick = (e) => {
@@ -465,9 +486,9 @@ class Dashboard extends Component {
                           <i className="fa fa-list-ul fa-lg"></i>
                         </DropdownToggle>
                         <DropdownMenu right>
-                          <DropdownItem onClick={this.handleMarketClick} id="1">Любая</DropdownItem>
-                          <DropdownItem onClick={this.handleMarketClick} id="2">Вторичка</DropdownItem>
-                          <DropdownItem onClick={this.handleMarketClick} id="3">Новостройка</DropdownItem>
+                          <DropdownItem onClick={this.handleMarketClick} id="0">Любая</DropdownItem>
+                          <DropdownItem onClick={this.handleMarketClick} id="1">Вторичка</DropdownItem>
+                          <DropdownItem onClick={this.handleMarketClick} id="2">Новостройка</DropdownItem>
                         </DropdownMenu>
                       </Dropdown>
                     </ButtonGroup>
@@ -554,8 +575,10 @@ class Dashboard extends Component {
                   <Col xs="12" sm="12" lg="2">
                     <ButtonGroup className="float-left">
                       <InputGroupAddon addonType="prepend">
-                        <Input type="text" onChange={this.handlePriceFromChange} placeholder="от ₽" required/>
-                        <Input type="text" onChange={this.handlePriceToChange} placeholder="до ₽" required/>
+                        {(this.state.apt_price_from !== 0) && <Input type="text" value={this.state.apt_price_from} onChange={this.handlePriceFromChange} placeholder="от ₽" required/>}
+                        {(this.state.apt_price_from === 0) && <Input type="text" onChange={this.handlePriceFromChange} placeholder="от ₽" required/>}
+                        {(this.state.apt_price_to !== 0) && <Input type="text" value={this.state.apt_price_to} onChange={this.handlePriceToChange} placeholder="до ₽" required/>}
+                        {(this.state.apt_price_to === 0) && <Input type="text" onChange={this.handlePriceToChange} placeholder="до ₽" required/>}
                       </InputGroupAddon>
                     </ButtonGroup>
                     <FormText color="muted">
@@ -567,10 +590,10 @@ class Dashboard extends Component {
                     <ButtonToolbar className="float-left">
                       <ButtonGroup className="mr-3" aria-label="First group">
                         <InputGroupAddon addonType="prepend">
-                          <Input type="text" onChange={this.handleAptSizeFromChange} placeholder="м² от" required/>
-                        </InputGroupAddon>
-                        <InputGroupAddon addonType="prepend">
-                          <Input type="text" onChange={this.handleAptSizeToChange} placeholder="м² до" required/>
+                          {(this.state.apt_size_from !== 0) && <Input type="text" value={this.state.apt_size_from} onChange={this.handleAptSizeFromChange} placeholder="м² от" required/>}
+                          {(this.state.apt_size_from === 0) && <Input type="text" onChange={this.handleAptSizeFromChange} placeholder="м² от" required/>}
+                          {(this.state.apt_size_to !== 0) && <Input type="text" value={this.state.apt_size_to} onChange={this.handleAptSizeToChange} placeholder="м² до" required/>}
+                          {(this.state.apt_size_to === 0) && <Input type="text" onChange={this.handleAptSizeToChange} placeholder="м² до" required/>}
                         </InputGroupAddon>
                       </ButtonGroup>
                     </ButtonToolbar>
@@ -617,12 +640,12 @@ class Dashboard extends Component {
                   <Col xs="6" sm="6" lg="3">
                     <ButtonToolbar className="float-left">
                       <ButtonGroup className="mr-3">
-                        <Button color="outline-secondary" onClick={() => this.onWindowRadioBtnClick(1)}
-                                active={this.state.windowRadioSelected === 1}>Любой</Button>
-                        <Button color="outline-secondary" onClick={() => this.onWindowRadioBtnClick(2)}
+                        <Button color="outline-secondary" onClick={() => this.onWindowRadioBtnClick(ViewFromWindow.VIEW_NOT_IMPORTANT)}
+                                active={this.state.windowRadioSelected === 0}>Любой</Button>
+                        <Button color="outline-secondary" onClick={() => this.onWindowRadioBtnClick(ViewFromWindow.STREET_VIEW)}
+                                active={this.state.windowRadioSelected === 1}>Улица</Button>
+                        <Button color="outline-secondary" onClick={() => this.onWindowRadioBtnClick(ViewFromWindow.BACKYARD_VIEW)}
                                 active={this.state.windowRadioSelected === 2}>Двор</Button>
-                        <Button color="outline-secondary" onClick={() => this.onWindowRadioBtnClick(3)}
-                                active={this.state.windowRadioSelected === 3}>Улица</Button>
                       </ButtonGroup>
                       <Button color="outline-secondary" onClick={() => this.onBalconRadioBtnClick(true)}
                               active={this.state.balconRadioSelected === true}>Балкон/Лоджия</Button>
@@ -633,10 +656,10 @@ class Dashboard extends Component {
                     <ButtonToolbar className="float-left">
                       <ButtonGroup className="mr-3" aria-label="First group">
                         <InputGroupAddon addonType="prepend">
-                          <Input type="text" onChange={this.handleKitchenSizeFromChange} placeholder="м² от" required/>
-                        </InputGroupAddon>
-                        <InputGroupAddon addonType="prepend">
-                          <Input type="text" onChange={this.handleKitchenSizeToChange} placeholder="м² до" required/>
+                          {(this.state.kitchen_size_from !== 0) && <Input type="text" value={this.state.kitchen_size_from} onChange={this.handleKitchenSizeFromChange} placeholder="м² от" required/>}
+                          {(this.state.kitchen_size_from === 0) && <Input type="text" onChange={this.handleKitchenSizeFromChange} placeholder="м² от" required/>}
+                          {(this.state.kitchen_size_to !== 0) && <Input type="text" value={this.state.kitchen_size_to} onChange={this.handleKitchenSizeToChange} placeholder="м² до" required/>}
+                          {(this.state.kitchen_size_to === 0) && <Input type="text" onChange={this.handleKitchenSizeToChange} placeholder="м² до" required/>}
                         </InputGroupAddon>
                       </ButtonGroup>
                     </ButtonToolbar>
@@ -645,16 +668,16 @@ class Dashboard extends Component {
                   <Col xs="6" sm="6" lg="3">
                     <ButtonToolbar className="float-left">
                       <ButtonGroup className="mr-3">
-                        <Button color="outline-secondary" onClick={() => this.onCeilingRadioBtnClick(1)}
-                                active={this.state.ceilingRadioSelected === 1}>Любая</Button>
-                        <Button color="outline-secondary" onClick={() => this.onCeilingRadioBtnClick(2)}
-                                active={this.state.ceilingRadioSelected === 2}>2.5+</Button>
-                        <Button color="outline-secondary" onClick={() => this.onCeilingRadioBtnClick(3)}
-                                active={this.state.ceilingRadioSelected === 3}>3.0+</Button>
-                        <Button color="outline-secondary" onClick={() => this.onCeilingRadioBtnClick(4)}
-                                active={this.state.ceilingRadioSelected === 4}>3.5+</Button>
-                        <Button color="outline-secondary" onClick={() => this.onCeilingRadioBtnClick(5)}
-                                active={this.state.ceilingRadioSelected === 5}>4.0+</Button>
+                        <Button color="outline-secondary" onClick={() => this.onCeilingRadioBtnClick(CeilingHeight.HEIGHT_NOT_IMPORTANT)}
+                                active={this.state.ceilingRadioSelected === 0}>Любая</Button>
+                        <Button color="outline-secondary" onClick={() => this.onCeilingRadioBtnClick(CeilingHeight.FROM_2_5)}
+                                active={this.state.ceilingRadioSelected === 1}>2.5+</Button>
+                        <Button color="outline-secondary" onClick={() => this.onCeilingRadioBtnClick(CeilingHeight.FROM_3_0)}
+                                active={this.state.ceilingRadioSelected === 2}>3.0+</Button>
+                        <Button color="outline-secondary" onClick={() => this.onCeilingRadioBtnClick(CeilingHeight.FROM_3_5)}
+                                active={this.state.ceilingRadioSelected === 3}>3.5+</Button>
+                        <Button color="outline-secondary" onClick={() => this.onCeilingRadioBtnClick(CeilingHeight.FROM_4_0)}
+                                active={this.state.ceilingRadioSelected === 4}>4.0+</Button>
                       </ButtonGroup>
                     </ButtonToolbar>
                   </Col>

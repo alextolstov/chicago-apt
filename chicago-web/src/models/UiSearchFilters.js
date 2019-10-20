@@ -75,11 +75,27 @@ class UiSearchFilters {
   convertPropertyType = (type_id) => {
     switch (type_id) {
       case PropertyType.APARTMENT:
-        return 'Квартира'
+        return 'Квартира';
       case PropertyType.ROOM:
-        return 'Комната'
+        return 'Комната';
+      case PropertyType.SHARE:
+        return 'Доля';
       case PropertyType.HOUSE:
-        return 'Дом'
+        return 'Дом';
+      case PropertyType.HOUSE_PART:
+        return 'Часть дома';
+      case PropertyType.OFFICE:
+        return 'Офис';
+      case PropertyType.RETAIL_SPACE:
+        return 'Торговая площадь';
+      case PropertyType.WAREHOUSE:
+        return 'Склад';
+      case PropertyType.RESTAURANT:
+        return 'Общепит';
+      case PropertyType.GARAGE:
+        return 'Гараж';
+      case PropertyType.AUTO_SERVICE:
+        return 'Автосервис';
     }
   }
 
@@ -91,6 +107,21 @@ class UiSearchFilters {
         return 'Новостройка'
       case Market.SECOND:
         return 'Вторичка'
+    }
+  }
+
+  convertCeilingHeight = (ceiling) => {
+    switch (ceiling) {
+      case CeilingHeight.HEIGHT_NOT_IMPORTANT:
+        return 'Любая';
+      case CeilingHeight.FROM_2_5:
+        return '2.5+';
+      case CeilingHeight.FROM_3_0:
+        return '3.0+';
+      case CeilingHeight.FROM_3_5:
+        return '3.5+';
+      case CeilingHeight.FROM_4_0:
+        return '4.0+';
     }
   }
 
