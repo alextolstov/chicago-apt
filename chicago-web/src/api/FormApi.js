@@ -16,12 +16,12 @@ export default class FormApi {
   }
 
   stripNonNumeric = (strValue) => {
-    if (strValue === undefined || strValue === null) {
+    if (strValue === undefined || strValue === null || strValue === 0) {
       return "нет"
     }
 
     var validChars = /[0-9]/
-    var strIn = strValue
+    var strIn = strValue.toString();
     var strOut = ''
     for (let i = 0; i < strIn.length; i++) {
       strOut += (validChars.test(strIn.charAt(i))) ? strIn.charAt(i) : ''

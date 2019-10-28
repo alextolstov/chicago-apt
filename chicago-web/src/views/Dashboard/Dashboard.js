@@ -38,8 +38,8 @@ class Dashboard extends Component {
       market_name: 'Любой',
       rooms: 'Любое',
       dropdownOpen: false,
-      windowRadioSelected: 1,
-      ceilingRadioSelected: 1,
+      windowRadioSelected: ViewFromWindow.VIEW_NOT_IMPORTANT,
+      ceilingRadioSelected: CeilingHeight.HEIGHT_NOT_IMPORTANT,
       notFirstFloorRadioSelected: false,
       lastOrNotLastFloorsRadioSelected: false,
       apt_price_from: 0,
@@ -50,6 +50,10 @@ class Dashboard extends Component {
       kitchen_size_to: 0,
       balconRadioSelected: false,
       showFilters: false,
+      floor_from: 0,
+      floor_to: 0,
+      floors_in_house_from: 0,
+      floors_in_house_to: 0,
 
       selectedDistricts: [],
       districtOptions: [],
@@ -111,12 +115,20 @@ class Dashboard extends Component {
       }
       this.setState({ rooms: show_rooms });
       this.setState({ notFirstFloorRadioSelected: this.uiSearchFilters.not_first_floor });
+      this.setState({ lastFloorRadioSelected: this.uiSearchFilters.last_floor });
+      this.setState({ notLastFloorRadioSelected: this.uiSearchFilters.not_last_floor });
       this.setState({ apt_price_from: this.uiSearchFilters.apt_price_from });
       this.setState({ apt_price_to: this.uiSearchFilters.apt_price_to });
       this.setState({ apt_size_from: this.uiSearchFilters.apt_size_from });
       this.setState({ apt_size_to: this.uiSearchFilters.apt_size_to });
       this.setState({ kitchen_size_from: this.uiSearchFilters.kitchen_size_from });
       this.setState({ kitchen_size_to: this.uiSearchFilters.kitchen_size_to });
+      this.setState({ windowRadioSelected: this.uiSearchFilters.windows_view });
+      this.setState({ ceilingRadioSelected: this.uiSearchFilters.ceiling_height });
+      this.setState({ floor_from: this.uiSearchFilters.floor_from });
+      this.setState({ floor_to: this.uiSearchFilters.floor_to });
+      this.setState({ floors_in_house_from: this.uiSearchFilters.floors_in_house_from });
+      this.setState({ floors_in_house_to: this.uiSearchFilters.floors_in_house_to });
     }
 
     const $ = window.$
@@ -224,7 +236,8 @@ class Dashboard extends Component {
       this.uiSearchFilters.last_floor = true;
       this.uiSearchFilters.not_last_floor = false;
     }
-    this.setState({ lastOrNotLastFloorsRadioSelected: radioSelected });
+    this.setState({ lastFloorRadioSelected: this.uiSearchFilters.last_floor });
+    this.setState({ notLastFloorRadioSelected: this.uiSearchFilters.not_last_floor });
   }
 
   onBalconRadioBtnClick = (radioSelected) => {
@@ -291,6 +304,26 @@ class Dashboard extends Component {
     this.uiSearchFilters.kitchen_size_to = parseInt(e.target.value.replace(/\D/g, ''))
   }
 
+  handleFloorFromChange = (e) => {
+    e.target.value = this.formApi.stripNonNumeric(e.target.value)
+    this.uiSearchFilters.floor_from = parseInt(e.target.value.replace(/\D/g, ''))
+  }
+
+  handleFloorToChange = (e) => {
+    e.target.value = this.formApi.stripNonNumeric(e.target.value)
+    this.uiSearchFilters.floor_to = parseInt(e.target.value.replace(/\D/g, ''))
+  }
+
+  handleFloorsInHouseFromChange = (e) => {
+    e.target.value = this.formApi.stripNonNumeric(e.target.value)
+    this.uiSearchFilters.floors_in_house_from = parseInt(e.target.value.replace(/\D/g, ''))
+  }
+
+  handleFloorsInHouseToChange = (e) => {
+    e.target.value = this.formApi.stripNonNumeric(e.target.value)
+    this.uiSearchFilters.floors_in_house_to = parseInt(e.target.value.replace(/\D/g, ''))
+  }
+
   handleFilterButtonClick = (e) => {
     this.setState({ showFilters: !this.state.showFilters })
   }
@@ -308,10 +341,14 @@ class Dashboard extends Component {
   }
 
   saveDistrictsChange = (selectedDistricts) => {
+    console.log("SearchFilters.district_id");
+
+    console.log(this.uiSearchFilters.district_id);
     for (let d of selectedDistricts) {
       let distictId = parseInt(d.value, 10);
         this.uiSearchFilters.district_id.add(distictId);
     }
+    console.log(this.uiSearchFilters.district_id);
     this.setState({ selectedDistricts })
   }
 
@@ -641,11 +678,11 @@ class Dashboard extends Component {
                     <ButtonToolbar className="float-left">
                       <ButtonGroup className="mr-3">
                         <Button color="outline-secondary" onClick={() => this.onWindowRadioBtnClick(ViewFromWindow.VIEW_NOT_IMPORTANT)}
-                                active={this.state.windowRadioSelected === 0}>Любой</Button>
+                                active={this.state.windowRadioSelected === ViewFromWindow.VIEW_NOT_IMPORTANT}>Любой</Button>
                         <Button color="outline-secondary" onClick={() => this.onWindowRadioBtnClick(ViewFromWindow.STREET_VIEW)}
-                                active={this.state.windowRadioSelected === 1}>Улица</Button>
+                                active={this.state.windowRadioSelected === ViewFromWindow.STREET_VIEW}>Улица</Button>
                         <Button color="outline-secondary" onClick={() => this.onWindowRadioBtnClick(ViewFromWindow.BACKYARD_VIEW)}
-                                active={this.state.windowRadioSelected === 2}>Двор</Button>
+                                active={this.state.windowRadioSelected === ViewFromWindow.BACKYARD_VIEW}>Двор</Button>
                       </ButtonGroup>
                       <Button color="outline-secondary" onClick={() => this.onBalconRadioBtnClick(true)}
                               active={this.state.balconRadioSelected === true}>Балкон/Лоджия</Button>
@@ -689,10 +726,10 @@ class Dashboard extends Component {
                     <ButtonToolbar className="float-left">
                       <ButtonGroup className="mr-3">
                         <InputGroupAddon addonType="prepend">
-                          <Input type="text" onChange={this.handlePriceFromClick} placeholder="от" required/>
-                        </InputGroupAddon>
-                        <InputGroupAddon addonType="prepend">
-                          <Input type="text" onChange={this.handlePriceFromClick} placeholder="до" required/>
+                          {(this.state.floor_from !== 0) && <Input type="text" value={this.state.floor_from} onChange={this.handleFloorFromChange} placeholder="от" required/>}
+                          {(this.state.floor_from === 0) && <Input type="text" onChange={this.handleFloorFromChange} placeholder="от" required/>}
+                          {(this.state.floor_to !== 0) && <Input type="text" value={this.state.floor_to} onChange={this.handleFloorToChange} placeholder="до" required/>}
+                          {(this.state.floor_to === 0) && <Input type="text" onChange={this.handleFloorToChange} placeholder="до" required/>}
                         </InputGroupAddon>
                       </ButtonGroup>
                     </ButtonToolbar>
@@ -704,9 +741,9 @@ class Dashboard extends Component {
                         <Button color="outline-secondary" onClick={() => this.onNotFirstFloorsRadioBtnClick(true)}
                                 active={this.state.notFirstFloorRadioSelected === true}>Не первый</Button>
                         <Button color="outline-secondary" onClick={() => this.onLastOrNotLastFloorsRadioBtnClick(2)}
-                                active={this.state.lastOrNotLastFloorsRadioSelected === 2}>Не последний</Button>
+                                active={this.state.notLastFloorRadioSelected === true}>Не последний</Button>
                         <Button color="outline-secondary" onClick={() => this.onLastOrNotLastFloorsRadioBtnClick(3)}
-                                active={this.state.lastOrNotLastFloorsRadioSelected === 3}>Последний</Button>
+                                active={this.state.lastFloorRadioSelected === true}>Последний</Button>
                       </ButtonGroup>
                     </ButtonToolbar>
                   </Col>
@@ -715,10 +752,10 @@ class Dashboard extends Component {
                     <ButtonToolbar className="float-left">
                       <ButtonGroup className="mr-3">
                         <InputGroupAddon addonType="prepend">
-                          <Input type="text" onChange={this.handlePriceFromClick} placeholder="от" required/>
-                        </InputGroupAddon>
-                        <InputGroupAddon addonType="prepend">
-                          <Input type="text" onChange={this.handlePriceFromClick} placeholder="до" required/>
+                          {(this.state.floors_in_house_from !== 0) && <Input type="text" value={this.state.floors_in_house_from} onChange={this.handleFloorsInHouseFromChange} placeholder="от" required/>}
+                          {(this.state.floors_in_house_from === 0) && <Input type="text" onChange={this.handleFloorsInHouseFromChange} placeholder="от" required/>}
+                          {(this.state.floors_in_house_to !== 0) && <Input type="text" value={this.state.floors_in_house_to} onChange={this.handleFloorsInHouseToChange} placeholder="до" required/>}
+                          {(this.state.floors_in_house_to === 0) && <Input type="text" onChange={this.handleFloorsInHouseToChange} placeholder="до" required/>}
                         </InputGroupAddon>
                       </ButtonGroup>
                     </ButtonToolbar>

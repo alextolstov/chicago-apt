@@ -7,31 +7,40 @@ class SearchFiltersConvertor {
     console.log(dtoObj);
 
     let uiObj = new UiSearchFilters();
-    uiObj.user_id = dtoObj.getUserId != undefined ? dtoObj.getUserId() : null;
-    uiObj.city_id = dtoObj.getCityId != undefined ? dtoObj.getCityId() : null;
-    uiObj.subway_station_id = dtoObj.getSubwayStationIdList != undefined ? dtoObj.getSubwayStationIdList() : null;
+    uiObj.user_id = dtoObj.getUserId !== undefined ? dtoObj.getUserId() : null;
+    uiObj.city_id = dtoObj.getCityId !== undefined ? dtoObj.getCityId() : null;
 
-    uiObj.type_id = dtoObj.getTypeId != undefined ? dtoObj.getTypeId() : 0;
-    uiObj.market_id = dtoObj.getMarketId != undefined ? dtoObj.getMarketId() : 0;
-    uiObj.rooms_number = dtoObj.getRoomsNumberList != undefined ? dtoObj.getRoomsNumberList() : null;
-    uiObj.apt_price_from = dtoObj.aptPriceFrom != undefined ? dtoObj.aptPriceFrom() : 0;
-    uiObj.apt_price_to = dtoObj.aptPriceTo != undefined ? dtoObj.aptPriceTo() : 0;
-    uiObj.apt_size_from = dtoObj.aptSizeTo != undefined ? dtoObj.aptSizeTo() : 0;
-    uiObj.apt_size_to = dtoObj.aptSizeFrom != undefined ? dtoObj.aptSizeFrom() : 0;
+    if (dtoObj.getSubwayStationIdList !== undefined) {
+      for (let s of dtoObj.getSubwayStationIdList()) {
+        uiObj.subway_station_id.add(s);
+      }
+    }
+    if (dtoObj.getDistrictIdList !== undefined) {
+      for(let d of dtoObj.getDistrictIdList())
+      uiObj.district_id.add(d);
+    }
 
-    uiObj.windows_view = dtoObj.getWindowsView != undefined ? dtoObj.getWindowsView() : null;
-    uiObj.balcony = dtoObj.getBalcony != undefined ? dtoObj.getBalcony() : false;
-    uiObj.kitchen_size_from = dtoObj.getKitchenSizeFrom != undefined ? dtoObj.getKitchenSizeFrom() : 0;
-    uiObj.kitchen_size_to = dtoObj.getKitchenSizeTo != undefined ? dtoObj.getKitchenSizeTo() : 0;
-    uiObj.ceiling_height = dtoObj.getCeilingHeight != undefined ? dtoObj.getCeilingHeight() : 0;
+    uiObj.type_id = dtoObj.getTypeId !== undefined ? dtoObj.getTypeId() : 0;
+    uiObj.market_id = dtoObj.getMarketId !== undefined ? dtoObj.getMarketId() : 0;
+    uiObj.rooms_number = dtoObj.getRoomsNumberList !== undefined ? dtoObj.getRoomsNumberList() : null;
+    uiObj.apt_price_from = dtoObj.getAptPriceFrom !== undefined ? dtoObj.getAptPriceFrom() : 0;
+    uiObj.apt_price_to = dtoObj.getAptPriceTo !== undefined ? dtoObj.getAptPriceTo() : 0;
+    uiObj.apt_size_from = dtoObj.getAptSizeTo !== undefined ? dtoObj.getAptSizeTo() : 0;
+    uiObj.apt_size_to = dtoObj.getAptSizeFrom !== undefined ? dtoObj.getAptSizeFrom() : 0;
 
-    uiObj.floor_from = dtoObj.getFloorFrom != undefined ? dtoObj.getFloorFrom() : 0;
-    uiObj.floor_to = dtoObj.getFloorTo != undefined ? dtoObj.getFloorTo() : null;
-    uiObj.floors_in_house_from = dtoObj.getFloorsInHouseFrom != undefined ? dtoObj.getFloorsInHouseFrom() : 0;
-    uiObj.floors_in_house_to = dtoObj.getFloorsInHouseTo != undefined ? dtoObj.getFloorsInHouseTo() : 0;
-    uiObj.not_first_floor = dtoObj.getNotFirstFloor != undefined ? dtoObj.getNotFirstFloor() : false;
-    uiObj.not_last_floor = dtoObj.getNotLastFloor != undefined ? dtoObj.getNotLastFloor() : false;
-    uiObj.last_floor = dtoObj.getLastFloor != undefined ? dtoObj.getLastFloor() : false;
+    uiObj.windows_view = dtoObj.getWindowsView !== undefined ? dtoObj.getWindowsView() : null;
+    uiObj.balcony = dtoObj.getBalcony !== undefined ? dtoObj.getBalcony() : false;
+    uiObj.kitchen_size_from = dtoObj.getKitchenSizeFrom !== undefined ? dtoObj.getKitchenSizeFrom() : 0;
+    uiObj.kitchen_size_to = dtoObj.getKitchenSizeTo !== undefined ? dtoObj.getKitchenSizeTo() : 0;
+    uiObj.ceiling_height = dtoObj.getCeilingHeight !== undefined ? dtoObj.getCeilingHeight() : 0;
+
+    uiObj.floor_from = dtoObj.getFloorFrom !== undefined ? dtoObj.getFloorFrom() : 0;
+    uiObj.floor_to = dtoObj.getFloorTo !== undefined ? dtoObj.getFloorTo() : null;
+    uiObj.floors_in_house_from = dtoObj.getFloorsInHouseFrom !== undefined ? dtoObj.getFloorsInHouseFrom() : 0;
+    uiObj.floors_in_house_to = dtoObj.getFloorsInHouseTo !== undefined ? dtoObj.getFloorsInHouseTo() : 0;
+    uiObj.not_first_floor = dtoObj.getNotFirstFloor !== undefined ? dtoObj.getNotFirstFloor() : false;
+    uiObj.not_last_floor = dtoObj.getNotLastFloor !== undefined ? dtoObj.getNotLastFloor() : false;
+    uiObj.last_floor = dtoObj.getLastFloor !== undefined ? dtoObj.getLastFloor() : false;
 
     return uiObj;
   }
