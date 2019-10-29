@@ -24,7 +24,7 @@ dependencies {
     implementation project(":chicago-common")
     implementation project(":chicago-dto")
 
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
+    implementation "org.jsoup:jsoup:${jsoupVer}"
     
     testImplementation("org.cassandraunit:cassandra-unit:${cassandraUnitVer}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVer}")
