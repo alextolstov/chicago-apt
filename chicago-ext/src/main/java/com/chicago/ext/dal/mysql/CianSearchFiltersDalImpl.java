@@ -3,6 +3,7 @@ package com.chicago.ext.dal.mysql;
 import com.chicago.ext.dal.DbConnector;
 import com.chicago.ext.dal.SearchFiltersDal;
 import com.chicago.ext.model.EnumTypes;
+import com.chicago.ext.model.SearchFiltersModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public class CianSearchFiltersDalImpl extends AbstractSearchFiltersDal
     }
 
     @Override
-    public List<String> getDistrictsList(List<Integer> districtsList) throws Exception
+    public List<String> getDistrictsList(List<SearchFiltersModel.District> districtsList) throws Exception
     {
         CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetWebsiteDistrict(?) }");
         stmt.setInt("websiteId", _client);
@@ -54,15 +55,15 @@ public class CianSearchFiltersDalImpl extends AbstractSearchFiltersDal
         stmt.close();
 
         List<String> cianDistrictsList = new ArrayList<>();
-        for (Integer district : districtsList)
+        for (SearchFiltersModel.District district : districtsList)
         {
-            cianDistrictsList.add(_mapDistricts.get(district));
+            cianDistrictsList.add(_mapDistricts.get(district.getDistrictId()));
         }
         return cianDistrictsList;
     }
 
     @Override
-    public List<String> getSubwayStationsList(List<Integer> stationsList) throws Exception
+    public List<String> getSubwayStationsList(List<SearchFiltersModel.SubwayStation> stationsList) throws Exception
     {
         CallableStatement stmt = _mySqlConnector.getSession().prepareCall("{ call spGetWebsiteStation(?) }");
         stmt.setInt("websiteId", _client);
@@ -74,9 +75,9 @@ public class CianSearchFiltersDalImpl extends AbstractSearchFiltersDal
         stmt.close();
 
         List<String> cianStationsList = new ArrayList<>();
-        for (int station : stationsList)
+        for (SearchFiltersModel.SubwayStation station : stationsList)
         {
-            cianStationsList.add(_mapStations.get(station));
+            cianStationsList.add(_mapStations.get(station.getStationId()));
         }
         return cianStationsList;
 

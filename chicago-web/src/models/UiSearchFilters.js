@@ -42,12 +42,12 @@ class UiSearchFilters {
   constructor() {
     this.user_id = null;
     this.city_id = null;
-    this.district_id = new Set();
-    this.subway_station_id = new Set();
+    this.district_id = new Map();
+    this.subway_station_id = new Map();
 
     this.type_id = PropertyType.APARTMENT;
     this.market_id = Market.MARKET_NOT_IMPORTANT;
-    this.rooms_number = new Set(); // Array
+    this.rooms_number = new Set();
     this.apt_price_from = 0;
     this.apt_price_to = 0;
     this.apt_size_from = 0;

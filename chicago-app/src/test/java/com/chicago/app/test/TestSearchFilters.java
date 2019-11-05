@@ -1,5 +1,6 @@
 package com.chicago.app.test;
 
+import com.chicago.dto.CityOuterClass;
 import com.chicago.dto.Searchfilters;
 import com.chicago.ext.bll.SearchFiltersBll;
 import com.chicago.ext.dal.DbConnector;
@@ -20,14 +21,15 @@ import java.util.List;
 public class TestSearchFilters
 {
     @Test
-    public void testReadCity() {
+    public void testReadCity()
+    {
         Searchfilters.SearchFilters searchFiltersDto = Searchfilters.SearchFilters.newBuilder()
                 .setCityId("c2deb16a-0330-4f05-821f-1d09c93331e6")
                 .setAptPriceFrom(5000000)
-                .addDistrictId(5)
-                .addDistrictId(15)
-                .addSubwayStationId(3)
-                .addSubwayStationId(5)
+                .addDistricts(CityOuterClass.District.newBuilder().setDistrictId(5).build())
+                .addDistricts(CityOuterClass.District.newBuilder().setDistrictId(15).build())
+                .addSubwayStations(CityOuterClass.SubwayStation.newBuilder().setStationId(3).build())
+                .addSubwayStations(CityOuterClass.SubwayStation.newBuilder().setStationId(5).build())
                 .setAptPriceTo(15000000)
                 .setAptSizeFrom(60)
                 .setAptSizeTo(120)
@@ -73,12 +75,12 @@ public class TestSearchFilters
             String json = gson.toJson(sf);
             searchFiltersDal.addSearchFilter("test", json);
             List<String> sfList = searchFiltersDal.getSearchFilters("test");
-            for(String filter : sfList)
+            for (String filter : sfList)
             {
                 SearchFiltersModel.SearchFilters obj = gson.fromJson(filter, SearchFiltersModel.SearchFilters.class);
             }
 
-        }catch (Exception ex)
+        } catch (Exception ex)
         {
             System.out.println("");
         }
@@ -92,14 +94,14 @@ public class TestSearchFilters
             String str1 = URLEncoder.encode("[", "UTF-8");
             String str2 = URLEncoder.encode("]", "UTF-8");
             String httpRequest = "https://spb.cian.ru/cat.php?deal_type=sale&engine_version=2&region=";
-            httpRequest +=  searchFiltersDal.getCityId(model.getCityId());
+            httpRequest += searchFiltersDal.getCityId(model.getCityId());
 
-            if( model.getTypeId() == EnumTypes.PropertyType.APARTMENT )
+            if (model.getTypeId() == EnumTypes.PropertyType.APARTMENT)
             {
                 httpRequest += "&offer_type=flat";
             }
 
-            if( model.getTypeId() == EnumTypes.PropertyType.ROOM )
+            if (model.getTypeId() == EnumTypes.PropertyType.ROOM)
             {
                 httpRequest += "&offer_type=flat&room0=1";
             }
@@ -107,51 +109,52 @@ public class TestSearchFilters
             int idx = 0;
             for (String station : stations)
             {
-                httpRequest += "&metro" + str1 + idx++ + str2 +  "=" + station;
+                httpRequest += "&metro" + str1 + idx++ + str2 + "=" + station;
             }
 
             idx = 0;
             for (String district : districts)
             {
-                httpRequest += "&district" + str1 + idx++ + str2 +  "=" + district;
+                httpRequest += "&district" + str1 + idx++ + str2 + "=" + district;
             }
 
-            if ( model.getAptPriceFrom()!=0 )
+            if (model.getAptPriceFrom() != 0)
             {
                 httpRequest += "&minprice=" + searchFiltersDal.getAptPriceFrom(model.getAptPriceFrom());
             }
 
-            if ( model.getAptPriceTo()!=0 )
+            if (model.getAptPriceTo() != 0)
             {
                 httpRequest += "&maxprice=" + searchFiltersDal.getAptPriceTo(model.getAptPriceTo());
             }
 
-            if ( model.getAptSizeFrom() !=0 )
+            if (model.getAptSizeFrom() != 0)
             {
                 httpRequest += "&mintarea=" + searchFiltersDal.getAptSizeFrom(model.getAptSizeFrom());
             }
 
-            if ( model.getAptSizeTo() !=0 )
+            if (model.getAptSizeTo() != 0)
             {
                 httpRequest += "&maxtarea=" + searchFiltersDal.getAptSizeTo(model.getAptSizeTo());
             }
 
             idx = 0;
-            if ( model.getMarketId() == EnumTypes.Market.SECOND )
+            if (model.getMarketId() == EnumTypes.Market.SECOND)
             {
-                httpRequest += "&object_type" +str1 + "0" + str2 +  "=1";
+                httpRequest += "&object_type" + str1 + "0" + str2 + "=1";
             }
 
-            if ( model.getMarketId() == EnumTypes.Market.FIRST )
+            if (model.getMarketId() == EnumTypes.Market.FIRST)
             {
-                httpRequest += "&object_type" +str1 + "0" + str2 +  "=2";
+                httpRequest += "&object_type" + str1 + "0" + str2 + "=2";
             }
 
             List<Integer> rooms = model.getRoomsNumberList();
 
             for (Integer room : rooms)
             {
-                switch (room) {
+                switch (room)
+                {
                     case 0:
                         httpRequest += "&room9=1"; //&room0 just a room, not appartment
                         break;
@@ -171,7 +174,7 @@ public class TestSearchFilters
                         httpRequest += "&room5=1";
                         break;
                     case 6:
-                        httpRequest += "&room6=1" ;
+                        httpRequest += "&room6=1";
                         break;
                     default:
                         httpRequest += "&room9=0"; // appartment
@@ -179,53 +182,52 @@ public class TestSearchFilters
                 }
             }
 
-            if( model.isNotLastFloor())
+            if (model.isNotLastFloor())
             {
                 httpRequest += "&floornl=1";
             }
 
-            if(model.isLastFloor())
+            if (model.isLastFloor())
             {
                 httpRequest += "&floornl=0";
             }
 
-            if( model.isNotFirstFloor())
+            if (model.isNotFirstFloor())
             {
                 httpRequest += "&is_first_floor=0";
             }
 
-            if ( model.getFloorFrom() !=0 )
+            if (model.getFloorFrom() != 0)
             {
-                httpRequest += "&minfloor="+ Integer.toString(searchFiltersDal.getFloorFrom(model.getFloorFrom()));
+                httpRequest += "&minfloor=" + Integer.toString(searchFiltersDal.getFloorFrom(model.getFloorFrom()));
             }
 
-            if ( model.getFloorTo() !=0 )
+            if (model.getFloorTo() != 0)
             {
-                httpRequest += "&maxfloor="+ Integer.toString(searchFiltersDal.getFloorTo(model.getFloorTo()));
+                httpRequest += "&maxfloor=" + Integer.toString(searchFiltersDal.getFloorTo(model.getFloorTo()));
             }
 
-            if ( model.getFloorsInHouseFrom() !=0 )
+            if (model.getFloorsInHouseFrom() != 0)
             {
-                httpRequest += "&minfloorn="+ Integer.toString(searchFiltersDal.getFloorsInHouseFrom(model.getFloorsInHouseFrom()));
+                httpRequest += "&minfloorn=" + Integer.toString(searchFiltersDal.getFloorsInHouseFrom(model.getFloorsInHouseFrom()));
             }
 
-            if ( model.getFloorsInHouseTo() !=0 )
+            if (model.getFloorsInHouseTo() != 0)
             {
-                httpRequest += "&maxfloorn="+ Integer.toString(searchFiltersDal.getFloorsInHouseTo(model.getFloorsInHouseTo()));
+                httpRequest += "&maxfloorn=" + Integer.toString(searchFiltersDal.getFloorsInHouseTo(model.getFloorsInHouseTo()));
             }
 
-            if ( model.getKitchenSizeFrom() !=0 )
+            if (model.getKitchenSizeFrom() != 0)
             {
-                httpRequest += "&minkarea="+ Integer.toString(searchFiltersDal.getKitchenSizeFrom(model.getKitchenSizeFrom()));
+                httpRequest += "&minkarea=" + Integer.toString(searchFiltersDal.getKitchenSizeFrom(model.getKitchenSizeFrom()));
             }
 
-            if ( model.getKitchenSizeTo() !=0 )
+            if (model.getKitchenSizeTo() != 0)
             {
-                httpRequest += "&maxkarea="+ Integer.toString(searchFiltersDal.getKitchenSizeTo(model.getKitchenSizeTo()));
+                httpRequest += "&maxkarea=" + Integer.toString(searchFiltersDal.getKitchenSizeTo(model.getKitchenSizeTo()));
             }
-                int i=1;
-        }
-        catch (Exception ex)
+            int i = 1;
+        } catch (Exception ex)
         {
             ex.printStackTrace();
         }

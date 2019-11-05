@@ -3,7 +3,6 @@ package com.chicago.ext.webcrawlers;
 import com.chicago.ext.model.CianSearchFiltersModel;
 import com.chicago.ext.model.EnumTypes;
 import com.chicago.ext.model.PropertyModel;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -24,14 +23,14 @@ public class CianPropertyCrawler implements PropertyCrawler<CianSearchFiltersMod
             String str1 = URLEncoder.encode("[", "UTF-8");
             String str2 = URLEncoder.encode("]", "UTF-8");
 
-            String httpRequest =  "https://spb.cian.ru/cat.php?deal_type=sale&engine_version=2&region=" +searchFilters.getCityId();
+            String httpRequest = "https://spb.cian.ru/cat.php?deal_type=sale&engine_version=2&region=" + searchFilters.getCityId();
 
-            if( searchFilters.getTypeId() == EnumTypes.PropertyType.APARTMENT )
+            if (searchFilters.getTypeId() == EnumTypes.PropertyType.APARTMENT)
             {
                 httpRequest += "&offer_type=flat";
             }
 
-            if( searchFilters.getTypeId() == EnumTypes.PropertyType.ROOM )
+            if (searchFilters.getTypeId() == EnumTypes.PropertyType.ROOM)
             {
                 httpRequest += "&offer_type=flat&room0=1";
             }
@@ -52,42 +51,43 @@ public class CianPropertyCrawler implements PropertyCrawler<CianSearchFiltersMod
             }
             httpRequest += sb.toString();
 
-            if ( searchFilters.getAptPriceFrom()!= 0 )
+            if (searchFilters.getAptPriceFrom() != 0)
             {
                 httpRequest += "&minprice=" + searchFilters.getAptPriceFrom();
             }
 
-            if ( searchFilters.getAptPriceTo()!= 0 )
+            if (searchFilters.getAptPriceTo() != 0)
             {
                 httpRequest += "&maxprice=" + searchFilters.getAptPriceTo();
             }
 
-            if ( searchFilters.getAptSizeFrom() != 0 )
+            if (searchFilters.getAptSizeFrom() != 0)
             {
                 httpRequest += "&mintarea=" + searchFilters.getAptSizeFrom();
             }
 
-            if ( searchFilters.getAptSizeTo() != 0 )
+            if (searchFilters.getAptSizeTo() != 0)
             {
                 httpRequest += "&maxtarea=" + searchFilters.getAptSizeTo();
             }
 
             idx = 0;
-            if ( searchFilters.getMarketId() == EnumTypes.Market.SECOND )
+            if (searchFilters.getMarketId() == EnumTypes.Market.SECOND)
             {
-                httpRequest += "&object_type" +str1 + "0" + str2 +  "=1";
+                httpRequest += "&object_type" + str1 + "0" + str2 + "=1";
             }
 
-            if ( searchFilters.getMarketId() == EnumTypes.Market.FIRST )
+            if (searchFilters.getMarketId() == EnumTypes.Market.FIRST)
             {
-                httpRequest += "&object_type" +str1 + "0" + str2 +  "=2";
+                httpRequest += "&object_type" + str1 + "0" + str2 + "=2";
             }
 
             List<Integer> rooms = searchFilters.getRoomsNumber();
             sb.setLength(0);
             for (int room : rooms)
             {
-                switch (room) {
+                switch (room)
+                {
                     case 0:
                         sb.append("&room9=1"); //&room0 just a room, not appartment
                         break;
@@ -112,51 +112,51 @@ public class CianPropertyCrawler implements PropertyCrawler<CianSearchFiltersMod
                     default:
                         sb.append("&room9=0"); // appartment
                         break;
-                    }
+                }
             }
             httpRequest += sb.toString();
 
-            if( searchFilters.isNotLastFloor())
+            if (searchFilters.isNotLastFloor())
             {
                 httpRequest += "&floornl=1";
             }
 
-            if( searchFilters.isLastFloor() )
+            if (searchFilters.isLastFloor())
             {
                 httpRequest += "&floornl=0";
             }
 
-            if( searchFilters.isNotFirstFloor() )
+            if (searchFilters.isNotFirstFloor())
             {
                 httpRequest += "&is_first_floor=0";
             }
 
-            if ( searchFilters.getFloorFrom() != 0 )
+            if (searchFilters.getFloorFrom() != 0)
             {
                 httpRequest += "&minfloor=" + searchFilters.getFloorFrom();
             }
 
-            if ( searchFilters.getFloorTo() != 0 )
+            if (searchFilters.getFloorTo() != 0)
             {
                 httpRequest += "&maxfloor=" + searchFilters.getFloorTo();
             }
 
-            if ( searchFilters.getFloorsInHouseFrom() != 0 )
+            if (searchFilters.getFloorsInHouseFrom() != 0)
             {
                 httpRequest += "&minfloorn=" + searchFilters.getFloorsInHouseFrom();
             }
 
-            if ( searchFilters.getFloorsInHouseTo() != 0 )
+            if (searchFilters.getFloorsInHouseTo() != 0)
             {
                 httpRequest += "&maxfloorn=" + searchFilters.getFloorsInHouseTo();
             }
 
-            if ( searchFilters.getKitchenSizeFrom() != 0 )
+            if (searchFilters.getKitchenSizeFrom() != 0)
             {
                 httpRequest += "&minkarea=" + searchFilters.getKitchenSizeFrom();
             }
 
-            if ( searchFilters.getKitchenSizeTo() != 0 )
+            if (searchFilters.getKitchenSizeTo() != 0)
             {
                 httpRequest += "&maxkarea=" + searchFilters.getKitchenSizeTo();
             }
@@ -217,11 +217,10 @@ public class CianPropertyCrawler implements PropertyCrawler<CianSearchFiltersMod
             private int floorsInHouse;
             private int roomsNumber;
             */
-        }
-        catch (Exception ex)
+        } catch (Exception ex)
         {
             ex.printStackTrace();
         }
-    return null;
+        return null;
     }
 }

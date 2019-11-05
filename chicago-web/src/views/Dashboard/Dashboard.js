@@ -346,7 +346,7 @@ class Dashboard extends Component {
     console.log(this.uiSearchFilters.district_id);
     for (let d of selectedDistricts) {
       let distictId = parseInt(d.value, 10);
-        this.uiSearchFilters.district_id.add(distictId);
+        this.uiSearchFilters.district_id.set(distictId, d.label);
     }
     console.log(this.uiSearchFilters.district_id);
     this.setState({ selectedDistricts })
@@ -355,7 +355,7 @@ class Dashboard extends Component {
   saveSubwayStationsChange = (selectedSubwayStations) => {
     for (let s of selectedSubwayStations) {
       let stationId = parseInt(s.value, 10);
-        this.uiSearchFilters.subway_station_id.add(stationId);
+        this.uiSearchFilters.subway_station_id.set(stationId, s.label);
     }
     this.setState({ selectedSubwayStations })
   }

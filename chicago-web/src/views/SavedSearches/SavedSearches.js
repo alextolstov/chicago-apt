@@ -98,7 +98,7 @@ class SavedSearches extends Component {
           </Col>
           <Col xs="10" sm="10" lg="3">
             <div>
-              <b>Количество комнат:</b> {row.rooms_number.join()}
+              <b>Количество комнат:</b> {[...row.rooms_number].join(',')}
             </div>
           </Col>
           <Col xs="10" sm="10" lg="3">

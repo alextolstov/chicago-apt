@@ -28,30 +28,43 @@ public class SearchFiltersBllImpl implements SearchFiltersBll
     private Gson _gson = new Gson();
 
     @Override
-    public CianSearchFiltersModel.CianSearchFilters getCianSearchFilters(SearchFiltersModel.SearchFilters outSearchFilters) throws Exception
+    public CianSearchFiltersModel.CianSearchFilters getCianSearchFilters(SearchFiltersModel.SearchFilters searchFilters) throws Exception
     {
-        _searchFiltersDal.addSearchFilter(outSearchFilters.getUserId(), _gson.toJson(outSearchFilters, SearchFiltersModel.SearchFilters.class));
+        _searchFiltersDal.addSearchFilter(searchFilters.getUserId(), _gson.toJson(searchFilters, SearchFiltersModel.SearchFilters.class));
 
         CianSearchFiltersModel.CianSearchFilters cianFilter = new CianSearchFiltersModel.CianSearchFilters();
 
-        cianFilter.setAptPriceFrom(_searchFiltersDal.getAptPriceFrom(outSearchFilters.getAptPriceFrom()));
-        cianFilter.setAptPriceTo(_searchFiltersDal.getAptPriceTo(outSearchFilters.getAptPriceTo()));
-        cianFilter.setAptSizeFrom(_searchFiltersDal.getAptSizeFrom(outSearchFilters.getAptSizeFrom()));
-        cianFilter.setAptSizeTo(_searchFiltersDal.getAptSizeTo(outSearchFilters.getAptSizeTo()));
-        cianFilter.setFloorFrom(_searchFiltersDal.getFloorFrom(outSearchFilters.getFloorFrom()));
-        cianFilter.setFloorTo(_searchFiltersDal.getFloorFrom(outSearchFilters.getFloorTo()));
-        cianFilter.setFloorsInHouseFrom(_searchFiltersDal.getFloorFrom(outSearchFilters.getFloorsInHouseFrom()));
-        cianFilter.setFloorsInHouseTo(_searchFiltersDal.getFloorFrom(outSearchFilters.getFloorsInHouseTo()));
-        cianFilter.setKitchenSizeFrom(_searchFiltersDal.getKitchenSizeFrom(outSearchFilters.getKitchenSizeFrom()));
-        cianFilter.setKitchenSizeTo(_searchFiltersDal.getKitchenSizeTo(outSearchFilters.getKitchenSizeTo()));
-        cianFilter.setRoomsNumber(_searchFiltersDal.getRoomsNumberList(outSearchFilters.getRoomsNumberList()));
-        cianFilter.setLastFloor(_searchFiltersDal.isLastFloor(outSearchFilters.isLastFloor()));
-        cianFilter.setNotFirstFloor(_searchFiltersDal.isNotFirstFloor(outSearchFilters.isNotFirstFloor()));
-        cianFilter.setNotLastFloor(_searchFiltersDal.isNotLastFloor(outSearchFilters.isNotLastFloor()));
-        cianFilter.setSubwayStationsId(outSearchFilters.getSubwayStationsList());
-        cianFilter.setDistrictsId(outSearchFilters.getDistrictsList());
-        cianFilter.setTypeId(outSearchFilters.getTypeId());
-        cianFilter.setMarketId(outSearchFilters.getMarketId());
+        cianFilter.setAptPriceFrom(_searchFiltersDal.getAptPriceFrom(searchFilters.getAptPriceFrom()));
+        cianFilter.setAptPriceTo(_searchFiltersDal.getAptPriceTo(searchFilters.getAptPriceTo()));
+        cianFilter.setAptSizeFrom(_searchFiltersDal.getAptSizeFrom(searchFilters.getAptSizeFrom()));
+        cianFilter.setAptSizeTo(_searchFiltersDal.getAptSizeTo(searchFilters.getAptSizeTo()));
+        cianFilter.setFloorFrom(_searchFiltersDal.getFloorFrom(searchFilters.getFloorFrom()));
+        cianFilter.setFloorTo(_searchFiltersDal.getFloorFrom(searchFilters.getFloorTo()));
+        cianFilter.setFloorsInHouseFrom(_searchFiltersDal.getFloorFrom(searchFilters.getFloorsInHouseFrom()));
+        cianFilter.setFloorsInHouseTo(_searchFiltersDal.getFloorFrom(searchFilters.getFloorsInHouseTo()));
+        cianFilter.setKitchenSizeFrom(_searchFiltersDal.getKitchenSizeFrom(searchFilters.getKitchenSizeFrom()));
+        cianFilter.setKitchenSizeTo(_searchFiltersDal.getKitchenSizeTo(searchFilters.getKitchenSizeTo()));
+        cianFilter.setRoomsNumber(_searchFiltersDal.getRoomsNumberList(searchFilters.getRoomsNumberList()));
+        cianFilter.setLastFloor(_searchFiltersDal.isLastFloor(searchFilters.isLastFloor()));
+        cianFilter.setNotFirstFloor(_searchFiltersDal.isNotFirstFloor(searchFilters.isNotFirstFloor()));
+        cianFilter.setNotLastFloor(_searchFiltersDal.isNotLastFloor(searchFilters.isNotLastFloor()));
+
+        ArrayList<Integer> stations = new ArrayList<>();
+        for (SearchFiltersModel.SubwayStation s : searchFilters.getSubwayStationsList())
+        {
+            stations.add(s.getStationId());
+        }
+        cianFilter.setSubwayStationsId(stations);
+
+        ArrayList<Integer> districts = new ArrayList<>();
+        for (SearchFiltersModel.District d : searchFilters.getDistrictsList())
+        {
+            districts.add(d.getDistrictId());
+        }
+
+        cianFilter.setDistrictsId(districts);
+        cianFilter.setTypeId(searchFilters.getTypeId());
+        cianFilter.setMarketId(searchFilters.getMarketId());
         //_searchFiltersDal.getSubwayStationsList(outSearchFilters.getSubwayStationsList());
         //_searchFiltersDal.getDistrictsList(outSearchFilters.getDistrictsList());
         //_searchFiltersDal.getPropertyType(outSearchFilters.getTypeId());

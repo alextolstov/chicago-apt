@@ -1,48 +1,52 @@
-import UiSearchFilters from "../models/UiSearchFilters";
+import UiSearchFilters, { CeilingHeight, Market, PropertyType, ViewFromWindow } from '../models/UiSearchFilters'
 const searchfilters_proto = require('dto/searchfilters_pb');
+const city_proto = require('dto/city_pb');
 
 
 class SearchFiltersConvertor {
   fromDto = (dtoObj) => {
     console.log(dtoObj);
 
-    let uiObj = new UiSearchFilters();
-    uiObj.user_id = dtoObj.getUserId !== undefined ? dtoObj.getUserId() : null;
-    uiObj.city_id = dtoObj.getCityId !== undefined ? dtoObj.getCityId() : null;
+    let model = new UiSearchFilters();
+    let tmpObj = dtoObj.toObject();
 
-    if (dtoObj.getSubwayStationIdList !== undefined) {
-      for (let s of dtoObj.getSubwayStationIdList()) {
-        uiObj.subway_station_id.add(s);
-      }
+    model.user_id = tmpObj.userId;
+    model.city_id = tmpObj.cityId;
+
+    model.type_id = tmpObj.typeId;
+    model.market_id = tmpObj.marketId;
+    model.apt_price_from = tmpObj.aptPriceFrom;
+    model.apt_price_to = tmpObj.aptPriceTo;
+    model.apt_size_from = tmpObj.aptSizeFrom;
+    model.apt_size_to = tmpObj.aptSizeTo;
+
+    model.windows_view = tmpObj.windowsView;
+    model.balcony = tmpObj.balcony;
+    model.kitchen_size_from = tmpObj.kitchenSizeFrom;
+    model.kitchen_size_to = tmpObj.kitchenSizeTo;
+    model.ceiling_height = tmpObj.ceilingHeight;
+
+    model.floor_from = tmpObj.floorFrom;
+    model.floor_to = tmpObj.floorTo;
+    model.floors_in_house_from = tmpObj.floorsInHouseFrom;
+    model.floors_in_house_to = tmpObj.floorsInHouseTo;
+    model.not_first_floor = tmpObj.notFirstFloor;
+    model.not_last_floor = tmpObj.notLastFloor;
+    model.last_floor = tmpObj.lastFloor;
+
+    for(let d of tmpObj.districtsList) {
+      model.district_id.set(d.districtId, d.districtName);
     }
-    if (dtoObj.getDistrictIdList !== undefined) {
-      for(let d of dtoObj.getDistrictIdList())
-      uiObj.district_id.add(d);
+
+    for (let s of tmpObj.subwayStationsList) {
+      model.subway_station_id.set(s.getStationId(), s.getStationName());
     }
 
-    uiObj.type_id = dtoObj.getTypeId !== undefined ? dtoObj.getTypeId() : 0;
-    uiObj.market_id = dtoObj.getMarketId !== undefined ? dtoObj.getMarketId() : 0;
-    uiObj.rooms_number = dtoObj.getRoomsNumberList !== undefined ? dtoObj.getRoomsNumberList() : null;
-    uiObj.apt_price_from = dtoObj.getAptPriceFrom !== undefined ? dtoObj.getAptPriceFrom() : 0;
-    uiObj.apt_price_to = dtoObj.getAptPriceTo !== undefined ? dtoObj.getAptPriceTo() : 0;
-    uiObj.apt_size_from = dtoObj.getAptSizeTo !== undefined ? dtoObj.getAptSizeTo() : 0;
-    uiObj.apt_size_to = dtoObj.getAptSizeFrom !== undefined ? dtoObj.getAptSizeFrom() : 0;
+    for (let s of tmpObj.roomsNumberList) {
+      model.rooms_number.add(s);
+    }
 
-    uiObj.windows_view = dtoObj.getWindowsView !== undefined ? dtoObj.getWindowsView() : null;
-    uiObj.balcony = dtoObj.getBalcony !== undefined ? dtoObj.getBalcony() : false;
-    uiObj.kitchen_size_from = dtoObj.getKitchenSizeFrom !== undefined ? dtoObj.getKitchenSizeFrom() : 0;
-    uiObj.kitchen_size_to = dtoObj.getKitchenSizeTo !== undefined ? dtoObj.getKitchenSizeTo() : 0;
-    uiObj.ceiling_height = dtoObj.getCeilingHeight !== undefined ? dtoObj.getCeilingHeight() : 0;
-
-    uiObj.floor_from = dtoObj.getFloorFrom !== undefined ? dtoObj.getFloorFrom() : 0;
-    uiObj.floor_to = dtoObj.getFloorTo !== undefined ? dtoObj.getFloorTo() : null;
-    uiObj.floors_in_house_from = dtoObj.getFloorsInHouseFrom !== undefined ? dtoObj.getFloorsInHouseFrom() : 0;
-    uiObj.floors_in_house_to = dtoObj.getFloorsInHouseTo !== undefined ? dtoObj.getFloorsInHouseTo() : 0;
-    uiObj.not_first_floor = dtoObj.getNotFirstFloor !== undefined ? dtoObj.getNotFirstFloor() : false;
-    uiObj.not_last_floor = dtoObj.getNotLastFloor !== undefined ? dtoObj.getNotLastFloor() : false;
-    uiObj.last_floor = dtoObj.getLastFloor !== undefined ? dtoObj.getLastFloor() : false;
-
-    return uiObj;
+    return model;
   }
 
   toDto = (uiObj) => {
@@ -50,12 +54,18 @@ class SearchFiltersConvertor {
     dtoObj.setUserId(uiObj.user_id);
     dtoObj.setCityId(uiObj.city_id);
 
-    for (let d of uiObj.district_id) {
-      dtoObj.addDistrictId(d);
+    for (let [key, value] of uiObj.district_id) {
+      let district = new city_proto.District();
+      district.setDistrictId(key)
+      district.setDistrictName(value);
+      dtoObj.addDistricts(district);
     }
 
-    for (let s of uiObj.subway_station_id) {
-      dtoObj.addSubwayStationId(s);
+    for (let [key, value]  of uiObj.subway_station_id) {
+      let subwayStation = new city_proto.SubwayStation();
+      subwayStation.setSubwayStationId(key);
+      subwayStation.setSubwayStationName(value);
+      dtoObj.addSubwayStations(subwayStation);
     }
 
     dtoObj.setTypeId(uiObj.type_id);

@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package com.chicago.dto;
 
+import "city.proto";
+
 option java_package = "com.chicago.dto";
 
 enum ViewFromWindow
@@ -53,8 +55,8 @@ message SearchFilters
     string user_id = 1;
     // Location
     string city_id = 2;
-    repeated int32 district_id = 3;
-    repeated int32 subway_station_id = 4;
+    repeated District districts = 3;
+    repeated SubwayStation subway_stations = 4;
 
     // Main filter
     PropertyType type_id = 5;
