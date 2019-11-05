@@ -10,11 +10,15 @@ public final class PropertyModel
     public @Data static class Property
     {
         private String propertyId;
+        private String cityName;
+        private String streetName;
+        private String buildingNumber;
+
         private byte[] floorPlan;
         private EnumTypes.PropertyType typeId;
 
         private int aptPrice;
-        private int aptSize;
+        private float aptSize;
 
         private EnumTypes.ViewFromWindow windowsView;
         private Boolean balcony;
@@ -23,6 +27,7 @@ public final class PropertyModel
         private int floor;
         private int floorsInHouse;
         private int roomsNumber;
+
     }
 
     public @Data static class PropertyExtraInfo
